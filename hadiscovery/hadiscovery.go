@@ -109,11 +109,11 @@ var Connection mqtt.Client
 ///////////////////
 
 func (device Switch) GetTopicPrefix() string {
-	return NodeID + "/switch/" + device.Name + "/"
+	return NodeID + "/switch/" + device.UniqueID + "/"
 }
 
 func (device Switch) GetDiscoveryTopic() string {
-	return DiscoveryPrefix + "/switch/" + NodeID + "/" + device.Name + "/" + "config"
+	return DiscoveryPrefix + "/switch/" + NodeID + "/" + device.UniqueID + "/" + "config"
 }
 
 func (device Switch) GetCommandTopic() string {
@@ -134,6 +134,7 @@ func (device *Switch) Initialize() {
 	device.StateTopic = device.GetStateTopic()
 	device.AvailabilityTopic = device.GetAvailabilityTopic()
 	device.Device = getDevice()
+	device.Retain = true
 	device.Platform = "mqtt"
 
 	topicStore[device.CommandTopic] = &device.CommandFunc
@@ -141,8 +142,6 @@ func (device *Switch) Initialize() {
 	device.messageHandler = func(client mqtt.Client, msg mqtt.Message) {
 
 		topicFound := false
-
-		log.Println(topicStore)
 
 		for topic, f := range topicStore {
 			if msg.Topic() == topic {
@@ -161,8 +160,10 @@ func (device *Switch) Initialize() {
 }
 
 func (device Switch) UpdateState() {
-	token := Connection.Publish(device.GetStateTopic(), 0, true, device.StateFunc())
-	token.Wait()
+	if device.StateFunc != nil {
+		token := Connection.Publish(device.GetStateTopic(), 0, true, device.StateFunc())
+		token.Wait()
+	}
 }
 
 func (device Switch) Subscribe() {
@@ -175,12 +176,12 @@ func (device Switch) Subscribe() {
 	token := Connection.Publish(device.GetDiscoveryTopic(), 0, false, message)
 	token.Wait()
 
+	device.UpdateState()
+
 	if token := Connection.Subscribe(device.GetCommandTopic(), 0, device.messageHandler); token.Wait() && token.Error() != nil {
 		log.Println(token.Error())
 		os.Exit(1)
 	}
-
-	device.UpdateState()
 
 	token = Connection.Publish(device.GetAvailabilityTopic(), 0, false, "online")
 	token.Wait()
@@ -191,7 +192,7 @@ func (device Switch) UnSubscribe() {
 	token := Connection.Publish(device.GetAvailabilityTopic(), 0, false, "offline")
 	token.Wait()
 
-	if token := Connection.Unsubscribe(device.GetDiscoveryTopic()); token.Wait() && token.Error() != nil {
+	if token := Connection.Unsubscribe(device.GetCommandTopic()); token.Wait() && token.Error() != nil {
 		log.Println(token.Error())
 		os.Exit(1)
 	}

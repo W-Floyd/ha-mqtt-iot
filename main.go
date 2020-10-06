@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"os"
 	"os/exec"
@@ -16,8 +15,8 @@ import (
 )
 
 var f mqtt.MessageHandler = func(client mqtt.Client, msg mqtt.Message) {
-	fmt.Printf("TOPIC: %s\n", msg.Topic())
-	fmt.Printf("MSG: %s\n", msg.Payload())
+	log.Printf("TOPIC: %s\n", msg.Topic())
+	log.Printf("MSG: %s\n", msg.Payload())
 }
 
 func main() {
@@ -31,6 +30,7 @@ func main() {
 	opts.SetKeepAlive(30 * time.Second)
 	opts.SetDefaultPublishHandler(f)
 	opts.SetPingTimeout(1 * time.Second)
+	opts.SetAutoReconnect(true)
 
 	hadiscovery.Connection = mqtt.NewClient(opts)
 	if token := hadiscovery.Connection.Connect(); token.Wait() && token.Error() != nil {
@@ -38,10 +38,10 @@ func main() {
 	}
 
 	config := hadiscovery.Switch{}
-	config.Name = "dark-mode"
+	config.Name = "Dark Mode"
 	config.UniqueID = "dark-mode"
+	config.Icon = "mdi:theme-light-dark"
 	config.Initialize()
-	fmt.Println(config)
 	config.CommandFunc = func(message mqtt.Message, connection mqtt.Client) {
 		usr, err := user.Current()
 		if err != nil {
@@ -50,25 +50,21 @@ func main() {
 
 		if string(message.Payload()) == "ON" {
 
-			out, err := exec.Command(usr.HomeDir+"/.theme.sh", "set", "dark").Output()
+			_, err := exec.Command(usr.HomeDir+"/.theme.sh", "set", "dark").Output()
 			if err != nil {
-				fmt.Printf("%s", err)
+				log.Printf("%s", err)
 			}
-			output := string(out[:])
-			fmt.Println(output)
 
 		} else if string(message.Payload()) == "OFF" {
 
-			out, err := exec.Command(usr.HomeDir+"/.theme.sh", "set", "light").Output()
+			_, err := exec.Command(usr.HomeDir+"/.theme.sh", "set", "light").Output()
 			if err != nil {
-				fmt.Printf("%s", err)
+				log.Printf("%s", err)
 			}
-			output := string(out[:])
-			fmt.Println(output)
 
 		} else {
 
-			fmt.Println("Unknown payload: " + string(message.Payload()))
+			log.Println("Unknown payload: " + string(message.Payload()))
 
 		}
 	}
@@ -80,7 +76,7 @@ func main() {
 
 		out, err := exec.Command(usr.HomeDir+"/.theme.sh", "get").Output()
 		if err != nil {
-			fmt.Printf("%s", err)
+			log.Printf("%s", err)
 		}
 
 		return string(out)
@@ -88,18 +84,48 @@ func main() {
 	}
 	config.Subscribe()
 
+	config2 := hadiscovery.Switch{}
+	config2.Name = "Monitor Awake"
+	config2.UniqueID = "monitor-awake"
+	config2.Icon = "mdi:monitor"
+	config2.Optimistic = true
+	config2.Initialize()
+	config2.CommandFunc = func(message mqtt.Message, connection mqtt.Client) {
+
+		if string(message.Payload()) == "ON" {
+
+			_, err := exec.Command("xset", "dpms", "force", "on").Output()
+			if err != nil {
+				log.Printf("%s", err)
+			}
+
+		} else if string(message.Payload()) == "OFF" {
+
+			_, err := exec.Command("xset", "dpms", "force", "off").Output()
+			if err != nil {
+				log.Printf("%s", err)
+			}
+
+		} else {
+
+			log.Println("Unknown payload: " + string(message.Payload()))
+
+		}
+	}
+	config2.Subscribe()
+
 	done := make(chan os.Signal, 1)
 	signal.Notify(done, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
 
-	ticker := time.NewTicker(10 * time.Second)
-	go func() {
-		for range ticker.C {
-			config.UpdateState()
-		}
-	}()
+	// ticker := time.NewTicker(10 * time.Second)
+	// go func() {
+	// 	for range ticker.C {
+	// 		config.UpdateState()
+	// 	}
+	// }()
 
 	<-done
-	ticker.Stop()
+	// ticker.Stop()
 	log.Print("Server Stopped")
 
 	config.UnSubscribe()
