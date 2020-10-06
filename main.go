@@ -102,10 +102,7 @@ func main() {
 	ticker.Stop()
 	log.Print("Server Stopped")
 
-	if token := hadiscovery.Connection.Unsubscribe(config.GetDiscoveryTopic()); token.Wait() && token.Error() != nil {
-		fmt.Println(token.Error())
-		os.Exit(1)
-	}
+	config.UnSubscribe()
 
 	hadiscovery.Connection.Disconnect(250)
 

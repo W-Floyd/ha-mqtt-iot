@@ -2,7 +2,6 @@ package hadiscovery
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"os"
 
@@ -143,7 +142,7 @@ func (device *Switch) Initialize() {
 
 		topicFound := false
 
-		fmt.Println(topicStore)
+		log.Println(topicStore)
 
 		for topic, f := range topicStore {
 			if msg.Topic() == topic {
@@ -154,8 +153,8 @@ func (device *Switch) Initialize() {
 		}
 
 		if !topicFound {
-			fmt.Println("Unknown Message on topic " + msg.Topic())
-			fmt.Println(msg.Payload())
+			log.Println("Unknown Message on topic " + msg.Topic())
+			log.Println(msg.Payload())
 		}
 	}
 
@@ -169,7 +168,7 @@ func (device Switch) UpdateState() {
 func (device Switch) Subscribe() {
 
 	if token := Connection.Subscribe(device.GetDiscoveryTopic(), 0, device.messageHandler); token.Wait() && token.Error() != nil {
-		fmt.Println(token.Error())
+		log.Println(token.Error())
 		os.Exit(1)
 	}
 
@@ -178,15 +177,11 @@ func (device Switch) Subscribe() {
 		log.Fatal(err)
 	}
 
-	fmt.Println(device)
-
 	token := Connection.Publish(device.GetDiscoveryTopic(), 0, false, message)
 	token.Wait()
 
-	fmt.Println(message)
-
 	if token := Connection.Subscribe(device.GetCommandTopic(), 0, device.messageHandler); token.Wait() && token.Error() != nil {
-		fmt.Println(token.Error())
+		log.Println(token.Error())
 		os.Exit(1)
 	}
 
@@ -195,6 +190,16 @@ func (device Switch) Subscribe() {
 	token = Connection.Publish(device.GetAvailabilityTopic(), 0, false, "online")
 	token.Wait()
 
+}
+
+func (device Switch) UnSubscribe() {
+	token := Connection.Publish(device.GetAvailabilityTopic(), 0, false, "offline")
+	token.Wait()
+
+	if token := Connection.Unsubscribe(device.GetDiscoveryTopic()); token.Wait() && token.Error() != nil {
+		log.Println(token.Error())
+		os.Exit(1)
+	}
 }
 
 ///////////////////
