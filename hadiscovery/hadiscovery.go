@@ -167,11 +167,6 @@ func (device Switch) UpdateState() {
 
 func (device Switch) Subscribe() {
 
-	if token := Connection.Subscribe(device.GetDiscoveryTopic(), 0, device.messageHandler); token.Wait() && token.Error() != nil {
-		log.Println(token.Error())
-		os.Exit(1)
-	}
-
 	message, err := json.Marshal(device)
 	if err != nil {
 		log.Fatal(err)
