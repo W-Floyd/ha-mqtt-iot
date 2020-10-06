@@ -86,7 +86,7 @@ func main() {
 
 	config2 := hadiscovery.Switch{}
 	config2.Name = "Monitor Awake"
-	config2.UniqueID = "monitor-awake"
+	config2.UniqueID = "desktop-monitor-awake"
 	config2.Icon = "mdi:monitor"
 	config2.Optimistic = true
 	config2.Initialize()
@@ -117,18 +117,20 @@ func main() {
 	done := make(chan os.Signal, 1)
 	signal.Notify(done, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
 
-	// ticker := time.NewTicker(10 * time.Second)
-	// go func() {
-	// 	for range ticker.C {
-	// 		config.UpdateState()
-	// 	}
-	// }()
+	ticker := time.NewTicker(60 * time.Second)
+	go func() {
+		for range ticker.C {
+			config.AnnounceAvailable()
+			config2.AnnounceAvailable()
+		}
+	}()
 
 	<-done
 	// ticker.Stop()
 	log.Print("Server Stopped")
 
 	config.UnSubscribe()
+	config2.UnSubscribe()
 
 	hadiscovery.Connection.Disconnect(250)
 

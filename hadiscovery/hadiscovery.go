@@ -163,6 +163,8 @@ func (device Switch) UpdateState() {
 	if device.StateFunc != nil {
 		token := Connection.Publish(device.GetStateTopic(), 0, true, device.StateFunc())
 		token.Wait()
+	} else {
+		log.Println("No statefunc")
 	}
 }
 
@@ -173,7 +175,7 @@ func (device Switch) Subscribe() {
 		log.Fatal(err)
 	}
 
-	token := Connection.Publish(device.GetDiscoveryTopic(), 0, false, message)
+	token := Connection.Publish(device.GetDiscoveryTopic(), 0, true, message)
 	token.Wait()
 
 	device.UpdateState()
@@ -183,8 +185,7 @@ func (device Switch) Subscribe() {
 		os.Exit(1)
 	}
 
-	token = Connection.Publish(device.GetAvailabilityTopic(), 0, false, "online")
-	token.Wait()
+	device.AnnounceAvailable()
 
 }
 
@@ -196,6 +197,11 @@ func (device Switch) UnSubscribe() {
 		log.Println(token.Error())
 		os.Exit(1)
 	}
+}
+
+func (device Switch) AnnounceAvailable() {
+	token := Connection.Publish(device.GetAvailabilityTopic(), 0, false, "online")
+	token.Wait()
 }
 
 ///////////////////
