@@ -79,7 +79,7 @@ type Switch struct {
 	CommandFunc func(mqtt.Message, mqtt.Client) `json:"-"`
 	StateFunc   func() string                   `json:"-"`
 
-	messageHandler mqtt.MessageHandler `json:"-"`
+	messageHandler mqtt.MessageHandler
 }
 
 ///////////////////
