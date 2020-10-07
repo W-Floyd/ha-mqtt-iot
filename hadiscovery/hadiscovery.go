@@ -10,18 +10,19 @@ import (
 )
 
 const DiscoveryPrefix = "homeassistant"
-const NodeID = "linux-iot-ha"
-const InstanceName = "Linux IOT HA"
+const NodeID = "ha-mqtt-iot"
+const InstanceName = "Homeassistant MQTT IOT"
+const SWVersion = "0.0.1"
 
 /////////////////// Components of config
 
 type device struct {
-	Connections  map[string]string `json:"connections,omitempty"`
-	Identifiers  []string          `json:"identifiers,omitempty"`
-	Manufacturer string            `json:"manufacturer,omitempty"`
-	Model        string            `json:"model,omitempty"`
+	Connections  map[string]string `json:"cns,omitempty"`
+	Identifiers  []string          `json:"ids,omitempty"`
+	Manufacturer string            `json:"mf,omitempty"`
+	Model        string            `json:"mdl,omitempty"`
 	Name         string            `json:"name,omitempty"`
-	SWVersion    string            `json:"sw_version,omitempty"`
+	SWVersion    string            `json:"sw,omitempty"`
 	ViaDevice    string            `json:"via_device,omitempty"`
 }
 
@@ -86,7 +87,7 @@ type Switch struct {
 
 func getDevice() (d device) {
 
-	id, err := machineid.ProtectedID(NodeID)
+	id, err := machineid.ProtectedID(NodeID + SWVersion)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -95,7 +96,7 @@ func getDevice() (d device) {
 	d.Manufacturer = "William Floyd"
 	d.Model = NodeID
 	d.Name = InstanceName
-	d.SWVersion = "0.0.1"
+	d.SWVersion = SWVersion
 
 	return
 }
@@ -161,7 +162,7 @@ func (device *Switch) Initialize() {
 
 func (device Switch) UpdateState() {
 	if device.StateFunc != nil {
-		token := Connection.Publish(device.GetStateTopic(), 0, true, device.StateFunc())
+		token := Connection.Publish(device.GetStateTopic(), 0, false, device.StateFunc())
 		token.Wait()
 	} else {
 		log.Println("No statefunc")
