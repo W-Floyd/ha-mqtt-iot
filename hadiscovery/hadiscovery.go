@@ -105,8 +105,6 @@ func getDevice() (d device) {
 
 var topicStore = make(map[string]*func(mqtt.Message, mqtt.Client))
 
-var Connection mqtt.Client
-
 ///////////////////
 
 func (device Switch) GetTopicPrefix() string {
@@ -135,7 +133,7 @@ func (device *Switch) Initialize() {
 	device.StateTopic = device.GetStateTopic()
 	device.AvailabilityTopic = device.GetAvailabilityTopic()
 	device.Device = getDevice()
-	device.Retain = true
+	device.Retain = false
 	device.Platform = "mqtt"
 
 	topicStore[device.CommandTopic] = &device.CommandFunc
@@ -147,8 +145,8 @@ func (device *Switch) Initialize() {
 		for topic, f := range topicStore {
 			if msg.Topic() == topic {
 				topicFound = true
-				(*f)(msg, Connection)
-				device.UpdateState()
+				(*f)(msg, client)
+				device.UpdateState(client)
 			}
 		}
 
@@ -160,48 +158,48 @@ func (device *Switch) Initialize() {
 
 }
 
-func (device Switch) UpdateState() {
+func (device Switch) UpdateState(client mqtt.Client) {
 	if device.StateFunc != nil {
-		token := Connection.Publish(device.GetStateTopic(), 0, false, device.StateFunc())
+		token := client.Publish(device.GetStateTopic(), 0, false, device.StateFunc())
 		token.Wait()
 	} else {
 		log.Println("No statefunc")
 	}
 }
 
-func (device Switch) Subscribe() {
+func (device Switch) Subscribe(client mqtt.Client) {
 
 	message, err := json.Marshal(device)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	token := Connection.Publish(device.GetDiscoveryTopic(), 0, true, message)
+	token := client.Publish(device.GetDiscoveryTopic(), 0, true, message)
 	token.Wait()
 
-	device.UpdateState()
+	device.UpdateState(client)
 
-	if token := Connection.Subscribe(device.GetCommandTopic(), 0, device.messageHandler); token.Wait() && token.Error() != nil {
+	if token := client.Subscribe(device.GetCommandTopic(), 0, device.messageHandler); token.Wait() && token.Error() != nil {
 		log.Println(token.Error())
 		os.Exit(1)
 	}
 
-	device.AnnounceAvailable()
+	device.AnnounceAvailable(client)
 
 }
 
-func (device Switch) UnSubscribe() {
-	token := Connection.Publish(device.GetAvailabilityTopic(), 0, false, "offline")
+func (device Switch) UnSubscribe(client mqtt.Client) {
+	token := client.Publish(device.GetAvailabilityTopic(), 0, false, "offline")
 	token.Wait()
 
-	if token := Connection.Unsubscribe(device.GetCommandTopic()); token.Wait() && token.Error() != nil {
+	if token := client.Unsubscribe(device.GetCommandTopic()); token.Wait() && token.Error() != nil {
 		log.Println(token.Error())
 		os.Exit(1)
 	}
 }
 
-func (device Switch) AnnounceAvailable() {
-	token := Connection.Publish(device.GetAvailabilityTopic(), 0, false, "online")
+func (device Switch) AnnounceAvailable(client mqtt.Client) {
+	token := client.Publish(device.GetAvailabilityTopic(), 0, false, "online")
 	token.Wait()
 }
 

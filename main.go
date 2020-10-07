@@ -20,22 +20,6 @@ var f mqtt.MessageHandler = func(client mqtt.Client, msg mqtt.Message) {
 }
 
 func main() {
-	mqtt.DEBUG = log.New(os.Stdout, "", 0)
-	mqtt.ERROR = log.New(os.Stdout, "", 0)
-	opts := mqtt.NewClientOptions()
-	opts.AddBroker(Broker)
-	opts.SetClientID(hadiscovery.NodeID)
-	opts.SetUsername(Username)
-	opts.SetPassword(Password)
-	opts.SetKeepAlive(30 * time.Second)
-	opts.SetDefaultPublishHandler(f)
-	opts.SetPingTimeout(1 * time.Second)
-	opts.SetAutoReconnect(true)
-
-	hadiscovery.Connection = mqtt.NewClient(opts)
-	if token := hadiscovery.Connection.Connect(); token.Wait() && token.Error() != nil {
-		panic(token.Error())
-	}
 
 	config := hadiscovery.Switch{}
 	config.Name = "Dark Mode"
@@ -82,7 +66,6 @@ func main() {
 		return string(out)
 
 	}
-	config.Subscribe()
 
 	config2 := hadiscovery.Switch{}
 	config2.Name = "Monitor Awake"
@@ -112,7 +95,31 @@ func main() {
 
 		}
 	}
-	config2.Subscribe()
+
+	mqtt.DEBUG = log.New(os.Stdout, "DEBUG", 0)
+	mqtt.ERROR = log.New(os.Stdout, "ERROR", 0)
+	opts := mqtt.NewClientOptions()
+	opts.AddBroker(Broker)
+	opts.SetClientID(hadiscovery.NodeID)
+	opts.SetUsername(Username)
+	opts.SetPassword(Password)
+	opts.SetKeepAlive(30 * time.Second)
+	opts.SetDefaultPublishHandler(f)
+	opts.SetPingTimeout(1 * time.Second)
+	opts.SetAutoReconnect(true)
+
+	sub := func(client mqtt.Client) {
+		config.Subscribe(client)
+		config2.Subscribe(client)
+	}
+
+	opts.SetOnConnectHandler(sub)
+
+	client := mqtt.NewClient(opts)
+
+	if token := client.Connect(); token.Wait() && token.Error() != nil {
+		panic(token.Error())
+	}
 
 	done := make(chan os.Signal, 1)
 	signal.Notify(done, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
@@ -120,8 +127,8 @@ func main() {
 	ticker := time.NewTicker(60 * time.Second)
 	go func() {
 		for range ticker.C {
-			config.AnnounceAvailable()
-			config2.AnnounceAvailable()
+			config.AnnounceAvailable(client)
+			config2.AnnounceAvailable(client)
 		}
 	}()
 
@@ -129,10 +136,10 @@ func main() {
 	// ticker.Stop()
 	log.Print("Server Stopped")
 
-	config.UnSubscribe()
-	config2.UnSubscribe()
+	config.UnSubscribe(client)
+	config2.UnSubscribe(client)
 
-	hadiscovery.Connection.Disconnect(250)
+	client.Disconnect(250)
 
 	time.Sleep(1 * time.Second)
 }
