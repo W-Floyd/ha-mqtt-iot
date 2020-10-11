@@ -1,0 +1,51 @@
+{
+    "mqtt": {
+        "broker": "tcp://some.domain:1883",
+        "username": "someuser",
+        "password": "somepassword"
+    },
+    "switches": [
+        {
+            "info": {
+                "name": "Dark Mode",
+                "id": "dark-mode",
+                "icon": "mdi:theme-light-dark"
+            },
+            "command_on": [
+                "/home/william/.theme.sh",
+                "set",
+                "dark"
+            ],
+            "command_off": [
+                "/home/william/.theme.sh",
+                "set",
+                "light"
+            ],
+            "command_state": [
+                "/home/william/.theme.sh",
+                "get"
+            ]
+        },
+        {
+            "info": {
+                "name": "Monitor Awake",
+                "id": "desktop-monitor-awake",
+                "icon": "mdi:monitor"
+            },
+            "command_on": [
+                "xset",
+                "dpms",
+                "force",
+                "on"
+            ],
+            "command_off": [
+                "xset",
+                "dpms",
+                "force",
+                "off"
+            ]
+        }
+    ],
+    "sensors": [],
+    "binary_sensors": []
+}
