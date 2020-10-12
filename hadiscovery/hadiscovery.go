@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"os"
+	"time"
 
 	"github.com/denisbrodbeck/machineid"
 	mqtt "github.com/eclipse/paho.mqtt.golang"
@@ -28,31 +29,33 @@ type device struct {
 
 ///////////////////
 
-// // BinarySensor matches a binary_sensor
-// type BinarySensor struct {
-// }
+// BinarySensor matches a binary_sensor
+type BinarySensor struct {
+}
 
-// // Sensor matches a sensor
-// type Sensor struct {
-// 	AvailabilityTopic      string `json:"availability_topic,omitempty"`
-// 	Device                 device `json:"device,omitempty"`
-// 	DeviceClass            string `json:"device_class,omitempty"`
-// 	ExpireAfter            int    `json:"expire_after,omitempty"`
-// 	ForceUpdate            bool   `json:"force_update,omitempty"`
-// 	Icon                   string `json:"icon,omitempty"`
-// 	JSONAttributesTemplate string `json:"json_attributes_template,omitempty"`
-// 	JSONAttributesTopic    string `json:"json_attributes_topic,omitempty"`
-// 	Name                   string `json:"name,omitempty"`
-// 	PayloadAvailable       string `json:"payload_available,omitempty"`
-// 	PayloadNotAvailable    string `json:"payload_not_available,omitempty"`
-// 	QOS                    int    `json:"qos,omitempty"`
-// 	StateOff               string `json:"state_off,omitempty"`
-// 	StateOn                string `json:"state_on,omitempty"`
-// 	StateTopic             string `json:"state_topic"`
-// 	UniqueID               string `json:"unique_id,omitempty"`
-// 	UnitOfMeasurement      string `json:"unit_of_measurement,omitempty"`
-// 	ValueTemplate          string `json:"value_template,omitempty"`
-// }
+// Sensor matches a sensor
+type Sensor struct {
+	AvailabilityTopic      string `json:"availability_topic,omitempty"`
+	Device                 device `json:"device,omitempty"`
+	DeviceClass            string `json:"device_class,omitempty"`
+	ExpireAfter            int    `json:"expire_after,omitempty"`
+	ForceUpdate            bool   `json:"force_update,omitempty"`
+	Icon                   string `json:"icon,omitempty"`
+	JSONAttributesTemplate string `json:"json_attributes_template,omitempty"`
+	JSONAttributesTopic    string `json:"json_attributes_topic,omitempty"`
+	Name                   string `json:"name,omitempty"`
+	PayloadAvailable       string `json:"payload_available,omitempty"`
+	PayloadNotAvailable    string `json:"payload_not_available,omitempty"`
+	QOS                    int    `json:"qos,omitempty"`
+	StateTopic             string `json:"state_topic"`
+	UniqueID               string `json:"unique_id,omitempty"`
+	UnitOfMeasurement      string `json:"unit_of_measurement,omitempty"`
+	ValueTemplate          string `json:"value_template,omitempty"`
+
+	StateFunc func() string `json:"-"`
+
+	UpdateInterval float32 `json:"-"`
+}
 
 // Switch matches a switch
 type Switch struct {
@@ -68,7 +71,6 @@ type Switch struct {
 	PayloadNotAvailable    string `json:"pl_not_avail,omitempty"`
 	PayloadOff             string `json:"pl_off,omitempty"`
 	PayloadOn              string `json:"pl_on,omitempty"`
-	Platform               string `json:"platform"`
 	QOS                    int    `json:"qos,omitempty"`
 	Retain                 bool   `json:"ret,omitempty"`
 	StateOff               string `json:"stat_off,omitempty"`
@@ -107,10 +109,16 @@ var topicStore = make(map[string]*func(mqtt.Message, mqtt.Client))
 
 ///////////////////
 
+func (device Sensor) GetTopicPrefix() string {
+	return NodeID + "/sensor/" + device.UniqueID + "/"
+}
 func (device Switch) GetTopicPrefix() string {
 	return NodeID + "/switch/" + device.UniqueID + "/"
 }
 
+func (device Sensor) GetDiscoveryTopic() string {
+	return DiscoveryPrefix + "/sensor/" + NodeID + "/" + device.UniqueID + "/" + "config"
+}
 func (device Switch) GetDiscoveryTopic() string {
 	return DiscoveryPrefix + "/switch/" + NodeID + "/" + device.UniqueID + "/" + "config"
 }
@@ -119,10 +127,16 @@ func (device Switch) GetCommandTopic() string {
 	return device.GetTopicPrefix() + "command"
 }
 
+func (device Sensor) GetStateTopic() string {
+	return device.GetTopicPrefix() + "state"
+}
 func (device Switch) GetStateTopic() string {
 	return device.GetTopicPrefix() + "state"
 }
 
+func (device Sensor) GetAvailabilityTopic() string {
+	return device.GetTopicPrefix() + "availability"
+}
 func (device Switch) GetAvailabilityTopic() string {
 	return device.GetTopicPrefix() + "availability"
 }
@@ -130,11 +144,12 @@ func (device Switch) GetAvailabilityTopic() string {
 // Initialize sets topics as needed on a Switch
 func (device *Switch) Initialize() {
 	device.CommandTopic = device.GetCommandTopic()
-	device.StateTopic = device.GetStateTopic()
+	if device.StateFunc != nil {
+		device.StateTopic = device.GetStateTopic()
+	}
 	device.AvailabilityTopic = device.GetAvailabilityTopic()
 	device.Device = getDevice()
 	device.Retain = false
-	device.Platform = "mqtt"
 
 	topicStore[device.CommandTopic] = &device.CommandFunc
 
@@ -158,6 +173,13 @@ func (device *Switch) Initialize() {
 
 }
 
+// Initialize sets topics as needed on a Sensor
+func (device *Sensor) Initialize() {
+	device.StateTopic = device.GetStateTopic()
+	device.AvailabilityTopic = device.GetAvailabilityTopic()
+	device.Device = getDevice()
+}
+
 func (device Switch) UpdateState(client mqtt.Client) {
 	if device.StateFunc != nil {
 		token := client.Publish(device.GetStateTopic(), 0, false, device.StateFunc())
@@ -166,7 +188,32 @@ func (device Switch) UpdateState(client mqtt.Client) {
 		log.Println("No statefunc")
 	}
 }
+func (device Sensor) UpdateState(client mqtt.Client) {
+	if device.StateFunc != nil {
+		token := client.Publish(device.GetStateTopic(), 0, false, device.StateFunc())
+		token.Wait()
+	} else {
+		log.Fatalln("No statefunc, this makes no sensor for a sensor!")
+	}
+}
 
+func (device Sensor) Subscribe(client mqtt.Client) {
+
+	message, err := json.Marshal(device)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	token := client.Publish(device.GetDiscoveryTopic(), 0, true, message)
+	token.Wait()
+
+	// HA needs time to process
+	time.Sleep(500 * time.Millisecond)
+
+	device.UpdateState(client)
+	device.AnnounceAvailable(client)
+
+}
 func (device Switch) Subscribe(client mqtt.Client) {
 
 	message, err := json.Marshal(device)
@@ -177,17 +224,26 @@ func (device Switch) Subscribe(client mqtt.Client) {
 	token := client.Publish(device.GetDiscoveryTopic(), 0, true, message)
 	token.Wait()
 
-	device.UpdateState(client)
+	// HA needs time to process
+	time.Sleep(500 * time.Millisecond)
+
+	device.AnnounceAvailable(client)
+
+	if device.StateFunc != nil {
+		device.UpdateState(client)
+	}
 
 	if token := client.Subscribe(device.GetCommandTopic(), 0, device.messageHandler); token.Wait() && token.Error() != nil {
 		log.Println(token.Error())
 		os.Exit(1)
 	}
 
-	device.AnnounceAvailable(client)
-
 }
 
+func (device Sensor) UnSubscribe(client mqtt.Client) {
+	token := client.Publish(device.GetAvailabilityTopic(), 0, false, "offline")
+	token.Wait()
+}
 func (device Switch) UnSubscribe(client mqtt.Client) {
 	token := client.Publish(device.GetAvailabilityTopic(), 0, false, "offline")
 	token.Wait()
@@ -198,6 +254,10 @@ func (device Switch) UnSubscribe(client mqtt.Client) {
 	}
 }
 
+func (device Sensor) AnnounceAvailable(client mqtt.Client) {
+	token := client.Publish(device.GetAvailabilityTopic(), 0, false, "online")
+	token.Wait()
+}
 func (device Switch) AnnounceAvailable(client mqtt.Client) {
 	token := client.Publish(device.GetAvailabilityTopic(), 0, false, "online")
 	token.Wait()

@@ -24,8 +24,9 @@ type SwitchHA struct {
 }
 
 type SensorHA struct {
-	Info         Info     `json:"info"`
-	CommandState []string `json:"command_state"`
+	Info           Info     `json:"info"`
+	CommandState   []string `json:"command_state"`
+	UpdateInterval float32  `json:"update_interval"`
 }
 
 type BinarySensorsHA struct {
@@ -82,6 +83,22 @@ func (sw SwitchHA) constructCommandFunc() (f func(message mqtt.Message, connecti
 	}
 }
 
+func (sw SensorHA) constructStateFunc() (f func() string) {
+	var err error
+	return func() string {
+		var out []byte
+		if len(sw.CommandState) > 1 {
+			out, err = exec.Command(sw.CommandState[0], sw.CommandState[1:]...).Output()
+		} else {
+
+			out, err = exec.Command(sw.CommandState[0]).Output()
+		}
+		if err != nil {
+			log.Printf("%s", err)
+		}
+		return string(out)
+	}
+}
 func (sw SwitchHA) constructStateFunc() (f func() string) {
 	var err error
 	return func() string {
@@ -100,7 +117,7 @@ func (sw SwitchHA) constructStateFunc() (f func() string) {
 }
 
 // Convert takes a config and turns it into a format that can be used for HA.
-func (sconfig Config) Convert() (opts *mqtt.ClientOptions, switches []hadiscovery.Switch) {
+func (sconfig Config) Convert() (opts *mqtt.ClientOptions, switches []hadiscovery.Switch, sensors []hadiscovery.Sensor, binarySensors []hadiscovery.BinarySensor) {
 	opts = mqtt.NewClientOptions()
 	opts.AddBroker(sconfig.MQTT.Broker)
 	opts.SetClientID(hadiscovery.NodeID)
@@ -117,18 +134,42 @@ func (sconfig Config) Convert() (opts *mqtt.ClientOptions, switches []hadiscover
 		nsw := hadiscovery.Switch{}
 		nsw.Name = sw.Info.Name
 		nsw.UniqueID = sw.Info.ID
-		nsw.Icon = sw.Info.Icon
-		nsw.Initialize()
+		if sw.Info.Icon != "" {
+			nsw.Icon = sw.Info.Icon
+		}
 
 		if len(sw.CommandOn) > 0 || len(sw.CommandOff) > 0 {
 			nsw.CommandFunc = sw.constructCommandFunc()
+		} else {
+			log.Fatalln("Missing command func, needed for switches!")
 		}
 		if len(sw.CommandState) > 0 {
-
 			nsw.StateFunc = sw.constructStateFunc()
 		}
 
+		nsw.Initialize()
+
 		switches = append(switches, nsw)
+	}
+	for _, se := range sconfig.Sensors {
+		nse := hadiscovery.Sensor{}
+		nse.UpdateInterval = se.UpdateInterval
+		nse.ExpireAfter = int(nse.UpdateInterval + 1)
+		nse.Name = se.Info.Name
+		nse.UniqueID = se.Info.ID
+		if se.Info.Icon != "" {
+			nse.Icon = se.Info.Icon
+		}
+
+		if len(se.CommandState) > 0 {
+			nse.StateFunc = se.constructStateFunc()
+		} else {
+			log.Fatalln("Missing state func, needed for sensors!")
+		}
+
+		nse.Initialize()
+
+		sensors = append(sensors, nse)
 	}
 	return
 }

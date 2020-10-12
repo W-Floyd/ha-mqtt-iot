@@ -46,6 +46,18 @@
             ]
         }
     ],
-    "sensors": [],
+    "sensors": [
+        {
+            "info": {
+                "name": "Current Time",
+                "id": "current-time"
+            },
+            "command_state": [
+                "date",
+                "+%s"
+            ],
+            "update_interval": 2
+        }
+    ],
     "binary_sensors": []
 }

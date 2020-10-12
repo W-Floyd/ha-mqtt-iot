@@ -32,14 +32,17 @@ func main() {
 		log.Println("error:", err)
 	}
 
-	opts, switches := sconfig.Convert()
+	opts, switches, sensors, _ := sconfig.Convert()
 
 	mqtt.DEBUG = log.New(os.Stdout, "DEBUG", 0)
 	mqtt.ERROR = log.New(os.Stdout, "ERROR", 0)
 
 	sub := func(client mqtt.Client) {
 		for _, sw := range switches {
-			sw.Subscribe(client)
+			go sw.Subscribe(client)
+		}
+		for _, se := range sensors {
+			go se.Subscribe(client)
 		}
 	}
 
@@ -51,24 +54,44 @@ func main() {
 		panic(token.Error())
 	}
 
-	done := make(chan os.Signal, 1)
-	signal.Notify(done, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
+	tickers := make([]*time.Ticker, len(sensors))
 
-	ticker := time.NewTicker(60 * time.Second)
+	for k, se := range sensors {
+		tickers[k] = time.NewTicker(time.Duration(se.UpdateInterval) * time.Second)
+		go func(t *time.Ticker) {
+			for range t.C {
+				go se.UpdateState(client)
+			}
+		}(tickers[k])
+	}
+
+	availableTicker := time.NewTicker(60 * time.Second)
 	go func() {
-		for range ticker.C {
+		for range availableTicker.C {
 			for _, sw := range switches {
-				sw.AnnounceAvailable(client)
+				go sw.AnnounceAvailable(client)
+			}
+			for _, se := range sensors {
+				go se.AnnounceAvailable(client)
 			}
 		}
 	}()
 
+	done := make(chan os.Signal, 1)
+	signal.Notify(done, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
+
 	<-done
-	// ticker.Stop()
+	availableTicker.Stop()
+	for _, t := range tickers {
+		t.Stop()
+	}
 	log.Print("Server Stopped")
 
 	for _, sw := range switches {
-		sw.UnSubscribe(client)
+		go sw.UnSubscribe(client)
+	}
+	for _, se := range sensors {
+		go se.UnSubscribe(client)
 	}
 
 	client.Disconnect(250)
