@@ -88,10 +88,10 @@ func main() {
 	log.Print("Server Stopped")
 
 	for _, sw := range switches {
-		go sw.UnSubscribe(client)
+		sw.UnSubscribe(client)
 	}
 	for _, se := range sensors {
-		go se.UnSubscribe(client)
+		se.UnSubscribe(client)
 	}
 
 	client.Disconnect(250)
