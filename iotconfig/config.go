@@ -47,9 +47,11 @@ type BinarySensorsHA struct {
 
 type Config struct {
 	MQTT struct {
-		Broker   string `json:"broker"`
-		Username string `json:"username"`
-		Password string `json:"password"`
+		Broker       string `json:"broker"`
+		Username     string `json:"username"`
+		Password     string `json:"password"`
+		NodeID       string `json:"node_id"`
+		InstanceName string `json:"instance_name"`
 	} `json:"mqtt"`
 	Switches      []SwitchHA        `json:"switches"`
 	Sensors       []SensorHA        `json:"sensors"`
@@ -157,6 +159,12 @@ func (sconfig Config) Convert() (opts *mqtt.ClientOptions, switches []hadiscover
 	})
 	opts.SetPingTimeout(1 * time.Second)
 	opts.SetAutoReconnect(true)
+	if sconfig.MQTT.NodeID != "" {
+		hadiscovery.NodeID = sconfig.MQTT.NodeID
+	}
+	if sconfig.MQTT.InstanceName != "" {
+		hadiscovery.InstanceName = sconfig.MQTT.InstanceName
+	}
 	for _, sw := range sconfig.Switches {
 		nsw := hadiscovery.Switch{}
 		nsw.UpdateInterval = sw.UpdateInterval

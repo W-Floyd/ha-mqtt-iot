@@ -16,10 +16,30 @@ import (
 	"./iotconfig"
 )
 
+var debugLog = log.New(os.Stdout, "DEBUG", 0)
+var errorLog = log.New(os.Stdout, "ERROR", 0)
+
 const float64EqualityThreshold = 1e-9
 
 func almostEqual(a, b float64) bool {
 	return math.Abs(a-b) <= float64EqualityThreshold
+}
+
+const logPrefix = "[ha-mqtt]  "
+
+func logError(message ...interface{}) {
+	if len(message) > 1 {
+		for _, mes := range message[:len(message)-2] {
+			errorLog.Printf("%v%v\n", logPrefix, mes)
+		}
+	}
+	errorLog.Fatalf("%v%v\n", logPrefix, message[len(message)-1])
+}
+
+func logDebug(message ...interface{}) {
+	for _, mes := range message {
+		debugLog.Printf("%v%v\n", logPrefix, mes)
+	}
 }
 
 func main() {
@@ -27,8 +47,7 @@ func main() {
 	// read file
 	data, err := ioutil.ReadFile("./config.json")
 	if err != nil {
-		log.Println("Error reading config")
-		log.Fatalln(err)
+		logError("Error reading config", err)
 	}
 
 	// json data
@@ -37,14 +56,13 @@ func main() {
 	// unmarshall it
 	err = json.Unmarshal(data, &sconfig)
 	if err != nil {
-		log.Println("Error parsing config")
-		log.Fatalln(err)
+		logError("Error parsing config", err)
 	}
 
 	opts, switches, sensors, binarySensors := sconfig.Convert()
 
-	mqtt.DEBUG = log.New(os.Stdout, "DEBUG", 0)
-	mqtt.ERROR = log.New(os.Stdout, "ERROR", 0)
+	mqtt.DEBUG = debugLog
+	mqtt.ERROR = errorLog
 
 	sub := func(client mqtt.Client) {
 		for _, sw := range switches {
@@ -63,7 +81,7 @@ func main() {
 	client := mqtt.NewClient(opts)
 
 	if token := client.Connect(); token.Wait() && token.Error() != nil {
-		panic(token.Error())
+		logError(token.Error())
 	}
 
 	updatingSwitches := 0
@@ -130,7 +148,7 @@ func main() {
 	for _, t := range tickers {
 		t.Stop()
 	}
-	log.Print("Server Stopped")
+	logDebug("Server Stopped")
 
 	for _, sw := range switches {
 		sw.UnSubscribe(client)

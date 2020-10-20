@@ -12,9 +12,10 @@ import (
 )
 
 const DiscoveryPrefix = "homeassistant"
-const NodeID = "ha-mqtt-iot"
-const InstanceName = "Homeassistant MQTT IOT"
 const SWVersion = "0.0.1"
+
+var InstanceName = "Homeassistant MQTT IOT"
+var NodeID = "ha-mqtt-iot"
 
 /////////////////// Components of config
 
