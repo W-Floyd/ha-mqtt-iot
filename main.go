@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"math"
@@ -28,7 +27,8 @@ func main() {
 	// read file
 	data, err := ioutil.ReadFile("./config.json")
 	if err != nil {
-		fmt.Print(err)
+		log.Println("Error reading config")
+		log.Fatalln(err)
 	}
 
 	// json data
@@ -37,7 +37,8 @@ func main() {
 	// unmarshall it
 	err = json.Unmarshal(data, &sconfig)
 	if err != nil {
-		log.Println("error:", err)
+		log.Println("Error parsing config")
+		log.Fatalln(err)
 	}
 
 	opts, switches, sensors, binarySensors := sconfig.Convert()
