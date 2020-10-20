@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"math"
 	"os"
 	"os/signal"
 	"syscall"
@@ -12,8 +13,15 @@ import (
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 
+	"./hadiscovery"
 	"./iotconfig"
 )
+
+const float64EqualityThreshold = 1e-9
+
+func almostEqual(a, b float64) bool {
+	return math.Abs(a-b) <= float64EqualityThreshold
+}
 
 func main() {
 
@@ -32,7 +40,7 @@ func main() {
 		log.Println("error:", err)
 	}
 
-	opts, switches, sensors, _ := sconfig.Convert()
+	opts, switches, sensors, binarySensors := sconfig.Convert()
 
 	mqtt.DEBUG = log.New(os.Stdout, "DEBUG", 0)
 	mqtt.ERROR = log.New(os.Stdout, "ERROR", 0)
@@ -44,6 +52,9 @@ func main() {
 		for _, se := range sensors {
 			go se.Subscribe(client)
 		}
+		for _, bse := range binarySensors {
+			go bse.Subscribe(client)
+		}
 	}
 
 	opts.SetOnConnectHandler(sub)
@@ -54,15 +65,45 @@ func main() {
 		panic(token.Error())
 	}
 
-	tickers := make([]*time.Ticker, len(sensors))
+	updatingSwitches := 0
 
-	for k, se := range sensors {
-		tickers[k] = time.NewTicker(time.Duration(se.UpdateInterval) * time.Second)
-		go func(t *time.Ticker) {
+	for _, sw := range switches {
+		if !almostEqual(sw.UpdateInterval, 0) {
+			updatingSwitches++
+		}
+	}
+
+	tickers := make([]*time.Ticker, len(sensors)+len(binarySensors)+updatingSwitches)
+
+	tickerN := 0
+	for _, se := range sensors {
+		tickers[tickerN] = time.NewTicker(time.Duration(se.UpdateInterval) * time.Second)
+		go func(t *time.Ticker, sen hadiscovery.Sensor) {
 			for range t.C {
-				go se.UpdateState(client)
+				go sen.UpdateState(client)
 			}
-		}(tickers[k])
+		}(tickers[tickerN], se)
+		tickerN++
+	}
+	for _, bse := range binarySensors {
+		tickers[tickerN] = time.NewTicker(time.Duration(bse.UpdateInterval) * time.Second)
+		go func(t *time.Ticker, bsen hadiscovery.BinarySensor) {
+			for range t.C {
+				go bsen.UpdateState(client)
+			}
+		}(tickers[tickerN], bse)
+		tickerN++
+	}
+	for _, sw := range switches {
+		if !almostEqual(sw.UpdateInterval, 0) {
+			tickers[tickerN] = time.NewTicker(time.Duration(sw.UpdateInterval) * time.Second)
+			go func(t *time.Ticker, swi hadiscovery.Switch) {
+				for range t.C {
+					go swi.UpdateState(client)
+				}
+			}(tickers[tickerN], sw)
+			tickerN++
+		}
 	}
 
 	availableTicker := time.NewTicker(60 * time.Second)
@@ -73,6 +114,9 @@ func main() {
 			}
 			for _, se := range sensors {
 				go se.AnnounceAvailable(client)
+			}
+			for _, bse := range binarySensors {
+				go bse.AnnounceAvailable(client)
 			}
 		}
 	}()
@@ -92,6 +136,9 @@ func main() {
 	}
 	for _, se := range sensors {
 		se.UnSubscribe(client)
+	}
+	for _, bse := range binarySensors {
+		bse.UnSubscribe(client)
 	}
 
 	client.Disconnect(250)

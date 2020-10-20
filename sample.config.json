@@ -24,7 +24,8 @@
             "command_state": [
                 "/home/william/.theme.sh",
                 "get"
-            ]
+            ],
+            "update_interval": 10
         },
         {
             "info": {
@@ -59,5 +60,20 @@
             "update_interval": 2
         }
     ],
-    "binary_sensors": []
+    "binary_sensors": [
+        {
+            "info": {
+                "name": "Work Mode",
+                "id": "work-mode-desktop",
+                "device_class": "moving"
+            },
+            "command_state": [
+                "/bin/bash",
+                "-c",
+                "if [[ $(gsettings get org.ubuntubudgie.plugins.takeabreak paused) == 'true' ]]; then echo -n 'OFF'; else echo -n 'ON'; fi"
+            ],
+            "update_interval": 10,
+            "force_update": true
+        }
+    ]
 }

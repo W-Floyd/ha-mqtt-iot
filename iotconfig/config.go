@@ -10,28 +10,39 @@ import (
 	"../hadiscovery"
 )
 
-type Info struct {
+type InfoIcon struct {
 	Name string `json:"name"`
 	ID   string `json:"id"`
 	Icon string `json:"icon"`
 }
 
+type InfoClass struct {
+	Name        string `json:"name"`
+	ID          string `json:"id"`
+	DeviceClass string `json:"device_class"`
+}
+
 type SwitchHA struct {
-	Info         Info     `json:"info"`
-	CommandOn    []string `json:"command_on"`
-	CommandOff   []string `json:"command_off"`
-	CommandState []string `json:"command_state"`
+	Info            InfoIcon `json:"info"`
+	CommandOn       []string `json:"command_on"`
+	CommandOff      []string `json:"command_off"`
+	CommandState    []string `json:"command_state"`
+	UpdateInterval  float64  `json:"update_interval"`
+	ForceUpdateMQTT bool     `json:"force_update"`
 }
 
 type SensorHA struct {
-	Info           Info     `json:"info"`
-	CommandState   []string `json:"command_state"`
-	UpdateInterval float32  `json:"update_interval"`
+	Info            InfoIcon `json:"info"`
+	CommandState    []string `json:"command_state"`
+	UpdateInterval  float64  `json:"update_interval"`
+	ForceUpdateMQTT bool     `json:"force_update"`
 }
 
 type BinarySensorsHA struct {
-	Info         Info     `json:"info"`
-	CommandState []string `json:"command_state"`
+	Info            InfoClass `json:"info"`
+	CommandState    []string  `json:"command_state"`
+	UpdateInterval  float64   `json:"update_interval"`
+	ForceUpdateMQTT bool      `json:"force_update"`
 }
 
 type Config struct {
@@ -99,6 +110,22 @@ func (sw SensorHA) constructStateFunc() (f func() string) {
 		return string(out)
 	}
 }
+func (sw BinarySensorsHA) constructStateFunc() (f func() string) {
+	var err error
+	return func() string {
+		var out []byte
+		if len(sw.CommandState) > 1 {
+			out, err = exec.Command(sw.CommandState[0], sw.CommandState[1:]...).Output()
+		} else {
+
+			out, err = exec.Command(sw.CommandState[0]).Output()
+		}
+		if err != nil {
+			log.Printf("%s", err)
+		}
+		return string(out)
+	}
+}
 func (sw SwitchHA) constructStateFunc() (f func() string) {
 	var err error
 	return func() string {
@@ -132,6 +159,8 @@ func (sconfig Config) Convert() (opts *mqtt.ClientOptions, switches []hadiscover
 	opts.SetAutoReconnect(true)
 	for _, sw := range sconfig.Switches {
 		nsw := hadiscovery.Switch{}
+		nsw.UpdateInterval = sw.UpdateInterval
+		nsw.ForceUpdateMQTT = sw.ForceUpdateMQTT
 		nsw.Name = sw.Info.Name
 		nsw.UniqueID = sw.Info.ID
 		if sw.Info.Icon != "" {
@@ -155,6 +184,10 @@ func (sconfig Config) Convert() (opts *mqtt.ClientOptions, switches []hadiscover
 		nse := hadiscovery.Sensor{}
 		nse.UpdateInterval = se.UpdateInterval
 		nse.ExpireAfter = int(nse.UpdateInterval + 1)
+		nse.ForceUpdateMQTT = se.ForceUpdateMQTT
+		if !se.ForceUpdateMQTT {
+			nse.ExpireAfter = 0
+		}
 		nse.Name = se.Info.Name
 		nse.UniqueID = se.Info.ID
 		if se.Info.Icon != "" {
@@ -170,6 +203,30 @@ func (sconfig Config) Convert() (opts *mqtt.ClientOptions, switches []hadiscover
 		nse.Initialize()
 
 		sensors = append(sensors, nse)
+	}
+	for _, bse := range sconfig.BinarySensors {
+		nse := hadiscovery.BinarySensor{}
+		nse.UpdateInterval = bse.UpdateInterval
+		nse.ExpireAfter = int(nse.UpdateInterval + 1)
+		nse.ForceUpdateMQTT = bse.ForceUpdateMQTT
+		if !bse.ForceUpdateMQTT {
+			nse.ExpireAfter = 0
+		}
+		nse.Name = bse.Info.Name
+		nse.UniqueID = bse.Info.ID
+		if bse.Info.DeviceClass != "" {
+			nse.DeviceClass = bse.Info.DeviceClass
+		}
+
+		if len(bse.CommandState) > 0 {
+			nse.StateFunc = bse.constructStateFunc()
+		} else {
+			log.Fatalln("Missing state func, needed for binary sensors!")
+		}
+
+		nse.Initialize()
+
+		binarySensors = append(binarySensors, nse)
 	}
 	return
 }
