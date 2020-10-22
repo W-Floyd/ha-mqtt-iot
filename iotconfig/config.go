@@ -258,7 +258,7 @@ func (sconfig Config) Convert() (opts *mqtt.ClientOptions, switches []hadiscover
 				bLight := hadiscovery.Light{}
 				bLight.OnCommandType = "brightness"
 				bLight.BrightnessScale = backlight.MaxBrightness
-				bLight.UniqueID = "backlight-" + strconv.Itoa(k)
+				bLight.UniqueID = "builtin-backlight-" + strconv.Itoa(k)
 				bLight.Name = "Backlight " + strconv.Itoa(k)
 				bLight.BrightnessCommandFunc = func(message mqtt.Message, client mqtt.Client) {
 					backlight.SetBrightness(string(message.Payload()))
