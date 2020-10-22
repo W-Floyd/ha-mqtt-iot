@@ -107,7 +107,7 @@ func main() {
 
 	tickerN := 0
 	for _, se := range sensors {
-		tickers[tickerN] = time.NewTicker(time.Duration(se.UpdateInterval) * time.Second)
+		tickers[tickerN] = time.NewTicker(time.Duration(se.UpdateInterval*1000) * time.Millisecond)
 		go func(t *time.Ticker, sen hadiscovery.Sensor) {
 			for range t.C {
 				go sen.UpdateState(client)
@@ -116,7 +116,7 @@ func main() {
 		tickerN++
 	}
 	for _, bse := range binarySensors {
-		tickers[tickerN] = time.NewTicker(time.Duration(bse.UpdateInterval) * time.Second)
+		tickers[tickerN] = time.NewTicker(time.Duration(bse.UpdateInterval*1000) * time.Millisecond)
 		go func(t *time.Ticker, bsen hadiscovery.BinarySensor) {
 			for range t.C {
 				go bsen.UpdateState(client)
@@ -126,7 +126,7 @@ func main() {
 	}
 	for _, sw := range switches {
 		if !almostEqual(sw.UpdateInterval, 0) {
-			tickers[tickerN] = time.NewTicker(time.Duration(sw.UpdateInterval) * time.Second)
+			tickers[tickerN] = time.NewTicker(time.Duration(sw.UpdateInterval*1000) * time.Millisecond)
 			go func(t *time.Ticker, swi hadiscovery.Switch) {
 				for range t.C {
 					go swi.UpdateState(client)
@@ -137,7 +137,7 @@ func main() {
 	}
 	for _, li := range lights {
 		if !almostEqual(li.UpdateInterval, 0) {
-			tickers[tickerN] = time.NewTicker(time.Duration(li.UpdateInterval) * time.Second)
+			tickers[tickerN] = time.NewTicker(time.Duration(li.UpdateInterval*1000) * time.Millisecond)
 			go func(t *time.Ticker, lig hadiscovery.Light) {
 				for range t.C {
 					go lig.UpdateState(client)

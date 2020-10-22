@@ -75,7 +75,7 @@ type Light struct {
 	ColorTempCommandTemplate string   `json:"color_temp_command_template,omitempty"`
 	ColorTempCommandTopic    string   `json:"color_temp_command_topic,omitempty"`
 	ColorTempStateTopic      string   `json:"color_temp_state_topic,omitempty"`
-	ColorTempValueTemplate   string   `json:"color_temp_value_template"`
+	ColorTempValueTemplate   string   `json:"color_temp_value_template,omitempty"`
 	CommandTopic             string   `json:"command_topic"`
 	Device                   device   `json:"device,omitempty"`
 	EffectCommandTopic       string   `json:"effect_command_topic,omitempty"`
@@ -103,7 +103,7 @@ type Light struct {
 	RgbStateTopic            string   `json:"rgb_state_topic,omitempty"`
 	RgbValueTemplate         string   `json:"rgb_value_template,omitempty"`
 	Schema                   string   `json:"schema,omitempty"`
-	StateTopic               string   `json:"state_topic"`
+	StateTopic               string   `json:"state_topic,omitempty"`
 	StateValueTemplate       string   `json:"state_value_template,omitempty"`
 	UniqueID                 string   `json:"unique_id,omitempty"`
 	WhiteValueCommandTopic   string   `json:"white_value_command_topic,omitempty"`
@@ -234,7 +234,14 @@ type store struct {
 func initStore() store {
 	var s store
 	s.BinarySensor = make(map[string]string)
+	s.Light.BrightnessState = make(map[string]string)
+	s.Light.ColorTempState = make(map[string]string)
+	s.Light.EffectState = make(map[string]string)
+	s.Light.HsState = make(map[string]string)
+	s.Light.RgbState = make(map[string]string)
 	s.Light.State = make(map[string]string)
+	s.Light.WhiteValueState = make(map[string]string)
+	s.Light.XyState = make(map[string]string)
 	s.Sensor = make(map[string]string)
 	s.Switch = make(map[string]string)
 	return s
@@ -618,6 +625,55 @@ func (device Light) Subscribe(client mqtt.Client) {
 	message, err := json.Marshal(device)
 	if err != nil {
 		log.Fatal(err)
+	}
+
+	if device.BrightnessCommandTopic != "" {
+		if token := client.Subscribe(device.BrightnessCommandTopic, 0, device.messageHandler); token.Wait() && token.Error() != nil {
+			log.Println(token.Error())
+			os.Exit(1)
+		}
+	}
+	if device.ColorTempCommandTopic != "" {
+		if token := client.Subscribe(device.ColorTempCommandTopic, 0, device.messageHandler); token.Wait() && token.Error() != nil {
+			log.Println(token.Error())
+			os.Exit(1)
+		}
+	}
+	if device.EffectCommandTopic != "" {
+		if token := client.Subscribe(device.EffectCommandTopic, 0, device.messageHandler); token.Wait() && token.Error() != nil {
+			log.Println(token.Error())
+			os.Exit(1)
+		}
+	}
+	if device.HsCommandTopic != "" {
+		if token := client.Subscribe(device.HsCommandTopic, 0, device.messageHandler); token.Wait() && token.Error() != nil {
+			log.Println(token.Error())
+			os.Exit(1)
+		}
+	}
+	if device.RgbCommandTopic != "" {
+		if token := client.Subscribe(device.RgbCommandTopic, 0, device.messageHandler); token.Wait() && token.Error() != nil {
+			log.Println(token.Error())
+			os.Exit(1)
+		}
+	}
+	if device.CommandTopic != "" {
+		if token := client.Subscribe(device.CommandTopic, 0, device.messageHandler); token.Wait() && token.Error() != nil {
+			log.Println(token.Error())
+			os.Exit(1)
+		}
+	}
+	if device.WhiteValueCommandTopic != "" {
+		if token := client.Subscribe(device.WhiteValueCommandTopic, 0, device.messageHandler); token.Wait() && token.Error() != nil {
+			log.Println(token.Error())
+			os.Exit(1)
+		}
+	}
+	if device.XyCommandTopic != "" {
+		if token := client.Subscribe(device.XyCommandTopic, 0, device.messageHandler); token.Wait() && token.Error() != nil {
+			log.Println(token.Error())
+			os.Exit(1)
+		}
 	}
 
 	token := client.Publish(device.GetDiscoveryTopic(), 0, true, message)

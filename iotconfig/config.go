@@ -263,6 +263,23 @@ func (sconfig Config) Convert() (opts *mqtt.ClientOptions, switches []hadiscover
 				bLight.BrightnessCommandFunc = func(message mqtt.Message, client mqtt.Client) {
 					backlight.SetBrightness(string(message.Payload()))
 				}
+				bLight.BrightnessStateFunc = backlight.GetBrightness
+				bLight.CommandFunc = func(message mqtt.Message, client mqtt.Client) {
+					if string(message.Payload()) == "ON" {
+						backlight.SetBrightness(strconv.Itoa(bLight.BrightnessScale))
+					} else if string(message.Payload()) == "OFF" {
+						backlight.SetBrightness(strconv.Itoa(bLight.BrightnessScale / 50))
+					} else {
+						log.Println("Unknown payload: " + string(message.Payload()))
+					}
+				}
+				bLight.StateFunc = func() string {
+					b, _ := strconv.Atoi(backlight.GetBrightness())
+					if b > bLight.BrightnessScale/50 {
+						return "ON"
+					}
+					return "OFF"
+				}
 				bLight.UpdateInterval = 1
 
 				bLight.Initialize()
