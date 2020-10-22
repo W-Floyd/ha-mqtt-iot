@@ -264,8 +264,6 @@ func (sconfig Config) Convert() (opts *mqtt.ClientOptions, switches []hadiscover
 				}
 				bLight.BrightnessStateFunc = backlight.GetBrightness
 				bLight.CommandFunc = func(message mqtt.Message, client mqtt.Client) {
-					log.Println("SCREEEEEN")
-					log.Println(string(message.Payload()))
 					if string(message.Payload()) == "ON" {
 						_, err := exec.Command("/bin/sh", "-c", "xset dpms force on").Output()
 
