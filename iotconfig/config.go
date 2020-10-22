@@ -3,10 +3,13 @@ package iotconfig
 import (
 	"log"
 	"os/exec"
+	"runtime"
+	"strconv"
 	"time"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 
+	"../builtin/backlight"
 	"../hadiscovery"
 )
 
@@ -54,6 +57,9 @@ type Config struct {
 		NodeID       string `json:"node_id"`
 		InstanceName string `json:"instance_name"`
 	} `json:"mqtt"`
+	Builtin struct {
+		Backlight bool `json:"backlight"`
+	} `json:"builtin"`
 	Switches      []SwitchHA        `json:"switches"`
 	Sensors       []SensorHA        `json:"sensors"`
 	BinarySensors []BinarySensorsHA `json:"binary_sensors"`
@@ -147,7 +153,7 @@ func (sw SwitchHA) constructStateFunc() (f func() string) {
 }
 
 // Convert takes a config and turns it into a format that can be used for HA.
-func (sconfig Config) Convert() (opts *mqtt.ClientOptions, switches []hadiscovery.Switch, sensors []hadiscovery.Sensor, binarySensors []hadiscovery.BinarySensor) {
+func (sconfig Config) Convert() (opts *mqtt.ClientOptions, switches []hadiscovery.Switch, sensors []hadiscovery.Sensor, binarySensors []hadiscovery.BinarySensor, lights []hadiscovery.Light) {
 	opts = mqtt.NewClientOptions()
 	opts.AddBroker(sconfig.MQTT.Broker)
 	opts.SetClientID(hadiscovery.NodeID)
@@ -238,5 +244,34 @@ func (sconfig Config) Convert() (opts *mqtt.ClientOptions, switches []hadiscover
 
 		binarySensors = append(binarySensors, nse)
 	}
+
+	if sconfig.Builtin.Backlight {
+
+		if runtime.GOOS != "linux" {
+			log.Println("Backlight not supported on non-linux platforms")
+		} else {
+
+			backlights := backlight.PopulateBacklights()
+
+			for k, backlight := range backlights {
+
+				bLight := hadiscovery.Light{}
+				bLight.OnCommandType = "brightness"
+				bLight.BrightnessScale = backlight.MaxBrightness
+				bLight.UniqueID = "backlight-" + strconv.Itoa(k)
+				bLight.Name = "Backlight " + strconv.Itoa(k)
+				bLight.BrightnessCommandFunc = func(message mqtt.Message, client mqtt.Client) {
+					backlight.SetBrightness(string(message.Payload()))
+				}
+				bLight.UpdateInterval = 1
+
+				bLight.Initialize()
+
+				lights = append(lights, bLight)
+			}
+		}
+
+	}
+
 	return
 }

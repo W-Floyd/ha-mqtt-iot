@@ -59,7 +59,7 @@ func main() {
 		logError("Error parsing config", err)
 	}
 
-	opts, switches, sensors, binarySensors := sconfig.Convert()
+	opts, switches, sensors, binarySensors, lights := sconfig.Convert()
 
 	mqtt.DEBUG = debugLog
 	mqtt.ERROR = errorLog
@@ -73,6 +73,9 @@ func main() {
 		}
 		for _, bse := range binarySensors {
 			go bse.Subscribe(client)
+		}
+		for _, li := range lights {
+			go li.Subscribe(client)
 		}
 	}
 
@@ -92,7 +95,15 @@ func main() {
 		}
 	}
 
-	tickers := make([]*time.Ticker, len(sensors)+len(binarySensors)+updatingSwitches)
+	updatingLights := 0
+
+	for _, li := range lights {
+		if !almostEqual(li.UpdateInterval, 0) {
+			updatingLights++
+		}
+	}
+
+	tickers := make([]*time.Ticker, len(sensors)+len(binarySensors)+updatingSwitches+updatingLights)
 
 	tickerN := 0
 	for _, se := range sensors {
@@ -124,6 +135,17 @@ func main() {
 			tickerN++
 		}
 	}
+	for _, li := range lights {
+		if !almostEqual(li.UpdateInterval, 0) {
+			tickers[tickerN] = time.NewTicker(time.Duration(li.UpdateInterval) * time.Second)
+			go func(t *time.Ticker, lig hadiscovery.Light) {
+				for range t.C {
+					go lig.UpdateState(client)
+				}
+			}(tickers[tickerN], li)
+			tickerN++
+		}
+	}
 
 	availableTicker := time.NewTicker(60 * time.Second)
 	go func() {
@@ -136,6 +158,9 @@ func main() {
 			}
 			for _, bse := range binarySensors {
 				go bse.AnnounceAvailable(client)
+			}
+			for _, li := range lights {
+				go li.AnnounceAvailable(client)
 			}
 		}
 	}()
@@ -158,6 +183,9 @@ func main() {
 	}
 	for _, bse := range binarySensors {
 		bse.UnSubscribe(client)
+	}
+	for _, li := range lights {
+		li.UnSubscribe(client)
 	}
 
 	client.Disconnect(250)
