@@ -11,10 +11,18 @@ import (
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 )
 
+// DiscoveryPrefix is the prefix that HA uses to discover on.
+// Does not usually need changing.
 const DiscoveryPrefix = "homeassistant"
+
+// SWVersion is the software version.
+// TODO - Move this elsewhere maybe?
 const SWVersion = "0.2.0"
 
+// InstanceName is the instance name, helpful for identifying a given client
 var InstanceName = "Homeassistant MQTT IOT"
+
+// NodeID is the Node ID, that is, what that node connects under.
 var NodeID = "ha-mqtt-iot"
 
 /////////////////// Components of config
@@ -140,46 +148,80 @@ var switchStateStore = make(map[string]string)
 
 ///////////////////
 
+// GetTopicPrefix gets the prefix for all state/command topics
+// This is for a sensor
 func (device Sensor) GetTopicPrefix() string {
 	return NodeID + "/sensor/" + device.UniqueID + "/"
 }
+
+// GetTopicPrefix gets the prefix for all state/command topics
+// This is for a switch
 func (device Switch) GetTopicPrefix() string {
 	return NodeID + "/switch/" + device.UniqueID + "/"
 }
+
+// GetTopicPrefix gets the prefix for all state/command topics
+// This is for a binary sensor
 func (device BinarySensor) GetTopicPrefix() string {
 	return NodeID + "/binary_sensor/" + device.UniqueID + "/"
 }
 
+// GetDiscoveryTopic gets the topic for a device's discovery topic.
+// This is for a sensor
 func (device Sensor) GetDiscoveryTopic() string {
 	return DiscoveryPrefix + "/sensor/" + NodeID + "/" + device.UniqueID + "/" + "config"
 }
+
+// GetDiscoveryTopic gets the topic for a device's discovery topic.
+// This is for a switch
 func (device Switch) GetDiscoveryTopic() string {
 	return DiscoveryPrefix + "/switch/" + NodeID + "/" + device.UniqueID + "/" + "config"
 }
+
+// GetDiscoveryTopic gets the topic for a device's discovery topic.
+// This is for a binary sensor
 func (device BinarySensor) GetDiscoveryTopic() string {
 	return DiscoveryPrefix + "/binary_sensor/" + NodeID + "/" + device.UniqueID + "/" + "config"
 }
 
+// GetCommandTopic gets the command topic for a device
+// This is for a switch
 func (device Switch) GetCommandTopic() string {
 	return device.GetTopicPrefix() + "command"
 }
 
+// GetStateTopic gets the state topic for a device
+// This is for a sensor
 func (device Sensor) GetStateTopic() string {
 	return device.GetTopicPrefix() + "state"
 }
+
+// GetStateTopic gets the state topic for a device
+// This is for a switch
 func (device Switch) GetStateTopic() string {
 	return device.GetTopicPrefix() + "state"
 }
+
+// GetStateTopic gets the state topic for a device
+// This is for a binary sensor
 func (device BinarySensor) GetStateTopic() string {
 	return device.GetTopicPrefix() + "state"
 }
 
+// GetAvailabilityTopic gets the availability topic for a device
+// This is for a sensor
 func (device Sensor) GetAvailabilityTopic() string {
 	return device.GetTopicPrefix() + "availability"
 }
+
+// GetAvailabilityTopic gets the availability topic for a device
+// This is for a switch
 func (device Switch) GetAvailabilityTopic() string {
 	return device.GetTopicPrefix() + "availability"
 }
+
+// GetAvailabilityTopic gets the availability topic for a device
+// This is for a binary sensor
 func (device BinarySensor) GetAvailabilityTopic() string {
 	return device.GetTopicPrefix() + "availability"
 }
@@ -223,13 +265,15 @@ func (device *Sensor) Initialize() {
 	device.Device = getDevice()
 }
 
-// Initialize sets topics as needed on a Sensor
+// Initialize sets topics as needed on a Binary Sensor
 func (device *BinarySensor) Initialize() {
 	device.StateTopic = device.GetStateTopic()
 	device.AvailabilityTopic = device.GetAvailabilityTopic()
 	device.Device = getDevice()
 }
 
+// UpdateState publishes any new state for a device
+// This is for a switch
 func (device Switch) UpdateState(client mqtt.Client) {
 	if device.StateFunc != nil {
 		state := device.StateFunc()
@@ -242,6 +286,9 @@ func (device Switch) UpdateState(client mqtt.Client) {
 		log.Println("No statefunc for " + device.UniqueID + strconv.FormatFloat(float64(device.UpdateInterval), 'g', 1, 64))
 	}
 }
+
+// UpdateState publishes any new state for a device
+// This is for a sensor
 func (device Sensor) UpdateState(client mqtt.Client) {
 	if device.StateFunc != nil {
 		state := device.StateFunc()
@@ -254,6 +301,9 @@ func (device Sensor) UpdateState(client mqtt.Client) {
 		log.Fatalln("No statefunc, this makes no sensor for a sensor!")
 	}
 }
+
+// UpdateState publishes any new state for a device
+// This is for a binary sensor
 func (device BinarySensor) UpdateState(client mqtt.Client) {
 	if device.StateFunc != nil {
 		state := device.StateFunc()
@@ -267,6 +317,8 @@ func (device BinarySensor) UpdateState(client mqtt.Client) {
 	}
 }
 
+// Subscribe announces and starts listening to MQTT topics appropriate for a device
+// This is for a switch
 func (device Switch) Subscribe(client mqtt.Client) {
 
 	message, err := json.Marshal(device)
@@ -292,6 +344,9 @@ func (device Switch) Subscribe(client mqtt.Client) {
 	}
 
 }
+
+// Subscribe announces and MQTT topics appropriate for a device
+// This is for a sensor
 func (device Sensor) Subscribe(client mqtt.Client) {
 
 	message, err := json.Marshal(device)
@@ -309,6 +364,9 @@ func (device Sensor) Subscribe(client mqtt.Client) {
 	device.AnnounceAvailable(client)
 
 }
+
+// Subscribe announces and MQTT topics appropriate for a device
+// This is for a binary sensor
 func (device BinarySensor) Subscribe(client mqtt.Client) {
 
 	message, err := json.Marshal(device)
@@ -327,6 +385,8 @@ func (device BinarySensor) Subscribe(client mqtt.Client) {
 
 }
 
+// UnSubscribe from MQTT topics appropriate for a device, and publishes unavailability
+// This is for a switch
 func (device Switch) UnSubscribe(client mqtt.Client) {
 	token := client.Publish(device.GetAvailabilityTopic(), 0, false, "offline")
 	token.Wait()
@@ -336,23 +396,37 @@ func (device Switch) UnSubscribe(client mqtt.Client) {
 		os.Exit(1)
 	}
 }
+
+// UnSubscribe publishes unavailability for a device
+// This is for a sensor
 func (device Sensor) UnSubscribe(client mqtt.Client) {
 	token := client.Publish(device.GetAvailabilityTopic(), 0, false, "offline")
 	token.Wait()
 }
+
+// UnSubscribe publishes unavailability for a device
+// This is for a binary sensor
 func (device BinarySensor) UnSubscribe(client mqtt.Client) {
 	token := client.Publish(device.GetAvailabilityTopic(), 0, false, "offline")
 	token.Wait()
 }
 
+// AnnounceAvailable publishes availability for a device
+// This is for a switch
 func (device Switch) AnnounceAvailable(client mqtt.Client) {
 	token := client.Publish(device.GetAvailabilityTopic(), 0, false, "online")
 	token.Wait()
 }
+
+// AnnounceAvailable publishes availability for a device
+// This is for a sensor
 func (device Sensor) AnnounceAvailable(client mqtt.Client) {
 	token := client.Publish(device.GetAvailabilityTopic(), 0, false, "online")
 	token.Wait()
 }
+
+// AnnounceAvailable publishes availability for a device
+// This is for a binary sensor
 func (device BinarySensor) AnnounceAvailable(client mqtt.Client) {
 	token := client.Publish(device.GetAvailabilityTopic(), 0, false, "online")
 	token.Wait()
