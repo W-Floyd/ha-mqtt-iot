@@ -22,6 +22,7 @@ type Backlight struct {
 	MaxBrightness int
 	SetBrightness func(string)
 	GetBrightness func() string
+	IsOn          func() bool
 }
 
 type backlight struct {
@@ -44,6 +45,8 @@ func PopulateBacklights() (BacklightOutput []Backlight) {
 		back.MaxBrightness, _ = backlight.getMaxBrightness()
 		back.SetBrightness = backlight.setBrightness
 		back.GetBrightness = backlight.getBrightness
+		back.IsOn = backlight.IsOn
+
 		BacklightOutput = append(BacklightOutput, back)
 	}
 
@@ -56,6 +59,10 @@ func (b *backlight) currentBrightnessPath() string {
 
 func (b *backlight) maxBrightnessPath() string {
 	return filepath.Join(backlightsDirectory, b.identifier, "max_brightness")
+}
+
+func (b *backlight) dpmsPath() string {
+	return filepath.Join(backlightsDirectory, b.identifier, "device/dpms")
 }
 
 func (b *backlight) setBrightness(brightness string) {
@@ -97,6 +104,18 @@ func (b *backlight) getMaxBrightness() (int, error) {
 		return 0, fmt.Errorf("failed to parse maximum brightness of %s: %s", b.identifier, err)
 	}
 	return val, err
+}
+
+func (b *backlight) IsOn() bool {
+	v, err := ioutil.ReadFile(b.dpmsPath())
+	if err != nil {
+		log.Println("failed to read DPMS")
+		return false
+	}
+	if string(v) == "On\n" {
+		return true
+	}
+	return false
 }
 
 func identifyBacklights() ([]*backlight, error) {

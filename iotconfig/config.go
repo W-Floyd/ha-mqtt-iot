@@ -256,7 +256,6 @@ func (sconfig Config) Convert() (opts *mqtt.ClientOptions, switches []hadiscover
 			for k, backlight := range backlights {
 
 				bLight := hadiscovery.Light{}
-				bLight.OnCommandType = "brightness"
 				bLight.BrightnessScale = backlight.MaxBrightness
 				bLight.UniqueID = "builtin-backlight-" + strconv.Itoa(k)
 				bLight.Name = "Backlight " + strconv.Itoa(k)
@@ -265,17 +264,25 @@ func (sconfig Config) Convert() (opts *mqtt.ClientOptions, switches []hadiscover
 				}
 				bLight.BrightnessStateFunc = backlight.GetBrightness
 				bLight.CommandFunc = func(message mqtt.Message, client mqtt.Client) {
+					log.Println("SCREEEEEN")
+					log.Println(string(message.Payload()))
 					if string(message.Payload()) == "ON" {
-						backlight.SetBrightness(strconv.Itoa(bLight.BrightnessScale))
+						_, err := exec.Command("/bin/sh", "-c", "xset dpms force on").Output()
+
+						if err != nil {
+							log.Printf("%s", err)
+						}
 					} else if string(message.Payload()) == "OFF" {
-						backlight.SetBrightness(strconv.Itoa(bLight.BrightnessScale / 50))
+						_, err := exec.Command("/bin/sh", "-c", "xset dpms force off").Output()
+						if err != nil {
+							log.Printf("%s", err)
+						}
 					} else {
 						log.Println("Unknown payload: " + string(message.Payload()))
 					}
 				}
 				bLight.StateFunc = func() string {
-					b, _ := strconv.Atoi(backlight.GetBrightness())
-					if b > bLight.BrightnessScale/50 {
+					if backlight.IsOn() {
 						return "ON"
 					}
 					return "OFF"
