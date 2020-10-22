@@ -12,7 +12,7 @@ import (
 )
 
 const DiscoveryPrefix = "homeassistant"
-const SWVersion = "0.1.0"
+const SWVersion = "0.2.0"
 
 var InstanceName = "Homeassistant MQTT IOT"
 var NodeID = "ha-mqtt-iot"
@@ -117,7 +117,7 @@ type Switch struct {
 
 func getDevice() (d device) {
 
-	id, err := machineid.ProtectedID(NodeID + SWVersion)
+	id, err := machineid.ProtectedID(NodeID)
 	if err != nil {
 		log.Fatal(err)
 	}
