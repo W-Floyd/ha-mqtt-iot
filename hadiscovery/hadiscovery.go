@@ -17,7 +17,7 @@ const DiscoveryPrefix = "homeassistant"
 
 // SWVersion is the software version.
 // TODO - Move this elsewhere maybe?
-const SWVersion = "0.2.0"
+const SWVersion = "0.3.0"
 
 // InstanceName is the instance name, helpful for identifying a given client
 var InstanceName = "Homeassistant MQTT IOT"
