@@ -32,10 +32,11 @@ type SwitchHA struct {
 }
 
 type SensorHA struct {
-	Info            InfoIcon `json:"info"`
-	CommandState    []string `json:"command_state"`
-	UpdateInterval  float64  `json:"update_interval"`
-	ForceUpdateMQTT bool     `json:"force_update"`
+	Info              InfoIcon `json:"info"`
+	CommandState      []string `json:"command_state"`
+	UnitOfMeasurement string   `json:"unit_of_measurement,omitempty"`
+	UpdateInterval    float64  `json:"update_interval"`
+	ForceUpdateMQTT   bool     `json:"force_update"`
 }
 
 type BinarySensorsHA struct {
@@ -193,6 +194,7 @@ func (sconfig Config) Convert() (opts *mqtt.ClientOptions, switches []hadiscover
 		nse.UpdateInterval = se.UpdateInterval
 		nse.ExpireAfter = int(nse.UpdateInterval + 1)
 		nse.ForceUpdateMQTT = se.ForceUpdateMQTT
+		nse.UnitOfMeasurement = se.UnitOfMeasurement
 		if !se.ForceUpdateMQTT {
 			nse.ExpireAfter = 0
 		}
