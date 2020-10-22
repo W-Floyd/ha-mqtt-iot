@@ -4,6 +4,9 @@
         "username": "someuser",
         "password": "somepassword"
     },
+    "builtin": {
+        "backlight": true
+    },
     "switches": [
         {
             "info": {
