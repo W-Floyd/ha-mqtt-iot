@@ -39,6 +39,7 @@ type LightHA struct {
 	CommandState           []string `json:"command_state"`
 	CommandBrightness      []string `json:"command_brightness"`
 	CommandBrightnessState []string `json:"command_brightness_state"`
+	BrightnessScale        int      `json:"brightness_scale"`
 	CommandColorTemp       []string `json:"command_color_temp"`
 	CommandColorTempState  []string `json:"command_color_temp_state"`
 	CommandEffect          []string `json:"command_effect"`
@@ -328,6 +329,10 @@ func (sconfig Config) Convert() (opts *mqtt.ClientOptions, switches []hadiscover
 			nli.UpdateInterval = li.UpdateInterval
 		} else {
 			nli.UpdateInterval = 1
+		}
+
+		if li.BrightnessScale != 0 {
+			nli.BrightnessScale = li.BrightnessScale
 		}
 
 		nli.ForceUpdateMQTT = li.ForceUpdateMQTT
