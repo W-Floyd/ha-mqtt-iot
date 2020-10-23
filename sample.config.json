@@ -13,18 +13,34 @@
     "lights": [
         {
             "info": {
-                "name": "Test Light",
-                "id": "test-light"
+                "name": "Desktop Monitor",
+                "id": "monitor"
             },
             "command": [
-                "./light_test.sh",
+                "./scripts/monitor.sh",
                 "command"
             ],
             "command_state": [
-                "./light_test.sh",
-                "command_state"
+                "./scripts/monitor.sh",
+                "command-state"
             ],
-            "UpdateInterval": 1
+            "command_color_temp": [
+                "./scripts/monitor.sh",
+                "color-temp"
+            ],
+            "command_color_temp_state": [
+                "./scripts/monitor.sh",
+                "color-temp-state"
+            ],
+            "command_brightness": [
+                "./scripts/monitor.sh",
+                "brightness"
+            ],
+            "brightness_scale": 100,
+            "command_brightness_state": [
+                "./scripts/monitor.sh",
+                "brightness-state"
+            ]
         }
     ],
     "switches": [
