@@ -2,14 +2,16 @@ package iotconfig
 
 import (
 	"log"
+	"math"
 	"os/exec"
 	"runtime"
 	"strconv"
+	"strings"
 	"time"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 
-	"../builtin/backlight"
+	backlightP "../builtin/backlight"
 	"../hadiscovery"
 )
 
@@ -58,7 +60,10 @@ type Config struct {
 		InstanceName string `json:"instance_name"`
 	} `json:"mqtt"`
 	Builtin struct {
-		Backlight bool `json:"backlight"`
+		Backlight struct {
+			Enable      bool `json:"enable"`
+			Temperature bool `json:"temperature"`
+		} `json:"backlight"`
 	} `json:"builtin"`
 	Switches      []SwitchHA        `json:"switches"`
 	Sensors       []SensorHA        `json:"sensors"`
@@ -245,13 +250,13 @@ func (sconfig Config) Convert() (opts *mqtt.ClientOptions, switches []hadiscover
 		binarySensors = append(binarySensors, nse)
 	}
 
-	if sconfig.Builtin.Backlight {
+	if sconfig.Builtin.Backlight.Enable {
 
 		if runtime.GOOS != "linux" {
 			log.Println("Backlight not supported on non-linux platforms")
 		} else {
 
-			backlights := backlight.PopulateBacklights()
+			backlights := backlightP.PopulateBacklights()
 
 			for k, backlight := range backlights {
 
@@ -286,6 +291,33 @@ func (sconfig Config) Convert() (opts *mqtt.ClientOptions, switches []hadiscover
 					return "OFF"
 				}
 				bLight.UpdateInterval = 1
+
+				if sconfig.Builtin.Backlight.Temperature {
+					bLight.ColorTempCommandFunc = func(message mqtt.Message, client mqtt.Client) {
+						minred, _ := strconv.ParseInt(string(message.Payload()), 10, 64)
+
+						_, err := exec.Command("./scripts/run-in-user-session.sh", "gsettings", "set", "org.gnome.settings-daemon.plugins.color", "night-light-temperature", strconv.Itoa(int(math.Round(backlightP.MinredToKelvin(float64(minred)))))).Output()
+						if err != nil {
+							log.Printf("%s", err)
+						}
+					}
+					bLight.ColorTempStateFunc = func() string {
+						var out []byte
+						out, err := exec.Command("./scripts/run-in-user-session.sh", "gsettings", "get", "org.gnome.settings-daemon.plugins.color", "night-light-temperature").Output()
+						if err != nil {
+							log.Printf("%s", err)
+						}
+						fields := strings.Fields(string(out))
+						str, err := strconv.ParseInt(fields[1], 10, 64)
+						if err != nil {
+							log.Println("Error parsing color temp state")
+							log.Println(err)
+						}
+						return strconv.Itoa(int(backlightP.KelvinToMinred(float64(str))))
+					}
+					bLight.MinMireds = int(math.Round(backlightP.KelvinToMinred(10000)))
+					bLight.MaxMireds = int(math.Round(backlightP.KelvinToMinred(3000)))
+				}
 
 				bLight.Initialize()
 

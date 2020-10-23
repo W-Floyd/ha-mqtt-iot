@@ -118,6 +118,14 @@ func (b *backlight) IsOn() bool {
 	return false
 }
 
+func MinredToKelvin(minred float64) float64 {
+	return 1000000.0 / minred
+}
+
+func KelvinToMinred(kelvin float64) float64 {
+	return 1000000.0 / kelvin
+}
+
 func identifyBacklights() ([]*backlight, error) {
 	var backlights []*backlight
 

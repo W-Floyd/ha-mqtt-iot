@@ -5,7 +5,10 @@
         "password": "somepassword"
     },
     "builtin": {
-        "backlight": true
+        "backlight": {
+            "enable": true,
+            "temperature": false
+        }
     },
     "switches": [
         {
