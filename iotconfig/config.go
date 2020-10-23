@@ -227,7 +227,6 @@ func (sw SwitchHA) constructStateFunc() (f func() string) {
 func (sconfig Config) Convert() (opts *mqtt.ClientOptions, switches []hadiscovery.Switch, sensors []hadiscovery.Sensor, binarySensors []hadiscovery.BinarySensor, lights []hadiscovery.Light) {
 	opts = mqtt.NewClientOptions()
 	opts.AddBroker(sconfig.MQTT.Broker)
-	opts.SetClientID(hadiscovery.NodeID)
 	opts.SetUsername(sconfig.MQTT.Username)
 	opts.SetPassword(sconfig.MQTT.Password)
 	opts.SetKeepAlive(30 * time.Second)
@@ -240,6 +239,7 @@ func (sconfig Config) Convert() (opts *mqtt.ClientOptions, switches []hadiscover
 	if sconfig.MQTT.NodeID != "" {
 		hadiscovery.NodeID = sconfig.MQTT.NodeID
 	}
+	opts.SetClientID(hadiscovery.NodeID)
 	if sconfig.MQTT.InstanceName != "" {
 		hadiscovery.InstanceName = sconfig.MQTT.InstanceName
 	}
