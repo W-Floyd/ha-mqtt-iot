@@ -6,7 +6,6 @@ __monitor_brightness='0x10'
 __monitor_off='4'
 __monitor_on='1'
 
-
 __unknown() {
     echo "Unknown ${1}"
 }
@@ -26,8 +25,11 @@ case "${com}" in
         xset dpms force on
         ;;
     "OFF")
-        xset dpms force off
-        ddccontrol -r "${__monitor_dpms}" -w "${__monitor_off}" "${__monitor_i2c}" -f
+        (
+            xset dpms force off
+            sleep 0.5s
+            ddccontrol -r "${__monitor_dpms}" -w "${__monitor_off}" "${__monitor_i2c}" -f
+        ) &
         ;;
     *)
         __unknown "${arg}"
@@ -49,7 +51,7 @@ case "${com}" in
     ddccontrol -r "${__monitor_brightness}" "${__monitor_i2c}" -w "${arg}"
     ;;
 "brightness-state")
-    echo -n "$(2>/dev/null ddccontrol -r "${__monitor_brightness}" "${__monitor_i2c}" | tail -n 1 | grep -Eo '[0-9]*/100' | sed 's#/.*##')"
+    echo -n "$(ddccontrol 2>/dev/null -r "${__monitor_brightness}" "${__monitor_i2c}" | tail -n 1 | grep -Eo '[0-9]*/100' | sed 's#/.*##')"
     ;;
 
 *)
