@@ -10,6 +10,23 @@
             "temperature": false
         }
     },
+    "lights": [
+        {
+            "info": {
+                "name": "Test Light",
+                "id": "test-light"
+            },
+            "command": [
+                "./light_test.sh",
+                "command"
+            ],
+            "command_state": [
+                "./light_test.sh",
+                "command_state"
+            ],
+            "UpdateInterval": 1
+        }
+    ],
     "switches": [
         {
             "info": {
