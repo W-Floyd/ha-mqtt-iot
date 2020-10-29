@@ -73,14 +73,31 @@
     "sensors": [
         {
             "info": {
-                "name": "Current Time",
-                "id": "current-time"
+                "name": "Work Duration",
+                "id": "work-duration"
             },
             "command_state": [
-                "date",
-                "+%s"
+                "./scripts/run-in-user-session.sh",
+                "gsettings",
+                "get",
+                "org.gnome.pomodoro.state",
+                "timer-state-duration"
             ],
-            "update_interval": 2
+            "unit_of_measurement": "seconds",
+            "update_interval": 1
+        },
+        {
+            "info": {
+                "name": "Work Started",
+                "id": "work-started"
+            },
+            "command_state": [
+                "./scripts/run-in-user-session.sh",
+                "/bin/bash",
+                "-c",
+                "gsettings get org.gnome.pomodoro.state timer-state-date | sed \"s/'//g\""
+            ],
+            "update_interval": 1
         }
     ],
     "binary_sensors": [
@@ -90,6 +107,7 @@
                 "id": "work-mode-desktop"
             },
             "command_state": [
+                "./scripts/run-in-user-session.sh",
                 "/bin/bash",
                 "-c",
                 "if [[ $(gsettings get org.gnome.pomodoro.state timer-state) == \"'pomodoro'\" ]]; then echo -n 'ON'; else echo -n 'OFF'; fi"
@@ -102,6 +120,7 @@
                 "id": "work-mode-paused-desktop"
             },
             "command_state": [
+                "./scripts/run-in-user-session.sh",
                 "/bin/bash",
                 "-c",
                 "if [[ $(gsettings get org.gnome.pomodoro.state timer-state) == \"'pomodoro'\" ]] && [[ $(gsettings get org.gnome.pomodoro.state timer-paused) == 'true' ]]; then echo -n 'ON'; else echo -n 'OFF'; fi"
