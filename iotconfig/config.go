@@ -249,7 +249,7 @@ func (sconfig Config) Convert() (opts *mqtt.ClientOptions, switches []hadiscover
 		nsw.UpdateInterval = sw.UpdateInterval
 		nsw.ForceUpdateMQTT = sw.ForceUpdateMQTT
 		nsw.Name = sw.Info.Name
-		nsw.UniqueID = sw.Info.ID
+		nsw.UniqueID = sw.Info.ID + "_" + hadiscovery.NodeID
 		if sw.Info.Icon != "" {
 			nsw.Icon = sw.Info.Icon
 		}
