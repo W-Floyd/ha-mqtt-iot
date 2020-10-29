@@ -51,39 +51,23 @@
                 "icon": "mdi:theme-light-dark"
             },
             "command_on": [
-                "/home/william/.theme.sh",
+                "./scripts/run-in-user-session.sh",
+                "./scripts/theme.sh",
                 "set",
                 "dark"
             ],
             "command_off": [
-                "/home/william/.theme.sh",
+                "./scripts/run-in-user-session.sh",
+                "./scripts/theme.sh",
                 "set",
                 "light"
             ],
             "command_state": [
-                "/home/william/.theme.sh",
+                "./scripts/run-in-user-session.sh",
+                "./scripts/theme.sh",
                 "get"
             ],
-            "update_interval": 10
-        },
-        {
-            "info": {
-                "name": "Monitor Awake",
-                "id": "desktop-monitor-awake",
-                "icon": "mdi:monitor"
-            },
-            "command_on": [
-                "xset",
-                "dpms",
-                "force",
-                "on"
-            ],
-            "command_off": [
-                "xset",
-                "dpms",
-                "force",
-                "off"
-            ]
+            "update_interval": 1
         }
     ],
     "sensors": [
@@ -103,16 +87,26 @@
         {
             "info": {
                 "name": "Work Mode",
-                "id": "work-mode-desktop",
-                "device_class": "moving"
+                "id": "work-mode-desktop"
             },
             "command_state": [
                 "/bin/bash",
                 "-c",
-                "if [[ $(gsettings get org.ubuntubudgie.plugins.takeabreak paused) == 'true' ]]; then echo -n 'OFF'; else echo -n 'ON'; fi"
+                "if [[ $(gsettings get org.gnome.pomodoro.state timer-state) == \"'pomodoro'\" ]]; then echo -n 'ON'; else echo -n 'OFF'; fi"
             ],
-            "update_interval": 10,
-            "force_update": true
+            "update_interval": 1
+        },
+        {
+            "info": {
+                "name": "Work Mode Paused",
+                "id": "work-mode-paused-desktop"
+            },
+            "command_state": [
+                "/bin/bash",
+                "-c",
+                "if [[ $(gsettings get org.gnome.pomodoro.state timer-state) == \"'pomodoro'\" ]] && [[ $(gsettings get org.gnome.pomodoro.state timer-paused) == 'true' ]]; then echo -n 'ON'; else echo -n 'OFF'; fi"
+            ],
+            "update_interval": 1
         }
     ]
 }
