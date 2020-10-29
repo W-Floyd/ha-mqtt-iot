@@ -277,7 +277,7 @@ func (sconfig Config) Convert() (opts *mqtt.ClientOptions, switches []hadiscover
 			nse.ExpireAfter = 0
 		}
 		nse.Name = se.Info.Name
-		nse.UniqueID = se.Info.ID
+		nse.UniqueID = se.Info.ID + "_" + hadiscovery.NodeID
 		if se.Info.Icon != "" {
 			nse.Icon = se.Info.Icon
 		}
@@ -301,7 +301,7 @@ func (sconfig Config) Convert() (opts *mqtt.ClientOptions, switches []hadiscover
 			nse.ExpireAfter = 0
 		}
 		nse.Name = bse.Info.Name
-		nse.UniqueID = bse.Info.ID
+		nse.UniqueID = bse.Info.ID + "_" + hadiscovery.NodeID
 		if bse.Info.DeviceClass != "" {
 			nse.DeviceClass = bse.Info.DeviceClass
 		}
@@ -323,7 +323,7 @@ func (sconfig Config) Convert() (opts *mqtt.ClientOptions, switches []hadiscover
 		nli.ForceUpdateMQTT = li.ForceUpdateMQTT
 
 		nli.Name = li.Info.Name
-		nli.UniqueID = li.Info.ID
+		nli.UniqueID = li.Info.ID + "_" + hadiscovery.NodeID
 
 		if !almostEqual(li.UpdateInterval, 0.0) {
 			nli.UpdateInterval = li.UpdateInterval
