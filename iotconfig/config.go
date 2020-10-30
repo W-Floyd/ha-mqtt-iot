@@ -504,6 +504,7 @@ func (sconfig Config) Convert() (opts *mqtt.ClientOptions, switches []hadiscover
 				}
 				bSensor.UnitOfMeasurement = "%"
 				bSensor.UpdateInterval = 10
+				bSensor.Icon = "mdi:battery"
 
 				bSensor.Initialize()
 
@@ -524,6 +525,7 @@ func (sconfig Config) Convert() (opts *mqtt.ClientOptions, switches []hadiscover
 					return "OFF"
 				}
 				bBSensor.UpdateInterval = 1
+				bBSensor.DeviceClass = "battery_charging"
 
 				bBSensor.Initialize()
 
