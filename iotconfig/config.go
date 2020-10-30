@@ -12,6 +12,7 @@ import (
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 
 	backlightP "../builtin/backlight"
+	batteryP "../builtin/battery"
 	"../hadiscovery"
 )
 
@@ -89,10 +90,14 @@ type Config struct {
 		InstanceName string `json:"instance_name"`
 	} `json:"mqtt"`
 	Builtin struct {
+		Prefix    string `json:"prefix"`
 		Backlight struct {
 			Enable      bool `json:"enable"`
 			Temperature bool `json:"temperature"`
 		} `json:"backlight"`
+		Battery struct {
+			Enable bool `json:"enable"`
+		} `json:"battery"`
 	} `json:"builtin"`
 	Lights        []LightHA         `json:"lights"`
 	Switches      []SwitchHA        `json:"switches"`
@@ -404,8 +409,13 @@ func (sconfig Config) Convert() (opts *mqtt.ClientOptions, switches []hadiscover
 
 				bLight := hadiscovery.Light{}
 				bLight.BrightnessScale = backlight.MaxBrightness
-				bLight.UniqueID = "builtin-backlight-" + strconv.Itoa(k)
-				bLight.Name = "Backlight " + strconv.Itoa(k)
+				if len(backlights) > 1 {
+					bLight.UniqueID = "builtin-backlight-" + strconv.Itoa(k) + "_" + hadiscovery.NodeID
+					bLight.Name = sconfig.Builtin.Prefix + "Backlight " + strconv.Itoa(k)
+				} else {
+					bLight.UniqueID = "builtin-backlight_" + hadiscovery.NodeID
+					bLight.Name = sconfig.Builtin.Prefix + "Backlight"
+				}
 				bLight.BrightnessCommandFunc = func(message mqtt.Message, client mqtt.Client) {
 					backlight.SetBrightness(string(message.Payload()))
 				}
@@ -464,6 +474,61 @@ func (sconfig Config) Convert() (opts *mqtt.ClientOptions, switches []hadiscover
 				bLight.Initialize()
 
 				lights = append(lights, bLight)
+			}
+		}
+
+	}
+
+	if sconfig.Builtin.Battery.Enable {
+
+		if runtime.GOOS != "linux" {
+			log.Println("Backlight not supported on non-linux platforms")
+		} else {
+
+			batteries := batteryP.PopulateBatteries()
+
+			for k, battery := range batteries {
+
+				bSensor := hadiscovery.Sensor{}
+				if len(batteries) > 1 {
+					bSensor.UniqueID = "builtin-battery-" + strconv.Itoa(k) + "_" + hadiscovery.NodeID
+					bSensor.Name = sconfig.Builtin.Prefix + "Battery " + strconv.Itoa(k)
+				} else {
+					bSensor.UniqueID = "builtin-battery_" + hadiscovery.NodeID
+					bSensor.Name = sconfig.Builtin.Prefix + "Battery"
+				}
+
+				bSensor.StateFunc = func() string {
+					val, _ := strconv.Atoi(battery.GetCharge())
+					return strconv.FormatFloat(float64(val*100)/float64(battery.MaxCapacity), 'f', 1, 32)
+				}
+				bSensor.UnitOfMeasurement = "%"
+				bSensor.UpdateInterval = 10
+
+				bSensor.Initialize()
+
+				sensors = append(sensors, bSensor)
+
+				bBSensor := hadiscovery.BinarySensor{}
+				if len(batteries) > 1 {
+					bBSensor.UniqueID = "builtin-battery-" + strconv.Itoa(k) + "-plugged-in_" + hadiscovery.NodeID
+					bBSensor.Name = sconfig.Builtin.Prefix + "Battery " + strconv.Itoa(k) + " Plugged In"
+				} else {
+					bBSensor.UniqueID = "builtin-battery-plugged-in_" + hadiscovery.NodeID
+					bBSensor.Name = sconfig.Builtin.Prefix + "Battery Plugged In"
+				}
+				bBSensor.StateFunc = func() string {
+					if battery.IsPluggedIn() {
+						return "ON"
+					}
+					return "OFF"
+				}
+				bBSensor.UpdateInterval = 1
+
+				bBSensor.Initialize()
+
+				binarySensors = append(binarySensors, bBSensor)
+
 			}
 		}
 
