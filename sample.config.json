@@ -2,12 +2,17 @@
     "mqtt": {
         "broker": "tcp://some.domain:1883",
         "username": "someuser",
-        "password": "somepassword"
+        "password": "somepassword",
+        "node_id": "some-node-id",
+        "instance_name": "Some Instance Name"
     },
     "builtin": {
         "backlight": {
             "enable": true,
             "temperature": false
+        },
+        "battery": {
+            "enable": true
         }
     },
     "lights": [
