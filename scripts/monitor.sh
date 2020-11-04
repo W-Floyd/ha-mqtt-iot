@@ -51,7 +51,7 @@ case "${com}" in
     ddccontrol -r "${__monitor_brightness}" "${__monitor_i2c}" -w "${arg}"
     ;;
 "brightness-state")
-    echo -n "$(ddccontrol 2>/dev/null -r "${__monitor_brightness}" "${__monitor_i2c}" | tail -n 1 | grep -Eo '[0-9]*/100' | sed 's#/.*##')"
+    echo -n "$(ddccontrol 2>/dev/null -r "${__monitor_brightness}" "${__monitor_i2c}" | tail -n 1 | grep -o '/[0-9]*/100' | sed -e 's|^/||' -e 's|/.*||')"
     ;;
 
 *)
