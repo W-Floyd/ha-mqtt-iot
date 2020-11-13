@@ -11,6 +11,7 @@ import (
 	"time"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
+	"github.com/imdario/mergo"
 
 	"./hadiscovery"
 	"./iotconfig"
@@ -44,19 +45,27 @@ func logDebug(message ...interface{}) {
 
 func main() {
 
-	// read file
-	data, err := ioutil.ReadFile("./config.json")
-	if err != nil {
-		logError("Error reading config", err)
-	}
+	configFiles := [...]string{"./config.json", "./secrets.json"}
 
-	// json data
 	var sconfig iotconfig.Config
 
-	// unmarshall it
-	err = json.Unmarshal(data, &sconfig)
-	if err != nil {
-		logError("Error parsing config", err)
+	for _, configFile := range configFiles {
+		var tConfig iotconfig.Config
+
+		// read file
+		data, err := ioutil.ReadFile(configFile)
+		if err != nil {
+			logError("Error reading "+configFile, err)
+		}
+
+		// unmarshall it
+		err = json.Unmarshal(data, &tConfig)
+		if err != nil {
+			logError("Error parsing config", err)
+		}
+
+		mergo.Merge(&sconfig, tConfig)
+
 	}
 
 	opts, switches, sensors, binarySensors, lights := sconfig.Convert()
