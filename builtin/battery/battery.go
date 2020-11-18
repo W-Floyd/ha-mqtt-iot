@@ -50,11 +50,19 @@ func PopulateBatteries() (BatteryOutput []Battery) {
 }
 
 func (b *battery) currentChargePath() string {
-	return filepath.Join(batteryDirectory, b.identifier, "charge_now")
+	path := filepath.Join(batteryDirectory, b.identifier, "charge_now")
+	if _, err := os.Stat(path); !os.IsNotExist(err) {
+		return path
+	}
+	return filepath.Join(batteryDirectory, b.identifier, "energy_now")
 }
 
 func (b *battery) maxCapacityPath() string {
-	return filepath.Join(batteryDirectory, b.identifier, "charge_full")
+	path := filepath.Join(batteryDirectory, b.identifier, "charge_full")
+	if _, err := os.Stat(path); !os.IsNotExist(err) {
+		return path
+	}
+	return filepath.Join(batteryDirectory, b.identifier, "energy_full")
 }
 
 func (b *battery) statusPath() string {
