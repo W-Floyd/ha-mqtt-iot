@@ -13,6 +13,7 @@ import (
 
 	backlightP "../builtin/backlight"
 	batteryP "../builtin/battery"
+	"../builtin/batterywindows"
 	"../hadiscovery"
 )
 
@@ -481,9 +482,7 @@ func (sconfig Config) Convert() (opts *mqtt.ClientOptions, switches []hadiscover
 
 	if sconfig.Builtin.Battery.Enable {
 
-		if runtime.GOOS != "linux" {
-			log.Println("Backlight not supported on non-linux platforms")
-		} else {
+		if runtime.GOOS == "linux" {
 
 			batteries := batteryP.PopulateBatteries()
 
@@ -532,8 +531,42 @@ func (sconfig Config) Convert() (opts *mqtt.ClientOptions, switches []hadiscover
 				binarySensors = append(binarySensors, bBSensor)
 
 			}
+		} else if runtime.GOOS == "windows" {
+
+			bSensor := hadiscovery.Sensor{}
+
+			bSensor.UniqueID = "builtin-battery_" + hadiscovery.NodeID
+			bSensor.Name = sconfig.Builtin.Prefix + "Battery"
+
+			bSensor.StateFunc = batterywindows.GetLevel
+			bSensor.UnitOfMeasurement = "%"
+			bSensor.UpdateInterval = 10
+			bSensor.Icon = "mdi:battery"
+
+			bSensor.Initialize()
+
+			sensors = append(sensors, bSensor)
+
+			bBSensor := hadiscovery.BinarySensor{}
+			bBSensor.UniqueID = "builtin-battery-plugged-in_" + hadiscovery.NodeID
+			bBSensor.Name = sconfig.Builtin.Prefix + "Battery Plugged In"
+			bBSensor.StateFunc = func() string {
+				if batterywindows.IsPluggedIn() {
+					return "ON"
+				}
+				return "OFF"
+			}
+			bBSensor.UpdateInterval = 5
+			bBSensor.DeviceClass = "battery_charging"
+
+			bBSensor.Initialize()
+
+			binarySensors = append(binarySensors, bBSensor)
+
 		}
 
+	} else {
+		log.Println("Battery not supported on this platform")
 	}
 
 	return
