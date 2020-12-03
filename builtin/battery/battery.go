@@ -17,6 +17,8 @@ var (
 
 const batteryDirectory = "/sys/class/power_supply"
 
+type Batteries []Battery
+
 type Battery struct {
 	MaxCapacity int
 	GetCharge   func() string
@@ -28,7 +30,7 @@ type battery struct {
 }
 
 // PopulateBatteries finds and generates functions for all system batteries
-func PopulateBatteries() (BatteryOutput []Battery) {
+func PopulateBatteries() (BatteryOutput Batteries) {
 
 	batteries, err := identifyBatteries()
 

@@ -3,7 +3,6 @@ package iotconfig
 import (
 	"log"
 	"runtime"
-	"strconv"
 	"time"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
@@ -70,84 +69,21 @@ func (sconfig Config) Convert() (opts *mqtt.ClientOptions, switches []hadiscover
 
 		if runtime.GOOS == "linux" {
 
-			batteries := batteryP.PopulateBatteries()
+			batteryP.Sconfig = config.Config(sconfig)
 
-			for k, battery := range batteries {
+			batterySensors, batteryBinarySensors := batteryP.PopulateBatteries().Translate()
 
-				bSensor := hadiscovery.Sensor{}
-				if len(batteries) > 1 {
-					bSensor.UniqueID = "builtin-battery-" + strconv.Itoa(k) + "_" + hadiscovery.NodeID
-					bSensor.Name = sconfig.Builtin.Prefix + "Battery " + strconv.Itoa(k)
-				} else {
-					bSensor.UniqueID = "builtin-battery_" + hadiscovery.NodeID
-					bSensor.Name = sconfig.Builtin.Prefix + "Battery"
-				}
+			sensors = append(sensors, batterySensors...)
+			binarySensors = append(binarySensors, batteryBinarySensors...)
 
-				bSensor.StateFunc = func() string {
-					val, _ := strconv.Atoi(battery.GetCharge())
-					return strconv.FormatFloat(float64(val*100)/float64(battery.MaxCapacity), 'f', 1, 32)
-				}
-				bSensor.UnitOfMeasurement = "%"
-				bSensor.UpdateInterval = 10
-				bSensor.Icon = "mdi:battery"
-
-				bSensor.Initialize()
-
-				sensors = append(sensors, bSensor)
-
-				bBSensor := hadiscovery.BinarySensor{}
-				if len(batteries) > 1 {
-					bBSensor.UniqueID = "builtin-battery-" + strconv.Itoa(k) + "-plugged-in_" + hadiscovery.NodeID
-					bBSensor.Name = sconfig.Builtin.Prefix + "Battery " + strconv.Itoa(k) + " Plugged In"
-				} else {
-					bBSensor.UniqueID = "builtin-battery-plugged-in_" + hadiscovery.NodeID
-					bBSensor.Name = sconfig.Builtin.Prefix + "Battery Plugged In"
-				}
-				bBSensor.StateFunc = func() string {
-					if battery.IsPluggedIn() {
-						return "ON"
-					}
-					return "OFF"
-				}
-				bBSensor.UpdateInterval = 1
-				bBSensor.DeviceClass = "battery_charging"
-
-				bBSensor.Initialize()
-
-				binarySensors = append(binarySensors, bBSensor)
-
-			}
 		} else if runtime.GOOS == "windows" {
 
-			bSensor := hadiscovery.Sensor{}
+			batterywindows.Sconfig = config.Config(sconfig)
 
-			bSensor.UniqueID = "builtin-battery_" + hadiscovery.NodeID
-			bSensor.Name = sconfig.Builtin.Prefix + "Battery"
+			bs, bbs := batterywindows.Create()
 
-			bSensor.StateFunc = batterywindows.GetLevel
-			bSensor.UnitOfMeasurement = "%"
-			bSensor.UpdateInterval = 10
-			bSensor.Icon = "mdi:battery"
-
-			bSensor.Initialize()
-
-			sensors = append(sensors, bSensor)
-
-			bBSensor := hadiscovery.BinarySensor{}
-			bBSensor.UniqueID = "builtin-battery-plugged-in_" + hadiscovery.NodeID
-			bBSensor.Name = sconfig.Builtin.Prefix + "Battery Plugged In"
-			bBSensor.StateFunc = func() string {
-				if batterywindows.IsPluggedIn() {
-					return "ON"
-				}
-				return "OFF"
-			}
-			bBSensor.UpdateInterval = 5
-			bBSensor.DeviceClass = "battery_charging"
-
-			bBSensor.Initialize()
-
-			binarySensors = append(binarySensors, bBSensor)
+			sensors = append(sensors, bs)
+			binarySensors = append(binarySensors, bbs)
 
 		}
 
