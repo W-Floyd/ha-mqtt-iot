@@ -1,20 +1,21 @@
-package iotconfig
+package switchdevice
 
 import (
 	"log"
 	"os/exec"
 
-	"../hadiscovery"
+	"../../hadiscovery"
+	"../common"
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 )
 
 type SwitchHA struct {
-	Info            InfoIcon `json:"info"`
-	CommandOn       []string `json:"command_on"`
-	CommandOff      []string `json:"command_off"`
-	CommandState    []string `json:"command_state"`
-	UpdateInterval  float64  `json:"update_interval"`
-	ForceUpdateMQTT bool     `json:"force_update"`
+	Info            common.InfoIcon `json:"info"`
+	CommandOn       []string        `json:"command_on"`
+	CommandOff      []string        `json:"command_off"`
+	CommandState    []string        `json:"command_state"`
+	UpdateInterval  float64         `json:"update_interval"`
+	ForceUpdateMQTT bool            `json:"force_update"`
 }
 
 func (sw SwitchHA) constructCommandFunc() (f func(message mqtt.Message, connection mqtt.Client)) {

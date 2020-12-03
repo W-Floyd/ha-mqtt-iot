@@ -25,13 +25,15 @@ type Backlight struct {
 	IsOn          func() bool
 }
 
+type Backlights []Backlight
+
 type backlight struct {
 	identifier string
 	fallback   bool
 }
 
 // PopulateBacklights finds and generates functions for all system backlights
-func PopulateBacklights() (BacklightOutput []Backlight) {
+func PopulateBacklights() (BacklightOutput Backlights) {
 
 	backlights, err := identifyBacklights()
 

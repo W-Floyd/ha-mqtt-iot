@@ -1,11 +1,20 @@
-package iotconfig
+package sensordevice
 
 import (
 	"log"
 	"os/exec"
 
-	"../hadiscovery"
+	"../../hadiscovery"
+	"../common"
 )
+
+type SensorHA struct {
+	Info              common.InfoIcon `json:"info"`
+	CommandState      []string        `json:"command_state"`
+	UnitOfMeasurement string          `json:"unit_of_measurement,omitempty"`
+	UpdateInterval    float64         `json:"update_interval"`
+	ForceUpdateMQTT   bool            `json:"force_update"`
+}
 
 func (sw SensorHA) constructStateFunc() (f func() string) {
 	var err error

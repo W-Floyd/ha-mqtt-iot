@@ -8,14 +8,14 @@ import (
 	"strings"
 
 	"../../hadiscovery"
-	"../../iotconfig"
+	"../../iotconfig/config"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 )
 
-var sconfig = iotconfig.Config{}
+var Sconfig = config.Config{}
 
-func (backlights []Backlight) Translate() (lightsOutput []hadiscovery.Light) {
+func (backlights Backlights) Translate() (lightsOutput []hadiscovery.Light) {
 
 	for k, backlight := range backlights {
 
@@ -23,10 +23,10 @@ func (backlights []Backlight) Translate() (lightsOutput []hadiscovery.Light) {
 		bLight.BrightnessScale = backlight.MaxBrightness
 		if len(backlights) > 1 {
 			bLight.UniqueID = "builtin-backlight-" + strconv.Itoa(k) + "_" + hadiscovery.NodeID
-			bLight.Name = sconfig.Builtin.Prefix + "Backlight " + strconv.Itoa(k)
+			bLight.Name = Sconfig.Builtin.Prefix + "Backlight " + strconv.Itoa(k)
 		} else {
 			bLight.UniqueID = "builtin-backlight_" + hadiscovery.NodeID
-			bLight.Name = sconfig.Builtin.Prefix + "Backlight"
+			bLight.Name = Sconfig.Builtin.Prefix + "Backlight"
 		}
 		bLight.BrightnessCommandFunc = func(message mqtt.Message, client mqtt.Client) {
 			backlight.SetBrightness(string(message.Payload()))
@@ -56,11 +56,11 @@ func (backlights []Backlight) Translate() (lightsOutput []hadiscovery.Light) {
 		}
 		bLight.UpdateInterval = 1
 
-		if sconfig.Builtin.Backlight.Temperature {
+		if Sconfig.Builtin.Backlight.Temperature {
 			bLight.ColorTempCommandFunc = func(message mqtt.Message, client mqtt.Client) {
 				minred, _ := strconv.ParseInt(string(message.Payload()), 10, 64)
 
-				_, err := exec.Command("./scripts/run-in-user-session.sh", "gsettings", "set", "org.gnome.settings-daemon.plugins.color", "night-light-temperature", strconv.Itoa(int(math.Round(backlightP.MinredToKelvin(float64(minred)))))).Output()
+				_, err := exec.Command("./scripts/run-in-user-session.sh", "gsettings", "set", "org.gnome.settings-daemon.plugins.color", "night-light-temperature", strconv.Itoa(int(math.Round(MinredToKelvin(float64(minred)))))).Output()
 				if err != nil {
 					log.Printf("%s", err)
 				}
@@ -77,10 +77,10 @@ func (backlights []Backlight) Translate() (lightsOutput []hadiscovery.Light) {
 					log.Println("Error parsing color temp state")
 					log.Println(err)
 				}
-				return strconv.Itoa(int(backlightP.KelvinToMinred(float64(str))))
+				return strconv.Itoa(int(KelvinToMinred(float64(str))))
 			}
-			bLight.MinMireds = int(math.Round(backlightP.KelvinToMinred(10000)))
-			bLight.MaxMireds = int(math.Round(backlightP.KelvinToMinred(3000)))
+			bLight.MinMireds = int(math.Round(KelvinToMinred(10000)))
+			bLight.MaxMireds = int(math.Round(KelvinToMinred(3000)))
 		}
 
 		bLight.Initialize()

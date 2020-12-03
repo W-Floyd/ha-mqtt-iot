@@ -2,8 +2,6 @@ package iotconfig
 
 import (
 	"log"
-	"math"
-	"os/exec"
 	"runtime"
 	"strconv"
 	"time"
@@ -14,101 +12,10 @@ import (
 	batteryP "../builtin/battery"
 	"../builtin/batterywindows"
 	"../hadiscovery"
+	"./config"
 )
 
-const float64EqualityThreshold = 1e-9
-
-func almostEqual(a, b float64) bool {
-	return math.Abs(a-b) <= float64EqualityThreshold
-}
-
-type InfoIcon struct {
-	Name string `json:"name"`
-	ID   string `json:"id"`
-	Icon string `json:"icon"`
-}
-
-type InfoClass struct {
-	Name        string `json:"name"`
-	ID          string `json:"id"`
-	DeviceClass string `json:"device_class"`
-}
-
-type SensorHA struct {
-	Info              InfoIcon `json:"info"`
-	CommandState      []string `json:"command_state"`
-	UnitOfMeasurement string   `json:"unit_of_measurement,omitempty"`
-	UpdateInterval    float64  `json:"update_interval"`
-	ForceUpdateMQTT   bool     `json:"force_update"`
-}
-
-type BinarySensorsHA struct {
-	Info            InfoClass `json:"info"`
-	CommandState    []string  `json:"command_state"`
-	UpdateInterval  float64   `json:"update_interval"`
-	ForceUpdateMQTT bool      `json:"force_update"`
-}
-
-type Config struct {
-	MQTT struct {
-		Broker       string `json:"broker"`
-		Username     string `json:"username"`
-		Password     string `json:"password"`
-		NodeID       string `json:"node_id"`
-		InstanceName string `json:"instance_name"`
-	} `json:"mqtt"`
-	Builtin struct {
-		Prefix    string `json:"prefix"`
-		Backlight struct {
-			Enable      bool `json:"enable"`
-			Temperature bool `json:"temperature"`
-		} `json:"backlight"`
-		Battery struct {
-			Enable bool `json:"enable"`
-		} `json:"battery"`
-	} `json:"builtin"`
-	Lights        []LightHA         `json:"lights"`
-	Switches      []SwitchHA        `json:"switches"`
-	Sensors       []SensorHA        `json:"sensors"`
-	BinarySensors []BinarySensorsHA `json:"binary_sensors"`
-}
-
-func constructCommandFunc(command []string) (f func(message mqtt.Message, connection mqtt.Client)) {
-	var err error
-	return func(message mqtt.Message, connection mqtt.Client) {
-		localcom := command
-		localcom = append(localcom, string(message.Payload()))
-		if len(command) > 0 {
-
-			if len(command) > 1 {
-				_, err = exec.Command(localcom[0], localcom[1:]...).Output()
-			} else {
-				_, err = exec.Command(localcom[0]).Output()
-			}
-			if err != nil {
-				log.Printf("%s", err)
-			}
-
-		}
-	}
-}
-
-func constructStateFunc(command []string) (f func() string) {
-	var err error
-	return func() string {
-		var out []byte
-		if len(command) > 1 {
-			out, err = exec.Command(command[0], command[1:]...).Output()
-		} else {
-
-			out, err = exec.Command(command[0]).Output()
-		}
-		if err != nil {
-			log.Printf("%s", err)
-		}
-		return string(out)
-	}
-}
+type Config config.Config
 
 // Convert takes a config and turns it into a format that can be used for HA.
 func (sconfig Config) Convert() (opts *mqtt.ClientOptions, switches []hadiscovery.Switch, sensors []hadiscovery.Sensor, binarySensors []hadiscovery.BinarySensor, lights []hadiscovery.Light) {
@@ -146,14 +53,14 @@ func (sconfig Config) Convert() (opts *mqtt.ClientOptions, switches []hadiscover
 
 	if sconfig.Builtin.Backlight.Enable {
 
-		backlightP.sconfig = sconfig
+		backlightP.Sconfig = config.Config(sconfig)
 
 		if runtime.GOOS != "linux" {
 			log.Fatalln("Backlight not supported on non-linux platforms")
 		} else {
 
-			backlights := backlightP.PopulateBacklights()
-			lights = append(lights, backlights.Translate())
+			backlights := backlightP.Backlights(backlightP.PopulateBacklights())
+			lights = append(lights, backlights.Translate()...)
 
 		}
 

@@ -1,11 +1,19 @@
-package iotconfig
+package binarysensordevice
 
 import (
 	"log"
 	"os/exec"
 
-	"../hadiscovery"
+	"../../hadiscovery"
+	"../common"
 )
+
+type BinarySensorsHA struct {
+	Info            common.InfoClass `json:"info"`
+	CommandState    []string         `json:"command_state"`
+	UpdateInterval  float64          `json:"update_interval"`
+	ForceUpdateMQTT bool             `json:"force_update"`
+}
 
 func (sw BinarySensorsHA) constructStateFunc() (f func() string) {
 	var err error
