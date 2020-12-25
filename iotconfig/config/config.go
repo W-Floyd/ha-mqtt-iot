@@ -1,10 +1,10 @@
 package config
 
 import (
-	"../binarysensordevice"
-	"../lightdevice"
-	"../sensordevice"
-	"../switchdevice"
+	"github.com/W-Floyd/ha-mqtt-iot/iotconfig/binarysensordevice"
+	"github.com/W-Floyd/ha-mqtt-iot/iotconfig/lightdevice"
+	"github.com/W-Floyd/ha-mqtt-iot/iotconfig/sensordevice"
+	"github.com/W-Floyd/ha-mqtt-iot/iotconfig/switchdevice"
 )
 
 type Config struct {

@@ -7,8 +7,8 @@ import (
 	"strconv"
 	"strings"
 
-	"../../hadiscovery"
-	"../../iotconfig/config"
+	"github.com/W-Floyd/ha-mqtt-iot/hadiscovery"
+	"github.com/W-Floyd/ha-mqtt-iot/iotconfig/config"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 )

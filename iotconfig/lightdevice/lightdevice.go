@@ -1,8 +1,8 @@
 package lightdevice
 
 import (
-	"../../hadiscovery"
-	"../common"
+	"github.com/W-Floyd/ha-mqtt-iot/hadiscovery"
+	"github.com/W-Floyd/ha-mqtt-iot/iotconfig/common"
 )
 
 type LightHA struct {

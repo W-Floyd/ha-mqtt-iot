@@ -7,11 +7,11 @@ import (
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 
-	backlightP "../builtin/backlight"
-	batteryP "../builtin/battery"
-	"../builtin/batterywindows"
-	"../hadiscovery"
-	"./config"
+	backlightP "github.com/W-Floyd/ha-mqtt-iot/builtin/backlight"
+	batteryP "github.com/W-Floyd/ha-mqtt-iot/builtin/battery"
+	"github.com/W-Floyd/ha-mqtt-iot/builtin/batterywindows"
+	"github.com/W-Floyd/ha-mqtt-iot/hadiscovery"
+	"github.com/W-Floyd/ha-mqtt-iot/iotconfig/config"
 )
 
 type Config config.Config
