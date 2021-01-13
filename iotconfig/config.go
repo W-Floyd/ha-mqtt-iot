@@ -94,10 +94,9 @@ func (sconfig Config) Convert() (opts *mqtt.ClientOptions, switches []hadiscover
 			sensors = append(sensors, bs)
 			binarySensors = append(binarySensors, bbs)
 
+		} else {
+			log.Fatalln("Battery not supported on this platform")
 		}
-
-	} else {
-		log.Fatalln("Battery not supported on this platform")
 	}
 
 	return
