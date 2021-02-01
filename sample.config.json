@@ -1,5 +1,6 @@
 {
     "builtin": {
+        "prefix": "Name Prefix ",
         "backlight": {
             "enable": true,
             "temperature": false
