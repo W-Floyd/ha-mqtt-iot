@@ -20,7 +20,7 @@ func (backlights Backlights) Translate() (lightsOutput []hadiscovery.Light) {
 	for k, backlight := range backlights {
 
 		bLight := hadiscovery.Light{}
-		bLight.BrightnessScale = backlight.MaxBrightness
+		bLight.BrightnessScale = int(float64(backlight.MaxBrightness) * (Sconfig.Builtin.Backlight.Range.Maximum - Sconfig.Builtin.Backlight.Range.Minimum))
 		if len(backlights) > 1 {
 			bLight.UniqueID = "builtin-backlight-" + strconv.Itoa(k) + "_" + hadiscovery.NodeID
 			bLight.Name = Sconfig.Builtin.Prefix + "Backlight " + strconv.Itoa(k)
@@ -29,9 +29,18 @@ func (backlights Backlights) Translate() (lightsOutput []hadiscovery.Light) {
 			bLight.Name = Sconfig.Builtin.Prefix + "Backlight"
 		}
 		bLight.BrightnessCommandFunc = func(message mqtt.Message, client mqtt.Client) {
-			backlight.SetBrightness(string(message.Payload()))
+			a, _ := strconv.Atoi(string(message.Payload()))
+			backlight.SetBrightness(a + int(float64(backlight.MaxBrightness)*Sconfig.Builtin.Backlight.Range.Minimum))
 		}
-		bLight.BrightnessStateFunc = backlight.GetBrightness
+
+		bLight.BrightnessStateFunc = func() string {
+			b := backlight.GetBrightness() - int(float64(backlight.MaxBrightness)*Sconfig.Builtin.Backlight.Range.Minimum)
+			if b < 0 {
+				b = 0
+			}
+			s := strconv.Itoa(b)
+			return s
+		}
 		bLight.CommandFunc = func(message mqtt.Message, client mqtt.Client) {
 			if string(message.Payload()) == "ON" {
 				_, err := exec.Command("/bin/sh", "-c", "xset dpms force on").Output()

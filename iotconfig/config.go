@@ -11,6 +11,7 @@ import (
 	batteryP "github.com/W-Floyd/ha-mqtt-iot/builtin/battery"
 	"github.com/W-Floyd/ha-mqtt-iot/builtin/batterywindows"
 	"github.com/W-Floyd/ha-mqtt-iot/hadiscovery"
+	"github.com/W-Floyd/ha-mqtt-iot/iotconfig/common"
 	"github.com/W-Floyd/ha-mqtt-iot/iotconfig/config"
 )
 
@@ -51,6 +52,14 @@ func (sconfig Config) Convert() (opts *mqtt.ClientOptions, switches []hadiscover
 	}
 
 	if sconfig.Builtin.Backlight.Enable {
+
+		if common.AlmostEqual(sconfig.Builtin.Backlight.Range.Maximum, 0.0) {
+			sconfig.Builtin.Backlight.Range.Maximum = 1.0
+		}
+
+		if common.AlmostEqual(sconfig.Builtin.Backlight.Range.Minimum, 0.0) {
+			sconfig.Builtin.Backlight.Range.Minimum = 0.0
+		}
 
 		backlightP.Sconfig = config.Config(sconfig)
 

@@ -8,6 +8,12 @@ import (
 )
 
 type Config struct {
+	Logging struct {
+		Debug    bool `json:"debug"`
+		Error    bool `json:"error"`
+		Warn     bool `json:"warn"`
+		Critical bool `json:"critical"`
+	}
 	MQTT struct {
 		Broker       string `json:"broker"`
 		Username     string `json:"username"`
@@ -20,6 +26,11 @@ type Config struct {
 		Backlight struct {
 			Enable      bool `json:"enable"`
 			Temperature bool `json:"temperature"`
+			Range       struct {
+				Minimum float64 `json:"minimum"` // E.g 0.01 for  1% minimum
+				Maximum float64 `json:"maximum"` // E.g 0.95 for 95% maximum
+
+			}
 		} `json:"backlight"`
 		Battery struct {
 			Enable bool `json:"enable"`

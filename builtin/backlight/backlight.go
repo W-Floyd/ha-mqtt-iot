@@ -20,8 +20,8 @@ const backlightsDirectory = "/sys/class/backlight"
 // Backlight defines a backlight, being the maximum brightness, and functions for getting and setting brightness
 type Backlight struct {
 	MaxBrightness int
-	SetBrightness func(string)
-	GetBrightness func() string
+	SetBrightness func(int)
+	GetBrightness func() int
 	IsOn          func() bool
 }
 
@@ -48,7 +48,6 @@ func PopulateBacklights() (BacklightOutput Backlights) {
 		back.SetBrightness = backlight.setBrightness
 		back.GetBrightness = backlight.getBrightness
 		back.IsOn = backlight.IsOn
-
 		BacklightOutput = append(BacklightOutput, back)
 	}
 
@@ -67,7 +66,7 @@ func (b *backlight) dpmsPath() string {
 	return filepath.Join(backlightsDirectory, b.identifier, "device/dpms")
 }
 
-func (b *backlight) setBrightness(brightness string) {
+func (b *backlight) setBrightness(brightness int) {
 	f, err := os.OpenFile(b.currentBrightnessPath(), os.O_WRONLY, 0644)
 	if err != nil {
 		log.Println(err)
@@ -75,25 +74,26 @@ func (b *backlight) setBrightness(brightness string) {
 	}
 	defer f.Close()
 
-	_, err = f.WriteString(brightness)
+	_, err = f.WriteString(strconv.Itoa(brightness))
 	if err != nil {
 		log.Println(err)
 	}
 	return
 }
 
-func (b *backlight) getBrightness() string {
+func (b *backlight) getBrightness() int {
 	v, err := ioutil.ReadFile(b.currentBrightnessPath())
 	if err != nil {
 		fmt.Printf("failed to read current brightness of %s: %s", b.identifier, err)
-		return ""
+		return 0
 	}
-	val := string(bytes.TrimSpace(v))
+	val := bytes.TrimSpace(v)
 	if err != nil {
 		fmt.Printf("failed to parse current brightness of %s: %s", b.identifier, err)
-		return ""
+		return 0
 	}
-	return val
+	out, _ := strconv.Atoi(string(val))
+	return out
 }
 
 func (b *backlight) getMaxBrightness() (int, error) {

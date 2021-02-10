@@ -46,8 +46,6 @@ func (li LightHA) Translate() hadiscovery.Light {
 		nli.BrightnessScale = li.BrightnessScale
 	}
 
-	nli.ForceUpdateMQTT = li.ForceUpdateMQTT
-
 	if len(li.CommandState) > 0 {
 		nli.StateFunc = common.ConstructStateFunc(li.CommandState)
 	}

@@ -17,8 +17,10 @@ import (
 	"github.com/W-Floyd/ha-mqtt-iot/iotconfig"
 )
 
-var debugLog = log.New(os.Stdout, "DEBUG", 0)
-var errorLog = log.New(os.Stdout, "ERROR", 0)
+var debugLog = log.New(os.Stdout, "DEBUG   ", 0)
+var errorLog = log.New(os.Stdout, "ERROR   ", 0)
+var warnLog = log.New(os.Stdout, "WARN    ", 0)
+var criticalLog = log.New(os.Stdout, "CRITICAL", 0)
 
 const float64EqualityThreshold = 1e-9
 
@@ -70,8 +72,18 @@ func main() {
 
 	opts, switches, sensors, binarySensors, lights := sconfig.Convert()
 
-	mqtt.DEBUG = debugLog
-	mqtt.ERROR = errorLog
+	if sconfig.Logging.Debug {
+		mqtt.DEBUG = debugLog
+	}
+	if sconfig.Logging.Warn {
+		mqtt.WARN = warnLog
+	}
+	if sconfig.Logging.Error {
+		mqtt.ERROR = errorLog
+	}
+	if sconfig.Logging.Critical {
+		mqtt.CRITICAL = criticalLog
+	}
 
 	sub := func(client mqtt.Client) {
 		for _, sw := range switches {

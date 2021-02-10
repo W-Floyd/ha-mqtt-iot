@@ -3,11 +3,21 @@
         "prefix": "Name Prefix ",
         "backlight": {
             "enable": true,
-            "temperature": false
+            "temperature": false,
+            "range": {
+                "minimum": 0.025,
+                "maximum": 0.95
+            }
         },
         "battery": {
             "enable": true
         }
+    },
+    "logging": {
+        "warn": true,
+        "error": true,
+        "critical": true,
+        "debug": true
     },
     "lights": [
         {
