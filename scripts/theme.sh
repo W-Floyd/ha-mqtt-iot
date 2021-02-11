@@ -28,22 +28,27 @@ if [ "${1}" == 'set' ]; then
   gsettings set org.gnome.Terminal.ProfilesList default $UUID
 
   echo "user_pref(\"devtools.theme\", \"${1}\");
-user_pref(\"extensions.activeThemeID\", \"firefox-compact-${1}@mozilla.org\");" >~/.mozilla/firefox/pcmd5xvl.default-release/user.js
+user_pref(\"extensions.activeThemeID\", \"firefox-compact-${1}@mozilla.org\");
+user_pref(\"toolkit.legacyUserProfileCustomizations.stylesheets\", true);
+user_pref(\"browser.tabs.drawInTitlebar\", true);
+user_pref(\"browser.uidensity\", 0);" >~/.mozilla/firefox/pcmd5xvl.default-release/user.js
 
   if [ $1 == "dark" ]; then
-    THEME='Canta-blue-dark'
+    THEME='WhiteSur-dark-solid-purple'
     ICON='Numix-Square'
+    WALLPAPER='/home/william/Pictures/Wallpapers/dark.jpg'
     gsettings set com.solus-project.budgie-panel dark-theme true
     dconf write /org/gnome/terminal/legacy/theme-variant "'dark'"
-    gsettings set org.gnome.desktop.background picture-uri 'file:///home/william/Pictures/Wallpapers/dark.jpg'
+    gsettings set org.gnome.desktop.background picture-uri "file://${WALLPAPER}"
     spicetify -q config current_theme Adapta-Nokto
     spicetify -q update
   elif [ $1 == "light" ]; then
-    THEME='Canta-blue-light'
+    THEME='WhiteSur-light-solid-purple'
     ICON='Numix-Square-Light'
+    WALLPAPER='/home/william/Pictures/Wallpapers/light.png'
     gsettings set com.solus-project.budgie-panel dark-theme false
     dconf write /org/gnome/terminal/legacy/theme-variant "'light'"
-    gsettings set org.gnome.desktop.background picture-uri 'file:///home/william/Pictures/Wallpapers/light.jpg'
+    gsettings set org.gnome.desktop.background picture-uri "file://${WALLPAPER}"
     spicetify -q config current_theme Midnight-Light
     spicetify -q update
   fi
