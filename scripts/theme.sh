@@ -40,7 +40,7 @@ user_pref(\"browser.uidensity\", 0);" >~/.mozilla/firefox/pcmd5xvl.default-relea
     gsettings set com.solus-project.budgie-panel dark-theme true
     dconf write /org/gnome/terminal/legacy/theme-variant "'dark'"
     gsettings set org.gnome.desktop.background picture-uri "file://${WALLPAPER}"
-    spicetify -q config current_theme Adapta-Nokto
+    spicetify -q config current_theme OneDarkish
     spicetify -q update
   elif [ $1 == "light" ]; then
     THEME='WhiteSur-light-solid-purple'
