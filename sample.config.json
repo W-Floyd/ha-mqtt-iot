@@ -107,6 +107,19 @@
                 "gsettings get org.gnome.pomodoro.state timer-state-date | sed \"s/'//g\""
             ],
             "update_interval": 1
+        },
+        {
+            "info": {
+                "name": "IP Address",
+                "id": "ip-address",
+                "icon": "mdi:ip-network"
+            },
+            "command_state": [
+                "/bin/bash",
+                "-c",
+                "ip -j address show wlp2s0 | jq -r '.[0].addr_info[0].local'"
+            ],
+            "update_interval": 10
         }
     ],
     "binary_sensors": [
