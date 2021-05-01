@@ -6,7 +6,7 @@ ENV LANG C.UTF-8
 COPY --from=golang:alpine /usr/local/go/ /usr/local/go/
 
 WORKDIR /app
-ADD ../ /app
+ADD . /app
 RUN cd /app && go build -o /out
 RUN rm -r /app
 
