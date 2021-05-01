@@ -1,0 +1,22 @@
+name: ha-mqtt-iot
+version: '0.1'
+slug: ha-mqtt-iot
+description: Home Assistant MQTT IOT
+arch:
+  - amd64
+url: https://github.com/W-Floyd/ha-mqtt-iot
+startup: application
+boot: auto
+ports:
+  80/tcp: 80
+  80/udp: 80
+  443/tcp: 443
+  443/udp: 443
+  1883/tcp: 1883
+  1883/udp: 1883
+  8883/tcp: 8883
+  8883/udp: 8883
+map:
+  - config:rw
+services: 
+  - mqtt:need
