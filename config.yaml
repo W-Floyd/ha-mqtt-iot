@@ -21,4 +21,4 @@ map:
 services: 
   - mqtt:want
 discovery:
-  - ha_mqtt_iot
+  - mqtt
