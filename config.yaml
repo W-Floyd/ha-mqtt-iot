@@ -1,6 +1,6 @@
-name: ha-mqtt-iot
+name: ha_mqtt_iot
 version: '0.1'
-slug: ha-mqtt-iot
+slug: ha_mqtt_iot
 description: Home Assistant MQTT IOT
 arch:
   - amd64
@@ -21,4 +21,4 @@ map:
 services: 
   - mqtt:want
 discovery:
-  - hq_mqtt_iot
+  - ha_mqtt_iot
