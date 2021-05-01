@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bashio
 set -e
 
 MQTT_HOST=$(bashio::services mqtt "host")
@@ -16,4 +16,6 @@ echo '
     }
 }' > '/app/secrets.json'
 
-/app/out
+cp '/data/options.json' '/app/config.json'
+
+cd app && ./out
