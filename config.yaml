@@ -19,4 +19,7 @@ ports:
 map:
   - config:rw
 services: 
-  - mqtt:need
+  - mqtt:want
+discovery:
+  - hq_mqtt_iot
+auth_api: true
