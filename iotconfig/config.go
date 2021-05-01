@@ -3,6 +3,8 @@ package iotconfig
 import (
 	"log"
 	"runtime"
+	"strconv"
+	"strings"
 	"time"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
@@ -10,6 +12,7 @@ import (
 	backlightP "github.com/W-Floyd/ha-mqtt-iot/builtin/backlight"
 	batteryP "github.com/W-Floyd/ha-mqtt-iot/builtin/battery"
 	"github.com/W-Floyd/ha-mqtt-iot/builtin/batterywindows"
+	"github.com/W-Floyd/ha-mqtt-iot/builtin/crypto"
 	"github.com/W-Floyd/ha-mqtt-iot/hadiscovery"
 	"github.com/W-Floyd/ha-mqtt-iot/iotconfig/common"
 	"github.com/W-Floyd/ha-mqtt-iot/iotconfig/config"
@@ -97,6 +100,42 @@ func (sconfig Config) Convert() (opts *mqtt.ClientOptions, switches []hadiscover
 		} else {
 			log.Fatalln("Battery not supported on this platform")
 		}
+	}
+
+	if len(sconfig.Builtin.Crypto) > 0 {
+
+		crypto.Setup()
+
+		for k, entry := range sconfig.Builtin.Crypto {
+			cSensor := hadiscovery.Sensor{}
+			cSensor.UniqueID = "builtin-crypto-" + entry.CoinName + "-" + entry.CurrencyName
+			cSensor.Name = strings.ToUpper(entry.CurrencyName) + "/" + strings.Title(entry.CoinName)
+
+			f := func(i int) func() string {
+				return func() string {
+					localEntry := sconfig.Builtin.Crypto[i]
+					val := crypto.GetPrice(localEntry.CoinName, localEntry.CurrencyName)
+					return strconv.FormatFloat(float64(val), 'f', 6, 32)
+				}
+			}(k)
+
+			cSensor.StateFunc = f
+			cSensor.UnitOfMeasurement = strings.ToUpper(entry.CurrencyName)
+			if !common.AlmostEqual(entry.UpdateInterval, 0.0) {
+				cSensor.UpdateInterval = entry.UpdateInterval
+			} else {
+				entry.UpdateInterval = float64(len(sconfig.Builtin.Crypto))
+			}
+			cSensor.UpdateInterval = entry.UpdateInterval
+			if len(entry.Icon) > 0 {
+				cSensor.Icon = entry.Icon
+			} else {
+				cSensor.Icon = "mdi:currency-usd"
+			}
+			cSensor.Initialize()
+			sensors = append(sensors, cSensor)
+		}
+
 	}
 
 	return

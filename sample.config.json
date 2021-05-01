@@ -11,7 +11,15 @@
         },
         "battery": {
             "enable": true
-        }
+        },
+        "crypto": [
+            {
+                "coin_name": "dogecoin",
+                "currency_name": "usd",
+                "update_interval": 1,
+                "icon": "mdi:currency-usd"
+            }
+        ]
     },
     "logging": {
         "warn": true,

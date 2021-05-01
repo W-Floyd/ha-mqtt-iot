@@ -35,6 +35,12 @@ type Config struct {
 		Battery struct {
 			Enable bool `json:"enable"`
 		} `json:"battery"`
+		Crypto []struct {
+			CoinName       string  `json:"coin_name"`
+			CurrencyName   string  `json:"currency_name"`
+			UpdateInterval float64 `json:"update_interval"`
+			Icon           string  `json:"icon"`
+		} `json:"crypto"`
 	} `json:"builtin"`
 	Lights        []lightdevice.LightHA                `json:"lights"`
 	Switches      []switchdevice.SwitchHA              `json:"switches"`

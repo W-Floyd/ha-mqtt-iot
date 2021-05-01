@@ -6,4 +6,5 @@ require (
 	github.com/denisbrodbeck/machineid v1.0.1
 	github.com/eclipse/paho.mqtt.golang v1.3.0
 	github.com/imdario/mergo v0.3.11
+	github.com/superoo7/go-gecko v1.0.0 // indirect
 )
