@@ -1,0 +1,8 @@
+---
+channel: stable
+addons:
+  ha_mqtt_iot:
+    repository: ha-mqtt-iot/addon
+    target: ha_mqtt_iot
+    image: ha_mqtt_iot
+  
