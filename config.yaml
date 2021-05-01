@@ -5,7 +5,7 @@ description: Home Assistant MQTT IOT
 arch:
   - amd64
 url: https://github.com/W-Floyd/ha-mqtt-iot
-startup: application
+startup: services
 boot: auto
 ports:
   80/tcp: 80
@@ -22,4 +22,3 @@ services:
   - mqtt:want
 discovery:
   - hq_mqtt_iot
-auth_api: true
