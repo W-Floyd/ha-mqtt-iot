@@ -1,5 +1,5 @@
 ARG BUILD_FROM
-FROM golang:$BUILD_FROM AS builder
+FROM golang:latest AS builder
 
 ENV LANG C.UTF-8
 
