@@ -5,14 +5,27 @@ ENV LANG C.UTF-8
 
 COPY --from=golang:alpine /usr/local/go/ /usr/local/go/
 
-WORKDIR /app
-ADD . /app
-RUN cd /app && go build -o /out
-RUN rm -r /app
+# Set necessary environment variables needed for our image
+ENV GO111MODULE=on \
+    CGO_ENABLED=0
 
-COPY init.sh /
+# Move to working directory /build
+WORKDIR /build
+
+# Copy static assets into the container
+COPY go.mod go.sum ./
+
+# Download dependencies using go mod
+RUN go mod download
+
+# Copy the code into the container
+COPY . ./cmd
+COPY init.sh ./
+
+# Build the application
+RUN cd cmd && go build -o /out 
 
 RUN rm -r /usr/local/go/
 
-RUN chmod a+x /init.sh
+RUN chmod a+x init.sh
 CMD [ "/init.sh" ]
