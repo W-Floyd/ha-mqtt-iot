@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"flag"
 	"io/ioutil"
 	"log"
 	"math"
@@ -46,8 +47,11 @@ func logDebug(message ...interface{}) {
 }
 
 func main() {
+	configFile := flag.String("config", "./config.json", "path to config file")
+	secretsFile := flag.String("secrets", "./secrets.json", "path to secrets file")
+	flag.Parse()
 
-	configFiles := [...]string{"./config.json", "./secrets.json"}
+	configFiles := [...]string{*configFile, *secretsFile}
 
 	var sconfig iotconfig.Config
 
