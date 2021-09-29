@@ -12,6 +12,8 @@ type LightHA struct {
 	CommandBrightness      []string        `json:"command_brightness"`
 	CommandBrightnessState []string        `json:"command_brightness_state"`
 	BrightnessScale        int             `json:"brightness_scale"`
+	MaxMireds              int             `json:"max_mireds,omitempty"`
+	MinMireds              int             `json:"min_mireds,omitempty"`
 	CommandColorTemp       []string        `json:"command_color_temp"`
 	CommandColorTempState  []string        `json:"command_color_temp_state"`
 	CommandEffect          []string        `json:"command_effect"`
@@ -44,6 +46,14 @@ func (li LightHA) Translate() hadiscovery.Light {
 
 	if li.BrightnessScale != 0 {
 		nli.BrightnessScale = li.BrightnessScale
+	}
+
+	if li.MaxMireds != 0 {
+		nli.MaxMireds = li.MaxMireds
+	}
+
+	if li.MinMireds != 0 {
+		nli.MinMireds = li.MinMireds
 	}
 
 	if len(li.CommandState) > 0 {
