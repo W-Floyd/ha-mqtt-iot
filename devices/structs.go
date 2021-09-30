@@ -126,10 +126,10 @@ type HADeviceAlarmControlPanelFunctions struct {
 
 type HADeviceAlarmControlPanelFunctionsConfig struct {
 	Availability struct {
-		State []string
-	}
-	Command []string
-	State   []string
+		State []string `json:"state,omitempty"`
+	} `json:"availability,omitempty"`
+	Command []string `json:"command,omitempty"`
+	State   []string `json:"state,omitempty"`
 }
 
 // binary_sensor
@@ -256,9 +256,9 @@ type HADeviceBinarySensorFunctions struct {
 
 type HADeviceBinarySensorFunctionsConfig struct {
 	Availability struct {
-		State []string
-	}
-	State []string
+		State []string `json:"state,omitempty"`
+	} `json:"availability,omitempty"`
+	State []string `json:"state,omitempty"`
 }
 
 // camera
@@ -343,9 +343,9 @@ type HADeviceCameraFunctions struct {
 
 type HADeviceCameraFunctionsConfig struct {
 	Availability struct {
-		State []string
-	}
-	State []string
+		State []string `json:"state,omitempty"`
+	} `json:"availability,omitempty"`
+	State []string `json:"state,omitempty"`
 }
 
 // cover
@@ -530,13 +530,13 @@ type HADeviceCoverFunctions struct {
 
 type HADeviceCoverFunctionsConfig struct {
 	Availability struct {
-		State []string
-	}
-	Command     []string
-	SetPosition []string
-	State       []string
-	TiltCommand []string
-	TiltStatus  []string
+		State []string `json:"state,omitempty"`
+	} `json:"availability,omitempty"`
+	Command     []string `json:"command,omitempty"`
+	SetPosition []string `json:"set-position,omitempty"`
+	State       []string `json:"state,omitempty"`
+	TiltCommand []string `json:"tilt-command,omitempty"`
+	TiltStatus  []string `json:"tilt-status,omitempty"`
 }
 
 // device_tracker
@@ -618,7 +618,7 @@ type HADeviceDeviceTriggerFunctions struct {
 }
 
 type HADeviceDeviceTriggerFunctionsConfig struct {
-	State []string
+	State []string `json:"state,omitempty"`
 }
 
 // fan
@@ -787,16 +787,16 @@ type HADeviceFanFunctions struct {
 
 type HADeviceFanFunctionsConfig struct {
 	Availability struct {
-		State []string
-	}
-	Command            []string
-	OscillationCommand []string
-	OscillationState   []string
-	PercentageCommand  []string
-	PercentageState    []string
-	PresetModeCommand  []string
-	PresetModeState    []string
-	State              []string
+		State []string `json:"state,omitempty"`
+	} `json:"availability,omitempty"`
+	Command            []string `json:"command,omitempty"`
+	OscillationCommand []string `json:"oscillation-command,omitempty"`
+	OscillationState   []string `json:"oscillation-state,omitempty"`
+	PercentageCommand  []string `json:"percentage-command,omitempty"`
+	PercentageState    []string `json:"percentage-state,omitempty"`
+	PresetModeCommand  []string `json:"preset-mode-command,omitempty"`
+	PresetModeState    []string `json:"preset-mode-state,omitempty"`
+	State              []string `json:"state,omitempty"`
 }
 
 // humidifier
@@ -952,14 +952,14 @@ type HADeviceHumidifierFunctions struct {
 
 type HADeviceHumidifierFunctionsConfig struct {
 	Availability struct {
-		State []string
-	}
-	Command               []string
-	ModeCommand           []string
-	ModeState             []string
-	State                 []string
-	TargetHumidityCommand []string
-	TargetHumidityState   []string
+		State []string `json:"state,omitempty"`
+	} `json:"availability,omitempty"`
+	Command               []string `json:"command,omitempty"`
+	ModeCommand           []string `json:"mode-command,omitempty"`
+	ModeState             []string `json:"mode-state,omitempty"`
+	State                 []string `json:"state,omitempty"`
+	TargetHumidityCommand []string `json:"target-humidity-command,omitempty"`
+	TargetHumidityState   []string `json:"target-humidity-state,omitempty"`
 }
 
 // climate
@@ -1196,28 +1196,28 @@ type HADeviceClimateFunctions struct {
 }
 
 type HADeviceClimateFunctionsConfig struct {
-	AuxCommand   []string
-	AuxState     []string
+	AuxCommand   []string `json:"aux-command,omitempty"`
+	AuxState     []string `json:"aux-state,omitempty"`
 	Availability struct {
-		State []string
-	}
-	AwayModeCommand        []string
-	AwayModeState          []string
-	FanModeCommand         []string
-	FanModeState           []string
-	HoldCommand            []string
-	HoldState              []string
-	ModeCommand            []string
-	ModeState              []string
-	PowerCommand           []string
-	SwingModeCommand       []string
-	SwingModeState         []string
-	TemperatureCommand     []string
-	TemperatureHighCommand []string
-	TemperatureHighState   []string
-	TemperatureLowCommand  []string
-	TemperatureLowState    []string
-	TemperatureState       []string
+		State []string `json:"state,omitempty"`
+	} `json:"availability,omitempty"`
+	AwayModeCommand        []string `json:"away-mode-command,omitempty"`
+	AwayModeState          []string `json:"away-mode-state,omitempty"`
+	FanModeCommand         []string `json:"fan-mode-command,omitempty"`
+	FanModeState           []string `json:"fan-mode-state,omitempty"`
+	HoldCommand            []string `json:"hold-command,omitempty"`
+	HoldState              []string `json:"hold-state,omitempty"`
+	ModeCommand            []string `json:"mode-command,omitempty"`
+	ModeState              []string `json:"mode-state,omitempty"`
+	PowerCommand           []string `json:"power-command,omitempty"`
+	SwingModeCommand       []string `json:"swing-mode-command,omitempty"`
+	SwingModeState         []string `json:"swing-mode-state,omitempty"`
+	TemperatureCommand     []string `json:"temperature-command,omitempty"`
+	TemperatureHighCommand []string `json:"temperature-high-command,omitempty"`
+	TemperatureHighState   []string `json:"temperature-high-state,omitempty"`
+	TemperatureLowCommand  []string `json:"temperature-low-command,omitempty"`
+	TemperatureLowState    []string `json:"temperature-low-state,omitempty"`
+	TemperatureState       []string `json:"temperature-state,omitempty"`
 }
 
 // light
@@ -1430,24 +1430,24 @@ type HADeviceLightFunctions struct {
 
 type HADeviceLightFunctionsConfig struct {
 	Availability struct {
-		State []string
-	}
-	BrightnessCommand []string
-	BrightnessState   []string
-	ColorModeState    []string
-	ColorTempCommand  []string
-	ColorTempState    []string
-	Command           []string
-	EffectCommand     []string
-	EffectState       []string
-	HsCommand         []string
-	HsState           []string
-	RgbCommand        []string
-	RgbState          []string
-	State             []string
-	WhiteCommand      []string
-	XyCommand         []string
-	XyState           []string
+		State []string `json:"state,omitempty"`
+	} `json:"availability,omitempty"`
+	BrightnessCommand []string `json:"brightness-command,omitempty"`
+	BrightnessState   []string `json:"brightness-state,omitempty"`
+	ColorModeState    []string `json:"color-mode-state,omitempty"`
+	ColorTempCommand  []string `json:"color-temp-command,omitempty"`
+	ColorTempState    []string `json:"color-temp-state,omitempty"`
+	Command           []string `json:"command,omitempty"`
+	EffectCommand     []string `json:"effect-command,omitempty"`
+	EffectState       []string `json:"effect-state,omitempty"`
+	HsCommand         []string `json:"hs-command,omitempty"`
+	HsState           []string `json:"hs-state,omitempty"`
+	RgbCommand        []string `json:"rgb-command,omitempty"`
+	RgbState          []string `json:"rgb-state,omitempty"`
+	State             []string `json:"state,omitempty"`
+	WhiteCommand      []string `json:"white-command,omitempty"`
+	XyCommand         []string `json:"xy-command,omitempty"`
+	XyState           []string `json:"xy-state,omitempty"`
 }
 
 // lock
@@ -1558,10 +1558,10 @@ type HADeviceLockFunctions struct {
 
 type HADeviceLockFunctionsConfig struct {
 	Availability struct {
-		State []string
-	}
-	Command []string
-	State   []string
+		State []string `json:"state,omitempty"`
+	} `json:"availability,omitempty"`
+	Command []string `json:"command,omitempty"`
+	State   []string `json:"state,omitempty"`
 }
 
 // number
@@ -1665,10 +1665,10 @@ type HADeviceNumberFunctions struct {
 
 type HADeviceNumberFunctionsConfig struct {
 	Availability struct {
-		State []string
-	}
-	Command []string
-	State   []string
+		State []string `json:"state,omitempty"`
+	} `json:"availability,omitempty"`
+	Command []string `json:"command,omitempty"`
+	State   []string `json:"state,omitempty"`
 }
 
 // scene
@@ -1730,9 +1730,9 @@ type HADeviceSceneFunctions struct {
 
 type HADeviceSceneFunctionsConfig struct {
 	Availability struct {
-		State []string
-	}
-	Command []string
+		State []string `json:"state,omitempty"`
+	} `json:"availability,omitempty"`
+	Command []string `json:"command,omitempty"`
 }
 
 // select
@@ -1832,10 +1832,10 @@ type HADeviceSelectFunctions struct {
 
 type HADeviceSelectFunctionsConfig struct {
 	Availability struct {
-		State []string
-	}
-	Command []string
-	State   []string
+		State []string `json:"state,omitempty"`
+	} `json:"availability,omitempty"`
+	Command []string `json:"command,omitempty"`
+	State   []string `json:"state,omitempty"`
 }
 
 // sensor
@@ -1954,9 +1954,9 @@ type HADeviceSensorFunctions struct {
 
 type HADeviceSensorFunctionsConfig struct {
 	Availability struct {
-		State []string
-	}
-	State []string
+		State []string `json:"state,omitempty"`
+	} `json:"availability,omitempty"`
+	State []string `json:"state,omitempty"`
 }
 
 // switch
@@ -2078,10 +2078,10 @@ type HADeviceSwitchFunctions struct {
 
 type HADeviceSwitchFunctionsConfig struct {
 	Availability struct {
-		State []string
-	}
-	Command []string
-	State   []string
+		State []string `json:"state,omitempty"`
+	} `json:"availability,omitempty"`
+	Command []string `json:"command,omitempty"`
+	State   []string `json:"state,omitempty"`
 }
 
 // tag
@@ -2125,7 +2125,7 @@ type HADeviceTagFunctions struct {
 }
 
 type HADeviceTagFunctionsConfig struct {
-	State []string
+	State []string `json:"state,omitempty"`
 }
 
 // vacuum
@@ -2253,9 +2253,9 @@ type HADeviceVacuumFunctions struct {
 
 type HADeviceVacuumFunctionsConfig struct {
 	Availability struct {
-		State []string
-	}
-	Command     []string
-	SendCommand []string
-	SetFanSpeed []string
+		State []string `json:"state,omitempty"`
+	} `json:"availability,omitempty"`
+	Command     []string `json:"command,omitempty"`
+	SendCommand []string `json:"send-command,omitempty"`
+	SetFanSpeed []string `json:"set-fan-speed,omitempty"`
 }

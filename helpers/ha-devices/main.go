@@ -175,14 +175,14 @@ func recurseItemFunctions(keyname string, item map[string]*gabs.Container) (func
 
 			configlines = append(configlines, camelName+" struct {")
 			configlines = append(configlines, conflines...)
-			configlines = append(configlines, "}")
+			configlines = append(configlines, "}"+"`json:\""+strcase.ToKebab(camelName)+",omitempty\"`")
 
 			functionlines = append(functionlines, camelName+" struct {")
 			functionlines = append(functionlines, funclines...)
 			functionlines = append(functionlines, "}")
 		} else {
 			functionlines = append(functionlines, camelName+" "+functionType)
-			configlines = append(configlines, camelName+" []string")
+			configlines = append(configlines, camelName+" []string `json:\""+strcase.ToKebab(camelName)+",omitempty\"`")
 		}
 
 	}
