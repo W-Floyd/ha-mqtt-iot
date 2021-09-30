@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"sort"
 	"strings"
 
 	"github.com/Jeffail/gabs/v2"
@@ -83,9 +84,20 @@ func generateDevice(deviceName string, item map[string]*gabs.Container) (returnl
 		returnlines = append(returnlines, "// "+deviceName)
 	}
 	returnlines = append(returnlines, "type HADevice"+strcase.ToCamel(deviceName)+" struct {")
-	for key, child := range item {
+
+	keys := make([]string, 0, len(item))
+
+	for key := range item {
+		keys = append(keys, key)
+	}
+
+	sort.Strings(keys)
+
+	for _, key := range keys {
+		child := item[key]
 		returnlines = append(returnlines, recurseItem(key, child.ChildrenMap())...)
 	}
+
 	returnlines = append(returnlines, "}", "")
 	return returnlines
 }
@@ -93,7 +105,18 @@ func generateDevice(deviceName string, item map[string]*gabs.Container) (returnl
 func recurseItem(keyname string, item map[string]*gabs.Container) (returnlines []string) {
 
 	if keyname == "keys" {
-		for key, child := range item {
+
+		keys := make([]string, 0, len(item))
+
+		for key := range item {
+			keys = append(keys, key)
+		}
+
+		sort.Strings(keys)
+
+		for _, key := range keys {
+			child := item[key]
+
 			returnlines = append(returnlines, recurseItem(key, child.ChildrenMap())...)
 		}
 	} else {
