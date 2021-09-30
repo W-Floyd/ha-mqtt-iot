@@ -124,6 +124,14 @@ type HADeviceAlarmControlPanelFunctions struct {
 	State   func() string
 }
 
+type HADeviceAlarmControlPanelFunctionsConfig struct {
+	Availability struct {
+		State []string
+	}
+	Command []string
+	State   []string
+}
+
 // binary_sensor
 type HADeviceBinarySensor struct {
 	// A list of MQTT topics subscribed to receive availability (online/offline)
@@ -246,6 +254,13 @@ type HADeviceBinarySensorFunctions struct {
 	State func() string
 }
 
+type HADeviceBinarySensorFunctionsConfig struct {
+	Availability struct {
+		State []string
+	}
+	State []string
+}
+
 // camera
 type HADeviceCamera struct {
 	// A list of MQTT topics subscribed to receive availability (online/offline)
@@ -324,6 +339,13 @@ type HADeviceCameraFunctions struct {
 		State func() string
 	}
 	State func() string
+}
+
+type HADeviceCameraFunctionsConfig struct {
+	Availability struct {
+		State []string
+	}
+	State []string
 }
 
 // cover
@@ -506,6 +528,17 @@ type HADeviceCoverFunctions struct {
 	TiltStatus  func() string
 }
 
+type HADeviceCoverFunctionsConfig struct {
+	Availability struct {
+		State []string
+	}
+	Command     []string
+	SetPosition []string
+	State       []string
+	TiltCommand []string
+	TiltStatus  []string
+}
+
 // device_tracker
 type HADeviceDeviceTracker struct {
 	// List of devices with their topic.
@@ -523,6 +556,9 @@ type HADeviceDeviceTracker struct {
 }
 
 type HADeviceDeviceTrackerFunctions struct {
+}
+
+type HADeviceDeviceTrackerFunctionsConfig struct {
 }
 
 // device_trigger
@@ -579,6 +615,10 @@ type HADeviceDeviceTrigger struct {
 
 type HADeviceDeviceTriggerFunctions struct {
 	State func() string
+}
+
+type HADeviceDeviceTriggerFunctionsConfig struct {
+	State []string
 }
 
 // fan
@@ -745,6 +785,20 @@ type HADeviceFanFunctions struct {
 	State              func() string
 }
 
+type HADeviceFanFunctionsConfig struct {
+	Availability struct {
+		State []string
+	}
+	Command            []string
+	OscillationCommand []string
+	OscillationState   []string
+	PercentageCommand  []string
+	PercentageState    []string
+	PresetModeCommand  []string
+	PresetModeState    []string
+	State              []string
+}
+
 // humidifier
 type HADeviceHumidifier struct {
 	// A list of MQTT topics subscribed to receive availability (online/offline)
@@ -894,6 +948,18 @@ type HADeviceHumidifierFunctions struct {
 	State                 func() string
 	TargetHumidityCommand func(mqtt.Message, mqtt.Client)
 	TargetHumidityState   func() string
+}
+
+type HADeviceHumidifierFunctionsConfig struct {
+	Availability struct {
+		State []string
+	}
+	Command               []string
+	ModeCommand           []string
+	ModeState             []string
+	State                 []string
+	TargetHumidityCommand []string
+	TargetHumidityState   []string
 }
 
 // climate
@@ -1129,6 +1195,31 @@ type HADeviceClimateFunctions struct {
 	TemperatureState       func() string
 }
 
+type HADeviceClimateFunctionsConfig struct {
+	AuxCommand   []string
+	AuxState     []string
+	Availability struct {
+		State []string
+	}
+	AwayModeCommand        []string
+	AwayModeState          []string
+	FanModeCommand         []string
+	FanModeState           []string
+	HoldCommand            []string
+	HoldState              []string
+	ModeCommand            []string
+	ModeState              []string
+	PowerCommand           []string
+	SwingModeCommand       []string
+	SwingModeState         []string
+	TemperatureCommand     []string
+	TemperatureHighCommand []string
+	TemperatureHighState   []string
+	TemperatureLowCommand  []string
+	TemperatureLowState    []string
+	TemperatureState       []string
+}
+
 // light
 type HADeviceLight struct {
 	// A list of MQTT topics subscribed to receive availability (online/offline)
@@ -1337,6 +1428,28 @@ type HADeviceLightFunctions struct {
 	XyState           func() string
 }
 
+type HADeviceLightFunctionsConfig struct {
+	Availability struct {
+		State []string
+	}
+	BrightnessCommand []string
+	BrightnessState   []string
+	ColorModeState    []string
+	ColorTempCommand  []string
+	ColorTempState    []string
+	Command           []string
+	EffectCommand     []string
+	EffectState       []string
+	HsCommand         []string
+	HsState           []string
+	RgbCommand        []string
+	RgbState          []string
+	State             []string
+	WhiteCommand      []string
+	XyCommand         []string
+	XyState           []string
+}
+
 // lock
 type HADeviceLock struct {
 	// A list of MQTT topics subscribed to receive availability (online/offline)
@@ -1443,6 +1556,14 @@ type HADeviceLockFunctions struct {
 	State   func() string
 }
 
+type HADeviceLockFunctionsConfig struct {
+	Availability struct {
+		State []string
+	}
+	Command []string
+	State   []string
+}
+
 // number
 type HADeviceNumber struct {
 	// A list of MQTT topics subscribed to receive availability (online/offline)
@@ -1542,6 +1663,14 @@ type HADeviceNumberFunctions struct {
 	State   func() string
 }
 
+type HADeviceNumberFunctionsConfig struct {
+	Availability struct {
+		State []string
+	}
+	Command []string
+	State   []string
+}
+
 // scene
 type HADeviceScene struct {
 	// A list of MQTT topics subscribed to receive availability (online/offline)
@@ -1597,6 +1726,13 @@ type HADeviceSceneFunctions struct {
 		State func() string
 	}
 	Command func(mqtt.Message, mqtt.Client)
+}
+
+type HADeviceSceneFunctionsConfig struct {
+	Availability struct {
+		State []string
+	}
+	Command []string
 }
 
 // select
@@ -1692,6 +1828,14 @@ type HADeviceSelectFunctions struct {
 	}
 	Command func(mqtt.Message, mqtt.Client)
 	State   func() string
+}
+
+type HADeviceSelectFunctionsConfig struct {
+	Availability struct {
+		State []string
+	}
+	Command []string
+	State   []string
 }
 
 // sensor
@@ -1806,6 +1950,13 @@ type HADeviceSensorFunctions struct {
 		State func() string
 	}
 	State func() string
+}
+
+type HADeviceSensorFunctionsConfig struct {
+	Availability struct {
+		State []string
+	}
+	State []string
 }
 
 // switch
@@ -1925,6 +2076,14 @@ type HADeviceSwitchFunctions struct {
 	State   func() string
 }
 
+type HADeviceSwitchFunctionsConfig struct {
+	Availability struct {
+		State []string
+	}
+	Command []string
+	State   []string
+}
+
 // tag
 type HADeviceTag struct {
 	// Information about the device this device trigger is a part of to tie it into
@@ -1963,6 +2122,10 @@ type HADeviceTag struct {
 
 type HADeviceTagFunctions struct {
 	State func() string
+}
+
+type HADeviceTagFunctionsConfig struct {
+	State []string
 }
 
 // vacuum
@@ -2086,4 +2249,13 @@ type HADeviceVacuumFunctions struct {
 	Command     func(mqtt.Message, mqtt.Client)
 	SendCommand func(mqtt.Message, mqtt.Client)
 	SetFanSpeed func(mqtt.Message, mqtt.Client)
+}
+
+type HADeviceVacuumFunctionsConfig struct {
+	Availability struct {
+		State []string
+	}
+	Command     []string
+	SendCommand []string
+	SetFanSpeed []string
 }

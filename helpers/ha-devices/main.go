@@ -1,16 +1,14 @@
 package main
 
 import (
-	"io/ioutil"
 	"log"
-	"net/http"
 	"os"
 	"sort"
 	"strings"
 
 	"github.com/Jeffail/gabs/v2"
+	"github.com/W-Floyd/ha-mqtt-iot/helpers/yamlpuller"
 	"github.com/eidolon/wordwrap"
-	"github.com/ghodss/yaml"
 	"github.com/iancoleman/strcase"
 )
 
@@ -19,7 +17,7 @@ const ShowComments bool = true
 func main() {
 
 	// create file
-	f, err := os.Create("../devices/autogen.go")
+	f, err := os.Create("../devices/structs.go")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -51,23 +49,14 @@ func main() {
 
 	for _, deviceName := range deviceTypes {
 
-		yamlString, err := splitDocument(deviceName)
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		jsonDoc, err := yaml.YAMLToJSON([]byte(yamlString))
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		jsonParsed, err := gabs.ParseJSON(jsonDoc)
-		if err != nil {
-			log.Fatal(err)
-		}
+		jsonParsed := yamlpuller.JsonExtractor(deviceName)
 
 		output = append(output, generateDevice(deviceName, jsonParsed.ChildrenMap())...)
-		output = append(output, generateFunctions(deviceName, jsonParsed.ChildrenMap())...)
+
+		funct, conf := generateFunctions(deviceName, jsonParsed.ChildrenMap())
+
+		output = append(output, funct...)
+		output = append(output, conf...)
 
 	}
 
@@ -103,8 +92,9 @@ func generateDevice(deviceName string, item map[string]*gabs.Container) (returnl
 	return returnlines
 }
 
-func generateFunctions(deviceName string, item map[string]*gabs.Container) (returnlines []string) {
-	returnlines = append(returnlines, "type HADevice"+strcase.ToCamel(deviceName)+"Functions struct {")
+func generateFunctions(deviceName string, item map[string]*gabs.Container) (functionlines, configlines []string) {
+	functionlines = append(functionlines, "type HADevice"+strcase.ToCamel(deviceName)+"Functions struct {")
+	configlines = append(configlines, "type HADevice"+strcase.ToCamel(deviceName)+"FunctionsConfig struct {")
 
 	keys := make([]string, 0, len(item))
 
@@ -116,14 +106,19 @@ func generateFunctions(deviceName string, item map[string]*gabs.Container) (retu
 
 	for _, key := range keys {
 		child := item[key]
-		returnlines = append(returnlines, recurseItemFunctions(key, child.ChildrenMap())...)
+
+		funclines, conflines := recurseItemFunctions(key, child.ChildrenMap())
+
+		functionlines = append(functionlines, funclines...)
+		configlines = append(configlines, conflines...)
 	}
 
-	returnlines = append(returnlines, "}", "")
-	return returnlines
+	functionlines = append(functionlines, "}", "")
+	configlines = append(configlines, "}", "")
+	return functionlines, configlines
 }
 
-func recurseItemFunctions(keyname string, item map[string]*gabs.Container) (returnlines []string) {
+func recurseItemFunctions(keyname string, item map[string]*gabs.Container) (functionlines, configlines []string) {
 
 	if keyname == "keys" {
 
@@ -138,7 +133,10 @@ func recurseItemFunctions(keyname string, item map[string]*gabs.Container) (retu
 		for _, key := range keys {
 			child := item[key]
 
-			returnlines = append(returnlines, recurseItemFunctions(key, child.ChildrenMap())...)
+			funclines, conflines := recurseItemFunctions(key, child.ChildrenMap())
+
+			functionlines = append(functionlines, funclines...)
+			configlines = append(configlines, conflines...)
 		}
 
 	} else {
@@ -151,7 +149,7 @@ func recurseItemFunctions(keyname string, item map[string]*gabs.Container) (retu
 		}
 
 		if !hasKeys && !((strings.HasPrefix(camelName, "Set") && strings.HasSuffix(camelName, "Topic")) || strings.HasSuffix(camelName, "CommandTopic") || strings.HasSuffix(camelName, "StateTopic") || strings.HasSuffix(camelName, "StatusTopic") || camelName == "Topic") {
-			return nil
+			return nil, nil
 		}
 
 		var functionType string
@@ -169,22 +167,27 @@ func recurseItemFunctions(keyname string, item map[string]*gabs.Container) (retu
 		camelName = strings.TrimSuffix(camelName, "Topic")
 
 		if val, ok := item["keys"]; ok {
+			funclines, conflines := recurseItemFunctions("keys", val.ChildrenMap())
 
-			tmpreturnlines := append(returnlines, recurseItemFunctions("keys", val.ChildrenMap())...)
-			if len(tmpreturnlines) == 0 {
-				return nil
+			if len(funclines) == 0 {
+				return nil, nil
 			}
 
-			returnlines = append(returnlines, camelName+" struct {")
-			returnlines = append(returnlines, tmpreturnlines...)
-			returnlines = append(returnlines, "}")
+			configlines = append(configlines, camelName+" struct {")
+			configlines = append(configlines, conflines...)
+			configlines = append(configlines, "}")
+
+			functionlines = append(functionlines, camelName+" struct {")
+			functionlines = append(functionlines, funclines...)
+			functionlines = append(functionlines, "}")
 		} else {
-			returnlines = append(returnlines, camelName+" "+functionType)
+			functionlines = append(functionlines, camelName+" "+functionType)
+			configlines = append(configlines, camelName+" []string")
 		}
 
 	}
 
-	return returnlines
+	return functionlines, configlines
 }
 
 func recurseItem(keyname string, item map[string]*gabs.Container) (returnlines []string) {
@@ -209,7 +212,7 @@ func recurseItem(keyname string, item map[string]*gabs.Container) (returnlines [
 		camelName := strcase.ToCamel(keyname)
 
 		wrapper := wordwrap.Wrapper(80, false)
-		description := wrapper(unquote(item["description"].String()))
+		description := wrapper(yamlpuller.Unquote(item["description"].String()))
 		commented := wordwrap.Indent(description, "// ", true)
 		if ShowComments {
 			returnlines = append(returnlines, commented)
@@ -224,7 +227,7 @@ func recurseItem(keyname string, item map[string]*gabs.Container) (returnlines [
 			if len(item["type"].Children()) > 0 {
 				localType = "[]string"
 			} else {
-				localType = typeTranslator(item["type"].String())
+				localType = yamlpuller.TypeTranslator(item["type"].String())
 			}
 			returnlines = append(returnlines, camelName+" "+localType)
 		}
@@ -233,83 +236,4 @@ func recurseItem(keyname string, item map[string]*gabs.Container) (returnlines [
 	}
 
 	return returnlines
-}
-
-func typeTranslator(t string) string {
-	t = unquote(t)
-	switch t {
-	case "template", "icon":
-		return "string"
-	case "integer":
-		return "int"
-	case "boolean":
-		return "bool"
-	case "list":
-		return "[]string"
-	case "map":
-		return ""
-	case "float":
-		return "float64"
-	case "device_class":
-		return "string"
-	default:
-		return t
-	}
-}
-
-func unquote(s string) string {
-	if len(s) > 0 && s[0] == '"' {
-		s = s[1:]
-	}
-	if len(s) > 0 && s[len(s)-1] == '"' {
-		s = s[:len(s)-1]
-	}
-	return s
-}
-
-func between(value string, a string, b string) string {
-	// Get substring between two strings.
-	posFirst := strings.Index(value, a)
-	if posFirst == -1 {
-		return ""
-	}
-	posLast := strings.Index(value, b)
-	if posLast == -1 {
-		return ""
-	}
-	posFirstAdjusted := posFirst + len(a)
-	if posFirstAdjusted >= posLast {
-		return ""
-	}
-	return value[posFirstAdjusted:posLast]
-}
-
-func splitDocument(devicename string) (string, error) {
-
-	data, err := fetchDocument(devicename)
-	if err != nil {
-		return "", err
-	}
-
-	match := between(string(data), "{% configuration %}", "{% endconfiguration %}")
-
-	return match, nil
-
-}
-
-func fetchDocument(devicename string) ([]byte, error) {
-
-	url := "https://raw.githubusercontent.com/home-assistant/home-assistant.io/current/source/_integrations/" + devicename + ".mqtt.markdown"
-
-	// Get the data
-	resp, err := http.Get(url)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-	bodyBytes, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
-	return bodyBytes, nil
 }
