@@ -47,7 +47,7 @@ func main() {
 		"vacuum",
 	}
 
-	output := []string{"package devices"}
+	output := []string{"package devices", "import (", "mqtt \"github.com/eclipse/paho.mqtt.golang\"", ")"}
 
 	for _, deviceName := range deviceTypes {
 
@@ -67,6 +67,7 @@ func main() {
 		}
 
 		output = append(output, generateDevice(deviceName, jsonParsed.ChildrenMap())...)
+		output = append(output, generateFunctions(deviceName, jsonParsed.ChildrenMap())...)
 
 	}
 
@@ -99,6 +100,90 @@ func generateDevice(deviceName string, item map[string]*gabs.Container) (returnl
 	}
 
 	returnlines = append(returnlines, "}", "")
+	return returnlines
+}
+
+func generateFunctions(deviceName string, item map[string]*gabs.Container) (returnlines []string) {
+	returnlines = append(returnlines, "type HADevice"+strcase.ToCamel(deviceName)+"Functions struct {")
+
+	keys := make([]string, 0, len(item))
+
+	for key := range item {
+		keys = append(keys, key)
+	}
+
+	sort.Strings(keys)
+
+	for _, key := range keys {
+		child := item[key]
+		returnlines = append(returnlines, recurseItemFunctions(key, child.ChildrenMap())...)
+	}
+
+	returnlines = append(returnlines, "}", "")
+	return returnlines
+}
+
+func recurseItemFunctions(keyname string, item map[string]*gabs.Container) (returnlines []string) {
+
+	if keyname == "keys" {
+
+		keys := make([]string, 0, len(item))
+
+		for key := range item {
+			keys = append(keys, key)
+		}
+
+		sort.Strings(keys)
+
+		for _, key := range keys {
+			child := item[key]
+
+			returnlines = append(returnlines, recurseItemFunctions(key, child.ChildrenMap())...)
+		}
+
+	} else {
+
+		camelName := strcase.ToCamel(keyname)
+
+		hasKeys := false
+		if _, ok := item["keys"]; ok {
+			hasKeys = true
+		}
+
+		if !hasKeys && !((strings.HasPrefix(camelName, "Set") && strings.HasSuffix(camelName, "Topic")) || strings.HasSuffix(camelName, "CommandTopic") || strings.HasSuffix(camelName, "StateTopic") || strings.HasSuffix(camelName, "StatusTopic") || camelName == "Topic") {
+			return nil
+		}
+
+		var functionType string
+
+		if strings.HasSuffix(camelName, "CommandTopic") || strings.HasPrefix(camelName, "Set") {
+			functionType = "func(mqtt.Message, mqtt.Client)"
+		} else {
+			functionType = "func() string"
+		}
+
+		if camelName == "Topic" {
+			camelName = "StateTopic"
+		}
+
+		camelName = strings.TrimSuffix(camelName, "Topic")
+
+		if val, ok := item["keys"]; ok {
+
+			tmpreturnlines := append(returnlines, recurseItemFunctions("keys", val.ChildrenMap())...)
+			if len(tmpreturnlines) == 0 {
+				return nil
+			}
+
+			returnlines = append(returnlines, camelName+" struct {")
+			returnlines = append(returnlines, tmpreturnlines...)
+			returnlines = append(returnlines, "}")
+		} else {
+			returnlines = append(returnlines, camelName+" "+functionType)
+		}
+
+	}
+
 	return returnlines
 }
 

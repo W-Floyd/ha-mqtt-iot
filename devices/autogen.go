@@ -1,5 +1,9 @@
 package devices
 
+import (
+	mqtt "github.com/eclipse/paho.mqtt.golang"
+)
+
 // alarm_control_panel
 type HADeviceAlarmControlPanel struct {
 	// A list of MQTT topics subscribed to receive availability (online/offline)
@@ -110,6 +114,14 @@ type HADeviceAlarmControlPanel struct {
 	// Defines a [template](/docs/configuration/templating/#processing-incoming-data)
 	// to extract the value.
 	ValueTemplate string `json:"value_template,omitempty"`
+}
+
+type HADeviceAlarmControlPanelFunctions struct {
+	Availability struct {
+		State func() string
+	}
+	Command func(mqtt.Message, mqtt.Client)
+	State   func() string
 }
 
 // binary_sensor
@@ -227,6 +239,13 @@ type HADeviceBinarySensor struct {
 	ValueTemplate string `json:"value_template,omitempty"`
 }
 
+type HADeviceBinarySensorFunctions struct {
+	Availability struct {
+		State func() string
+	}
+	State func() string
+}
+
 // camera
 type HADeviceCamera struct {
 	// A list of MQTT topics subscribed to receive availability (online/offline)
@@ -298,6 +317,13 @@ type HADeviceCamera struct {
 	// An ID that uniquely identifies this camera. If two cameras have the same unique
 	// ID Home Assistant will raise an exception.
 	UniqueId string `json:"unique_id,omitempty"`
+}
+
+type HADeviceCameraFunctions struct {
+	Availability struct {
+		State func() string
+	}
+	State func() string
 }
 
 // cover
@@ -469,6 +495,17 @@ type HADeviceCover struct {
 	ValueTemplate string `json:"value_template,omitempty"`
 }
 
+type HADeviceCoverFunctions struct {
+	Availability struct {
+		State func() string
+	}
+	Command     func(mqtt.Message, mqtt.Client)
+	SetPosition func(mqtt.Message, mqtt.Client)
+	State       func() string
+	TiltCommand func(mqtt.Message, mqtt.Client)
+	TiltStatus  func() string
+}
+
 // device_tracker
 type HADeviceDeviceTracker struct {
 	// List of devices with their topic.
@@ -483,6 +520,9 @@ type HADeviceDeviceTracker struct {
 	// [person](/integrations/person/). Valid options are `gps`, `router`, `bluetooth`,
 	// or `bluetooth_le`.
 	SourceType string `json:"source_type,omitempty"`
+}
+
+type HADeviceDeviceTrackerFunctions struct {
 }
 
 // device_trigger
@@ -535,6 +575,10 @@ type HADeviceDeviceTrigger struct {
 	// value, will render as `subtype type`, e.g. `button_1 spammed` with `type` set to
 	// `spammed` and `subtype` set to `button_1`
 	Type string `json:"type,omitempty"`
+}
+
+type HADeviceDeviceTriggerFunctions struct {
+	State func() string
 }
 
 // fan
@@ -687,6 +731,20 @@ type HADeviceFan struct {
 	UniqueId string `json:"unique_id,omitempty"`
 }
 
+type HADeviceFanFunctions struct {
+	Availability struct {
+		State func() string
+	}
+	Command            func(mqtt.Message, mqtt.Client)
+	OscillationCommand func(mqtt.Message, mqtt.Client)
+	OscillationState   func() string
+	PercentageCommand  func(mqtt.Message, mqtt.Client)
+	PercentageState    func() string
+	PresetModeCommand  func(mqtt.Message, mqtt.Client)
+	PresetModeState    func() string
+	State              func() string
+}
+
 // humidifier
 type HADeviceHumidifier struct {
 	// A list of MQTT topics subscribed to receive availability (online/offline)
@@ -824,6 +882,18 @@ type HADeviceHumidifier struct {
 	// An ID that uniquely identifies this humidifier. If two humidifiers have the
 	// same unique ID, Home Assistant will raise an exception.
 	UniqueId string `json:"unique_id,omitempty"`
+}
+
+type HADeviceHumidifierFunctions struct {
+	Availability struct {
+		State func() string
+	}
+	Command               func(mqtt.Message, mqtt.Client)
+	ModeCommand           func(mqtt.Message, mqtt.Client)
+	ModeState             func() string
+	State                 func() string
+	TargetHumidityCommand func(mqtt.Message, mqtt.Client)
+	TargetHumidityState   func() string
 }
 
 // climate
@@ -1034,6 +1104,31 @@ type HADeviceClimate struct {
 	ValueTemplate string `json:"value_template,omitempty"`
 }
 
+type HADeviceClimateFunctions struct {
+	AuxCommand   func(mqtt.Message, mqtt.Client)
+	AuxState     func() string
+	Availability struct {
+		State func() string
+	}
+	AwayModeCommand        func(mqtt.Message, mqtt.Client)
+	AwayModeState          func() string
+	FanModeCommand         func(mqtt.Message, mqtt.Client)
+	FanModeState           func() string
+	HoldCommand            func(mqtt.Message, mqtt.Client)
+	HoldState              func() string
+	ModeCommand            func(mqtt.Message, mqtt.Client)
+	ModeState              func() string
+	PowerCommand           func(mqtt.Message, mqtt.Client)
+	SwingModeCommand       func(mqtt.Message, mqtt.Client)
+	SwingModeState         func() string
+	TemperatureCommand     func(mqtt.Message, mqtt.Client)
+	TemperatureHighCommand func(mqtt.Message, mqtt.Client)
+	TemperatureHighState   func() string
+	TemperatureLowCommand  func(mqtt.Message, mqtt.Client)
+	TemperatureLowState    func() string
+	TemperatureState       func() string
+}
+
 // light
 type HADeviceLight struct {
 	// A list of MQTT topics subscribed to receive availability (online/offline)
@@ -1220,6 +1315,28 @@ type HADeviceLight struct {
 	XyValueTemplate string `json:"xy_value_template,omitempty"`
 }
 
+type HADeviceLightFunctions struct {
+	Availability struct {
+		State func() string
+	}
+	BrightnessCommand func(mqtt.Message, mqtt.Client)
+	BrightnessState   func() string
+	ColorModeState    func() string
+	ColorTempCommand  func(mqtt.Message, mqtt.Client)
+	ColorTempState    func() string
+	Command           func(mqtt.Message, mqtt.Client)
+	EffectCommand     func(mqtt.Message, mqtt.Client)
+	EffectState       func() string
+	HsCommand         func(mqtt.Message, mqtt.Client)
+	HsState           func() string
+	RgbCommand        func(mqtt.Message, mqtt.Client)
+	RgbState          func() string
+	State             func() string
+	WhiteCommand      func(mqtt.Message, mqtt.Client)
+	XyCommand         func(mqtt.Message, mqtt.Client)
+	XyState           func() string
+}
+
 // lock
 type HADeviceLock struct {
 	// A list of MQTT topics subscribed to receive availability (online/offline)
@@ -1318,6 +1435,14 @@ type HADeviceLock struct {
 	ValueTemplate string `json:"value_template,omitempty"`
 }
 
+type HADeviceLockFunctions struct {
+	Availability struct {
+		State func() string
+	}
+	Command func(mqtt.Message, mqtt.Client)
+	State   func() string
+}
+
 // number
 type HADeviceNumber struct {
 	// A list of MQTT topics subscribed to receive availability (online/offline)
@@ -1409,6 +1534,14 @@ type HADeviceNumber struct {
 	ValueTemplate string `json:"value_template,omitempty"`
 }
 
+type HADeviceNumberFunctions struct {
+	Availability struct {
+		State func() string
+	}
+	Command func(mqtt.Message, mqtt.Client)
+	State   func() string
+}
+
 // scene
 type HADeviceScene struct {
 	// A list of MQTT topics subscribed to receive availability (online/offline)
@@ -1457,6 +1590,13 @@ type HADeviceScene struct {
 	// An ID that uniquely identifies this scene entity. If two scenes have the same
 	// unique ID, Home Assistant will raise an exception.
 	UniqueId string `json:"unique_id,omitempty"`
+}
+
+type HADeviceSceneFunctions struct {
+	Availability struct {
+		State func() string
+	}
+	Command func(mqtt.Message, mqtt.Client)
 }
 
 // select
@@ -1544,6 +1684,14 @@ type HADeviceSelect struct {
 	// Defines a [template](/docs/configuration/templating/#processing-incoming-data)
 	// to extract the value.
 	ValueTemplate string `json:"value_template,omitempty"`
+}
+
+type HADeviceSelectFunctions struct {
+	Availability struct {
+		State func() string
+	}
+	Command func(mqtt.Message, mqtt.Client)
+	State   func() string
 }
 
 // sensor
@@ -1651,6 +1799,13 @@ type HADeviceSensor struct {
 	// to extract the value. Available variables: `entity_id`. The `entity_id` can be
 	// used to reference the entity's attributes.
 	ValueTemplate string `json:"value_template,omitempty"`
+}
+
+type HADeviceSensorFunctions struct {
+	Availability struct {
+		State func() string
+	}
+	State func() string
 }
 
 // switch
@@ -1762,6 +1917,14 @@ type HADeviceSwitch struct {
 	ValueTemplate string `json:"value_template,omitempty"`
 }
 
+type HADeviceSwitchFunctions struct {
+	Availability struct {
+		State func() string
+	}
+	Command func(mqtt.Message, mqtt.Client)
+	State   func() string
+}
+
 // tag
 type HADeviceTag struct {
 	// Information about the device this device trigger is a part of to tie it into
@@ -1796,6 +1959,10 @@ type HADeviceTag struct {
 	// Defines a [template](/docs/configuration/templating/#processing-incoming-data)
 	// that returns a tag ID.
 	ValueTemplate string `json:"value_template,omitempty"`
+}
+
+type HADeviceTagFunctions struct {
+	State func() string
 }
 
 // vacuum
@@ -1910,4 +2077,13 @@ type HADeviceVacuum struct {
 	// An ID that uniquely identifies this vacuum. If two vacuums have the same unique
 	// ID, Home Assistant will raise an exception.
 	UniqueId string `json:"unique_id,omitempty"`
+}
+
+type HADeviceVacuumFunctions struct {
+	Availability struct {
+		State func() string
+	}
+	Command     func(mqtt.Message, mqtt.Client)
+	SendCommand func(mqtt.Message, mqtt.Client)
+	SetFanSpeed func(mqtt.Message, mqtt.Client)
 }
