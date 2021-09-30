@@ -9,8 +9,10 @@ import (
 
 //go:generate go run ../helpers/ha-devices/main.go
 //go:generate go run ../helpers/translators/main.go
+//go:generate go run ../helpers/generators/main.go
 //go:generate gofmt -w structs.go
 //go:generate gofmt -w translators.go
+//go:generate gofmt -w generators.go
 
 func AddStateFunction(command []string, target *func() string) {
 	if len(command) > 0 {

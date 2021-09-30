@@ -1,161 +1,161 @@
 package devices
 
-func (entity HADeviceAlarmControlPanelFunctionsConfig) Translate() (output HADeviceAlarmControlPanelFunctions) {
-	AddStateFunction(entity.Availability.State, &output.Availability.State)
-	AddCommandFunction(entity.Command, &output.Command)
-	AddStateFunction(entity.State, &output.State)
+func (entity HADeviceAlarmControlPanelFunctionsConfig) Translate() (functions HADeviceAlarmControlPanelFunctions) {
+	AddStateFunction(entity.Availability.State, &functions.Availability.State)
+	AddCommandFunction(entity.Command, &functions.Command)
+	AddStateFunction(entity.State, &functions.State)
 	return
 }
 
-func (entity HADeviceBinarySensorFunctionsConfig) Translate() (output HADeviceBinarySensorFunctions) {
-	AddStateFunction(entity.Availability.State, &output.Availability.State)
-	AddStateFunction(entity.State, &output.State)
+func (entity HADeviceBinarySensorFunctionsConfig) Translate() (functions HADeviceBinarySensorFunctions) {
+	AddStateFunction(entity.Availability.State, &functions.Availability.State)
+	AddStateFunction(entity.State, &functions.State)
 	return
 }
 
-func (entity HADeviceCameraFunctionsConfig) Translate() (output HADeviceCameraFunctions) {
-	AddStateFunction(entity.Availability.State, &output.Availability.State)
-	AddStateFunction(entity.State, &output.State)
+func (entity HADeviceCameraFunctionsConfig) Translate() (functions HADeviceCameraFunctions) {
+	AddStateFunction(entity.Availability.State, &functions.Availability.State)
+	AddStateFunction(entity.State, &functions.State)
 	return
 }
 
-func (entity HADeviceCoverFunctionsConfig) Translate() (output HADeviceCoverFunctions) {
-	AddStateFunction(entity.Availability.State, &output.Availability.State)
-	AddCommandFunction(entity.Command, &output.Command)
-	AddCommandFunction(entity.SetPosition, &output.SetPosition)
-	AddStateFunction(entity.State, &output.State)
-	AddCommandFunction(entity.TiltCommand, &output.TiltCommand)
-	AddStateFunction(entity.TiltStatus, &output.TiltStatus)
+func (entity HADeviceCoverFunctionsConfig) Translate() (functions HADeviceCoverFunctions) {
+	AddStateFunction(entity.Availability.State, &functions.Availability.State)
+	AddCommandFunction(entity.Command, &functions.Command)
+	AddCommandFunction(entity.SetPosition, &functions.SetPosition)
+	AddStateFunction(entity.State, &functions.State)
+	AddCommandFunction(entity.TiltCommand, &functions.TiltCommand)
+	AddStateFunction(entity.TiltStatus, &functions.TiltStatus)
 	return
 }
 
-func (entity HADeviceDeviceTrackerFunctionsConfig) Translate() (output HADeviceDeviceTrackerFunctions) {
+func (entity HADeviceDeviceTrackerFunctionsConfig) Translate() (functions HADeviceDeviceTrackerFunctions) {
 	return
 }
 
-func (entity HADeviceDeviceTriggerFunctionsConfig) Translate() (output HADeviceDeviceTriggerFunctions) {
-	AddStateFunction(entity.State, &output.State)
+func (entity HADeviceDeviceTriggerFunctionsConfig) Translate() (functions HADeviceDeviceTriggerFunctions) {
+	AddStateFunction(entity.State, &functions.State)
 	return
 }
 
-func (entity HADeviceFanFunctionsConfig) Translate() (output HADeviceFanFunctions) {
-	AddStateFunction(entity.Availability.State, &output.Availability.State)
-	AddCommandFunction(entity.Command, &output.Command)
-	AddCommandFunction(entity.OscillationCommand, &output.OscillationCommand)
-	AddStateFunction(entity.OscillationState, &output.OscillationState)
-	AddCommandFunction(entity.PercentageCommand, &output.PercentageCommand)
-	AddStateFunction(entity.PercentageState, &output.PercentageState)
-	AddCommandFunction(entity.PresetModeCommand, &output.PresetModeCommand)
-	AddStateFunction(entity.PresetModeState, &output.PresetModeState)
-	AddStateFunction(entity.State, &output.State)
+func (entity HADeviceFanFunctionsConfig) Translate() (functions HADeviceFanFunctions) {
+	AddStateFunction(entity.Availability.State, &functions.Availability.State)
+	AddCommandFunction(entity.Command, &functions.Command)
+	AddCommandFunction(entity.OscillationCommand, &functions.OscillationCommand)
+	AddStateFunction(entity.OscillationState, &functions.OscillationState)
+	AddCommandFunction(entity.PercentageCommand, &functions.PercentageCommand)
+	AddStateFunction(entity.PercentageState, &functions.PercentageState)
+	AddCommandFunction(entity.PresetModeCommand, &functions.PresetModeCommand)
+	AddStateFunction(entity.PresetModeState, &functions.PresetModeState)
+	AddStateFunction(entity.State, &functions.State)
 	return
 }
 
-func (entity HADeviceHumidifierFunctionsConfig) Translate() (output HADeviceHumidifierFunctions) {
-	AddStateFunction(entity.Availability.State, &output.Availability.State)
-	AddCommandFunction(entity.Command, &output.Command)
-	AddCommandFunction(entity.ModeCommand, &output.ModeCommand)
-	AddStateFunction(entity.ModeState, &output.ModeState)
-	AddStateFunction(entity.State, &output.State)
-	AddCommandFunction(entity.TargetHumidityCommand, &output.TargetHumidityCommand)
-	AddStateFunction(entity.TargetHumidityState, &output.TargetHumidityState)
+func (entity HADeviceHumidifierFunctionsConfig) Translate() (functions HADeviceHumidifierFunctions) {
+	AddStateFunction(entity.Availability.State, &functions.Availability.State)
+	AddCommandFunction(entity.Command, &functions.Command)
+	AddCommandFunction(entity.ModeCommand, &functions.ModeCommand)
+	AddStateFunction(entity.ModeState, &functions.ModeState)
+	AddStateFunction(entity.State, &functions.State)
+	AddCommandFunction(entity.TargetHumidityCommand, &functions.TargetHumidityCommand)
+	AddStateFunction(entity.TargetHumidityState, &functions.TargetHumidityState)
 	return
 }
 
-func (entity HADeviceClimateFunctionsConfig) Translate() (output HADeviceClimateFunctions) {
-	AddCommandFunction(entity.AuxCommand, &output.AuxCommand)
-	AddStateFunction(entity.AuxState, &output.AuxState)
-	AddStateFunction(entity.Availability.State, &output.Availability.State)
-	AddCommandFunction(entity.AwayModeCommand, &output.AwayModeCommand)
-	AddStateFunction(entity.AwayModeState, &output.AwayModeState)
-	AddCommandFunction(entity.FanModeCommand, &output.FanModeCommand)
-	AddStateFunction(entity.FanModeState, &output.FanModeState)
-	AddCommandFunction(entity.HoldCommand, &output.HoldCommand)
-	AddStateFunction(entity.HoldState, &output.HoldState)
-	AddCommandFunction(entity.ModeCommand, &output.ModeCommand)
-	AddStateFunction(entity.ModeState, &output.ModeState)
-	AddCommandFunction(entity.PowerCommand, &output.PowerCommand)
-	AddCommandFunction(entity.SwingModeCommand, &output.SwingModeCommand)
-	AddStateFunction(entity.SwingModeState, &output.SwingModeState)
-	AddCommandFunction(entity.TemperatureCommand, &output.TemperatureCommand)
-	AddCommandFunction(entity.TemperatureHighCommand, &output.TemperatureHighCommand)
-	AddStateFunction(entity.TemperatureHighState, &output.TemperatureHighState)
-	AddCommandFunction(entity.TemperatureLowCommand, &output.TemperatureLowCommand)
-	AddStateFunction(entity.TemperatureLowState, &output.TemperatureLowState)
-	AddStateFunction(entity.TemperatureState, &output.TemperatureState)
+func (entity HADeviceClimateFunctionsConfig) Translate() (functions HADeviceClimateFunctions) {
+	AddCommandFunction(entity.AuxCommand, &functions.AuxCommand)
+	AddStateFunction(entity.AuxState, &functions.AuxState)
+	AddStateFunction(entity.Availability.State, &functions.Availability.State)
+	AddCommandFunction(entity.AwayModeCommand, &functions.AwayModeCommand)
+	AddStateFunction(entity.AwayModeState, &functions.AwayModeState)
+	AddCommandFunction(entity.FanModeCommand, &functions.FanModeCommand)
+	AddStateFunction(entity.FanModeState, &functions.FanModeState)
+	AddCommandFunction(entity.HoldCommand, &functions.HoldCommand)
+	AddStateFunction(entity.HoldState, &functions.HoldState)
+	AddCommandFunction(entity.ModeCommand, &functions.ModeCommand)
+	AddStateFunction(entity.ModeState, &functions.ModeState)
+	AddCommandFunction(entity.PowerCommand, &functions.PowerCommand)
+	AddCommandFunction(entity.SwingModeCommand, &functions.SwingModeCommand)
+	AddStateFunction(entity.SwingModeState, &functions.SwingModeState)
+	AddCommandFunction(entity.TemperatureCommand, &functions.TemperatureCommand)
+	AddCommandFunction(entity.TemperatureHighCommand, &functions.TemperatureHighCommand)
+	AddStateFunction(entity.TemperatureHighState, &functions.TemperatureHighState)
+	AddCommandFunction(entity.TemperatureLowCommand, &functions.TemperatureLowCommand)
+	AddStateFunction(entity.TemperatureLowState, &functions.TemperatureLowState)
+	AddStateFunction(entity.TemperatureState, &functions.TemperatureState)
 	return
 }
 
-func (entity HADeviceLightFunctionsConfig) Translate() (output HADeviceLightFunctions) {
-	AddStateFunction(entity.Availability.State, &output.Availability.State)
-	AddCommandFunction(entity.BrightnessCommand, &output.BrightnessCommand)
-	AddStateFunction(entity.BrightnessState, &output.BrightnessState)
-	AddStateFunction(entity.ColorModeState, &output.ColorModeState)
-	AddCommandFunction(entity.ColorTempCommand, &output.ColorTempCommand)
-	AddStateFunction(entity.ColorTempState, &output.ColorTempState)
-	AddCommandFunction(entity.Command, &output.Command)
-	AddCommandFunction(entity.EffectCommand, &output.EffectCommand)
-	AddStateFunction(entity.EffectState, &output.EffectState)
-	AddCommandFunction(entity.HsCommand, &output.HsCommand)
-	AddStateFunction(entity.HsState, &output.HsState)
-	AddCommandFunction(entity.RgbCommand, &output.RgbCommand)
-	AddStateFunction(entity.RgbState, &output.RgbState)
-	AddStateFunction(entity.State, &output.State)
-	AddCommandFunction(entity.WhiteCommand, &output.WhiteCommand)
-	AddCommandFunction(entity.XyCommand, &output.XyCommand)
-	AddStateFunction(entity.XyState, &output.XyState)
+func (entity HADeviceLightFunctionsConfig) Translate() (functions HADeviceLightFunctions) {
+	AddStateFunction(entity.Availability.State, &functions.Availability.State)
+	AddCommandFunction(entity.BrightnessCommand, &functions.BrightnessCommand)
+	AddStateFunction(entity.BrightnessState, &functions.BrightnessState)
+	AddStateFunction(entity.ColorModeState, &functions.ColorModeState)
+	AddCommandFunction(entity.ColorTempCommand, &functions.ColorTempCommand)
+	AddStateFunction(entity.ColorTempState, &functions.ColorTempState)
+	AddCommandFunction(entity.Command, &functions.Command)
+	AddCommandFunction(entity.EffectCommand, &functions.EffectCommand)
+	AddStateFunction(entity.EffectState, &functions.EffectState)
+	AddCommandFunction(entity.HsCommand, &functions.HsCommand)
+	AddStateFunction(entity.HsState, &functions.HsState)
+	AddCommandFunction(entity.RgbCommand, &functions.RgbCommand)
+	AddStateFunction(entity.RgbState, &functions.RgbState)
+	AddStateFunction(entity.State, &functions.State)
+	AddCommandFunction(entity.WhiteCommand, &functions.WhiteCommand)
+	AddCommandFunction(entity.XyCommand, &functions.XyCommand)
+	AddStateFunction(entity.XyState, &functions.XyState)
 	return
 }
 
-func (entity HADeviceLockFunctionsConfig) Translate() (output HADeviceLockFunctions) {
-	AddStateFunction(entity.Availability.State, &output.Availability.State)
-	AddCommandFunction(entity.Command, &output.Command)
-	AddStateFunction(entity.State, &output.State)
+func (entity HADeviceLockFunctionsConfig) Translate() (functions HADeviceLockFunctions) {
+	AddStateFunction(entity.Availability.State, &functions.Availability.State)
+	AddCommandFunction(entity.Command, &functions.Command)
+	AddStateFunction(entity.State, &functions.State)
 	return
 }
 
-func (entity HADeviceNumberFunctionsConfig) Translate() (output HADeviceNumberFunctions) {
-	AddStateFunction(entity.Availability.State, &output.Availability.State)
-	AddCommandFunction(entity.Command, &output.Command)
-	AddStateFunction(entity.State, &output.State)
+func (entity HADeviceNumberFunctionsConfig) Translate() (functions HADeviceNumberFunctions) {
+	AddStateFunction(entity.Availability.State, &functions.Availability.State)
+	AddCommandFunction(entity.Command, &functions.Command)
+	AddStateFunction(entity.State, &functions.State)
 	return
 }
 
-func (entity HADeviceSceneFunctionsConfig) Translate() (output HADeviceSceneFunctions) {
-	AddStateFunction(entity.Availability.State, &output.Availability.State)
-	AddCommandFunction(entity.Command, &output.Command)
+func (entity HADeviceSceneFunctionsConfig) Translate() (functions HADeviceSceneFunctions) {
+	AddStateFunction(entity.Availability.State, &functions.Availability.State)
+	AddCommandFunction(entity.Command, &functions.Command)
 	return
 }
 
-func (entity HADeviceSelectFunctionsConfig) Translate() (output HADeviceSelectFunctions) {
-	AddStateFunction(entity.Availability.State, &output.Availability.State)
-	AddCommandFunction(entity.Command, &output.Command)
-	AddStateFunction(entity.State, &output.State)
+func (entity HADeviceSelectFunctionsConfig) Translate() (functions HADeviceSelectFunctions) {
+	AddStateFunction(entity.Availability.State, &functions.Availability.State)
+	AddCommandFunction(entity.Command, &functions.Command)
+	AddStateFunction(entity.State, &functions.State)
 	return
 }
 
-func (entity HADeviceSensorFunctionsConfig) Translate() (output HADeviceSensorFunctions) {
-	AddStateFunction(entity.Availability.State, &output.Availability.State)
-	AddStateFunction(entity.State, &output.State)
+func (entity HADeviceSensorFunctionsConfig) Translate() (functions HADeviceSensorFunctions) {
+	AddStateFunction(entity.Availability.State, &functions.Availability.State)
+	AddStateFunction(entity.State, &functions.State)
 	return
 }
 
-func (entity HADeviceSwitchFunctionsConfig) Translate() (output HADeviceSwitchFunctions) {
-	AddStateFunction(entity.Availability.State, &output.Availability.State)
-	AddCommandFunction(entity.Command, &output.Command)
-	AddStateFunction(entity.State, &output.State)
+func (entity HADeviceSwitchFunctionsConfig) Translate() (functions HADeviceSwitchFunctions) {
+	AddStateFunction(entity.Availability.State, &functions.Availability.State)
+	AddCommandFunction(entity.Command, &functions.Command)
+	AddStateFunction(entity.State, &functions.State)
 	return
 }
 
-func (entity HADeviceTagFunctionsConfig) Translate() (output HADeviceTagFunctions) {
-	AddStateFunction(entity.State, &output.State)
+func (entity HADeviceTagFunctionsConfig) Translate() (functions HADeviceTagFunctions) {
+	AddStateFunction(entity.State, &functions.State)
 	return
 }
 
-func (entity HADeviceVacuumFunctionsConfig) Translate() (output HADeviceVacuumFunctions) {
-	AddStateFunction(entity.Availability.State, &output.Availability.State)
-	AddCommandFunction(entity.Command, &output.Command)
-	AddCommandFunction(entity.SendCommand, &output.SendCommand)
-	AddCommandFunction(entity.SetFanSpeed, &output.SetFanSpeed)
+func (entity HADeviceVacuumFunctionsConfig) Translate() (functions HADeviceVacuumFunctions) {
+	AddStateFunction(entity.Availability.State, &functions.Availability.State)
+	AddCommandFunction(entity.Command, &functions.Command)
+	AddCommandFunction(entity.SendCommand, &functions.SendCommand)
+	AddCommandFunction(entity.SetFanSpeed, &functions.SetFanSpeed)
 	return
 }

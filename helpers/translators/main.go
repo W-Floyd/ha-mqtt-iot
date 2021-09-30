@@ -64,7 +64,7 @@ func main() {
 }
 
 func generateTranslator(deviceName string, item map[string]*gabs.Container) (functionlines []string) {
-	functionlines = append(functionlines, "func (entity HADevice"+strcase.ToCamel(deviceName)+"FunctionsConfig) Translate() (output HADevice"+strcase.ToCamel(deviceName)+"Functions) {")
+	functionlines = append(functionlines, "func (entity HADevice"+strcase.ToCamel(deviceName)+"FunctionsConfig) Translate() (functions HADevice"+strcase.ToCamel(deviceName)+"Functions) {")
 
 	keys := make([]string, 0, len(item))
 
@@ -150,7 +150,7 @@ func recurseTranslator(keyname string, item map[string]*gabs.Container, parentna
 				subname = subname + "." + val
 			}
 			subname = subname + "." + camelName
-			functionlines = append(functionlines, functionType+"(entity"+subname+", &output"+subname+")")
+			functionlines = append(functionlines, functionType+"(entity"+subname+", &functions"+subname+")")
 
 		}
 

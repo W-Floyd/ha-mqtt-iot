@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"flag"
 	"io/ioutil"
-	"log"
 	"math"
 	"os"
 	"os/signal"
@@ -16,34 +15,13 @@ import (
 
 	"github.com/W-Floyd/ha-mqtt-iot/hadiscovery"
 	"github.com/W-Floyd/ha-mqtt-iot/iotconfig"
+	"github.com/W-Floyd/ha-mqtt-iot/logging"
 )
-
-var debugLog = log.New(os.Stdout, "DEBUG   ", 0)
-var errorLog = log.New(os.Stdout, "ERROR   ", 0)
-var warnLog = log.New(os.Stdout, "WARN    ", 0)
-var criticalLog = log.New(os.Stdout, "CRITICAL", 0)
 
 const float64EqualityThreshold = 1e-9
 
 func almostEqual(a, b float64) bool {
 	return math.Abs(a-b) <= float64EqualityThreshold
-}
-
-const logPrefix = "[ha-mqtt]  "
-
-func logError(message ...interface{}) {
-	if len(message) > 1 {
-		for _, mes := range message[:len(message)-2] {
-			errorLog.Printf("%v%v\n", logPrefix, mes)
-		}
-	}
-	errorLog.Fatalf("%v%v\n", logPrefix, message[len(message)-1])
-}
-
-func logDebug(message ...interface{}) {
-	for _, mes := range message {
-		debugLog.Printf("%v%v\n", logPrefix, mes)
-	}
 }
 
 func main() {
@@ -61,13 +39,13 @@ func main() {
 		// read file
 		data, err := ioutil.ReadFile(configFile)
 		if err != nil {
-			logError("Error reading "+configFile, err)
+			logging.LogError("Error reading "+configFile, err)
 		}
 
 		// unmarshall it
 		err = json.Unmarshal(data, &tConfig)
 		if err != nil {
-			logError("Error parsing config", err)
+			logging.LogError("Error parsing config", err)
 		}
 
 		mergo.Merge(&sconfig, tConfig)
@@ -77,16 +55,16 @@ func main() {
 	opts, switches, sensors, binarySensors, lights := sconfig.Convert()
 
 	if sconfig.Logging.Debug {
-		mqtt.DEBUG = debugLog
+		mqtt.DEBUG = logging.DebugLog
 	}
 	if sconfig.Logging.Warn {
-		mqtt.WARN = warnLog
+		mqtt.WARN = logging.WarnLog
 	}
 	if sconfig.Logging.Error {
-		mqtt.ERROR = errorLog
+		mqtt.ERROR = logging.ErrorLog
 	}
 	if sconfig.Logging.Critical {
-		mqtt.CRITICAL = criticalLog
+		mqtt.CRITICAL = logging.CriticalLog
 	}
 
 	sub := func(client mqtt.Client) {
@@ -109,7 +87,7 @@ func main() {
 	client := mqtt.NewClient(opts)
 
 	if token := client.Connect(); token.Wait() && token.Error() != nil {
-		logError(token.Error())
+		logging.LogError(token.Error())
 	}
 
 	updatingSwitches := 0
@@ -198,7 +176,7 @@ func main() {
 	for _, t := range tickers {
 		t.Stop()
 	}
-	logDebug("Server Stopped")
+	logging.LogDebug("Server Stopped")
 
 	for _, sw := range switches {
 		sw.UnSubscribe(client)
