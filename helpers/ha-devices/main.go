@@ -14,7 +14,7 @@ import (
 	"github.com/iancoleman/strcase"
 )
 
-const ShowComments bool = false
+const ShowComments bool = true
 
 func main() {
 
