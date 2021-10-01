@@ -45,7 +45,7 @@ func main() {
 		"vacuum",
 	}
 
-	output := []string{"package devices", "import \"github.com/W-Floyd/ha-mqtt-iot/logging\""}
+	output := []string{"package devices", "import (", "\"github.com/clarketm/json\"", "\"github.com/W-Floyd/ha-mqtt-iot/logging\"", ")", "func DeepCopy(a, b interface{}) {", "byt, _ := json.Marshal(a)", "json.Unmarshal(byt, b)", "}"}
 
 	for _, deviceName := range deviceTypes {
 
@@ -65,7 +65,7 @@ func main() {
 }
 
 func generateDevice(deviceName string, item map[string]*gabs.Container) (returnlines []string) {
-	returnlines = append(returnlines, "func (entity HADevice"+strcase.ToCamel(deviceName)+") Generate"+strcase.ToCamel(deviceName)+"() (output HADevice"+strcase.ToCamel(deviceName)+") {")
+	returnlines = append(returnlines, "func (entity HADevice"+strcase.ToCamel(deviceName)+") Generate"+"() (output HADevice"+strcase.ToCamel(deviceName)+") {", "DeepCopy(&entity,&output)")
 
 	keys := make([]string, 0, len(item))
 
@@ -124,26 +124,7 @@ func recurseItem(keyname string, item map[string]*gabs.Container, parentname []s
 				localType = yamlpuller.TypeTranslator(item["type"].String())
 			}
 
-			err, snippet := fetchSnippet(strings.ReplaceAll(substring+"."+camelName, ".", ""))
-
-			if err != nil {
-				if item["required"].String() == "true" {
-					snippet = []string{"else {", "logging.LogError(\"entity" + substring + "." + camelName + " generator not found, but field is required!\")", "}"}
-				} else {
-					snippet = []string{}
-				}
-			} else {
-				snippet = append([]string{"else {"}, snippet...)
-				snippet = append(snippet, "}")
-			}
-
-			returnlines = append(returnlines, copyIfExists("entity"+substring+"."+camelName, "output"+substring+"."+camelName, localType)...)
-			if len(snippet) > 0 {
-				returnlines[len(returnlines)-1] = returnlines[len(returnlines)-1] + snippet[0]
-				if len(snippet) > 1 {
-					returnlines = append(returnlines, snippet[1:]...)
-				}
-			}
+			returnlines = append(returnlines, generateIfEmpty(substring+"."+camelName, "output"+substring+"."+camelName, localType, item)...)
 		}
 
 	}
@@ -187,18 +168,33 @@ func fetchSnippet(parameterName string) (error, []string) {
 	return nil, text
 }
 
-func copyIfExists(source, target, ty string) (retval []string) {
-	var empty string
-	switch ty {
-	case "string":
-		empty = "\"\""
-	case "bool":
-		empty = "false"
-	case "int", "float64":
-		empty = "0"
-	default:
-		empty = "nil"
+func generateIfEmpty(source, target, ty string, item map[string]*gabs.Container) (retval []string) {
+
+	hasSnippet := true
+	err, snippet := fetchSnippet(strings.ReplaceAll(source, ".", ""))
+
+	if err != nil || len(snippet) == 0 {
+		hasSnippet = false
 	}
-	retval = append(retval, "if "+source+" != "+empty+" {", target+" = "+source, "}")
+
+	source = "entity" + source
+
+	isRequired := item["required"].String() == "true"
+
+	if hasSnippet || isRequired {
+		retval = append(retval, "if "+source+" == nil {")
+	} else {
+		return []string{}
+	}
+
+	if hasSnippet {
+		retval = append(retval, snippet...)
+		retval = append(retval, "}")
+		return
+	} else if isRequired {
+		retval = append(retval, "logging.LogError(\""+source+" generator not found, but field is required!\")", "}")
+		return
+	}
+
 	return retval
 }

@@ -229,7 +229,7 @@ func recurseItem(keyname string, item map[string]*gabs.Container) (returnlines [
 			} else {
 				localType = yamlpuller.TypeTranslator(item["type"].String())
 			}
-			returnlines = append(returnlines, camelName+" "+localType)
+			returnlines = append(returnlines, camelName+" *"+localType)
 		}
 
 		returnlines[len(returnlines)-1] = returnlines[len(returnlines)-1] + " `json:\"" + keyname + ",omitempty\"`"
