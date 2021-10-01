@@ -45,7 +45,7 @@ func main() {
 		"vacuum",
 	}
 
-	output := []string{"package devices", "import (", "\"github.com/clarketm/json\"", "\"github.com/W-Floyd/ha-mqtt-iot/logging\"", ")", "func DeepCopy(a, b interface{}) {", "byt, _ := json.Marshal(a)", "json.Unmarshal(byt, b)", "}"}
+	output := []string{"package devices", "import (", "\"github.com/W-Floyd/ha-mqtt-iot/logging\"", "\"github.com/jinzhu/copier\"", ")"}
 
 	for _, deviceName := range deviceTypes {
 
@@ -65,7 +65,7 @@ func main() {
 }
 
 func generateDevice(deviceName string, item map[string]*gabs.Container) (returnlines []string) {
-	returnlines = append(returnlines, "func (entity HADevice"+strcase.ToCamel(deviceName)+") Generate"+"() (output HADevice"+strcase.ToCamel(deviceName)+") {", "DeepCopy(&entity,&output)")
+	returnlines = append(returnlines, "func (entity HADevice"+strcase.ToCamel(deviceName)+") Generate"+"() (output HADevice"+strcase.ToCamel(deviceName)+") {", "copier.CopyWithOption(&output, &entity, copier.Option{IgnoreEmpty: true, DeepCopy: true})")
 
 	keys := make([]string, 0, len(item))
 

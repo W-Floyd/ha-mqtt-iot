@@ -2,15 +2,11 @@ package devices
 
 import (
 	"github.com/W-Floyd/ha-mqtt-iot/logging"
-	"github.com/clarketm/json"
+	"github.com/jinzhu/copier"
 )
 
-func DeepCopy(a, b interface{}) {
-	byt, _ := json.Marshal(a)
-	json.Unmarshal(byt, b)
-}
 func (entity HADeviceAlarmControlPanel) Generate() (output HADeviceAlarmControlPanel) {
-	DeepCopy(&entity, &output)
+	copier.CopyWithOption(&output, &entity, copier.Option{IgnoreEmpty: true, DeepCopy: true})
 	if entity.Availability.Topic == nil {
 		logging.LogError("entity.Availability.Topic generator not found, but field is required!")
 	}
@@ -23,7 +19,7 @@ func (entity HADeviceAlarmControlPanel) Generate() (output HADeviceAlarmControlP
 	return
 }
 func (entity HADeviceBinarySensor) Generate() (output HADeviceBinarySensor) {
-	DeepCopy(&entity, &output)
+	copier.CopyWithOption(&output, &entity, copier.Option{IgnoreEmpty: true, DeepCopy: true})
 	if entity.Availability.Topic == nil {
 		logging.LogError("entity.Availability.Topic generator not found, but field is required!")
 	}
@@ -33,7 +29,7 @@ func (entity HADeviceBinarySensor) Generate() (output HADeviceBinarySensor) {
 	return
 }
 func (entity HADeviceCamera) Generate() (output HADeviceCamera) {
-	DeepCopy(&entity, &output)
+	copier.CopyWithOption(&output, &entity, copier.Option{IgnoreEmpty: true, DeepCopy: true})
 	if entity.Availability.Topic == nil {
 		logging.LogError("entity.Availability.Topic generator not found, but field is required!")
 	}
@@ -43,21 +39,21 @@ func (entity HADeviceCamera) Generate() (output HADeviceCamera) {
 	return
 }
 func (entity HADeviceCover) Generate() (output HADeviceCover) {
-	DeepCopy(&entity, &output)
+	copier.CopyWithOption(&output, &entity, copier.Option{IgnoreEmpty: true, DeepCopy: true})
 	if entity.Availability.Topic == nil {
 		logging.LogError("entity.Availability.Topic generator not found, but field is required!")
 	}
 	return
 }
 func (entity HADeviceDeviceTracker) Generate() (output HADeviceDeviceTracker) {
-	DeepCopy(&entity, &output)
+	copier.CopyWithOption(&output, &entity, copier.Option{IgnoreEmpty: true, DeepCopy: true})
 	if entity.Devices == nil {
 		logging.LogError("entity.Devices generator not found, but field is required!")
 	}
 	return
 }
 func (entity HADeviceDeviceTrigger) Generate() (output HADeviceDeviceTrigger) {
-	DeepCopy(&entity, &output)
+	copier.CopyWithOption(&output, &entity, copier.Option{IgnoreEmpty: true, DeepCopy: true})
 	if entity.AutomationType == nil {
 		logging.LogError("entity.AutomationType generator not found, but field is required!")
 	}
@@ -73,7 +69,7 @@ func (entity HADeviceDeviceTrigger) Generate() (output HADeviceDeviceTrigger) {
 	return
 }
 func (entity HADeviceFan) Generate() (output HADeviceFan) {
-	DeepCopy(&entity, &output)
+	copier.CopyWithOption(&output, &entity, copier.Option{IgnoreEmpty: true, DeepCopy: true})
 	if entity.Availability.Topic == nil {
 		logging.LogError("entity.Availability.Topic generator not found, but field is required!")
 	}
@@ -83,7 +79,7 @@ func (entity HADeviceFan) Generate() (output HADeviceFan) {
 	return
 }
 func (entity HADeviceHumidifier) Generate() (output HADeviceHumidifier) {
-	DeepCopy(&entity, &output)
+	copier.CopyWithOption(&output, &entity, copier.Option{IgnoreEmpty: true, DeepCopy: true})
 	if entity.Availability.Topic == nil {
 		logging.LogError("entity.Availability.Topic generator not found, but field is required!")
 	}
@@ -96,14 +92,14 @@ func (entity HADeviceHumidifier) Generate() (output HADeviceHumidifier) {
 	return
 }
 func (entity HADeviceClimate) Generate() (output HADeviceClimate) {
-	DeepCopy(&entity, &output)
+	copier.CopyWithOption(&output, &entity, copier.Option{IgnoreEmpty: true, DeepCopy: true})
 	if entity.Availability.Topic == nil {
 		logging.LogError("entity.Availability.Topic generator not found, but field is required!")
 	}
 	return
 }
 func (entity HADeviceLight) Generate() (output HADeviceLight) {
-	DeepCopy(&entity, &output)
+	copier.CopyWithOption(&output, &entity, copier.Option{IgnoreEmpty: true, DeepCopy: true})
 	if entity.Availability.Topic == nil {
 		logging.LogError("entity.Availability.Topic generator not found, but field is required!")
 	}
@@ -113,7 +109,7 @@ func (entity HADeviceLight) Generate() (output HADeviceLight) {
 	return
 }
 func (entity HADeviceLock) Generate() (output HADeviceLock) {
-	DeepCopy(&entity, &output)
+	copier.CopyWithOption(&output, &entity, copier.Option{IgnoreEmpty: true, DeepCopy: true})
 	if entity.Availability.Topic == nil {
 		logging.LogError("entity.Availability.Topic generator not found, but field is required!")
 	}
@@ -123,21 +119,21 @@ func (entity HADeviceLock) Generate() (output HADeviceLock) {
 	return
 }
 func (entity HADeviceNumber) Generate() (output HADeviceNumber) {
-	DeepCopy(&entity, &output)
+	copier.CopyWithOption(&output, &entity, copier.Option{IgnoreEmpty: true, DeepCopy: true})
 	if entity.Availability.Topic == nil {
 		logging.LogError("entity.Availability.Topic generator not found, but field is required!")
 	}
 	return
 }
 func (entity HADeviceScene) Generate() (output HADeviceScene) {
-	DeepCopy(&entity, &output)
+	copier.CopyWithOption(&output, &entity, copier.Option{IgnoreEmpty: true, DeepCopy: true})
 	if entity.Availability.Topic == nil {
 		logging.LogError("entity.Availability.Topic generator not found, but field is required!")
 	}
 	return
 }
 func (entity HADeviceSelect) Generate() (output HADeviceSelect) {
-	DeepCopy(&entity, &output)
+	copier.CopyWithOption(&output, &entity, copier.Option{IgnoreEmpty: true, DeepCopy: true})
 	if entity.Availability.Topic == nil {
 		logging.LogError("entity.Availability.Topic generator not found, but field is required!")
 	}
@@ -150,7 +146,7 @@ func (entity HADeviceSelect) Generate() (output HADeviceSelect) {
 	return
 }
 func (entity HADeviceSensor) Generate() (output HADeviceSensor) {
-	DeepCopy(&entity, &output)
+	copier.CopyWithOption(&output, &entity, copier.Option{IgnoreEmpty: true, DeepCopy: true})
 	if entity.Availability.Topic == nil {
 		logging.LogError("entity.Availability.Topic generator not found, but field is required!")
 	}
@@ -160,21 +156,21 @@ func (entity HADeviceSensor) Generate() (output HADeviceSensor) {
 	return
 }
 func (entity HADeviceSwitch) Generate() (output HADeviceSwitch) {
-	DeepCopy(&entity, &output)
+	copier.CopyWithOption(&output, &entity, copier.Option{IgnoreEmpty: true, DeepCopy: true})
 	if entity.Availability.Topic == nil {
 		logging.LogError("entity.Availability.Topic generator not found, but field is required!")
 	}
 	return
 }
 func (entity HADeviceTag) Generate() (output HADeviceTag) {
-	DeepCopy(&entity, &output)
+	copier.CopyWithOption(&output, &entity, copier.Option{IgnoreEmpty: true, DeepCopy: true})
 	if entity.Topic == nil {
 		logging.LogError("entity.Topic generator not found, but field is required!")
 	}
 	return
 }
 func (entity HADeviceVacuum) Generate() (output HADeviceVacuum) {
-	DeepCopy(&entity, &output)
+	copier.CopyWithOption(&output, &entity, copier.Option{IgnoreEmpty: true, DeepCopy: true})
 	if entity.Availability.Topic == nil {
 		logging.LogError("entity.Availability.Topic generator not found, but field is required!")
 	}

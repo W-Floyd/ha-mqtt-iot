@@ -11,6 +11,7 @@ require (
 	github.com/ghodss/yaml v1.0.0
 	github.com/iancoleman/strcase v0.2.0
 	github.com/imdario/mergo v0.3.12
+	github.com/jinzhu/copier v0.3.2
 	github.com/kr/pretty v0.1.0 // indirect
 	github.com/superoo7/go-gecko v1.0.0
 	golang.org/x/net v0.0.0-20210929193557-e81a3d93ecf6 // indirect
