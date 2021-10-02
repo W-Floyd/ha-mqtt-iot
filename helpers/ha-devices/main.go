@@ -60,7 +60,7 @@ func main() {
 		output = append(output, funct...)
 		output = append(output, conf...)
 
-		configOut = append(configOut, strcase.ToCamel(deviceName)+" []struct {", "Functions *HADevice"+strcase.ToCamel(deviceName)+"FunctionsConfig `yaml:\"functions,omitempty\"`", "Configuration *HADevice"+strcase.ToCamel(deviceName)+"`yaml:\"configuration,omitempty\"`", "} `yaml:\""+strcase.ToSnake(deviceName)+",omitempty\"`")
+		configOut = append(configOut, strcase.ToCamel(deviceName)+" []struct {", "Functions struct {", "Watcher *HADevice"+strcase.ToCamel(deviceName)+"FunctionsConfig `yaml:\"watcher,omitempty\"`", "Caller *HADevice"+strcase.ToCamel(deviceName)+"FunctionsConfig `yaml:\"caller,omitempty\"`", "} `yaml:\"functions,omitempty\"`", "Configuration *HADevice"+strcase.ToCamel(deviceName)+"`yaml:\"configuration,omitempty\"`", "} `yaml:\""+strcase.ToSnake(deviceName)+",omitempty\"`")
 
 	}
 

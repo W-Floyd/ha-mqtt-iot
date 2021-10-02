@@ -2263,76 +2263,130 @@ type HADeviceVacuumFunctionsConfig struct {
 type Config struct {
 	Devices *struct {
 		AlarmControlPanel []struct {
-			Functions     *HADeviceAlarmControlPanelFunctionsConfig `yaml:"functions,omitempty"`
-			Configuration *HADeviceAlarmControlPanel                `yaml:"configuration,omitempty"`
+			Functions struct {
+				Watcher *HADeviceAlarmControlPanelFunctionsConfig `yaml:"watcher,omitempty"`
+				Caller  *HADeviceAlarmControlPanelFunctionsConfig `yaml:"caller,omitempty"`
+			} `yaml:"functions,omitempty"`
+			Configuration *HADeviceAlarmControlPanel `yaml:"configuration,omitempty"`
 		} `yaml:"alarm_control_panel,omitempty"`
 		BinarySensor []struct {
-			Functions     *HADeviceBinarySensorFunctionsConfig `yaml:"functions,omitempty"`
-			Configuration *HADeviceBinarySensor                `yaml:"configuration,omitempty"`
+			Functions struct {
+				Watcher *HADeviceBinarySensorFunctionsConfig `yaml:"watcher,omitempty"`
+				Caller  *HADeviceBinarySensorFunctionsConfig `yaml:"caller,omitempty"`
+			} `yaml:"functions,omitempty"`
+			Configuration *HADeviceBinarySensor `yaml:"configuration,omitempty"`
 		} `yaml:"binary_sensor,omitempty"`
 		Camera []struct {
-			Functions     *HADeviceCameraFunctionsConfig `yaml:"functions,omitempty"`
-			Configuration *HADeviceCamera                `yaml:"configuration,omitempty"`
+			Functions struct {
+				Watcher *HADeviceCameraFunctionsConfig `yaml:"watcher,omitempty"`
+				Caller  *HADeviceCameraFunctionsConfig `yaml:"caller,omitempty"`
+			} `yaml:"functions,omitempty"`
+			Configuration *HADeviceCamera `yaml:"configuration,omitempty"`
 		} `yaml:"camera,omitempty"`
 		Cover []struct {
-			Functions     *HADeviceCoverFunctionsConfig `yaml:"functions,omitempty"`
-			Configuration *HADeviceCover                `yaml:"configuration,omitempty"`
+			Functions struct {
+				Watcher *HADeviceCoverFunctionsConfig `yaml:"watcher,omitempty"`
+				Caller  *HADeviceCoverFunctionsConfig `yaml:"caller,omitempty"`
+			} `yaml:"functions,omitempty"`
+			Configuration *HADeviceCover `yaml:"configuration,omitempty"`
 		} `yaml:"cover,omitempty"`
 		DeviceTracker []struct {
-			Functions     *HADeviceDeviceTrackerFunctionsConfig `yaml:"functions,omitempty"`
-			Configuration *HADeviceDeviceTracker                `yaml:"configuration,omitempty"`
+			Functions struct {
+				Watcher *HADeviceDeviceTrackerFunctionsConfig `yaml:"watcher,omitempty"`
+				Caller  *HADeviceDeviceTrackerFunctionsConfig `yaml:"caller,omitempty"`
+			} `yaml:"functions,omitempty"`
+			Configuration *HADeviceDeviceTracker `yaml:"configuration,omitempty"`
 		} `yaml:"device_tracker,omitempty"`
 		DeviceTrigger []struct {
-			Functions     *HADeviceDeviceTriggerFunctionsConfig `yaml:"functions,omitempty"`
-			Configuration *HADeviceDeviceTrigger                `yaml:"configuration,omitempty"`
+			Functions struct {
+				Watcher *HADeviceDeviceTriggerFunctionsConfig `yaml:"watcher,omitempty"`
+				Caller  *HADeviceDeviceTriggerFunctionsConfig `yaml:"caller,omitempty"`
+			} `yaml:"functions,omitempty"`
+			Configuration *HADeviceDeviceTrigger `yaml:"configuration,omitempty"`
 		} `yaml:"device_trigger,omitempty"`
 		Fan []struct {
-			Functions     *HADeviceFanFunctionsConfig `yaml:"functions,omitempty"`
-			Configuration *HADeviceFan                `yaml:"configuration,omitempty"`
+			Functions struct {
+				Watcher *HADeviceFanFunctionsConfig `yaml:"watcher,omitempty"`
+				Caller  *HADeviceFanFunctionsConfig `yaml:"caller,omitempty"`
+			} `yaml:"functions,omitempty"`
+			Configuration *HADeviceFan `yaml:"configuration,omitempty"`
 		} `yaml:"fan,omitempty"`
 		Humidifier []struct {
-			Functions     *HADeviceHumidifierFunctionsConfig `yaml:"functions,omitempty"`
-			Configuration *HADeviceHumidifier                `yaml:"configuration,omitempty"`
+			Functions struct {
+				Watcher *HADeviceHumidifierFunctionsConfig `yaml:"watcher,omitempty"`
+				Caller  *HADeviceHumidifierFunctionsConfig `yaml:"caller,omitempty"`
+			} `yaml:"functions,omitempty"`
+			Configuration *HADeviceHumidifier `yaml:"configuration,omitempty"`
 		} `yaml:"humidifier,omitempty"`
 		Climate []struct {
-			Functions     *HADeviceClimateFunctionsConfig `yaml:"functions,omitempty"`
-			Configuration *HADeviceClimate                `yaml:"configuration,omitempty"`
+			Functions struct {
+				Watcher *HADeviceClimateFunctionsConfig `yaml:"watcher,omitempty"`
+				Caller  *HADeviceClimateFunctionsConfig `yaml:"caller,omitempty"`
+			} `yaml:"functions,omitempty"`
+			Configuration *HADeviceClimate `yaml:"configuration,omitempty"`
 		} `yaml:"climate,omitempty"`
 		Light []struct {
-			Functions     *HADeviceLightFunctionsConfig `yaml:"functions,omitempty"`
-			Configuration *HADeviceLight                `yaml:"configuration,omitempty"`
+			Functions struct {
+				Watcher *HADeviceLightFunctionsConfig `yaml:"watcher,omitempty"`
+				Caller  *HADeviceLightFunctionsConfig `yaml:"caller,omitempty"`
+			} `yaml:"functions,omitempty"`
+			Configuration *HADeviceLight `yaml:"configuration,omitempty"`
 		} `yaml:"light,omitempty"`
 		Lock []struct {
-			Functions     *HADeviceLockFunctionsConfig `yaml:"functions,omitempty"`
-			Configuration *HADeviceLock                `yaml:"configuration,omitempty"`
+			Functions struct {
+				Watcher *HADeviceLockFunctionsConfig `yaml:"watcher,omitempty"`
+				Caller  *HADeviceLockFunctionsConfig `yaml:"caller,omitempty"`
+			} `yaml:"functions,omitempty"`
+			Configuration *HADeviceLock `yaml:"configuration,omitempty"`
 		} `yaml:"lock,omitempty"`
 		Number []struct {
-			Functions     *HADeviceNumberFunctionsConfig `yaml:"functions,omitempty"`
-			Configuration *HADeviceNumber                `yaml:"configuration,omitempty"`
+			Functions struct {
+				Watcher *HADeviceNumberFunctionsConfig `yaml:"watcher,omitempty"`
+				Caller  *HADeviceNumberFunctionsConfig `yaml:"caller,omitempty"`
+			} `yaml:"functions,omitempty"`
+			Configuration *HADeviceNumber `yaml:"configuration,omitempty"`
 		} `yaml:"number,omitempty"`
 		Scene []struct {
-			Functions     *HADeviceSceneFunctionsConfig `yaml:"functions,omitempty"`
-			Configuration *HADeviceScene                `yaml:"configuration,omitempty"`
+			Functions struct {
+				Watcher *HADeviceSceneFunctionsConfig `yaml:"watcher,omitempty"`
+				Caller  *HADeviceSceneFunctionsConfig `yaml:"caller,omitempty"`
+			} `yaml:"functions,omitempty"`
+			Configuration *HADeviceScene `yaml:"configuration,omitempty"`
 		} `yaml:"scene,omitempty"`
 		Select []struct {
-			Functions     *HADeviceSelectFunctionsConfig `yaml:"functions,omitempty"`
-			Configuration *HADeviceSelect                `yaml:"configuration,omitempty"`
+			Functions struct {
+				Watcher *HADeviceSelectFunctionsConfig `yaml:"watcher,omitempty"`
+				Caller  *HADeviceSelectFunctionsConfig `yaml:"caller,omitempty"`
+			} `yaml:"functions,omitempty"`
+			Configuration *HADeviceSelect `yaml:"configuration,omitempty"`
 		} `yaml:"select,omitempty"`
 		Sensor []struct {
-			Functions     *HADeviceSensorFunctionsConfig `yaml:"functions,omitempty"`
-			Configuration *HADeviceSensor                `yaml:"configuration,omitempty"`
+			Functions struct {
+				Watcher *HADeviceSensorFunctionsConfig `yaml:"watcher,omitempty"`
+				Caller  *HADeviceSensorFunctionsConfig `yaml:"caller,omitempty"`
+			} `yaml:"functions,omitempty"`
+			Configuration *HADeviceSensor `yaml:"configuration,omitempty"`
 		} `yaml:"sensor,omitempty"`
 		Switch []struct {
-			Functions     *HADeviceSwitchFunctionsConfig `yaml:"functions,omitempty"`
-			Configuration *HADeviceSwitch                `yaml:"configuration,omitempty"`
+			Functions struct {
+				Watcher *HADeviceSwitchFunctionsConfig `yaml:"watcher,omitempty"`
+				Caller  *HADeviceSwitchFunctionsConfig `yaml:"caller,omitempty"`
+			} `yaml:"functions,omitempty"`
+			Configuration *HADeviceSwitch `yaml:"configuration,omitempty"`
 		} `yaml:"switch,omitempty"`
 		Tag []struct {
-			Functions     *HADeviceTagFunctionsConfig `yaml:"functions,omitempty"`
-			Configuration *HADeviceTag                `yaml:"configuration,omitempty"`
+			Functions struct {
+				Watcher *HADeviceTagFunctionsConfig `yaml:"watcher,omitempty"`
+				Caller  *HADeviceTagFunctionsConfig `yaml:"caller,omitempty"`
+			} `yaml:"functions,omitempty"`
+			Configuration *HADeviceTag `yaml:"configuration,omitempty"`
 		} `yaml:"tag,omitempty"`
 		Vacuum []struct {
-			Functions     *HADeviceVacuumFunctionsConfig `yaml:"functions,omitempty"`
-			Configuration *HADeviceVacuum                `yaml:"configuration,omitempty"`
+			Functions struct {
+				Watcher *HADeviceVacuumFunctionsConfig `yaml:"watcher,omitempty"`
+				Caller  *HADeviceVacuumFunctionsConfig `yaml:"caller,omitempty"`
+			} `yaml:"functions,omitempty"`
+			Configuration *HADeviceVacuum `yaml:"configuration,omitempty"`
 		} `yaml:"vacuum,omitempty"`
 	} `yaml:"devices,omitempty"`
 }

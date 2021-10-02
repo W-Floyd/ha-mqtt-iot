@@ -17,3 +17,8 @@ var InstanceName = "Homeassistant MQTT IOT"
 
 // NodeID is the Node ID, that is, what that node connects under.
 var NodeID = "ha-mqtt-iot"
+
+var (
+	MqttRetain      = true
+	MqttQos    byte = 0
+)
