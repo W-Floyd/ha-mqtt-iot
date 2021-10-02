@@ -10,9 +10,11 @@ import (
 //go:generate go run ../helpers/ha-devices/main.go
 //go:generate go run ../helpers/translators/main.go
 //go:generate go run ../helpers/generators/main.go
+//go:generate go run ../helpers/topics/main.go
 //go:generate gofmt -w structs.go
 //go:generate gofmt -w translators.go
 //go:generate gofmt -w generators.go
+//go:generate gofmt -w topics.go
 
 func AddStateFunction(command []string, target *func() string) {
 	if len(command) > 0 {
@@ -61,4 +63,12 @@ func ConstructCommandFunc(command []string) (f func(message mqtt.Message, connec
 
 		}
 	}
+}
+
+func TopicAvailability(base string) string {
+	return base + "availability"
+}
+
+func TopicCommand(base string) string {
+	return base + "command"
 }

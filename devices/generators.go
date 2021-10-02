@@ -1,178 +1,896 @@
 package devices
 
 import (
+	"github.com/W-Floyd/ha-mqtt-iot/common"
 	"github.com/W-Floyd/ha-mqtt-iot/logging"
 	"github.com/jinzhu/copier"
 )
 
-func (entity HADeviceAlarmControlPanel) Generate() (output HADeviceAlarmControlPanel) {
-	copier.CopyWithOption(&output, &entity, copier.Option{IgnoreEmpty: true, DeepCopy: true})
-	if entity.Availability.Topic == nil {
-		logging.LogError("entity.Availability.Topic generator not found, but field is required!")
-	}
-	if entity.CommandTopic == nil {
-		logging.LogError("entity.CommandTopic generator not found, but field is required!")
-	}
-	if entity.StateTopic == nil {
-		logging.LogError("entity.StateTopic generator not found, but field is required!")
-	}
-	return
-}
-func (entity HADeviceBinarySensor) Generate() (output HADeviceBinarySensor) {
-	copier.CopyWithOption(&output, &entity, copier.Option{IgnoreEmpty: true, DeepCopy: true})
-	if entity.Availability.Topic == nil {
-		logging.LogError("entity.Availability.Topic generator not found, but field is required!")
-	}
-	if entity.StateTopic == nil {
-		logging.LogError("entity.StateTopic generator not found, but field is required!")
-	}
-	return
-}
-func (entity HADeviceCamera) Generate() (output HADeviceCamera) {
-	copier.CopyWithOption(&output, &entity, copier.Option{IgnoreEmpty: true, DeepCopy: true})
-	if entity.Availability.Topic == nil {
-		logging.LogError("entity.Availability.Topic generator not found, but field is required!")
-	}
-	if entity.Topic == nil {
-		logging.LogError("entity.Topic generator not found, but field is required!")
-	}
-	return
-}
-func (entity HADeviceCover) Generate() (output HADeviceCover) {
-	copier.CopyWithOption(&output, &entity, copier.Option{IgnoreEmpty: true, DeepCopy: true})
-	if entity.Availability.Topic == nil {
-		logging.LogError("entity.Availability.Topic generator not found, but field is required!")
-	}
-	return
-}
-func (entity HADeviceDeviceTracker) Generate() (output HADeviceDeviceTracker) {
-	copier.CopyWithOption(&output, &entity, copier.Option{IgnoreEmpty: true, DeepCopy: true})
-	if entity.Devices == nil {
-		logging.LogError("entity.Devices generator not found, but field is required!")
-	}
-	return
-}
-func (entity HADeviceDeviceTrigger) Generate() (output HADeviceDeviceTrigger) {
-	copier.CopyWithOption(&output, &entity, copier.Option{IgnoreEmpty: true, DeepCopy: true})
-	if entity.AutomationType == nil {
-		logging.LogError("entity.AutomationType generator not found, but field is required!")
-	}
-	if entity.Subtype == nil {
-		logging.LogError("entity.Subtype generator not found, but field is required!")
-	}
-	if entity.Topic == nil {
-		logging.LogError("entity.Topic generator not found, but field is required!")
-	}
-	if entity.Type == nil {
-		logging.LogError("entity.Type generator not found, but field is required!")
+func (component HADeviceAlarmControlPanel) Generate() (output HADeviceAlarmControlPanel) {
+	copier.CopyWithOption(&output, &component, copier.Option{IgnoreEmpty: true, DeepCopy: true})
+	n := 0
+	oldN := 0
+	unchanged := false
+	for {
+		if output.Availability.Topic == nil {
+			if unchanged && output.CanGenerateTopic() == false {
+				logging.LogError("Unable to generate availability topics.")
+			}
+
+			if output.Availability.Topic == nil && output.AvailabilityTopic == nil && output.CanGenerateTopic() {
+				n += 1
+				output.Availability.Topic = common.StringPointer(TopicAvailability(output.GetTopicBase()))
+			}
+		}
+		if output.AvailabilityTopic == nil {
+			if unchanged && output.CanGenerateTopic() == false {
+				logging.LogError("Unable to generate availability topics.")
+			}
+
+			if output.Availability.Topic == nil && output.AvailabilityTopic == nil && output.CanGenerateTopic() {
+				n += 1
+				output.AvailabilityTopic = common.StringPointer(TopicAvailability(output.GetTopicBase()))
+			}
+		}
+		if output.CommandTopic == nil {
+			if unchanged && output.CanGenerateTopic() == false {
+				logging.LogError("Unable to generate command topics.")
+			}
+
+			if output.CommandTopic == nil && output.CanGenerateTopic() {
+				n += 1
+				output.CommandTopic = common.StringPointer(TopicCommand(output.GetTopicBase()))
+			}
+		}
+		if output.Device.Name == nil {
+			n += 1
+			output.Device.Name = common.StringPointer(common.InstanceName)
+		}
+		if output.StateTopic == nil {
+			if unchanged {
+				logging.LogError("output.StateTopic generator not found, but field is required!")
+			}
+		}
+		if unchanged {
+			break
+		}
+		if n == oldN {
+			unchanged = true
+		}
+		oldN = n
 	}
 	return
 }
-func (entity HADeviceFan) Generate() (output HADeviceFan) {
-	copier.CopyWithOption(&output, &entity, copier.Option{IgnoreEmpty: true, DeepCopy: true})
-	if entity.Availability.Topic == nil {
-		logging.LogError("entity.Availability.Topic generator not found, but field is required!")
-	}
-	if entity.CommandTopic == nil {
-		logging.LogError("entity.CommandTopic generator not found, but field is required!")
-	}
-	return
-}
-func (entity HADeviceHumidifier) Generate() (output HADeviceHumidifier) {
-	copier.CopyWithOption(&output, &entity, copier.Option{IgnoreEmpty: true, DeepCopy: true})
-	if entity.Availability.Topic == nil {
-		logging.LogError("entity.Availability.Topic generator not found, but field is required!")
-	}
-	if entity.CommandTopic == nil {
-		logging.LogError("entity.CommandTopic generator not found, but field is required!")
-	}
-	if entity.TargetHumidityCommandTopic == nil {
-		logging.LogError("entity.TargetHumidityCommandTopic generator not found, but field is required!")
-	}
-	return
-}
-func (entity HADeviceClimate) Generate() (output HADeviceClimate) {
-	copier.CopyWithOption(&output, &entity, copier.Option{IgnoreEmpty: true, DeepCopy: true})
-	if entity.Availability.Topic == nil {
-		logging.LogError("entity.Availability.Topic generator not found, but field is required!")
-	}
-	return
-}
-func (entity HADeviceLight) Generate() (output HADeviceLight) {
-	copier.CopyWithOption(&output, &entity, copier.Option{IgnoreEmpty: true, DeepCopy: true})
-	if entity.Availability.Topic == nil {
-		logging.LogError("entity.Availability.Topic generator not found, but field is required!")
-	}
-	if entity.CommandTopic == nil {
-		logging.LogError("entity.CommandTopic generator not found, but field is required!")
-	}
-	return
-}
-func (entity HADeviceLock) Generate() (output HADeviceLock) {
-	copier.CopyWithOption(&output, &entity, copier.Option{IgnoreEmpty: true, DeepCopy: true})
-	if entity.Availability.Topic == nil {
-		logging.LogError("entity.Availability.Topic generator not found, but field is required!")
-	}
-	if entity.CommandTopic == nil {
-		logging.LogError("entity.CommandTopic generator not found, but field is required!")
+func (component HADeviceBinarySensor) Generate() (output HADeviceBinarySensor) {
+	copier.CopyWithOption(&output, &component, copier.Option{IgnoreEmpty: true, DeepCopy: true})
+	n := 0
+	oldN := 0
+	unchanged := false
+	for {
+		if output.Availability.Topic == nil {
+			if unchanged && output.CanGenerateTopic() == false {
+				logging.LogError("Unable to generate availability topics.")
+			}
+
+			if output.Availability.Topic == nil && output.AvailabilityTopic == nil && output.CanGenerateTopic() {
+				n += 1
+				output.Availability.Topic = common.StringPointer(TopicAvailability(output.GetTopicBase()))
+			}
+		}
+		if output.AvailabilityTopic == nil {
+			if unchanged && output.CanGenerateTopic() == false {
+				logging.LogError("Unable to generate availability topics.")
+			}
+
+			if output.Availability.Topic == nil && output.AvailabilityTopic == nil && output.CanGenerateTopic() {
+				n += 1
+				output.AvailabilityTopic = common.StringPointer(TopicAvailability(output.GetTopicBase()))
+			}
+		}
+		if output.Device.Name == nil {
+			n += 1
+			output.Device.Name = common.StringPointer(common.InstanceName)
+		}
+		if output.StateTopic == nil {
+			if unchanged {
+				logging.LogError("output.StateTopic generator not found, but field is required!")
+			}
+		}
+		if unchanged {
+			break
+		}
+		if n == oldN {
+			unchanged = true
+		}
+		oldN = n
 	}
 	return
 }
-func (entity HADeviceNumber) Generate() (output HADeviceNumber) {
-	copier.CopyWithOption(&output, &entity, copier.Option{IgnoreEmpty: true, DeepCopy: true})
-	if entity.Availability.Topic == nil {
-		logging.LogError("entity.Availability.Topic generator not found, but field is required!")
+func (component HADeviceCamera) Generate() (output HADeviceCamera) {
+	copier.CopyWithOption(&output, &component, copier.Option{IgnoreEmpty: true, DeepCopy: true})
+	n := 0
+	oldN := 0
+	unchanged := false
+	for {
+		if output.Availability.Topic == nil {
+			if unchanged && output.CanGenerateTopic() == false {
+				logging.LogError("Unable to generate availability topics.")
+			}
+
+			if output.Availability.Topic == nil && output.AvailabilityTopic == nil && output.CanGenerateTopic() {
+				n += 1
+				output.Availability.Topic = common.StringPointer(TopicAvailability(output.GetTopicBase()))
+			}
+		}
+		if output.AvailabilityTopic == nil {
+			if unchanged && output.CanGenerateTopic() == false {
+				logging.LogError("Unable to generate availability topics.")
+			}
+
+			if output.Availability.Topic == nil && output.AvailabilityTopic == nil && output.CanGenerateTopic() {
+				n += 1
+				output.AvailabilityTopic = common.StringPointer(TopicAvailability(output.GetTopicBase()))
+			}
+		}
+		if output.Device.Name == nil {
+			n += 1
+			output.Device.Name = common.StringPointer(common.InstanceName)
+		}
+		if output.Topic == nil {
+			if unchanged {
+				logging.LogError("output.Topic generator not found, but field is required!")
+			}
+		}
+		if unchanged {
+			break
+		}
+		if n == oldN {
+			unchanged = true
+		}
+		oldN = n
 	}
 	return
 }
-func (entity HADeviceScene) Generate() (output HADeviceScene) {
-	copier.CopyWithOption(&output, &entity, copier.Option{IgnoreEmpty: true, DeepCopy: true})
-	if entity.Availability.Topic == nil {
-		logging.LogError("entity.Availability.Topic generator not found, but field is required!")
+func (component HADeviceCover) Generate() (output HADeviceCover) {
+	copier.CopyWithOption(&output, &component, copier.Option{IgnoreEmpty: true, DeepCopy: true})
+	n := 0
+	oldN := 0
+	unchanged := false
+	for {
+		if output.Availability.Topic == nil {
+			if unchanged && output.CanGenerateTopic() == false {
+				logging.LogError("Unable to generate availability topics.")
+			}
+
+			if output.Availability.Topic == nil && output.AvailabilityTopic == nil && output.CanGenerateTopic() {
+				n += 1
+				output.Availability.Topic = common.StringPointer(TopicAvailability(output.GetTopicBase()))
+			}
+		}
+		if output.AvailabilityTopic == nil {
+			if unchanged && output.CanGenerateTopic() == false {
+				logging.LogError("Unable to generate availability topics.")
+			}
+
+			if output.Availability.Topic == nil && output.AvailabilityTopic == nil && output.CanGenerateTopic() {
+				n += 1
+				output.AvailabilityTopic = common.StringPointer(TopicAvailability(output.GetTopicBase()))
+			}
+		}
+		if output.CommandTopic == nil {
+			if unchanged && output.CanGenerateTopic() == false {
+				logging.LogError("Unable to generate command topics.")
+			}
+
+			if output.CommandTopic == nil && output.CanGenerateTopic() {
+				n += 1
+				output.CommandTopic = common.StringPointer(TopicCommand(output.GetTopicBase()))
+			}
+		}
+		if output.Device.Name == nil {
+			n += 1
+			output.Device.Name = common.StringPointer(common.InstanceName)
+		}
+		if unchanged {
+			break
+		}
+		if n == oldN {
+			unchanged = true
+		}
+		oldN = n
 	}
 	return
 }
-func (entity HADeviceSelect) Generate() (output HADeviceSelect) {
-	copier.CopyWithOption(&output, &entity, copier.Option{IgnoreEmpty: true, DeepCopy: true})
-	if entity.Availability.Topic == nil {
-		logging.LogError("entity.Availability.Topic generator not found, but field is required!")
-	}
-	if entity.CommandTopic == nil {
-		logging.LogError("entity.CommandTopic generator not found, but field is required!")
-	}
-	if entity.Options == nil {
-		logging.LogError("entity.Options generator not found, but field is required!")
-	}
-	return
-}
-func (entity HADeviceSensor) Generate() (output HADeviceSensor) {
-	copier.CopyWithOption(&output, &entity, copier.Option{IgnoreEmpty: true, DeepCopy: true})
-	if entity.Availability.Topic == nil {
-		logging.LogError("entity.Availability.Topic generator not found, but field is required!")
-	}
-	if entity.StateTopic == nil {
-		logging.LogError("entity.StateTopic generator not found, but field is required!")
+func (component HADeviceDeviceTracker) Generate() (output HADeviceDeviceTracker) {
+	copier.CopyWithOption(&output, &component, copier.Option{IgnoreEmpty: true, DeepCopy: true})
+	n := 0
+	oldN := 0
+	unchanged := false
+	for {
+		if output.Devices == nil {
+			if unchanged {
+				logging.LogError("output.Devices generator not found, but field is required!")
+			}
+		}
+		if unchanged {
+			break
+		}
+		if n == oldN {
+			unchanged = true
+		}
+		oldN = n
 	}
 	return
 }
-func (entity HADeviceSwitch) Generate() (output HADeviceSwitch) {
-	copier.CopyWithOption(&output, &entity, copier.Option{IgnoreEmpty: true, DeepCopy: true})
-	if entity.Availability.Topic == nil {
-		logging.LogError("entity.Availability.Topic generator not found, but field is required!")
+func (component HADeviceDeviceTrigger) Generate() (output HADeviceDeviceTrigger) {
+	copier.CopyWithOption(&output, &component, copier.Option{IgnoreEmpty: true, DeepCopy: true})
+	n := 0
+	oldN := 0
+	unchanged := false
+	for {
+		if output.AutomationType == nil {
+			if unchanged {
+				logging.LogError("output.AutomationType generator not found, but field is required!")
+			}
+		}
+		if output.Device.Connections == nil {
+			if unchanged {
+				logging.LogError("output.Device.Connections generator not found, but field is required!")
+			}
+		}
+		if output.Device.Identifiers == nil {
+			if unchanged {
+				logging.LogError("output.Device.Identifiers generator not found, but field is required!")
+			}
+		}
+		if output.Device.Manufacturer == nil {
+			if unchanged {
+				logging.LogError("output.Device.Manufacturer generator not found, but field is required!")
+			}
+		}
+		if output.Device.Model == nil {
+			if unchanged {
+				logging.LogError("output.Device.Model generator not found, but field is required!")
+			}
+		}
+		if output.Device.Name == nil {
+			n += 1
+			output.Device.Name = common.StringPointer(common.InstanceName)
+		}
+		if output.Device.SuggestedArea == nil {
+			if unchanged {
+				logging.LogError("output.Device.SuggestedArea generator not found, but field is required!")
+			}
+		}
+		if output.Device.SwVersion == nil {
+			if unchanged {
+				logging.LogError("output.Device.SwVersion generator not found, but field is required!")
+			}
+		}
+		if output.Device.ViaDevice == nil {
+			if unchanged {
+				logging.LogError("output.Device.ViaDevice generator not found, but field is required!")
+			}
+		}
+		if output.Subtype == nil {
+			if unchanged {
+				logging.LogError("output.Subtype generator not found, but field is required!")
+			}
+		}
+		if output.Topic == nil {
+			if unchanged {
+				logging.LogError("output.Topic generator not found, but field is required!")
+			}
+		}
+		if output.Type == nil {
+			if unchanged {
+				logging.LogError("output.Type generator not found, but field is required!")
+			}
+		}
+		if unchanged {
+			break
+		}
+		if n == oldN {
+			unchanged = true
+		}
+		oldN = n
 	}
 	return
 }
-func (entity HADeviceTag) Generate() (output HADeviceTag) {
-	copier.CopyWithOption(&output, &entity, copier.Option{IgnoreEmpty: true, DeepCopy: true})
-	if entity.Topic == nil {
-		logging.LogError("entity.Topic generator not found, but field is required!")
+func (component HADeviceFan) Generate() (output HADeviceFan) {
+	copier.CopyWithOption(&output, &component, copier.Option{IgnoreEmpty: true, DeepCopy: true})
+	n := 0
+	oldN := 0
+	unchanged := false
+	for {
+		if output.Availability.Topic == nil {
+			if unchanged && output.CanGenerateTopic() == false {
+				logging.LogError("Unable to generate availability topics.")
+			}
+
+			if output.Availability.Topic == nil && output.AvailabilityTopic == nil && output.CanGenerateTopic() {
+				n += 1
+				output.Availability.Topic = common.StringPointer(TopicAvailability(output.GetTopicBase()))
+			}
+		}
+		if output.AvailabilityTopic == nil {
+			if unchanged && output.CanGenerateTopic() == false {
+				logging.LogError("Unable to generate availability topics.")
+			}
+
+			if output.Availability.Topic == nil && output.AvailabilityTopic == nil && output.CanGenerateTopic() {
+				n += 1
+				output.AvailabilityTopic = common.StringPointer(TopicAvailability(output.GetTopicBase()))
+			}
+		}
+		if output.CommandTopic == nil {
+			if unchanged && output.CanGenerateTopic() == false {
+				logging.LogError("Unable to generate command topics.")
+			}
+
+			if output.CommandTopic == nil && output.CanGenerateTopic() {
+				n += 1
+				output.CommandTopic = common.StringPointer(TopicCommand(output.GetTopicBase()))
+			}
+		}
+		if output.Device.Name == nil {
+			n += 1
+			output.Device.Name = common.StringPointer(common.InstanceName)
+		}
+		if unchanged {
+			break
+		}
+		if n == oldN {
+			unchanged = true
+		}
+		oldN = n
 	}
 	return
 }
-func (entity HADeviceVacuum) Generate() (output HADeviceVacuum) {
-	copier.CopyWithOption(&output, &entity, copier.Option{IgnoreEmpty: true, DeepCopy: true})
-	if entity.Availability.Topic == nil {
-		logging.LogError("entity.Availability.Topic generator not found, but field is required!")
+func (component HADeviceHumidifier) Generate() (output HADeviceHumidifier) {
+	copier.CopyWithOption(&output, &component, copier.Option{IgnoreEmpty: true, DeepCopy: true})
+	n := 0
+	oldN := 0
+	unchanged := false
+	for {
+		if output.Availability.Topic == nil {
+			if unchanged && output.CanGenerateTopic() == false {
+				logging.LogError("Unable to generate availability topics.")
+			}
+
+			if output.Availability.Topic == nil && output.AvailabilityTopic == nil && output.CanGenerateTopic() {
+				n += 1
+				output.Availability.Topic = common.StringPointer(TopicAvailability(output.GetTopicBase()))
+			}
+		}
+		if output.AvailabilityTopic == nil {
+			if unchanged && output.CanGenerateTopic() == false {
+				logging.LogError("Unable to generate availability topics.")
+			}
+
+			if output.Availability.Topic == nil && output.AvailabilityTopic == nil && output.CanGenerateTopic() {
+				n += 1
+				output.AvailabilityTopic = common.StringPointer(TopicAvailability(output.GetTopicBase()))
+			}
+		}
+		if output.CommandTopic == nil {
+			if unchanged && output.CanGenerateTopic() == false {
+				logging.LogError("Unable to generate command topics.")
+			}
+
+			if output.CommandTopic == nil && output.CanGenerateTopic() {
+				n += 1
+				output.CommandTopic = common.StringPointer(TopicCommand(output.GetTopicBase()))
+			}
+		}
+		if output.Device.Name == nil {
+			n += 1
+			output.Device.Name = common.StringPointer(common.InstanceName)
+		}
+		if output.TargetHumidityCommandTopic == nil {
+			if unchanged {
+				logging.LogError("output.TargetHumidityCommandTopic generator not found, but field is required!")
+			}
+		}
+		if unchanged {
+			break
+		}
+		if n == oldN {
+			unchanged = true
+		}
+		oldN = n
+	}
+	return
+}
+func (component HADeviceClimate) Generate() (output HADeviceClimate) {
+	copier.CopyWithOption(&output, &component, copier.Option{IgnoreEmpty: true, DeepCopy: true})
+	n := 0
+	oldN := 0
+	unchanged := false
+	for {
+		if output.Availability.Topic == nil {
+			if unchanged && output.CanGenerateTopic() == false {
+				logging.LogError("Unable to generate availability topics.")
+			}
+
+			if output.Availability.Topic == nil && output.AvailabilityTopic == nil && output.CanGenerateTopic() {
+				n += 1
+				output.Availability.Topic = common.StringPointer(TopicAvailability(output.GetTopicBase()))
+			}
+		}
+		if output.AvailabilityTopic == nil {
+			if unchanged && output.CanGenerateTopic() == false {
+				logging.LogError("Unable to generate availability topics.")
+			}
+
+			if output.Availability.Topic == nil && output.AvailabilityTopic == nil && output.CanGenerateTopic() {
+				n += 1
+				output.AvailabilityTopic = common.StringPointer(TopicAvailability(output.GetTopicBase()))
+			}
+		}
+		if output.Device.Name == nil {
+			n += 1
+			output.Device.Name = common.StringPointer(common.InstanceName)
+		}
+		if unchanged {
+			break
+		}
+		if n == oldN {
+			unchanged = true
+		}
+		oldN = n
+	}
+	return
+}
+func (component HADeviceLight) Generate() (output HADeviceLight) {
+	copier.CopyWithOption(&output, &component, copier.Option{IgnoreEmpty: true, DeepCopy: true})
+	n := 0
+	oldN := 0
+	unchanged := false
+	for {
+		if output.Availability.Topic == nil {
+			if unchanged && output.CanGenerateTopic() == false {
+				logging.LogError("Unable to generate availability topics.")
+			}
+
+			if output.Availability.Topic == nil && output.AvailabilityTopic == nil && output.CanGenerateTopic() {
+				n += 1
+				output.Availability.Topic = common.StringPointer(TopicAvailability(output.GetTopicBase()))
+			}
+		}
+		if output.AvailabilityTopic == nil {
+			if unchanged && output.CanGenerateTopic() == false {
+				logging.LogError("Unable to generate availability topics.")
+			}
+
+			if output.Availability.Topic == nil && output.AvailabilityTopic == nil && output.CanGenerateTopic() {
+				n += 1
+				output.AvailabilityTopic = common.StringPointer(TopicAvailability(output.GetTopicBase()))
+			}
+		}
+		if output.CommandTopic == nil {
+			if unchanged && output.CanGenerateTopic() == false {
+				logging.LogError("Unable to generate command topics.")
+			}
+
+			if output.CommandTopic == nil && output.CanGenerateTopic() {
+				n += 1
+				output.CommandTopic = common.StringPointer(TopicCommand(output.GetTopicBase()))
+			}
+		}
+		if output.Device.Name == nil {
+			n += 1
+			output.Device.Name = common.StringPointer(common.InstanceName)
+		}
+		if unchanged {
+			break
+		}
+		if n == oldN {
+			unchanged = true
+		}
+		oldN = n
+	}
+	return
+}
+func (component HADeviceLock) Generate() (output HADeviceLock) {
+	copier.CopyWithOption(&output, &component, copier.Option{IgnoreEmpty: true, DeepCopy: true})
+	n := 0
+	oldN := 0
+	unchanged := false
+	for {
+		if output.Availability.Topic == nil {
+			if unchanged && output.CanGenerateTopic() == false {
+				logging.LogError("Unable to generate availability topics.")
+			}
+
+			if output.Availability.Topic == nil && output.AvailabilityTopic == nil && output.CanGenerateTopic() {
+				n += 1
+				output.Availability.Topic = common.StringPointer(TopicAvailability(output.GetTopicBase()))
+			}
+		}
+		if output.AvailabilityTopic == nil {
+			if unchanged && output.CanGenerateTopic() == false {
+				logging.LogError("Unable to generate availability topics.")
+			}
+
+			if output.Availability.Topic == nil && output.AvailabilityTopic == nil && output.CanGenerateTopic() {
+				n += 1
+				output.AvailabilityTopic = common.StringPointer(TopicAvailability(output.GetTopicBase()))
+			}
+		}
+		if output.CommandTopic == nil {
+			if unchanged && output.CanGenerateTopic() == false {
+				logging.LogError("Unable to generate command topics.")
+			}
+
+			if output.CommandTopic == nil && output.CanGenerateTopic() {
+				n += 1
+				output.CommandTopic = common.StringPointer(TopicCommand(output.GetTopicBase()))
+			}
+		}
+		if output.Device.Name == nil {
+			n += 1
+			output.Device.Name = common.StringPointer(common.InstanceName)
+		}
+		if unchanged {
+			break
+		}
+		if n == oldN {
+			unchanged = true
+		}
+		oldN = n
+	}
+	return
+}
+func (component HADeviceNumber) Generate() (output HADeviceNumber) {
+	copier.CopyWithOption(&output, &component, copier.Option{IgnoreEmpty: true, DeepCopy: true})
+	n := 0
+	oldN := 0
+	unchanged := false
+	for {
+		if output.Availability.Topic == nil {
+			if unchanged && output.CanGenerateTopic() == false {
+				logging.LogError("Unable to generate availability topics.")
+			}
+
+			if output.Availability.Topic == nil && output.AvailabilityTopic == nil && output.CanGenerateTopic() {
+				n += 1
+				output.Availability.Topic = common.StringPointer(TopicAvailability(output.GetTopicBase()))
+			}
+		}
+		if output.AvailabilityTopic == nil {
+			if unchanged && output.CanGenerateTopic() == false {
+				logging.LogError("Unable to generate availability topics.")
+			}
+
+			if output.Availability.Topic == nil && output.AvailabilityTopic == nil && output.CanGenerateTopic() {
+				n += 1
+				output.AvailabilityTopic = common.StringPointer(TopicAvailability(output.GetTopicBase()))
+			}
+		}
+		if output.CommandTopic == nil {
+			if unchanged && output.CanGenerateTopic() == false {
+				logging.LogError("Unable to generate command topics.")
+			}
+
+			if output.CommandTopic == nil && output.CanGenerateTopic() {
+				n += 1
+				output.CommandTopic = common.StringPointer(TopicCommand(output.GetTopicBase()))
+			}
+		}
+		if output.Device.Name == nil {
+			n += 1
+			output.Device.Name = common.StringPointer(common.InstanceName)
+		}
+		if unchanged {
+			break
+		}
+		if n == oldN {
+			unchanged = true
+		}
+		oldN = n
+	}
+	return
+}
+func (component HADeviceScene) Generate() (output HADeviceScene) {
+	copier.CopyWithOption(&output, &component, copier.Option{IgnoreEmpty: true, DeepCopy: true})
+	n := 0
+	oldN := 0
+	unchanged := false
+	for {
+		if output.Availability.Topic == nil {
+			if unchanged && output.CanGenerateTopic() == false {
+				logging.LogError("Unable to generate availability topics.")
+			}
+
+			if output.Availability.Topic == nil && output.AvailabilityTopic == nil && output.CanGenerateTopic() {
+				n += 1
+				output.Availability.Topic = common.StringPointer(TopicAvailability(output.GetTopicBase()))
+			}
+		}
+		if output.AvailabilityTopic == nil {
+			if unchanged && output.CanGenerateTopic() == false {
+				logging.LogError("Unable to generate availability topics.")
+			}
+
+			if output.Availability.Topic == nil && output.AvailabilityTopic == nil && output.CanGenerateTopic() {
+				n += 1
+				output.AvailabilityTopic = common.StringPointer(TopicAvailability(output.GetTopicBase()))
+			}
+		}
+		if output.CommandTopic == nil {
+			if unchanged && output.CanGenerateTopic() == false {
+				logging.LogError("Unable to generate command topics.")
+			}
+
+			if output.CommandTopic == nil && output.CanGenerateTopic() {
+				n += 1
+				output.CommandTopic = common.StringPointer(TopicCommand(output.GetTopicBase()))
+			}
+		}
+		if unchanged {
+			break
+		}
+		if n == oldN {
+			unchanged = true
+		}
+		oldN = n
+	}
+	return
+}
+func (component HADeviceSelect) Generate() (output HADeviceSelect) {
+	copier.CopyWithOption(&output, &component, copier.Option{IgnoreEmpty: true, DeepCopy: true})
+	n := 0
+	oldN := 0
+	unchanged := false
+	for {
+		if output.Availability.Topic == nil {
+			if unchanged && output.CanGenerateTopic() == false {
+				logging.LogError("Unable to generate availability topics.")
+			}
+
+			if output.Availability.Topic == nil && output.AvailabilityTopic == nil && output.CanGenerateTopic() {
+				n += 1
+				output.Availability.Topic = common.StringPointer(TopicAvailability(output.GetTopicBase()))
+			}
+		}
+		if output.AvailabilityTopic == nil {
+			if unchanged && output.CanGenerateTopic() == false {
+				logging.LogError("Unable to generate availability topics.")
+			}
+
+			if output.Availability.Topic == nil && output.AvailabilityTopic == nil && output.CanGenerateTopic() {
+				n += 1
+				output.AvailabilityTopic = common.StringPointer(TopicAvailability(output.GetTopicBase()))
+			}
+		}
+		if output.CommandTopic == nil {
+			if unchanged && output.CanGenerateTopic() == false {
+				logging.LogError("Unable to generate command topics.")
+			}
+
+			if output.CommandTopic == nil && output.CanGenerateTopic() {
+				n += 1
+				output.CommandTopic = common.StringPointer(TopicCommand(output.GetTopicBase()))
+			}
+		}
+		if output.Device.Name == nil {
+			n += 1
+			output.Device.Name = common.StringPointer(common.InstanceName)
+		}
+		if output.Options == nil {
+			if unchanged {
+				logging.LogError("output.Options generator not found, but field is required!")
+			}
+		}
+		if unchanged {
+			break
+		}
+		if n == oldN {
+			unchanged = true
+		}
+		oldN = n
+	}
+	return
+}
+func (component HADeviceSensor) Generate() (output HADeviceSensor) {
+	copier.CopyWithOption(&output, &component, copier.Option{IgnoreEmpty: true, DeepCopy: true})
+	n := 0
+	oldN := 0
+	unchanged := false
+	for {
+		if output.Availability.Topic == nil {
+			if unchanged && output.CanGenerateTopic() == false {
+				logging.LogError("Unable to generate availability topics.")
+			}
+
+			if output.Availability.Topic == nil && output.AvailabilityTopic == nil && output.CanGenerateTopic() {
+				n += 1
+				output.Availability.Topic = common.StringPointer(TopicAvailability(output.GetTopicBase()))
+			}
+		}
+		if output.AvailabilityTopic == nil {
+			if unchanged && output.CanGenerateTopic() == false {
+				logging.LogError("Unable to generate availability topics.")
+			}
+
+			if output.Availability.Topic == nil && output.AvailabilityTopic == nil && output.CanGenerateTopic() {
+				n += 1
+				output.AvailabilityTopic = common.StringPointer(TopicAvailability(output.GetTopicBase()))
+			}
+		}
+		if output.Device.Name == nil {
+			n += 1
+			output.Device.Name = common.StringPointer(common.InstanceName)
+		}
+		if output.StateTopic == nil {
+			if unchanged {
+				logging.LogError("output.StateTopic generator not found, but field is required!")
+			}
+		}
+		if unchanged {
+			break
+		}
+		if n == oldN {
+			unchanged = true
+		}
+		oldN = n
+	}
+	return
+}
+func (component HADeviceSwitch) Generate() (output HADeviceSwitch) {
+	copier.CopyWithOption(&output, &component, copier.Option{IgnoreEmpty: true, DeepCopy: true})
+	n := 0
+	oldN := 0
+	unchanged := false
+	for {
+		if output.Availability.Topic == nil {
+			if unchanged && output.CanGenerateTopic() == false {
+				logging.LogError("Unable to generate availability topics.")
+			}
+
+			if output.Availability.Topic == nil && output.AvailabilityTopic == nil && output.CanGenerateTopic() {
+				n += 1
+				output.Availability.Topic = common.StringPointer(TopicAvailability(output.GetTopicBase()))
+			}
+		}
+		if output.AvailabilityTopic == nil {
+			if unchanged && output.CanGenerateTopic() == false {
+				logging.LogError("Unable to generate availability topics.")
+			}
+
+			if output.Availability.Topic == nil && output.AvailabilityTopic == nil && output.CanGenerateTopic() {
+				n += 1
+				output.AvailabilityTopic = common.StringPointer(TopicAvailability(output.GetTopicBase()))
+			}
+		}
+		if output.CommandTopic == nil {
+			if unchanged && output.CanGenerateTopic() == false {
+				logging.LogError("Unable to generate command topics.")
+			}
+
+			if output.CommandTopic == nil && output.CanGenerateTopic() {
+				n += 1
+				output.CommandTopic = common.StringPointer(TopicCommand(output.GetTopicBase()))
+			}
+		}
+		if output.Device.Name == nil {
+			n += 1
+			output.Device.Name = common.StringPointer(common.InstanceName)
+		}
+		if unchanged {
+			break
+		}
+		if n == oldN {
+			unchanged = true
+		}
+		oldN = n
+	}
+	return
+}
+func (component HADeviceTag) Generate() (output HADeviceTag) {
+	copier.CopyWithOption(&output, &component, copier.Option{IgnoreEmpty: true, DeepCopy: true})
+	n := 0
+	oldN := 0
+	unchanged := false
+	for {
+		if output.Device.Connections == nil {
+			if unchanged {
+				logging.LogError("output.Device.Connections generator not found, but field is required!")
+			}
+		}
+		if output.Device.Identifiers == nil {
+			if unchanged {
+				logging.LogError("output.Device.Identifiers generator not found, but field is required!")
+			}
+		}
+		if output.Device.Manufacturer == nil {
+			if unchanged {
+				logging.LogError("output.Device.Manufacturer generator not found, but field is required!")
+			}
+		}
+		if output.Device.Model == nil {
+			if unchanged {
+				logging.LogError("output.Device.Model generator not found, but field is required!")
+			}
+		}
+		if output.Device.Name == nil {
+			n += 1
+			output.Device.Name = common.StringPointer(common.InstanceName)
+		}
+		if output.Device.SuggestedArea == nil {
+			if unchanged {
+				logging.LogError("output.Device.SuggestedArea generator not found, but field is required!")
+			}
+		}
+		if output.Device.SwVersion == nil {
+			if unchanged {
+				logging.LogError("output.Device.SwVersion generator not found, but field is required!")
+			}
+		}
+		if output.Device.ViaDevice == nil {
+			if unchanged {
+				logging.LogError("output.Device.ViaDevice generator not found, but field is required!")
+			}
+		}
+		if output.Topic == nil {
+			if unchanged {
+				logging.LogError("output.Topic generator not found, but field is required!")
+			}
+		}
+		if unchanged {
+			break
+		}
+		if n == oldN {
+			unchanged = true
+		}
+		oldN = n
+	}
+	return
+}
+func (component HADeviceVacuum) Generate() (output HADeviceVacuum) {
+	copier.CopyWithOption(&output, &component, copier.Option{IgnoreEmpty: true, DeepCopy: true})
+	n := 0
+	oldN := 0
+	unchanged := false
+	for {
+		if output.Availability.Topic == nil {
+			if unchanged && output.CanGenerateTopic() == false {
+				logging.LogError("Unable to generate availability topics.")
+			}
+
+			if output.Availability.Topic == nil && output.AvailabilityTopic == nil && output.CanGenerateTopic() {
+				n += 1
+				output.Availability.Topic = common.StringPointer(TopicAvailability(output.GetTopicBase()))
+			}
+		}
+		if output.AvailabilityTopic == nil {
+			if unchanged && output.CanGenerateTopic() == false {
+				logging.LogError("Unable to generate availability topics.")
+			}
+
+			if output.Availability.Topic == nil && output.AvailabilityTopic == nil && output.CanGenerateTopic() {
+				n += 1
+				output.AvailabilityTopic = common.StringPointer(TopicAvailability(output.GetTopicBase()))
+			}
+		}
+		if output.CommandTopic == nil {
+			if unchanged && output.CanGenerateTopic() == false {
+				logging.LogError("Unable to generate command topics.")
+			}
+
+			if output.CommandTopic == nil && output.CanGenerateTopic() {
+				n += 1
+				output.CommandTopic = common.StringPointer(TopicCommand(output.GetTopicBase()))
+			}
+		}
+		if unchanged {
+			break
+		}
+		if n == oldN {
+			unchanged = true
+		}
+		oldN = n
 	}
 	return
 }

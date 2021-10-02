@@ -223,12 +223,9 @@ func recurseItem(keyname string, item map[string]*gabs.Container) (returnlines [
 			returnlines = append(returnlines, recurseItem("keys", val.ChildrenMap())...)
 			returnlines = append(returnlines, "}")
 		} else {
-			var localType string
-			if len(item["type"].Children()) > 0 {
-				localType = "[]string"
-			} else {
-				localType = yamlpuller.TypeTranslator(item["type"].String())
-			}
+
+			localType := yamlpuller.TypeTranslator(item["type"])
+
 			returnlines = append(returnlines, camelName+" *"+localType)
 		}
 

@@ -1,9 +1,11 @@
 package yamlpuller
 
 import (
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 	"strings"
 
 	"github.com/Jeffail/gabs/v2"
@@ -86,9 +88,29 @@ func Unquote(s string) string {
 	return s
 }
 
-func TypeTranslator(t string) string {
-	t = Unquote(t)
-	switch t {
+func TypeTranslator(t *gabs.Container) string {
+
+	if len(t.Children()) > 0 {
+
+		if len(t.Children()) == 1 {
+			if Unquote(t.Children()[0].String()) == "list" {
+				return "[]string"
+			}
+		}
+
+		first := Unquote(t.Children()[0].String())
+		second := Unquote(t.Children()[1].String())
+
+		if (first == "list" && second == "map") || (second == "list" && first == "map") {
+			return "[][2]string"
+		} else if (first == "string" && second == "list") || (second == "string" && first == "list") {
+			return "[]string"
+		}
+		fmt.Println("Don't know what to do with: ", t.Children())
+		os.Exit(1)
+	}
+	v := Unquote(t.String())
+	switch v {
 	case "template", "icon":
 		return "string"
 	case "integer":
@@ -98,12 +120,12 @@ func TypeTranslator(t string) string {
 	case "list":
 		return "[]string"
 	case "map":
-		return ""
+		return "map[string]string"
 	case "float":
 		return "float64"
 	case "device_class":
 		return "string"
 	default:
-		return t
+		return v
 	}
 }
