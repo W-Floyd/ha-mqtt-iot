@@ -16,27 +16,27 @@ import (
 //go:generate gofmt -w generators.go
 //go:generate gofmt -w topics.go
 
-func AddStateFunction(command []string, target *func() string) {
-	if len(command) > 0 {
+func AddStateFunction(command *[]string, target *func() string) {
+	if command != nil {
 		*target = ConstructStateFunc(command)
 	}
 }
 
-func AddCommandFunction(command []string, target *func(message mqtt.Message, connection mqtt.Client)) {
-	if len(command) > 0 {
+func AddCommandFunction(command *[]string, target *func(message mqtt.Message, connection mqtt.Client)) {
+	if command != nil {
 		*target = ConstructCommandFunc(command)
 	}
 }
 
-func ConstructStateFunc(command []string) (f func() string) {
+func ConstructStateFunc(command *[]string) (f func() string) {
 	var err error
 	return func() string {
 		var out []byte
-		if len(command) > 1 {
-			out, err = exec.Command(command[0], command[1:]...).Output()
+		if len(*command) > 1 {
+			out, err = exec.Command((*command)[0], (*command)[1:]...).Output()
 		} else {
 
-			out, err = exec.Command(command[0]).Output()
+			out, err = exec.Command((*command)[0]).Output()
 		}
 		if err != nil {
 			log.Printf("%s", err)
@@ -45,14 +45,14 @@ func ConstructStateFunc(command []string) (f func() string) {
 	}
 }
 
-func ConstructCommandFunc(command []string) (f func(message mqtt.Message, connection mqtt.Client)) {
+func ConstructCommandFunc(command *[]string) (f func(message mqtt.Message, connection mqtt.Client)) {
 	var err error
 	return func(message mqtt.Message, connection mqtt.Client) {
-		localcom := command
+		localcom := *command
 		localcom = append(localcom, string(message.Payload()))
-		if len(command) > 0 {
+		if len(*command) > 0 {
 
-			if len(command) > 1 {
+			if len(*command) > 1 {
 				_, err = exec.Command(localcom[0], localcom[1:]...).Output()
 			} else {
 				_, err = exec.Command(localcom[0]).Output()

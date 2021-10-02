@@ -45,7 +45,7 @@ func main() {
 		"vacuum",
 	}
 
-	output := []string{"package devices", "import (", "\"github.com/W-Floyd/ha-mqtt-iot/logging\"", "\"github.com/W-Floyd/ha-mqtt-iot/common\"", "\"github.com/jinzhu/copier\"", ")"}
+	output := []string{"package devices", "import (", "\"github.com/W-Floyd/ha-mqtt-iot/logging\"", "\"github.com/W-Floyd/ha-mqtt-iot/common\"", ")"}
 
 	for _, deviceName := range deviceTypes {
 
@@ -65,7 +65,7 @@ func main() {
 }
 
 func generateDevice(deviceName string, item map[string]*gabs.Container) (returnlines []string) {
-	returnlines = append(returnlines, "func (component HADevice"+strcase.ToCamel(deviceName)+") Generate"+"() (output HADevice"+strcase.ToCamel(deviceName)+") {", "copier.CopyWithOption(&output, &component, copier.Option{IgnoreEmpty: true, DeepCopy: true})")
+	returnlines = append(returnlines, "func (component *HADevice"+strcase.ToCamel(deviceName)+") Generate"+"() {")
 
 	keys := make([]string, 0, len(item))
 
@@ -130,7 +130,7 @@ func recurseItem(keyname string, item map[string]*gabs.Container, parentname []s
 
 			localType := yamlpuller.TypeTranslator(item["type"])
 
-			returnlines = append(returnlines, generateIfEmpty(substring+"."+camelName, "output"+substring+"."+camelName, localType, item, isRequired)...)
+			returnlines = append(returnlines, generateIfEmpty(substring+"."+camelName, "component"+substring+"."+camelName, localType, item, isRequired)...)
 		}
 
 	}
@@ -187,7 +187,7 @@ func generateIfEmpty(source, target, ty string, item map[string]*gabs.Container,
 		hasSnippet = false
 	}
 
-	source = "output" + source
+	source = "component" + source
 
 	isRequired := item["required"].String() == "true" || parentRequired
 

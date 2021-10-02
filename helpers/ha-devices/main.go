@@ -47,6 +47,8 @@ func main() {
 
 	output := []string{"package devices", "import (", "mqtt \"github.com/eclipse/paho.mqtt.golang\"", ")"}
 
+	configOut := []string{"type Config struct {", "Devices *struct{"}
+
 	for _, deviceName := range deviceTypes {
 
 		jsonParsed := yamlpuller.JsonExtractor(deviceName)
@@ -58,7 +60,13 @@ func main() {
 		output = append(output, funct...)
 		output = append(output, conf...)
 
+		configOut = append(configOut, strcase.ToCamel(deviceName)+" []struct {", "Functions *HADevice"+strcase.ToCamel(deviceName)+"FunctionsConfig `yaml:\"functions,omitempty\"`", "Configuration *HADevice"+strcase.ToCamel(deviceName)+"`yaml:\"configuration,omitempty\"`", "} `yaml:\""+strcase.ToSnake(deviceName)+",omitempty\"`")
+
 	}
+
+	configOut = append(configOut, "} `yaml:\"devices,omitempty\"`", "}")
+
+	output = append(output, configOut...)
 
 	for _, line := range output {
 		_, err := f.WriteString(line + "\n")
@@ -175,14 +183,14 @@ func recurseItemFunctions(keyname string, item map[string]*gabs.Container) (func
 
 			configlines = append(configlines, camelName+" struct {")
 			configlines = append(configlines, conflines...)
-			configlines = append(configlines, "}"+"`json:\""+strcase.ToKebab(camelName)+",omitempty\"`")
+			configlines = append(configlines, "}"+"`yaml:\""+strcase.ToSnake(camelName)+",omitempty\"`")
 
 			functionlines = append(functionlines, camelName+" struct {")
 			functionlines = append(functionlines, funclines...)
 			functionlines = append(functionlines, "}")
 		} else {
 			functionlines = append(functionlines, camelName+" "+functionType)
-			configlines = append(configlines, camelName+" []string `json:\""+strcase.ToKebab(camelName)+",omitempty\"`")
+			configlines = append(configlines, camelName+" *[]string `yaml:\""+strcase.ToSnake(camelName)+",omitempty\"`")
 		}
 
 	}
@@ -229,7 +237,7 @@ func recurseItem(keyname string, item map[string]*gabs.Container) (returnlines [
 			returnlines = append(returnlines, camelName+" *"+localType)
 		}
 
-		returnlines[len(returnlines)-1] = returnlines[len(returnlines)-1] + " `json:\"" + keyname + ",omitempty\"`"
+		returnlines[len(returnlines)-1] = returnlines[len(returnlines)-1] + " `yaml:\"" + keyname + ",omitempty\"`"
 	}
 
 	return returnlines

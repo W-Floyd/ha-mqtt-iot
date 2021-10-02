@@ -1,8 +1,8 @@
 if common.InstanceName == "" {
 	if unchanged {
-		logging.LogError("Unable to generate outputTHIS, missing common.InstanceName")
+		logging.LogError("Unable to generate componentTHIS, missing common.InstanceName")
 	}
 } else {
 	n += 1
-	output.Device.Name = common.StringPointer(common.InstanceName)
+	component.Device.Name = common.StringPointer(common.InstanceName)
 }
