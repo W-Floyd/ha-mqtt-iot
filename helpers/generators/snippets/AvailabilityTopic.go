@@ -1,8 +1,10 @@
-if unchanged && output.CanGenerateTopic() == false {
-	logging.LogError("Unable to generate availability topics.")
+err, canGen := output.CanGenerateTopic()
+
+if unchanged && !canGen {
+	logging.LogError("Unable to generate outputTHIS, missing " + err.Error())
 }
 
-if output.Availability.Topic == nil && output.AvailabilityTopic == nil && output.CanGenerateTopic() {
+if output.Availability.Topic == nil && output.AvailabilityTopic == nil && canGen {
 	n += 1
-	outputTHIS = common.StringPointer(TopicAvailability(output.GetTopicBase()))
+	output.AvailabilityTopic = common.StringPointer(TopicAvailability(output.GetTopicBase()))
 }

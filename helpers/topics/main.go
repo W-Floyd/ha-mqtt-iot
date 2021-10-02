@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"os"
+	"strings"
 
 	"github.com/Jeffail/gabs/v2"
 	"github.com/W-Floyd/ha-mqtt-iot/helpers/yamlpuller"
@@ -40,7 +41,7 @@ func main() {
 		"vacuum",
 	}
 
-	output := []string{"package devices", "import (", "\"github.com/W-Floyd/ha-mqtt-iot/common\"", "\"github.com/iancoleman/strcase\"", ")"}
+	output := []string{"package devices", "import (", "\"errors\"", "\"github.com/W-Floyd/ha-mqtt-iot/common\"", "\"github.com/iancoleman/strcase\"", ")"}
 
 	for _, deviceName := range deviceTypes {
 
@@ -65,17 +66,29 @@ func generate(componentName string, item map[string]*gabs.Container) (returnline
 
 	if componentName == "device_trigger" || componentName == "device_tracker" {
 		returnlines = append(returnlines, "return", "}")
-		returnlines = append(returnlines, "func (component HADevice"+strcase.ToCamel(componentName)+") CanGenerateTopic() bool {", "if  common.NodeID == \"\"  || common.DiscoveryPrefix == \"\" {", "return false", "}", "return true", "}")
-	} else if componentName == "scene" || componentName == "vacuum" {
-		returnlines = append(returnlines, "out += strcase.ToSnake(*component.Name) + \"/\"", "return", "}")
-		returnlines = append(returnlines, "func (component HADevice"+strcase.ToCamel(componentName)+") CanGenerateTopic() bool {", "if component.Name == nil || common.NodeID == \"\"  || common.DiscoveryPrefix == \"\" {", "return false", "}", "return true", "}")
+		returnlines = append(returnlines, generateChecker(componentName, "common.NodeID", "common.DiscoveryPrefix")...)
 	} else if componentName == "tag" {
 		returnlines = append(returnlines, "out += strcase.ToSnake(*component.Device.Name) + \"/\"", "return", "}")
-		returnlines = append(returnlines, "func (component HADevice"+strcase.ToCamel(componentName)+") CanGenerateTopic() bool {", "if component.Device.Name == nil || common.NodeID == \"\"  || common.DiscoveryPrefix == \"\" {", "return false", "}", "return true", "}")
+		returnlines = append(returnlines, generateChecker(componentName, "component.Device.Name", "common.NodeID", "common.DiscoveryPrefix")...)
 	} else {
 		returnlines = append(returnlines, "out += strcase.ToSnake(*component.Name) + \"/\"", "return", "}")
-		returnlines = append(returnlines, "func (component HADevice"+strcase.ToCamel(componentName)+") CanGenerateTopic() bool {", "if ( component.Device.Name == nil && component.Name == nil ) || common.DiscoveryPrefix == \"\" || common.NodeID == \"\" {", "return false", "}", "return true", "}")
+		returnlines = append(returnlines, generateChecker(componentName, "component.Name", "common.NodeID", "common.DiscoveryPrefix")...)
 	}
 
 	return returnlines
+}
+func generateChecker(componentName string, required ...string) (output []string) {
+	output = append(output, "func (component HADevice"+strcase.ToCamel(componentName)+") CanGenerateTopic() (error, bool) {")
+
+	for _, attr := range required {
+		first := strings.Split(attr, ".")[0]
+		nilVal := "\"\""
+		if first == "component" {
+			nilVal = "nil"
+		}
+
+		output = append(output, "if "+attr+" == "+nilVal+" {", "return errors.New(\""+attr+"\"), false", "}")
+	}
+	output = append(output, "return nil, true", "}")
+	return
 }

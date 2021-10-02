@@ -1,8 +1,10 @@
-if unchanged && output.CanGenerateTopic() == false {
-	logging.LogError("Unable to generate command topics.")
+err, canGen := output.CanGenerateTopic()
+
+if unchanged && !canGen {
+	logging.LogError("Unable to generate outputTHIS, missing " + err.Error())
 }
 
-if output.CommandTopic == nil && output.CanGenerateTopic() {
+if output.CommandTopic == nil && canGen {
 	n += 1
 	outputTHIS = common.StringPointer(TopicCommand(output.GetTopicBase()))
 }

@@ -138,14 +138,14 @@ func recurseItem(keyname string, item map[string]*gabs.Container, parentname []s
 	return returnlines
 }
 
-func fetchSnippet(parameterName string) (error, []string) {
+func fetchSnippet(parameterName string) ([]string, error) {
 	// os.Open() opens specific file in
 	// read-only mode and this return
 	// a pointer of type os.
 	file, err := os.Open("../helpers/generators/snippets/" + parameterName + ".go")
 
 	if err != nil {
-		return err, []string{}
+		return []string{}, err
 
 	}
 
@@ -171,13 +171,13 @@ func fetchSnippet(parameterName string) (error, []string) {
 	// on the os.File object to close the file
 	file.Close()
 
-	return nil, text
+	return text, nil
 }
 
 func generateIfEmpty(source, target, ty string, item map[string]*gabs.Container, parentRequired bool) (retval []string) {
 
 	hasSnippet := true
-	err, snippet := fetchSnippet(strings.ReplaceAll(source, ".", ""))
+	snippet, err := fetchSnippet(strings.ReplaceAll(source, ".", ""))
 
 	for k, _ := range snippet {
 		snippet[k] = strings.ReplaceAll(snippet[k], "THIS", source)

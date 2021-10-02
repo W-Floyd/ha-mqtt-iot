@@ -13,38 +13,50 @@ func (component HADeviceAlarmControlPanel) Generate() (output HADeviceAlarmContr
 	unchanged := false
 	for {
 		if output.Availability.Topic == nil {
-			if unchanged && output.CanGenerateTopic() == false {
-				logging.LogError("Unable to generate availability topics.")
+			err, canGen := output.CanGenerateTopic()
+
+			if unchanged && !canGen {
+				logging.LogError("Unable to generate output.Availability.Topic, missing " + err.Error())
 			}
 
-			if output.Availability.Topic == nil && output.AvailabilityTopic == nil && output.CanGenerateTopic() {
+			if output.Availability.Topic == nil && output.AvailabilityTopic == nil && canGen {
 				n += 1
-				output.Availability.Topic = common.StringPointer(TopicAvailability(output.GetTopicBase()))
+				output.AvailabilityTopic = common.StringPointer(TopicAvailability(output.GetTopicBase()))
 			}
 		}
 		if output.AvailabilityTopic == nil {
-			if unchanged && output.CanGenerateTopic() == false {
-				logging.LogError("Unable to generate availability topics.")
+			err, canGen := output.CanGenerateTopic()
+
+			if unchanged && !canGen {
+				logging.LogError("Unable to generate output.AvailabilityTopic, missing " + err.Error())
 			}
 
-			if output.Availability.Topic == nil && output.AvailabilityTopic == nil && output.CanGenerateTopic() {
+			if output.Availability.Topic == nil && output.AvailabilityTopic == nil && canGen {
 				n += 1
 				output.AvailabilityTopic = common.StringPointer(TopicAvailability(output.GetTopicBase()))
 			}
 		}
 		if output.CommandTopic == nil {
-			if unchanged && output.CanGenerateTopic() == false {
-				logging.LogError("Unable to generate command topics.")
+			err, canGen := output.CanGenerateTopic()
+
+			if unchanged && !canGen {
+				logging.LogError("Unable to generate output.CommandTopic, missing " + err.Error())
 			}
 
-			if output.CommandTopic == nil && output.CanGenerateTopic() {
+			if output.CommandTopic == nil && canGen {
 				n += 1
 				output.CommandTopic = common.StringPointer(TopicCommand(output.GetTopicBase()))
 			}
 		}
 		if output.Device.Name == nil {
-			n += 1
-			output.Device.Name = common.StringPointer(common.InstanceName)
+			if common.InstanceName == "" {
+				if unchanged {
+					logging.LogError("Unable to generate output.Device.Name, missing common.InstanceName")
+				}
+			} else {
+				n += 1
+				output.Device.Name = common.StringPointer(common.InstanceName)
+			}
 		}
 		if output.StateTopic == nil {
 			if unchanged {
@@ -68,28 +80,38 @@ func (component HADeviceBinarySensor) Generate() (output HADeviceBinarySensor) {
 	unchanged := false
 	for {
 		if output.Availability.Topic == nil {
-			if unchanged && output.CanGenerateTopic() == false {
-				logging.LogError("Unable to generate availability topics.")
+			err, canGen := output.CanGenerateTopic()
+
+			if unchanged && !canGen {
+				logging.LogError("Unable to generate output.Availability.Topic, missing " + err.Error())
 			}
 
-			if output.Availability.Topic == nil && output.AvailabilityTopic == nil && output.CanGenerateTopic() {
+			if output.Availability.Topic == nil && output.AvailabilityTopic == nil && canGen {
 				n += 1
-				output.Availability.Topic = common.StringPointer(TopicAvailability(output.GetTopicBase()))
+				output.AvailabilityTopic = common.StringPointer(TopicAvailability(output.GetTopicBase()))
 			}
 		}
 		if output.AvailabilityTopic == nil {
-			if unchanged && output.CanGenerateTopic() == false {
-				logging.LogError("Unable to generate availability topics.")
+			err, canGen := output.CanGenerateTopic()
+
+			if unchanged && !canGen {
+				logging.LogError("Unable to generate output.AvailabilityTopic, missing " + err.Error())
 			}
 
-			if output.Availability.Topic == nil && output.AvailabilityTopic == nil && output.CanGenerateTopic() {
+			if output.Availability.Topic == nil && output.AvailabilityTopic == nil && canGen {
 				n += 1
 				output.AvailabilityTopic = common.StringPointer(TopicAvailability(output.GetTopicBase()))
 			}
 		}
 		if output.Device.Name == nil {
-			n += 1
-			output.Device.Name = common.StringPointer(common.InstanceName)
+			if common.InstanceName == "" {
+				if unchanged {
+					logging.LogError("Unable to generate output.Device.Name, missing common.InstanceName")
+				}
+			} else {
+				n += 1
+				output.Device.Name = common.StringPointer(common.InstanceName)
+			}
 		}
 		if output.StateTopic == nil {
 			if unchanged {
@@ -113,28 +135,38 @@ func (component HADeviceCamera) Generate() (output HADeviceCamera) {
 	unchanged := false
 	for {
 		if output.Availability.Topic == nil {
-			if unchanged && output.CanGenerateTopic() == false {
-				logging.LogError("Unable to generate availability topics.")
+			err, canGen := output.CanGenerateTopic()
+
+			if unchanged && !canGen {
+				logging.LogError("Unable to generate output.Availability.Topic, missing " + err.Error())
 			}
 
-			if output.Availability.Topic == nil && output.AvailabilityTopic == nil && output.CanGenerateTopic() {
+			if output.Availability.Topic == nil && output.AvailabilityTopic == nil && canGen {
 				n += 1
-				output.Availability.Topic = common.StringPointer(TopicAvailability(output.GetTopicBase()))
+				output.AvailabilityTopic = common.StringPointer(TopicAvailability(output.GetTopicBase()))
 			}
 		}
 		if output.AvailabilityTopic == nil {
-			if unchanged && output.CanGenerateTopic() == false {
-				logging.LogError("Unable to generate availability topics.")
+			err, canGen := output.CanGenerateTopic()
+
+			if unchanged && !canGen {
+				logging.LogError("Unable to generate output.AvailabilityTopic, missing " + err.Error())
 			}
 
-			if output.Availability.Topic == nil && output.AvailabilityTopic == nil && output.CanGenerateTopic() {
+			if output.Availability.Topic == nil && output.AvailabilityTopic == nil && canGen {
 				n += 1
 				output.AvailabilityTopic = common.StringPointer(TopicAvailability(output.GetTopicBase()))
 			}
 		}
 		if output.Device.Name == nil {
-			n += 1
-			output.Device.Name = common.StringPointer(common.InstanceName)
+			if common.InstanceName == "" {
+				if unchanged {
+					logging.LogError("Unable to generate output.Device.Name, missing common.InstanceName")
+				}
+			} else {
+				n += 1
+				output.Device.Name = common.StringPointer(common.InstanceName)
+			}
 		}
 		if output.Topic == nil {
 			if unchanged {
@@ -158,38 +190,50 @@ func (component HADeviceCover) Generate() (output HADeviceCover) {
 	unchanged := false
 	for {
 		if output.Availability.Topic == nil {
-			if unchanged && output.CanGenerateTopic() == false {
-				logging.LogError("Unable to generate availability topics.")
+			err, canGen := output.CanGenerateTopic()
+
+			if unchanged && !canGen {
+				logging.LogError("Unable to generate output.Availability.Topic, missing " + err.Error())
 			}
 
-			if output.Availability.Topic == nil && output.AvailabilityTopic == nil && output.CanGenerateTopic() {
+			if output.Availability.Topic == nil && output.AvailabilityTopic == nil && canGen {
 				n += 1
-				output.Availability.Topic = common.StringPointer(TopicAvailability(output.GetTopicBase()))
+				output.AvailabilityTopic = common.StringPointer(TopicAvailability(output.GetTopicBase()))
 			}
 		}
 		if output.AvailabilityTopic == nil {
-			if unchanged && output.CanGenerateTopic() == false {
-				logging.LogError("Unable to generate availability topics.")
+			err, canGen := output.CanGenerateTopic()
+
+			if unchanged && !canGen {
+				logging.LogError("Unable to generate output.AvailabilityTopic, missing " + err.Error())
 			}
 
-			if output.Availability.Topic == nil && output.AvailabilityTopic == nil && output.CanGenerateTopic() {
+			if output.Availability.Topic == nil && output.AvailabilityTopic == nil && canGen {
 				n += 1
 				output.AvailabilityTopic = common.StringPointer(TopicAvailability(output.GetTopicBase()))
 			}
 		}
 		if output.CommandTopic == nil {
-			if unchanged && output.CanGenerateTopic() == false {
-				logging.LogError("Unable to generate command topics.")
+			err, canGen := output.CanGenerateTopic()
+
+			if unchanged && !canGen {
+				logging.LogError("Unable to generate output.CommandTopic, missing " + err.Error())
 			}
 
-			if output.CommandTopic == nil && output.CanGenerateTopic() {
+			if output.CommandTopic == nil && canGen {
 				n += 1
 				output.CommandTopic = common.StringPointer(TopicCommand(output.GetTopicBase()))
 			}
 		}
 		if output.Device.Name == nil {
-			n += 1
-			output.Device.Name = common.StringPointer(common.InstanceName)
+			if common.InstanceName == "" {
+				if unchanged {
+					logging.LogError("Unable to generate output.Device.Name, missing common.InstanceName")
+				}
+			} else {
+				n += 1
+				output.Device.Name = common.StringPointer(common.InstanceName)
+			}
 		}
 		if unchanged {
 			break
@@ -254,8 +298,14 @@ func (component HADeviceDeviceTrigger) Generate() (output HADeviceDeviceTrigger)
 			}
 		}
 		if output.Device.Name == nil {
-			n += 1
-			output.Device.Name = common.StringPointer(common.InstanceName)
+			if common.InstanceName == "" {
+				if unchanged {
+					logging.LogError("Unable to generate output.Device.Name, missing common.InstanceName")
+				}
+			} else {
+				n += 1
+				output.Device.Name = common.StringPointer(common.InstanceName)
+			}
 		}
 		if output.Device.SuggestedArea == nil {
 			if unchanged {
@@ -304,38 +354,50 @@ func (component HADeviceFan) Generate() (output HADeviceFan) {
 	unchanged := false
 	for {
 		if output.Availability.Topic == nil {
-			if unchanged && output.CanGenerateTopic() == false {
-				logging.LogError("Unable to generate availability topics.")
+			err, canGen := output.CanGenerateTopic()
+
+			if unchanged && !canGen {
+				logging.LogError("Unable to generate output.Availability.Topic, missing " + err.Error())
 			}
 
-			if output.Availability.Topic == nil && output.AvailabilityTopic == nil && output.CanGenerateTopic() {
+			if output.Availability.Topic == nil && output.AvailabilityTopic == nil && canGen {
 				n += 1
-				output.Availability.Topic = common.StringPointer(TopicAvailability(output.GetTopicBase()))
+				output.AvailabilityTopic = common.StringPointer(TopicAvailability(output.GetTopicBase()))
 			}
 		}
 		if output.AvailabilityTopic == nil {
-			if unchanged && output.CanGenerateTopic() == false {
-				logging.LogError("Unable to generate availability topics.")
+			err, canGen := output.CanGenerateTopic()
+
+			if unchanged && !canGen {
+				logging.LogError("Unable to generate output.AvailabilityTopic, missing " + err.Error())
 			}
 
-			if output.Availability.Topic == nil && output.AvailabilityTopic == nil && output.CanGenerateTopic() {
+			if output.Availability.Topic == nil && output.AvailabilityTopic == nil && canGen {
 				n += 1
 				output.AvailabilityTopic = common.StringPointer(TopicAvailability(output.GetTopicBase()))
 			}
 		}
 		if output.CommandTopic == nil {
-			if unchanged && output.CanGenerateTopic() == false {
-				logging.LogError("Unable to generate command topics.")
+			err, canGen := output.CanGenerateTopic()
+
+			if unchanged && !canGen {
+				logging.LogError("Unable to generate output.CommandTopic, missing " + err.Error())
 			}
 
-			if output.CommandTopic == nil && output.CanGenerateTopic() {
+			if output.CommandTopic == nil && canGen {
 				n += 1
 				output.CommandTopic = common.StringPointer(TopicCommand(output.GetTopicBase()))
 			}
 		}
 		if output.Device.Name == nil {
-			n += 1
-			output.Device.Name = common.StringPointer(common.InstanceName)
+			if common.InstanceName == "" {
+				if unchanged {
+					logging.LogError("Unable to generate output.Device.Name, missing common.InstanceName")
+				}
+			} else {
+				n += 1
+				output.Device.Name = common.StringPointer(common.InstanceName)
+			}
 		}
 		if unchanged {
 			break
@@ -354,38 +416,50 @@ func (component HADeviceHumidifier) Generate() (output HADeviceHumidifier) {
 	unchanged := false
 	for {
 		if output.Availability.Topic == nil {
-			if unchanged && output.CanGenerateTopic() == false {
-				logging.LogError("Unable to generate availability topics.")
+			err, canGen := output.CanGenerateTopic()
+
+			if unchanged && !canGen {
+				logging.LogError("Unable to generate output.Availability.Topic, missing " + err.Error())
 			}
 
-			if output.Availability.Topic == nil && output.AvailabilityTopic == nil && output.CanGenerateTopic() {
+			if output.Availability.Topic == nil && output.AvailabilityTopic == nil && canGen {
 				n += 1
-				output.Availability.Topic = common.StringPointer(TopicAvailability(output.GetTopicBase()))
+				output.AvailabilityTopic = common.StringPointer(TopicAvailability(output.GetTopicBase()))
 			}
 		}
 		if output.AvailabilityTopic == nil {
-			if unchanged && output.CanGenerateTopic() == false {
-				logging.LogError("Unable to generate availability topics.")
+			err, canGen := output.CanGenerateTopic()
+
+			if unchanged && !canGen {
+				logging.LogError("Unable to generate output.AvailabilityTopic, missing " + err.Error())
 			}
 
-			if output.Availability.Topic == nil && output.AvailabilityTopic == nil && output.CanGenerateTopic() {
+			if output.Availability.Topic == nil && output.AvailabilityTopic == nil && canGen {
 				n += 1
 				output.AvailabilityTopic = common.StringPointer(TopicAvailability(output.GetTopicBase()))
 			}
 		}
 		if output.CommandTopic == nil {
-			if unchanged && output.CanGenerateTopic() == false {
-				logging.LogError("Unable to generate command topics.")
+			err, canGen := output.CanGenerateTopic()
+
+			if unchanged && !canGen {
+				logging.LogError("Unable to generate output.CommandTopic, missing " + err.Error())
 			}
 
-			if output.CommandTopic == nil && output.CanGenerateTopic() {
+			if output.CommandTopic == nil && canGen {
 				n += 1
 				output.CommandTopic = common.StringPointer(TopicCommand(output.GetTopicBase()))
 			}
 		}
 		if output.Device.Name == nil {
-			n += 1
-			output.Device.Name = common.StringPointer(common.InstanceName)
+			if common.InstanceName == "" {
+				if unchanged {
+					logging.LogError("Unable to generate output.Device.Name, missing common.InstanceName")
+				}
+			} else {
+				n += 1
+				output.Device.Name = common.StringPointer(common.InstanceName)
+			}
 		}
 		if output.TargetHumidityCommandTopic == nil {
 			if unchanged {
@@ -409,28 +483,38 @@ func (component HADeviceClimate) Generate() (output HADeviceClimate) {
 	unchanged := false
 	for {
 		if output.Availability.Topic == nil {
-			if unchanged && output.CanGenerateTopic() == false {
-				logging.LogError("Unable to generate availability topics.")
+			err, canGen := output.CanGenerateTopic()
+
+			if unchanged && !canGen {
+				logging.LogError("Unable to generate output.Availability.Topic, missing " + err.Error())
 			}
 
-			if output.Availability.Topic == nil && output.AvailabilityTopic == nil && output.CanGenerateTopic() {
+			if output.Availability.Topic == nil && output.AvailabilityTopic == nil && canGen {
 				n += 1
-				output.Availability.Topic = common.StringPointer(TopicAvailability(output.GetTopicBase()))
+				output.AvailabilityTopic = common.StringPointer(TopicAvailability(output.GetTopicBase()))
 			}
 		}
 		if output.AvailabilityTopic == nil {
-			if unchanged && output.CanGenerateTopic() == false {
-				logging.LogError("Unable to generate availability topics.")
+			err, canGen := output.CanGenerateTopic()
+
+			if unchanged && !canGen {
+				logging.LogError("Unable to generate output.AvailabilityTopic, missing " + err.Error())
 			}
 
-			if output.Availability.Topic == nil && output.AvailabilityTopic == nil && output.CanGenerateTopic() {
+			if output.Availability.Topic == nil && output.AvailabilityTopic == nil && canGen {
 				n += 1
 				output.AvailabilityTopic = common.StringPointer(TopicAvailability(output.GetTopicBase()))
 			}
 		}
 		if output.Device.Name == nil {
-			n += 1
-			output.Device.Name = common.StringPointer(common.InstanceName)
+			if common.InstanceName == "" {
+				if unchanged {
+					logging.LogError("Unable to generate output.Device.Name, missing common.InstanceName")
+				}
+			} else {
+				n += 1
+				output.Device.Name = common.StringPointer(common.InstanceName)
+			}
 		}
 		if unchanged {
 			break
@@ -449,38 +533,50 @@ func (component HADeviceLight) Generate() (output HADeviceLight) {
 	unchanged := false
 	for {
 		if output.Availability.Topic == nil {
-			if unchanged && output.CanGenerateTopic() == false {
-				logging.LogError("Unable to generate availability topics.")
+			err, canGen := output.CanGenerateTopic()
+
+			if unchanged && !canGen {
+				logging.LogError("Unable to generate output.Availability.Topic, missing " + err.Error())
 			}
 
-			if output.Availability.Topic == nil && output.AvailabilityTopic == nil && output.CanGenerateTopic() {
+			if output.Availability.Topic == nil && output.AvailabilityTopic == nil && canGen {
 				n += 1
-				output.Availability.Topic = common.StringPointer(TopicAvailability(output.GetTopicBase()))
+				output.AvailabilityTopic = common.StringPointer(TopicAvailability(output.GetTopicBase()))
 			}
 		}
 		if output.AvailabilityTopic == nil {
-			if unchanged && output.CanGenerateTopic() == false {
-				logging.LogError("Unable to generate availability topics.")
+			err, canGen := output.CanGenerateTopic()
+
+			if unchanged && !canGen {
+				logging.LogError("Unable to generate output.AvailabilityTopic, missing " + err.Error())
 			}
 
-			if output.Availability.Topic == nil && output.AvailabilityTopic == nil && output.CanGenerateTopic() {
+			if output.Availability.Topic == nil && output.AvailabilityTopic == nil && canGen {
 				n += 1
 				output.AvailabilityTopic = common.StringPointer(TopicAvailability(output.GetTopicBase()))
 			}
 		}
 		if output.CommandTopic == nil {
-			if unchanged && output.CanGenerateTopic() == false {
-				logging.LogError("Unable to generate command topics.")
+			err, canGen := output.CanGenerateTopic()
+
+			if unchanged && !canGen {
+				logging.LogError("Unable to generate output.CommandTopic, missing " + err.Error())
 			}
 
-			if output.CommandTopic == nil && output.CanGenerateTopic() {
+			if output.CommandTopic == nil && canGen {
 				n += 1
 				output.CommandTopic = common.StringPointer(TopicCommand(output.GetTopicBase()))
 			}
 		}
 		if output.Device.Name == nil {
-			n += 1
-			output.Device.Name = common.StringPointer(common.InstanceName)
+			if common.InstanceName == "" {
+				if unchanged {
+					logging.LogError("Unable to generate output.Device.Name, missing common.InstanceName")
+				}
+			} else {
+				n += 1
+				output.Device.Name = common.StringPointer(common.InstanceName)
+			}
 		}
 		if unchanged {
 			break
@@ -499,38 +595,50 @@ func (component HADeviceLock) Generate() (output HADeviceLock) {
 	unchanged := false
 	for {
 		if output.Availability.Topic == nil {
-			if unchanged && output.CanGenerateTopic() == false {
-				logging.LogError("Unable to generate availability topics.")
+			err, canGen := output.CanGenerateTopic()
+
+			if unchanged && !canGen {
+				logging.LogError("Unable to generate output.Availability.Topic, missing " + err.Error())
 			}
 
-			if output.Availability.Topic == nil && output.AvailabilityTopic == nil && output.CanGenerateTopic() {
+			if output.Availability.Topic == nil && output.AvailabilityTopic == nil && canGen {
 				n += 1
-				output.Availability.Topic = common.StringPointer(TopicAvailability(output.GetTopicBase()))
+				output.AvailabilityTopic = common.StringPointer(TopicAvailability(output.GetTopicBase()))
 			}
 		}
 		if output.AvailabilityTopic == nil {
-			if unchanged && output.CanGenerateTopic() == false {
-				logging.LogError("Unable to generate availability topics.")
+			err, canGen := output.CanGenerateTopic()
+
+			if unchanged && !canGen {
+				logging.LogError("Unable to generate output.AvailabilityTopic, missing " + err.Error())
 			}
 
-			if output.Availability.Topic == nil && output.AvailabilityTopic == nil && output.CanGenerateTopic() {
+			if output.Availability.Topic == nil && output.AvailabilityTopic == nil && canGen {
 				n += 1
 				output.AvailabilityTopic = common.StringPointer(TopicAvailability(output.GetTopicBase()))
 			}
 		}
 		if output.CommandTopic == nil {
-			if unchanged && output.CanGenerateTopic() == false {
-				logging.LogError("Unable to generate command topics.")
+			err, canGen := output.CanGenerateTopic()
+
+			if unchanged && !canGen {
+				logging.LogError("Unable to generate output.CommandTopic, missing " + err.Error())
 			}
 
-			if output.CommandTopic == nil && output.CanGenerateTopic() {
+			if output.CommandTopic == nil && canGen {
 				n += 1
 				output.CommandTopic = common.StringPointer(TopicCommand(output.GetTopicBase()))
 			}
 		}
 		if output.Device.Name == nil {
-			n += 1
-			output.Device.Name = common.StringPointer(common.InstanceName)
+			if common.InstanceName == "" {
+				if unchanged {
+					logging.LogError("Unable to generate output.Device.Name, missing common.InstanceName")
+				}
+			} else {
+				n += 1
+				output.Device.Name = common.StringPointer(common.InstanceName)
+			}
 		}
 		if unchanged {
 			break
@@ -549,38 +657,50 @@ func (component HADeviceNumber) Generate() (output HADeviceNumber) {
 	unchanged := false
 	for {
 		if output.Availability.Topic == nil {
-			if unchanged && output.CanGenerateTopic() == false {
-				logging.LogError("Unable to generate availability topics.")
+			err, canGen := output.CanGenerateTopic()
+
+			if unchanged && !canGen {
+				logging.LogError("Unable to generate output.Availability.Topic, missing " + err.Error())
 			}
 
-			if output.Availability.Topic == nil && output.AvailabilityTopic == nil && output.CanGenerateTopic() {
+			if output.Availability.Topic == nil && output.AvailabilityTopic == nil && canGen {
 				n += 1
-				output.Availability.Topic = common.StringPointer(TopicAvailability(output.GetTopicBase()))
+				output.AvailabilityTopic = common.StringPointer(TopicAvailability(output.GetTopicBase()))
 			}
 		}
 		if output.AvailabilityTopic == nil {
-			if unchanged && output.CanGenerateTopic() == false {
-				logging.LogError("Unable to generate availability topics.")
+			err, canGen := output.CanGenerateTopic()
+
+			if unchanged && !canGen {
+				logging.LogError("Unable to generate output.AvailabilityTopic, missing " + err.Error())
 			}
 
-			if output.Availability.Topic == nil && output.AvailabilityTopic == nil && output.CanGenerateTopic() {
+			if output.Availability.Topic == nil && output.AvailabilityTopic == nil && canGen {
 				n += 1
 				output.AvailabilityTopic = common.StringPointer(TopicAvailability(output.GetTopicBase()))
 			}
 		}
 		if output.CommandTopic == nil {
-			if unchanged && output.CanGenerateTopic() == false {
-				logging.LogError("Unable to generate command topics.")
+			err, canGen := output.CanGenerateTopic()
+
+			if unchanged && !canGen {
+				logging.LogError("Unable to generate output.CommandTopic, missing " + err.Error())
 			}
 
-			if output.CommandTopic == nil && output.CanGenerateTopic() {
+			if output.CommandTopic == nil && canGen {
 				n += 1
 				output.CommandTopic = common.StringPointer(TopicCommand(output.GetTopicBase()))
 			}
 		}
 		if output.Device.Name == nil {
-			n += 1
-			output.Device.Name = common.StringPointer(common.InstanceName)
+			if common.InstanceName == "" {
+				if unchanged {
+					logging.LogError("Unable to generate output.Device.Name, missing common.InstanceName")
+				}
+			} else {
+				n += 1
+				output.Device.Name = common.StringPointer(common.InstanceName)
+			}
 		}
 		if unchanged {
 			break
@@ -599,31 +719,37 @@ func (component HADeviceScene) Generate() (output HADeviceScene) {
 	unchanged := false
 	for {
 		if output.Availability.Topic == nil {
-			if unchanged && output.CanGenerateTopic() == false {
-				logging.LogError("Unable to generate availability topics.")
+			err, canGen := output.CanGenerateTopic()
+
+			if unchanged && !canGen {
+				logging.LogError("Unable to generate output.Availability.Topic, missing " + err.Error())
 			}
 
-			if output.Availability.Topic == nil && output.AvailabilityTopic == nil && output.CanGenerateTopic() {
+			if output.Availability.Topic == nil && output.AvailabilityTopic == nil && canGen {
 				n += 1
-				output.Availability.Topic = common.StringPointer(TopicAvailability(output.GetTopicBase()))
+				output.AvailabilityTopic = common.StringPointer(TopicAvailability(output.GetTopicBase()))
 			}
 		}
 		if output.AvailabilityTopic == nil {
-			if unchanged && output.CanGenerateTopic() == false {
-				logging.LogError("Unable to generate availability topics.")
+			err, canGen := output.CanGenerateTopic()
+
+			if unchanged && !canGen {
+				logging.LogError("Unable to generate output.AvailabilityTopic, missing " + err.Error())
 			}
 
-			if output.Availability.Topic == nil && output.AvailabilityTopic == nil && output.CanGenerateTopic() {
+			if output.Availability.Topic == nil && output.AvailabilityTopic == nil && canGen {
 				n += 1
 				output.AvailabilityTopic = common.StringPointer(TopicAvailability(output.GetTopicBase()))
 			}
 		}
 		if output.CommandTopic == nil {
-			if unchanged && output.CanGenerateTopic() == false {
-				logging.LogError("Unable to generate command topics.")
+			err, canGen := output.CanGenerateTopic()
+
+			if unchanged && !canGen {
+				logging.LogError("Unable to generate output.CommandTopic, missing " + err.Error())
 			}
 
-			if output.CommandTopic == nil && output.CanGenerateTopic() {
+			if output.CommandTopic == nil && canGen {
 				n += 1
 				output.CommandTopic = common.StringPointer(TopicCommand(output.GetTopicBase()))
 			}
@@ -645,38 +771,50 @@ func (component HADeviceSelect) Generate() (output HADeviceSelect) {
 	unchanged := false
 	for {
 		if output.Availability.Topic == nil {
-			if unchanged && output.CanGenerateTopic() == false {
-				logging.LogError("Unable to generate availability topics.")
+			err, canGen := output.CanGenerateTopic()
+
+			if unchanged && !canGen {
+				logging.LogError("Unable to generate output.Availability.Topic, missing " + err.Error())
 			}
 
-			if output.Availability.Topic == nil && output.AvailabilityTopic == nil && output.CanGenerateTopic() {
+			if output.Availability.Topic == nil && output.AvailabilityTopic == nil && canGen {
 				n += 1
-				output.Availability.Topic = common.StringPointer(TopicAvailability(output.GetTopicBase()))
+				output.AvailabilityTopic = common.StringPointer(TopicAvailability(output.GetTopicBase()))
 			}
 		}
 		if output.AvailabilityTopic == nil {
-			if unchanged && output.CanGenerateTopic() == false {
-				logging.LogError("Unable to generate availability topics.")
+			err, canGen := output.CanGenerateTopic()
+
+			if unchanged && !canGen {
+				logging.LogError("Unable to generate output.AvailabilityTopic, missing " + err.Error())
 			}
 
-			if output.Availability.Topic == nil && output.AvailabilityTopic == nil && output.CanGenerateTopic() {
+			if output.Availability.Topic == nil && output.AvailabilityTopic == nil && canGen {
 				n += 1
 				output.AvailabilityTopic = common.StringPointer(TopicAvailability(output.GetTopicBase()))
 			}
 		}
 		if output.CommandTopic == nil {
-			if unchanged && output.CanGenerateTopic() == false {
-				logging.LogError("Unable to generate command topics.")
+			err, canGen := output.CanGenerateTopic()
+
+			if unchanged && !canGen {
+				logging.LogError("Unable to generate output.CommandTopic, missing " + err.Error())
 			}
 
-			if output.CommandTopic == nil && output.CanGenerateTopic() {
+			if output.CommandTopic == nil && canGen {
 				n += 1
 				output.CommandTopic = common.StringPointer(TopicCommand(output.GetTopicBase()))
 			}
 		}
 		if output.Device.Name == nil {
-			n += 1
-			output.Device.Name = common.StringPointer(common.InstanceName)
+			if common.InstanceName == "" {
+				if unchanged {
+					logging.LogError("Unable to generate output.Device.Name, missing common.InstanceName")
+				}
+			} else {
+				n += 1
+				output.Device.Name = common.StringPointer(common.InstanceName)
+			}
 		}
 		if output.Options == nil {
 			if unchanged {
@@ -700,28 +838,38 @@ func (component HADeviceSensor) Generate() (output HADeviceSensor) {
 	unchanged := false
 	for {
 		if output.Availability.Topic == nil {
-			if unchanged && output.CanGenerateTopic() == false {
-				logging.LogError("Unable to generate availability topics.")
+			err, canGen := output.CanGenerateTopic()
+
+			if unchanged && !canGen {
+				logging.LogError("Unable to generate output.Availability.Topic, missing " + err.Error())
 			}
 
-			if output.Availability.Topic == nil && output.AvailabilityTopic == nil && output.CanGenerateTopic() {
+			if output.Availability.Topic == nil && output.AvailabilityTopic == nil && canGen {
 				n += 1
-				output.Availability.Topic = common.StringPointer(TopicAvailability(output.GetTopicBase()))
+				output.AvailabilityTopic = common.StringPointer(TopicAvailability(output.GetTopicBase()))
 			}
 		}
 		if output.AvailabilityTopic == nil {
-			if unchanged && output.CanGenerateTopic() == false {
-				logging.LogError("Unable to generate availability topics.")
+			err, canGen := output.CanGenerateTopic()
+
+			if unchanged && !canGen {
+				logging.LogError("Unable to generate output.AvailabilityTopic, missing " + err.Error())
 			}
 
-			if output.Availability.Topic == nil && output.AvailabilityTopic == nil && output.CanGenerateTopic() {
+			if output.Availability.Topic == nil && output.AvailabilityTopic == nil && canGen {
 				n += 1
 				output.AvailabilityTopic = common.StringPointer(TopicAvailability(output.GetTopicBase()))
 			}
 		}
 		if output.Device.Name == nil {
-			n += 1
-			output.Device.Name = common.StringPointer(common.InstanceName)
+			if common.InstanceName == "" {
+				if unchanged {
+					logging.LogError("Unable to generate output.Device.Name, missing common.InstanceName")
+				}
+			} else {
+				n += 1
+				output.Device.Name = common.StringPointer(common.InstanceName)
+			}
 		}
 		if output.StateTopic == nil {
 			if unchanged {
@@ -745,38 +893,50 @@ func (component HADeviceSwitch) Generate() (output HADeviceSwitch) {
 	unchanged := false
 	for {
 		if output.Availability.Topic == nil {
-			if unchanged && output.CanGenerateTopic() == false {
-				logging.LogError("Unable to generate availability topics.")
+			err, canGen := output.CanGenerateTopic()
+
+			if unchanged && !canGen {
+				logging.LogError("Unable to generate output.Availability.Topic, missing " + err.Error())
 			}
 
-			if output.Availability.Topic == nil && output.AvailabilityTopic == nil && output.CanGenerateTopic() {
+			if output.Availability.Topic == nil && output.AvailabilityTopic == nil && canGen {
 				n += 1
-				output.Availability.Topic = common.StringPointer(TopicAvailability(output.GetTopicBase()))
+				output.AvailabilityTopic = common.StringPointer(TopicAvailability(output.GetTopicBase()))
 			}
 		}
 		if output.AvailabilityTopic == nil {
-			if unchanged && output.CanGenerateTopic() == false {
-				logging.LogError("Unable to generate availability topics.")
+			err, canGen := output.CanGenerateTopic()
+
+			if unchanged && !canGen {
+				logging.LogError("Unable to generate output.AvailabilityTopic, missing " + err.Error())
 			}
 
-			if output.Availability.Topic == nil && output.AvailabilityTopic == nil && output.CanGenerateTopic() {
+			if output.Availability.Topic == nil && output.AvailabilityTopic == nil && canGen {
 				n += 1
 				output.AvailabilityTopic = common.StringPointer(TopicAvailability(output.GetTopicBase()))
 			}
 		}
 		if output.CommandTopic == nil {
-			if unchanged && output.CanGenerateTopic() == false {
-				logging.LogError("Unable to generate command topics.")
+			err, canGen := output.CanGenerateTopic()
+
+			if unchanged && !canGen {
+				logging.LogError("Unable to generate output.CommandTopic, missing " + err.Error())
 			}
 
-			if output.CommandTopic == nil && output.CanGenerateTopic() {
+			if output.CommandTopic == nil && canGen {
 				n += 1
 				output.CommandTopic = common.StringPointer(TopicCommand(output.GetTopicBase()))
 			}
 		}
 		if output.Device.Name == nil {
-			n += 1
-			output.Device.Name = common.StringPointer(common.InstanceName)
+			if common.InstanceName == "" {
+				if unchanged {
+					logging.LogError("Unable to generate output.Device.Name, missing common.InstanceName")
+				}
+			} else {
+				n += 1
+				output.Device.Name = common.StringPointer(common.InstanceName)
+			}
 		}
 		if unchanged {
 			break
@@ -815,8 +975,14 @@ func (component HADeviceTag) Generate() (output HADeviceTag) {
 			}
 		}
 		if output.Device.Name == nil {
-			n += 1
-			output.Device.Name = common.StringPointer(common.InstanceName)
+			if common.InstanceName == "" {
+				if unchanged {
+					logging.LogError("Unable to generate output.Device.Name, missing common.InstanceName")
+				}
+			} else {
+				n += 1
+				output.Device.Name = common.StringPointer(common.InstanceName)
+			}
 		}
 		if output.Device.SuggestedArea == nil {
 			if unchanged {
@@ -855,31 +1021,37 @@ func (component HADeviceVacuum) Generate() (output HADeviceVacuum) {
 	unchanged := false
 	for {
 		if output.Availability.Topic == nil {
-			if unchanged && output.CanGenerateTopic() == false {
-				logging.LogError("Unable to generate availability topics.")
+			err, canGen := output.CanGenerateTopic()
+
+			if unchanged && !canGen {
+				logging.LogError("Unable to generate output.Availability.Topic, missing " + err.Error())
 			}
 
-			if output.Availability.Topic == nil && output.AvailabilityTopic == nil && output.CanGenerateTopic() {
+			if output.Availability.Topic == nil && output.AvailabilityTopic == nil && canGen {
 				n += 1
-				output.Availability.Topic = common.StringPointer(TopicAvailability(output.GetTopicBase()))
+				output.AvailabilityTopic = common.StringPointer(TopicAvailability(output.GetTopicBase()))
 			}
 		}
 		if output.AvailabilityTopic == nil {
-			if unchanged && output.CanGenerateTopic() == false {
-				logging.LogError("Unable to generate availability topics.")
+			err, canGen := output.CanGenerateTopic()
+
+			if unchanged && !canGen {
+				logging.LogError("Unable to generate output.AvailabilityTopic, missing " + err.Error())
 			}
 
-			if output.Availability.Topic == nil && output.AvailabilityTopic == nil && output.CanGenerateTopic() {
+			if output.Availability.Topic == nil && output.AvailabilityTopic == nil && canGen {
 				n += 1
 				output.AvailabilityTopic = common.StringPointer(TopicAvailability(output.GetTopicBase()))
 			}
 		}
 		if output.CommandTopic == nil {
-			if unchanged && output.CanGenerateTopic() == false {
-				logging.LogError("Unable to generate command topics.")
+			err, canGen := output.CanGenerateTopic()
+
+			if unchanged && !canGen {
+				logging.LogError("Unable to generate output.CommandTopic, missing " + err.Error())
 			}
 
-			if output.CommandTopic == nil && output.CanGenerateTopic() {
+			if output.CommandTopic == nil && canGen {
 				n += 1
 				output.CommandTopic = common.StringPointer(TopicCommand(output.GetTopicBase()))
 			}
