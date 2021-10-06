@@ -49,6 +49,8 @@ func main() {
 
 	output = append(output, "func GenerateAll() error {", "n := 0")
 
+	output = append(output, "if !structs.IsStruct(Config.Devices) {", "return errors.New(\"devices does not exist\")", "}")
+
 	for _, deviceName := range deviceTypes {
 
 		output = append(output, "if len(Config.Devices."+strcase.ToCamel(deviceName)+") > 0 {")

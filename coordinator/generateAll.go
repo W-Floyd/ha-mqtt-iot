@@ -11,6 +11,9 @@ import (
 // these devices have (topics, for example), and raises errors if required.
 func GenerateAll() error {
 	n := 0
+	if !structs.IsStruct(Config.Devices) {
+		return errors.New("devices does not exist")
+	}
 	if len(Config.Devices.AlarmControlPanel) > 0 {
 		for k := range Config.Devices.AlarmControlPanel {
 			if structs.IsStruct(Config.Devices.AlarmControlPanel[k].Configuration) {
