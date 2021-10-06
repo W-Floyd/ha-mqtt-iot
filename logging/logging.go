@@ -26,3 +26,9 @@ func LogDebug(message ...interface{}) {
 		DebugLog.Printf("%v%v\n", logPrefix, mes)
 	}
 }
+
+func LogWarning(message ...interface{}) {
+	for _, mes := range message {
+		WarnLog.Printf("%v%v\n", logPrefix, mes)
+	}
+}
