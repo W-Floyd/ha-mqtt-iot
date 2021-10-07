@@ -5,60 +5,60 @@ import (
 	"github.com/W-Floyd/ha-mqtt-iot/logging"
 )
 
-func (component *HADeviceAlarmControlPanel) Generate() {
+func (config *HAConfigAlarmControlPanel) Generate() {
 	n := 0
 	oldN := 0
 	unchanged := false
 	for {
-		if component.Availability.Topic == nil {
-			err, canGen := component.CanGenerateTopic()
+		if config.Configuration.Availability.Topic == nil {
+			err, canGen := config.Configuration.CanGenerateTopic()
 
 			if unchanged && !canGen {
-				logging.LogError("Unable to generate component.Availability.Topic, missing " + err.Error())
+				logging.LogError("Unable to generate config.Configuration.Availability.Topic, missing " + err.Error())
 			}
 
-			if component.Availability.Topic == nil && component.AvailabilityTopic == nil && canGen {
+			if config.Configuration.Availability.Topic == nil && config.Configuration.AvailabilityTopic == nil && canGen {
 				n += 1
-				component.AvailabilityTopic = common.StringPointer(TopicAvailability(component.GetTopicBase()))
+				config.Configuration.AvailabilityTopic = common.StringPointer(TopicAvailability(config.Configuration.GetTopicBase()))
 			}
 		}
-		if component.AvailabilityTopic == nil {
-			err, canGen := component.CanGenerateTopic()
+		if config.Configuration.AvailabilityTopic == nil {
+			err, canGen := config.Configuration.CanGenerateTopic()
 
 			if unchanged && !canGen {
-				logging.LogError("Unable to generate component.AvailabilityTopic, missing " + err.Error())
+				logging.LogError("Unable to generate config.Configuration.AvailabilityTopic, missing " + err.Error())
 			}
 
-			if component.Availability.Topic == nil && component.AvailabilityTopic == nil && canGen {
+			if config.Configuration.Availability.Topic == nil && config.Configuration.AvailabilityTopic == nil && canGen {
 				n += 1
-				component.AvailabilityTopic = common.StringPointer(TopicAvailability(component.GetTopicBase()))
+				config.Configuration.AvailabilityTopic = common.StringPointer(TopicAvailability(config.Configuration.GetTopicBase()))
 			}
 		}
-		if component.CommandTopic == nil {
-			err, canGen := component.CanGenerateTopic()
+		if config.Configuration.CommandTopic == nil {
+			err, canGen := config.Configuration.CanGenerateTopic()
 
 			if unchanged && !canGen {
-				logging.LogError("Unable to generate component.CommandTopic, missing " + err.Error())
+				logging.LogError("Unable to generate config.Configuration.CommandTopic, missing " + err.Error())
 			}
 
-			if component.CommandTopic == nil && canGen {
+			if config.Configuration.CommandTopic == nil && canGen {
 				n += 1
-				component.CommandTopic = common.StringPointer(TopicCommand(component.GetTopicBase()))
+				config.Configuration.CommandTopic = common.StringPointer(TopicCommand(config.Configuration.GetTopicBase()))
 			}
 		}
-		if component.Device.Name == nil {
+		if config.Configuration.Device.Name == nil {
 			if common.InstanceName == "" {
 				if unchanged {
-					logging.LogError("Unable to generate component.Device.Name, missing common.InstanceName")
+					logging.LogError("Unable to generate config.Configuration.Device.Name, missing common.InstanceName")
 				}
 			} else {
 				n += 1
-				component.Device.Name = common.StringPointer(common.InstanceName)
+				config.Configuration.Device.Name = common.StringPointer(common.InstanceName)
 			}
 		}
-		if component.StateTopic == nil {
+		if config.Configuration.StateTopic == nil {
 			if unchanged {
-				logging.LogError("component.StateTopic generator not found, but field is required!")
+				logging.LogError("config.Configuration.StateTopic generator not found, but field is required!")
 			}
 		}
 		if unchanged {
@@ -71,48 +71,48 @@ func (component *HADeviceAlarmControlPanel) Generate() {
 	}
 	return
 }
-func (component *HADeviceBinarySensor) Generate() {
+func (config *HAConfigBinarySensor) Generate() {
 	n := 0
 	oldN := 0
 	unchanged := false
 	for {
-		if component.Availability.Topic == nil {
-			err, canGen := component.CanGenerateTopic()
+		if config.Configuration.Availability.Topic == nil {
+			err, canGen := config.Configuration.CanGenerateTopic()
 
 			if unchanged && !canGen {
-				logging.LogError("Unable to generate component.Availability.Topic, missing " + err.Error())
+				logging.LogError("Unable to generate config.Configuration.Availability.Topic, missing " + err.Error())
 			}
 
-			if component.Availability.Topic == nil && component.AvailabilityTopic == nil && canGen {
+			if config.Configuration.Availability.Topic == nil && config.Configuration.AvailabilityTopic == nil && canGen {
 				n += 1
-				component.AvailabilityTopic = common.StringPointer(TopicAvailability(component.GetTopicBase()))
+				config.Configuration.AvailabilityTopic = common.StringPointer(TopicAvailability(config.Configuration.GetTopicBase()))
 			}
 		}
-		if component.AvailabilityTopic == nil {
-			err, canGen := component.CanGenerateTopic()
+		if config.Configuration.AvailabilityTopic == nil {
+			err, canGen := config.Configuration.CanGenerateTopic()
 
 			if unchanged && !canGen {
-				logging.LogError("Unable to generate component.AvailabilityTopic, missing " + err.Error())
+				logging.LogError("Unable to generate config.Configuration.AvailabilityTopic, missing " + err.Error())
 			}
 
-			if component.Availability.Topic == nil && component.AvailabilityTopic == nil && canGen {
+			if config.Configuration.Availability.Topic == nil && config.Configuration.AvailabilityTopic == nil && canGen {
 				n += 1
-				component.AvailabilityTopic = common.StringPointer(TopicAvailability(component.GetTopicBase()))
+				config.Configuration.AvailabilityTopic = common.StringPointer(TopicAvailability(config.Configuration.GetTopicBase()))
 			}
 		}
-		if component.Device.Name == nil {
+		if config.Configuration.Device.Name == nil {
 			if common.InstanceName == "" {
 				if unchanged {
-					logging.LogError("Unable to generate component.Device.Name, missing common.InstanceName")
+					logging.LogError("Unable to generate config.Configuration.Device.Name, missing common.InstanceName")
 				}
 			} else {
 				n += 1
-				component.Device.Name = common.StringPointer(common.InstanceName)
+				config.Configuration.Device.Name = common.StringPointer(common.InstanceName)
 			}
 		}
-		if component.StateTopic == nil {
+		if config.Configuration.StateTopic == nil {
 			if unchanged {
-				logging.LogError("component.StateTopic generator not found, but field is required!")
+				logging.LogError("config.Configuration.StateTopic generator not found, but field is required!")
 			}
 		}
 		if unchanged {
@@ -125,48 +125,48 @@ func (component *HADeviceBinarySensor) Generate() {
 	}
 	return
 }
-func (component *HADeviceCamera) Generate() {
+func (config *HAConfigCamera) Generate() {
 	n := 0
 	oldN := 0
 	unchanged := false
 	for {
-		if component.Availability.Topic == nil {
-			err, canGen := component.CanGenerateTopic()
+		if config.Configuration.Availability.Topic == nil {
+			err, canGen := config.Configuration.CanGenerateTopic()
 
 			if unchanged && !canGen {
-				logging.LogError("Unable to generate component.Availability.Topic, missing " + err.Error())
+				logging.LogError("Unable to generate config.Configuration.Availability.Topic, missing " + err.Error())
 			}
 
-			if component.Availability.Topic == nil && component.AvailabilityTopic == nil && canGen {
+			if config.Configuration.Availability.Topic == nil && config.Configuration.AvailabilityTopic == nil && canGen {
 				n += 1
-				component.AvailabilityTopic = common.StringPointer(TopicAvailability(component.GetTopicBase()))
+				config.Configuration.AvailabilityTopic = common.StringPointer(TopicAvailability(config.Configuration.GetTopicBase()))
 			}
 		}
-		if component.AvailabilityTopic == nil {
-			err, canGen := component.CanGenerateTopic()
+		if config.Configuration.AvailabilityTopic == nil {
+			err, canGen := config.Configuration.CanGenerateTopic()
 
 			if unchanged && !canGen {
-				logging.LogError("Unable to generate component.AvailabilityTopic, missing " + err.Error())
+				logging.LogError("Unable to generate config.Configuration.AvailabilityTopic, missing " + err.Error())
 			}
 
-			if component.Availability.Topic == nil && component.AvailabilityTopic == nil && canGen {
+			if config.Configuration.Availability.Topic == nil && config.Configuration.AvailabilityTopic == nil && canGen {
 				n += 1
-				component.AvailabilityTopic = common.StringPointer(TopicAvailability(component.GetTopicBase()))
+				config.Configuration.AvailabilityTopic = common.StringPointer(TopicAvailability(config.Configuration.GetTopicBase()))
 			}
 		}
-		if component.Device.Name == nil {
+		if config.Configuration.Device.Name == nil {
 			if common.InstanceName == "" {
 				if unchanged {
-					logging.LogError("Unable to generate component.Device.Name, missing common.InstanceName")
+					logging.LogError("Unable to generate config.Configuration.Device.Name, missing common.InstanceName")
 				}
 			} else {
 				n += 1
-				component.Device.Name = common.StringPointer(common.InstanceName)
+				config.Configuration.Device.Name = common.StringPointer(common.InstanceName)
 			}
 		}
-		if component.Topic == nil {
+		if config.Configuration.Topic == nil {
 			if unchanged {
-				logging.LogError("component.Topic generator not found, but field is required!")
+				logging.LogError("config.Configuration.Topic generator not found, but field is required!")
 			}
 		}
 		if unchanged {
@@ -179,55 +179,55 @@ func (component *HADeviceCamera) Generate() {
 	}
 	return
 }
-func (component *HADeviceCover) Generate() {
+func (config *HAConfigCover) Generate() {
 	n := 0
 	oldN := 0
 	unchanged := false
 	for {
-		if component.Availability.Topic == nil {
-			err, canGen := component.CanGenerateTopic()
+		if config.Configuration.Availability.Topic == nil {
+			err, canGen := config.Configuration.CanGenerateTopic()
 
 			if unchanged && !canGen {
-				logging.LogError("Unable to generate component.Availability.Topic, missing " + err.Error())
+				logging.LogError("Unable to generate config.Configuration.Availability.Topic, missing " + err.Error())
 			}
 
-			if component.Availability.Topic == nil && component.AvailabilityTopic == nil && canGen {
+			if config.Configuration.Availability.Topic == nil && config.Configuration.AvailabilityTopic == nil && canGen {
 				n += 1
-				component.AvailabilityTopic = common.StringPointer(TopicAvailability(component.GetTopicBase()))
+				config.Configuration.AvailabilityTopic = common.StringPointer(TopicAvailability(config.Configuration.GetTopicBase()))
 			}
 		}
-		if component.AvailabilityTopic == nil {
-			err, canGen := component.CanGenerateTopic()
+		if config.Configuration.AvailabilityTopic == nil {
+			err, canGen := config.Configuration.CanGenerateTopic()
 
 			if unchanged && !canGen {
-				logging.LogError("Unable to generate component.AvailabilityTopic, missing " + err.Error())
+				logging.LogError("Unable to generate config.Configuration.AvailabilityTopic, missing " + err.Error())
 			}
 
-			if component.Availability.Topic == nil && component.AvailabilityTopic == nil && canGen {
+			if config.Configuration.Availability.Topic == nil && config.Configuration.AvailabilityTopic == nil && canGen {
 				n += 1
-				component.AvailabilityTopic = common.StringPointer(TopicAvailability(component.GetTopicBase()))
+				config.Configuration.AvailabilityTopic = common.StringPointer(TopicAvailability(config.Configuration.GetTopicBase()))
 			}
 		}
-		if component.CommandTopic == nil {
-			err, canGen := component.CanGenerateTopic()
+		if config.Configuration.CommandTopic == nil {
+			err, canGen := config.Configuration.CanGenerateTopic()
 
 			if unchanged && !canGen {
-				logging.LogError("Unable to generate component.CommandTopic, missing " + err.Error())
+				logging.LogError("Unable to generate config.Configuration.CommandTopic, missing " + err.Error())
 			}
 
-			if component.CommandTopic == nil && canGen {
+			if config.Configuration.CommandTopic == nil && canGen {
 				n += 1
-				component.CommandTopic = common.StringPointer(TopicCommand(component.GetTopicBase()))
+				config.Configuration.CommandTopic = common.StringPointer(TopicCommand(config.Configuration.GetTopicBase()))
 			}
 		}
-		if component.Device.Name == nil {
+		if config.Configuration.Device.Name == nil {
 			if common.InstanceName == "" {
 				if unchanged {
-					logging.LogError("Unable to generate component.Device.Name, missing common.InstanceName")
+					logging.LogError("Unable to generate config.Configuration.Device.Name, missing common.InstanceName")
 				}
 			} else {
 				n += 1
-				component.Device.Name = common.StringPointer(common.InstanceName)
+				config.Configuration.Device.Name = common.StringPointer(common.InstanceName)
 			}
 		}
 		if unchanged {
@@ -240,14 +240,14 @@ func (component *HADeviceCover) Generate() {
 	}
 	return
 }
-func (component *HADeviceDeviceTracker) Generate() {
+func (config *HAConfigDeviceTracker) Generate() {
 	n := 0
 	oldN := 0
 	unchanged := false
 	for {
-		if component.Devices == nil {
+		if config.Configuration.Devices == nil {
 			if unchanged {
-				logging.LogError("component.Devices generator not found, but field is required!")
+				logging.LogError("config.Configuration.Devices generator not found, but field is required!")
 			}
 		}
 		if unchanged {
@@ -260,74 +260,74 @@ func (component *HADeviceDeviceTracker) Generate() {
 	}
 	return
 }
-func (component *HADeviceDeviceTrigger) Generate() {
+func (config *HAConfigDeviceTrigger) Generate() {
 	n := 0
 	oldN := 0
 	unchanged := false
 	for {
-		if component.AutomationType == nil {
+		if config.Configuration.AutomationType == nil {
 			if unchanged {
-				logging.LogError("component.AutomationType generator not found, but field is required!")
+				logging.LogError("config.Configuration.AutomationType generator not found, but field is required!")
 			}
 		}
-		if component.Device.Connections == nil {
+		if config.Configuration.Device.Connections == nil {
 			if unchanged {
-				logging.LogError("component.Device.Connections generator not found, but field is required!")
+				logging.LogError("config.Configuration.Device.Connections generator not found, but field is required!")
 			}
 		}
-		if component.Device.Identifiers == nil {
+		if config.Configuration.Device.Identifiers == nil {
 			if unchanged {
-				logging.LogError("component.Device.Identifiers generator not found, but field is required!")
+				logging.LogError("config.Configuration.Device.Identifiers generator not found, but field is required!")
 			}
 		}
-		if component.Device.Manufacturer == nil {
+		if config.Configuration.Device.Manufacturer == nil {
 			if unchanged {
-				logging.LogError("component.Device.Manufacturer generator not found, but field is required!")
+				logging.LogError("config.Configuration.Device.Manufacturer generator not found, but field is required!")
 			}
 		}
-		if component.Device.Model == nil {
+		if config.Configuration.Device.Model == nil {
 			if unchanged {
-				logging.LogError("component.Device.Model generator not found, but field is required!")
+				logging.LogError("config.Configuration.Device.Model generator not found, but field is required!")
 			}
 		}
-		if component.Device.Name == nil {
+		if config.Configuration.Device.Name == nil {
 			if common.InstanceName == "" {
 				if unchanged {
-					logging.LogError("Unable to generate component.Device.Name, missing common.InstanceName")
+					logging.LogError("Unable to generate config.Configuration.Device.Name, missing common.InstanceName")
 				}
 			} else {
 				n += 1
-				component.Device.Name = common.StringPointer(common.InstanceName)
+				config.Configuration.Device.Name = common.StringPointer(common.InstanceName)
 			}
 		}
-		if component.Device.SuggestedArea == nil {
+		if config.Configuration.Device.SuggestedArea == nil {
 			if unchanged {
-				logging.LogError("component.Device.SuggestedArea generator not found, but field is required!")
+				logging.LogError("config.Configuration.Device.SuggestedArea generator not found, but field is required!")
 			}
 		}
-		if component.Device.SwVersion == nil {
+		if config.Configuration.Device.SwVersion == nil {
 			if unchanged {
-				logging.LogError("component.Device.SwVersion generator not found, but field is required!")
+				logging.LogError("config.Configuration.Device.SwVersion generator not found, but field is required!")
 			}
 		}
-		if component.Device.ViaDevice == nil {
+		if config.Configuration.Device.ViaDevice == nil {
 			if unchanged {
-				logging.LogError("component.Device.ViaDevice generator not found, but field is required!")
+				logging.LogError("config.Configuration.Device.ViaDevice generator not found, but field is required!")
 			}
 		}
-		if component.Subtype == nil {
+		if config.Configuration.Subtype == nil {
 			if unchanged {
-				logging.LogError("component.Subtype generator not found, but field is required!")
+				logging.LogError("config.Configuration.Subtype generator not found, but field is required!")
 			}
 		}
-		if component.Topic == nil {
+		if config.Configuration.Topic == nil {
 			if unchanged {
-				logging.LogError("component.Topic generator not found, but field is required!")
+				logging.LogError("config.Configuration.Topic generator not found, but field is required!")
 			}
 		}
-		if component.Type == nil {
+		if config.Configuration.Type == nil {
 			if unchanged {
-				logging.LogError("component.Type generator not found, but field is required!")
+				logging.LogError("config.Configuration.Type generator not found, but field is required!")
 			}
 		}
 		if unchanged {
@@ -340,55 +340,55 @@ func (component *HADeviceDeviceTrigger) Generate() {
 	}
 	return
 }
-func (component *HADeviceFan) Generate() {
+func (config *HAConfigFan) Generate() {
 	n := 0
 	oldN := 0
 	unchanged := false
 	for {
-		if component.Availability.Topic == nil {
-			err, canGen := component.CanGenerateTopic()
+		if config.Configuration.Availability.Topic == nil {
+			err, canGen := config.Configuration.CanGenerateTopic()
 
 			if unchanged && !canGen {
-				logging.LogError("Unable to generate component.Availability.Topic, missing " + err.Error())
+				logging.LogError("Unable to generate config.Configuration.Availability.Topic, missing " + err.Error())
 			}
 
-			if component.Availability.Topic == nil && component.AvailabilityTopic == nil && canGen {
+			if config.Configuration.Availability.Topic == nil && config.Configuration.AvailabilityTopic == nil && canGen {
 				n += 1
-				component.AvailabilityTopic = common.StringPointer(TopicAvailability(component.GetTopicBase()))
+				config.Configuration.AvailabilityTopic = common.StringPointer(TopicAvailability(config.Configuration.GetTopicBase()))
 			}
 		}
-		if component.AvailabilityTopic == nil {
-			err, canGen := component.CanGenerateTopic()
+		if config.Configuration.AvailabilityTopic == nil {
+			err, canGen := config.Configuration.CanGenerateTopic()
 
 			if unchanged && !canGen {
-				logging.LogError("Unable to generate component.AvailabilityTopic, missing " + err.Error())
+				logging.LogError("Unable to generate config.Configuration.AvailabilityTopic, missing " + err.Error())
 			}
 
-			if component.Availability.Topic == nil && component.AvailabilityTopic == nil && canGen {
+			if config.Configuration.Availability.Topic == nil && config.Configuration.AvailabilityTopic == nil && canGen {
 				n += 1
-				component.AvailabilityTopic = common.StringPointer(TopicAvailability(component.GetTopicBase()))
+				config.Configuration.AvailabilityTopic = common.StringPointer(TopicAvailability(config.Configuration.GetTopicBase()))
 			}
 		}
-		if component.CommandTopic == nil {
-			err, canGen := component.CanGenerateTopic()
+		if config.Configuration.CommandTopic == nil {
+			err, canGen := config.Configuration.CanGenerateTopic()
 
 			if unchanged && !canGen {
-				logging.LogError("Unable to generate component.CommandTopic, missing " + err.Error())
+				logging.LogError("Unable to generate config.Configuration.CommandTopic, missing " + err.Error())
 			}
 
-			if component.CommandTopic == nil && canGen {
+			if config.Configuration.CommandTopic == nil && canGen {
 				n += 1
-				component.CommandTopic = common.StringPointer(TopicCommand(component.GetTopicBase()))
+				config.Configuration.CommandTopic = common.StringPointer(TopicCommand(config.Configuration.GetTopicBase()))
 			}
 		}
-		if component.Device.Name == nil {
+		if config.Configuration.Device.Name == nil {
 			if common.InstanceName == "" {
 				if unchanged {
-					logging.LogError("Unable to generate component.Device.Name, missing common.InstanceName")
+					logging.LogError("Unable to generate config.Configuration.Device.Name, missing common.InstanceName")
 				}
 			} else {
 				n += 1
-				component.Device.Name = common.StringPointer(common.InstanceName)
+				config.Configuration.Device.Name = common.StringPointer(common.InstanceName)
 			}
 		}
 		if unchanged {
@@ -401,60 +401,60 @@ func (component *HADeviceFan) Generate() {
 	}
 	return
 }
-func (component *HADeviceHumidifier) Generate() {
+func (config *HAConfigHumidifier) Generate() {
 	n := 0
 	oldN := 0
 	unchanged := false
 	for {
-		if component.Availability.Topic == nil {
-			err, canGen := component.CanGenerateTopic()
+		if config.Configuration.Availability.Topic == nil {
+			err, canGen := config.Configuration.CanGenerateTopic()
 
 			if unchanged && !canGen {
-				logging.LogError("Unable to generate component.Availability.Topic, missing " + err.Error())
+				logging.LogError("Unable to generate config.Configuration.Availability.Topic, missing " + err.Error())
 			}
 
-			if component.Availability.Topic == nil && component.AvailabilityTopic == nil && canGen {
+			if config.Configuration.Availability.Topic == nil && config.Configuration.AvailabilityTopic == nil && canGen {
 				n += 1
-				component.AvailabilityTopic = common.StringPointer(TopicAvailability(component.GetTopicBase()))
+				config.Configuration.AvailabilityTopic = common.StringPointer(TopicAvailability(config.Configuration.GetTopicBase()))
 			}
 		}
-		if component.AvailabilityTopic == nil {
-			err, canGen := component.CanGenerateTopic()
+		if config.Configuration.AvailabilityTopic == nil {
+			err, canGen := config.Configuration.CanGenerateTopic()
 
 			if unchanged && !canGen {
-				logging.LogError("Unable to generate component.AvailabilityTopic, missing " + err.Error())
+				logging.LogError("Unable to generate config.Configuration.AvailabilityTopic, missing " + err.Error())
 			}
 
-			if component.Availability.Topic == nil && component.AvailabilityTopic == nil && canGen {
+			if config.Configuration.Availability.Topic == nil && config.Configuration.AvailabilityTopic == nil && canGen {
 				n += 1
-				component.AvailabilityTopic = common.StringPointer(TopicAvailability(component.GetTopicBase()))
+				config.Configuration.AvailabilityTopic = common.StringPointer(TopicAvailability(config.Configuration.GetTopicBase()))
 			}
 		}
-		if component.CommandTopic == nil {
-			err, canGen := component.CanGenerateTopic()
+		if config.Configuration.CommandTopic == nil {
+			err, canGen := config.Configuration.CanGenerateTopic()
 
 			if unchanged && !canGen {
-				logging.LogError("Unable to generate component.CommandTopic, missing " + err.Error())
+				logging.LogError("Unable to generate config.Configuration.CommandTopic, missing " + err.Error())
 			}
 
-			if component.CommandTopic == nil && canGen {
+			if config.Configuration.CommandTopic == nil && canGen {
 				n += 1
-				component.CommandTopic = common.StringPointer(TopicCommand(component.GetTopicBase()))
+				config.Configuration.CommandTopic = common.StringPointer(TopicCommand(config.Configuration.GetTopicBase()))
 			}
 		}
-		if component.Device.Name == nil {
+		if config.Configuration.Device.Name == nil {
 			if common.InstanceName == "" {
 				if unchanged {
-					logging.LogError("Unable to generate component.Device.Name, missing common.InstanceName")
+					logging.LogError("Unable to generate config.Configuration.Device.Name, missing common.InstanceName")
 				}
 			} else {
 				n += 1
-				component.Device.Name = common.StringPointer(common.InstanceName)
+				config.Configuration.Device.Name = common.StringPointer(common.InstanceName)
 			}
 		}
-		if component.TargetHumidityCommandTopic == nil {
+		if config.Configuration.TargetHumidityCommandTopic == nil {
 			if unchanged {
-				logging.LogError("component.TargetHumidityCommandTopic generator not found, but field is required!")
+				logging.LogError("config.Configuration.TargetHumidityCommandTopic generator not found, but field is required!")
 			}
 		}
 		if unchanged {
@@ -467,43 +467,43 @@ func (component *HADeviceHumidifier) Generate() {
 	}
 	return
 }
-func (component *HADeviceClimate) Generate() {
+func (config *HAConfigClimate) Generate() {
 	n := 0
 	oldN := 0
 	unchanged := false
 	for {
-		if component.Availability.Topic == nil {
-			err, canGen := component.CanGenerateTopic()
+		if config.Configuration.Availability.Topic == nil {
+			err, canGen := config.Configuration.CanGenerateTopic()
 
 			if unchanged && !canGen {
-				logging.LogError("Unable to generate component.Availability.Topic, missing " + err.Error())
+				logging.LogError("Unable to generate config.Configuration.Availability.Topic, missing " + err.Error())
 			}
 
-			if component.Availability.Topic == nil && component.AvailabilityTopic == nil && canGen {
+			if config.Configuration.Availability.Topic == nil && config.Configuration.AvailabilityTopic == nil && canGen {
 				n += 1
-				component.AvailabilityTopic = common.StringPointer(TopicAvailability(component.GetTopicBase()))
+				config.Configuration.AvailabilityTopic = common.StringPointer(TopicAvailability(config.Configuration.GetTopicBase()))
 			}
 		}
-		if component.AvailabilityTopic == nil {
-			err, canGen := component.CanGenerateTopic()
+		if config.Configuration.AvailabilityTopic == nil {
+			err, canGen := config.Configuration.CanGenerateTopic()
 
 			if unchanged && !canGen {
-				logging.LogError("Unable to generate component.AvailabilityTopic, missing " + err.Error())
+				logging.LogError("Unable to generate config.Configuration.AvailabilityTopic, missing " + err.Error())
 			}
 
-			if component.Availability.Topic == nil && component.AvailabilityTopic == nil && canGen {
+			if config.Configuration.Availability.Topic == nil && config.Configuration.AvailabilityTopic == nil && canGen {
 				n += 1
-				component.AvailabilityTopic = common.StringPointer(TopicAvailability(component.GetTopicBase()))
+				config.Configuration.AvailabilityTopic = common.StringPointer(TopicAvailability(config.Configuration.GetTopicBase()))
 			}
 		}
-		if component.Device.Name == nil {
+		if config.Configuration.Device.Name == nil {
 			if common.InstanceName == "" {
 				if unchanged {
-					logging.LogError("Unable to generate component.Device.Name, missing common.InstanceName")
+					logging.LogError("Unable to generate config.Configuration.Device.Name, missing common.InstanceName")
 				}
 			} else {
 				n += 1
-				component.Device.Name = common.StringPointer(common.InstanceName)
+				config.Configuration.Device.Name = common.StringPointer(common.InstanceName)
 			}
 		}
 		if unchanged {
@@ -516,55 +516,55 @@ func (component *HADeviceClimate) Generate() {
 	}
 	return
 }
-func (component *HADeviceLight) Generate() {
+func (config *HAConfigLight) Generate() {
 	n := 0
 	oldN := 0
 	unchanged := false
 	for {
-		if component.Availability.Topic == nil {
-			err, canGen := component.CanGenerateTopic()
+		if config.Configuration.Availability.Topic == nil {
+			err, canGen := config.Configuration.CanGenerateTopic()
 
 			if unchanged && !canGen {
-				logging.LogError("Unable to generate component.Availability.Topic, missing " + err.Error())
+				logging.LogError("Unable to generate config.Configuration.Availability.Topic, missing " + err.Error())
 			}
 
-			if component.Availability.Topic == nil && component.AvailabilityTopic == nil && canGen {
+			if config.Configuration.Availability.Topic == nil && config.Configuration.AvailabilityTopic == nil && canGen {
 				n += 1
-				component.AvailabilityTopic = common.StringPointer(TopicAvailability(component.GetTopicBase()))
+				config.Configuration.AvailabilityTopic = common.StringPointer(TopicAvailability(config.Configuration.GetTopicBase()))
 			}
 		}
-		if component.AvailabilityTopic == nil {
-			err, canGen := component.CanGenerateTopic()
+		if config.Configuration.AvailabilityTopic == nil {
+			err, canGen := config.Configuration.CanGenerateTopic()
 
 			if unchanged && !canGen {
-				logging.LogError("Unable to generate component.AvailabilityTopic, missing " + err.Error())
+				logging.LogError("Unable to generate config.Configuration.AvailabilityTopic, missing " + err.Error())
 			}
 
-			if component.Availability.Topic == nil && component.AvailabilityTopic == nil && canGen {
+			if config.Configuration.Availability.Topic == nil && config.Configuration.AvailabilityTopic == nil && canGen {
 				n += 1
-				component.AvailabilityTopic = common.StringPointer(TopicAvailability(component.GetTopicBase()))
+				config.Configuration.AvailabilityTopic = common.StringPointer(TopicAvailability(config.Configuration.GetTopicBase()))
 			}
 		}
-		if component.CommandTopic == nil {
-			err, canGen := component.CanGenerateTopic()
+		if config.Configuration.CommandTopic == nil {
+			err, canGen := config.Configuration.CanGenerateTopic()
 
 			if unchanged && !canGen {
-				logging.LogError("Unable to generate component.CommandTopic, missing " + err.Error())
+				logging.LogError("Unable to generate config.Configuration.CommandTopic, missing " + err.Error())
 			}
 
-			if component.CommandTopic == nil && canGen {
+			if config.Configuration.CommandTopic == nil && canGen {
 				n += 1
-				component.CommandTopic = common.StringPointer(TopicCommand(component.GetTopicBase()))
+				config.Configuration.CommandTopic = common.StringPointer(TopicCommand(config.Configuration.GetTopicBase()))
 			}
 		}
-		if component.Device.Name == nil {
+		if config.Configuration.Device.Name == nil {
 			if common.InstanceName == "" {
 				if unchanged {
-					logging.LogError("Unable to generate component.Device.Name, missing common.InstanceName")
+					logging.LogError("Unable to generate config.Configuration.Device.Name, missing common.InstanceName")
 				}
 			} else {
 				n += 1
-				component.Device.Name = common.StringPointer(common.InstanceName)
+				config.Configuration.Device.Name = common.StringPointer(common.InstanceName)
 			}
 		}
 		if unchanged {
@@ -577,55 +577,55 @@ func (component *HADeviceLight) Generate() {
 	}
 	return
 }
-func (component *HADeviceLock) Generate() {
+func (config *HAConfigLock) Generate() {
 	n := 0
 	oldN := 0
 	unchanged := false
 	for {
-		if component.Availability.Topic == nil {
-			err, canGen := component.CanGenerateTopic()
+		if config.Configuration.Availability.Topic == nil {
+			err, canGen := config.Configuration.CanGenerateTopic()
 
 			if unchanged && !canGen {
-				logging.LogError("Unable to generate component.Availability.Topic, missing " + err.Error())
+				logging.LogError("Unable to generate config.Configuration.Availability.Topic, missing " + err.Error())
 			}
 
-			if component.Availability.Topic == nil && component.AvailabilityTopic == nil && canGen {
+			if config.Configuration.Availability.Topic == nil && config.Configuration.AvailabilityTopic == nil && canGen {
 				n += 1
-				component.AvailabilityTopic = common.StringPointer(TopicAvailability(component.GetTopicBase()))
+				config.Configuration.AvailabilityTopic = common.StringPointer(TopicAvailability(config.Configuration.GetTopicBase()))
 			}
 		}
-		if component.AvailabilityTopic == nil {
-			err, canGen := component.CanGenerateTopic()
+		if config.Configuration.AvailabilityTopic == nil {
+			err, canGen := config.Configuration.CanGenerateTopic()
 
 			if unchanged && !canGen {
-				logging.LogError("Unable to generate component.AvailabilityTopic, missing " + err.Error())
+				logging.LogError("Unable to generate config.Configuration.AvailabilityTopic, missing " + err.Error())
 			}
 
-			if component.Availability.Topic == nil && component.AvailabilityTopic == nil && canGen {
+			if config.Configuration.Availability.Topic == nil && config.Configuration.AvailabilityTopic == nil && canGen {
 				n += 1
-				component.AvailabilityTopic = common.StringPointer(TopicAvailability(component.GetTopicBase()))
+				config.Configuration.AvailabilityTopic = common.StringPointer(TopicAvailability(config.Configuration.GetTopicBase()))
 			}
 		}
-		if component.CommandTopic == nil {
-			err, canGen := component.CanGenerateTopic()
+		if config.Configuration.CommandTopic == nil {
+			err, canGen := config.Configuration.CanGenerateTopic()
 
 			if unchanged && !canGen {
-				logging.LogError("Unable to generate component.CommandTopic, missing " + err.Error())
+				logging.LogError("Unable to generate config.Configuration.CommandTopic, missing " + err.Error())
 			}
 
-			if component.CommandTopic == nil && canGen {
+			if config.Configuration.CommandTopic == nil && canGen {
 				n += 1
-				component.CommandTopic = common.StringPointer(TopicCommand(component.GetTopicBase()))
+				config.Configuration.CommandTopic = common.StringPointer(TopicCommand(config.Configuration.GetTopicBase()))
 			}
 		}
-		if component.Device.Name == nil {
+		if config.Configuration.Device.Name == nil {
 			if common.InstanceName == "" {
 				if unchanged {
-					logging.LogError("Unable to generate component.Device.Name, missing common.InstanceName")
+					logging.LogError("Unable to generate config.Configuration.Device.Name, missing common.InstanceName")
 				}
 			} else {
 				n += 1
-				component.Device.Name = common.StringPointer(common.InstanceName)
+				config.Configuration.Device.Name = common.StringPointer(common.InstanceName)
 			}
 		}
 		if unchanged {
@@ -638,55 +638,55 @@ func (component *HADeviceLock) Generate() {
 	}
 	return
 }
-func (component *HADeviceNumber) Generate() {
+func (config *HAConfigNumber) Generate() {
 	n := 0
 	oldN := 0
 	unchanged := false
 	for {
-		if component.Availability.Topic == nil {
-			err, canGen := component.CanGenerateTopic()
+		if config.Configuration.Availability.Topic == nil {
+			err, canGen := config.Configuration.CanGenerateTopic()
 
 			if unchanged && !canGen {
-				logging.LogError("Unable to generate component.Availability.Topic, missing " + err.Error())
+				logging.LogError("Unable to generate config.Configuration.Availability.Topic, missing " + err.Error())
 			}
 
-			if component.Availability.Topic == nil && component.AvailabilityTopic == nil && canGen {
+			if config.Configuration.Availability.Topic == nil && config.Configuration.AvailabilityTopic == nil && canGen {
 				n += 1
-				component.AvailabilityTopic = common.StringPointer(TopicAvailability(component.GetTopicBase()))
+				config.Configuration.AvailabilityTopic = common.StringPointer(TopicAvailability(config.Configuration.GetTopicBase()))
 			}
 		}
-		if component.AvailabilityTopic == nil {
-			err, canGen := component.CanGenerateTopic()
+		if config.Configuration.AvailabilityTopic == nil {
+			err, canGen := config.Configuration.CanGenerateTopic()
 
 			if unchanged && !canGen {
-				logging.LogError("Unable to generate component.AvailabilityTopic, missing " + err.Error())
+				logging.LogError("Unable to generate config.Configuration.AvailabilityTopic, missing " + err.Error())
 			}
 
-			if component.Availability.Topic == nil && component.AvailabilityTopic == nil && canGen {
+			if config.Configuration.Availability.Topic == nil && config.Configuration.AvailabilityTopic == nil && canGen {
 				n += 1
-				component.AvailabilityTopic = common.StringPointer(TopicAvailability(component.GetTopicBase()))
+				config.Configuration.AvailabilityTopic = common.StringPointer(TopicAvailability(config.Configuration.GetTopicBase()))
 			}
 		}
-		if component.CommandTopic == nil {
-			err, canGen := component.CanGenerateTopic()
+		if config.Configuration.CommandTopic == nil {
+			err, canGen := config.Configuration.CanGenerateTopic()
 
 			if unchanged && !canGen {
-				logging.LogError("Unable to generate component.CommandTopic, missing " + err.Error())
+				logging.LogError("Unable to generate config.Configuration.CommandTopic, missing " + err.Error())
 			}
 
-			if component.CommandTopic == nil && canGen {
+			if config.Configuration.CommandTopic == nil && canGen {
 				n += 1
-				component.CommandTopic = common.StringPointer(TopicCommand(component.GetTopicBase()))
+				config.Configuration.CommandTopic = common.StringPointer(TopicCommand(config.Configuration.GetTopicBase()))
 			}
 		}
-		if component.Device.Name == nil {
+		if config.Configuration.Device.Name == nil {
 			if common.InstanceName == "" {
 				if unchanged {
-					logging.LogError("Unable to generate component.Device.Name, missing common.InstanceName")
+					logging.LogError("Unable to generate config.Configuration.Device.Name, missing common.InstanceName")
 				}
 			} else {
 				n += 1
-				component.Device.Name = common.StringPointer(common.InstanceName)
+				config.Configuration.Device.Name = common.StringPointer(common.InstanceName)
 			}
 		}
 		if unchanged {
@@ -699,45 +699,45 @@ func (component *HADeviceNumber) Generate() {
 	}
 	return
 }
-func (component *HADeviceScene) Generate() {
+func (config *HAConfigScene) Generate() {
 	n := 0
 	oldN := 0
 	unchanged := false
 	for {
-		if component.Availability.Topic == nil {
-			err, canGen := component.CanGenerateTopic()
+		if config.Configuration.Availability.Topic == nil {
+			err, canGen := config.Configuration.CanGenerateTopic()
 
 			if unchanged && !canGen {
-				logging.LogError("Unable to generate component.Availability.Topic, missing " + err.Error())
+				logging.LogError("Unable to generate config.Configuration.Availability.Topic, missing " + err.Error())
 			}
 
-			if component.Availability.Topic == nil && component.AvailabilityTopic == nil && canGen {
+			if config.Configuration.Availability.Topic == nil && config.Configuration.AvailabilityTopic == nil && canGen {
 				n += 1
-				component.AvailabilityTopic = common.StringPointer(TopicAvailability(component.GetTopicBase()))
+				config.Configuration.AvailabilityTopic = common.StringPointer(TopicAvailability(config.Configuration.GetTopicBase()))
 			}
 		}
-		if component.AvailabilityTopic == nil {
-			err, canGen := component.CanGenerateTopic()
+		if config.Configuration.AvailabilityTopic == nil {
+			err, canGen := config.Configuration.CanGenerateTopic()
 
 			if unchanged && !canGen {
-				logging.LogError("Unable to generate component.AvailabilityTopic, missing " + err.Error())
+				logging.LogError("Unable to generate config.Configuration.AvailabilityTopic, missing " + err.Error())
 			}
 
-			if component.Availability.Topic == nil && component.AvailabilityTopic == nil && canGen {
+			if config.Configuration.Availability.Topic == nil && config.Configuration.AvailabilityTopic == nil && canGen {
 				n += 1
-				component.AvailabilityTopic = common.StringPointer(TopicAvailability(component.GetTopicBase()))
+				config.Configuration.AvailabilityTopic = common.StringPointer(TopicAvailability(config.Configuration.GetTopicBase()))
 			}
 		}
-		if component.CommandTopic == nil {
-			err, canGen := component.CanGenerateTopic()
+		if config.Configuration.CommandTopic == nil {
+			err, canGen := config.Configuration.CanGenerateTopic()
 
 			if unchanged && !canGen {
-				logging.LogError("Unable to generate component.CommandTopic, missing " + err.Error())
+				logging.LogError("Unable to generate config.Configuration.CommandTopic, missing " + err.Error())
 			}
 
-			if component.CommandTopic == nil && canGen {
+			if config.Configuration.CommandTopic == nil && canGen {
 				n += 1
-				component.CommandTopic = common.StringPointer(TopicCommand(component.GetTopicBase()))
+				config.Configuration.CommandTopic = common.StringPointer(TopicCommand(config.Configuration.GetTopicBase()))
 			}
 		}
 		if unchanged {
@@ -750,60 +750,60 @@ func (component *HADeviceScene) Generate() {
 	}
 	return
 }
-func (component *HADeviceSelect) Generate() {
+func (config *HAConfigSelect) Generate() {
 	n := 0
 	oldN := 0
 	unchanged := false
 	for {
-		if component.Availability.Topic == nil {
-			err, canGen := component.CanGenerateTopic()
+		if config.Configuration.Availability.Topic == nil {
+			err, canGen := config.Configuration.CanGenerateTopic()
 
 			if unchanged && !canGen {
-				logging.LogError("Unable to generate component.Availability.Topic, missing " + err.Error())
+				logging.LogError("Unable to generate config.Configuration.Availability.Topic, missing " + err.Error())
 			}
 
-			if component.Availability.Topic == nil && component.AvailabilityTopic == nil && canGen {
+			if config.Configuration.Availability.Topic == nil && config.Configuration.AvailabilityTopic == nil && canGen {
 				n += 1
-				component.AvailabilityTopic = common.StringPointer(TopicAvailability(component.GetTopicBase()))
+				config.Configuration.AvailabilityTopic = common.StringPointer(TopicAvailability(config.Configuration.GetTopicBase()))
 			}
 		}
-		if component.AvailabilityTopic == nil {
-			err, canGen := component.CanGenerateTopic()
+		if config.Configuration.AvailabilityTopic == nil {
+			err, canGen := config.Configuration.CanGenerateTopic()
 
 			if unchanged && !canGen {
-				logging.LogError("Unable to generate component.AvailabilityTopic, missing " + err.Error())
+				logging.LogError("Unable to generate config.Configuration.AvailabilityTopic, missing " + err.Error())
 			}
 
-			if component.Availability.Topic == nil && component.AvailabilityTopic == nil && canGen {
+			if config.Configuration.Availability.Topic == nil && config.Configuration.AvailabilityTopic == nil && canGen {
 				n += 1
-				component.AvailabilityTopic = common.StringPointer(TopicAvailability(component.GetTopicBase()))
+				config.Configuration.AvailabilityTopic = common.StringPointer(TopicAvailability(config.Configuration.GetTopicBase()))
 			}
 		}
-		if component.CommandTopic == nil {
-			err, canGen := component.CanGenerateTopic()
+		if config.Configuration.CommandTopic == nil {
+			err, canGen := config.Configuration.CanGenerateTopic()
 
 			if unchanged && !canGen {
-				logging.LogError("Unable to generate component.CommandTopic, missing " + err.Error())
+				logging.LogError("Unable to generate config.Configuration.CommandTopic, missing " + err.Error())
 			}
 
-			if component.CommandTopic == nil && canGen {
+			if config.Configuration.CommandTopic == nil && canGen {
 				n += 1
-				component.CommandTopic = common.StringPointer(TopicCommand(component.GetTopicBase()))
+				config.Configuration.CommandTopic = common.StringPointer(TopicCommand(config.Configuration.GetTopicBase()))
 			}
 		}
-		if component.Device.Name == nil {
+		if config.Configuration.Device.Name == nil {
 			if common.InstanceName == "" {
 				if unchanged {
-					logging.LogError("Unable to generate component.Device.Name, missing common.InstanceName")
+					logging.LogError("Unable to generate config.Configuration.Device.Name, missing common.InstanceName")
 				}
 			} else {
 				n += 1
-				component.Device.Name = common.StringPointer(common.InstanceName)
+				config.Configuration.Device.Name = common.StringPointer(common.InstanceName)
 			}
 		}
-		if component.Options == nil {
+		if config.Configuration.Options == nil {
 			if unchanged {
-				logging.LogError("component.Options generator not found, but field is required!")
+				logging.LogError("config.Configuration.Options generator not found, but field is required!")
 			}
 		}
 		if unchanged {
@@ -816,48 +816,48 @@ func (component *HADeviceSelect) Generate() {
 	}
 	return
 }
-func (component *HADeviceSensor) Generate() {
+func (config *HAConfigSensor) Generate() {
 	n := 0
 	oldN := 0
 	unchanged := false
 	for {
-		if component.Availability.Topic == nil {
-			err, canGen := component.CanGenerateTopic()
+		if config.Configuration.Availability.Topic == nil {
+			err, canGen := config.Configuration.CanGenerateTopic()
 
 			if unchanged && !canGen {
-				logging.LogError("Unable to generate component.Availability.Topic, missing " + err.Error())
+				logging.LogError("Unable to generate config.Configuration.Availability.Topic, missing " + err.Error())
 			}
 
-			if component.Availability.Topic == nil && component.AvailabilityTopic == nil && canGen {
+			if config.Configuration.Availability.Topic == nil && config.Configuration.AvailabilityTopic == nil && canGen {
 				n += 1
-				component.AvailabilityTopic = common.StringPointer(TopicAvailability(component.GetTopicBase()))
+				config.Configuration.AvailabilityTopic = common.StringPointer(TopicAvailability(config.Configuration.GetTopicBase()))
 			}
 		}
-		if component.AvailabilityTopic == nil {
-			err, canGen := component.CanGenerateTopic()
+		if config.Configuration.AvailabilityTopic == nil {
+			err, canGen := config.Configuration.CanGenerateTopic()
 
 			if unchanged && !canGen {
-				logging.LogError("Unable to generate component.AvailabilityTopic, missing " + err.Error())
+				logging.LogError("Unable to generate config.Configuration.AvailabilityTopic, missing " + err.Error())
 			}
 
-			if component.Availability.Topic == nil && component.AvailabilityTopic == nil && canGen {
+			if config.Configuration.Availability.Topic == nil && config.Configuration.AvailabilityTopic == nil && canGen {
 				n += 1
-				component.AvailabilityTopic = common.StringPointer(TopicAvailability(component.GetTopicBase()))
+				config.Configuration.AvailabilityTopic = common.StringPointer(TopicAvailability(config.Configuration.GetTopicBase()))
 			}
 		}
-		if component.Device.Name == nil {
+		if config.Configuration.Device.Name == nil {
 			if common.InstanceName == "" {
 				if unchanged {
-					logging.LogError("Unable to generate component.Device.Name, missing common.InstanceName")
+					logging.LogError("Unable to generate config.Configuration.Device.Name, missing common.InstanceName")
 				}
 			} else {
 				n += 1
-				component.Device.Name = common.StringPointer(common.InstanceName)
+				config.Configuration.Device.Name = common.StringPointer(common.InstanceName)
 			}
 		}
-		if component.StateTopic == nil {
+		if config.Configuration.StateTopic == nil {
 			if unchanged {
-				logging.LogError("component.StateTopic generator not found, but field is required!")
+				logging.LogError("config.Configuration.StateTopic generator not found, but field is required!")
 			}
 		}
 		if unchanged {
@@ -870,55 +870,55 @@ func (component *HADeviceSensor) Generate() {
 	}
 	return
 }
-func (component *HADeviceSwitch) Generate() {
+func (config *HAConfigSwitch) Generate() {
 	n := 0
 	oldN := 0
 	unchanged := false
 	for {
-		if component.Availability.Topic == nil {
-			err, canGen := component.CanGenerateTopic()
+		if config.Configuration.Availability.Topic == nil {
+			err, canGen := config.Configuration.CanGenerateTopic()
 
 			if unchanged && !canGen {
-				logging.LogError("Unable to generate component.Availability.Topic, missing " + err.Error())
+				logging.LogError("Unable to generate config.Configuration.Availability.Topic, missing " + err.Error())
 			}
 
-			if component.Availability.Topic == nil && component.AvailabilityTopic == nil && canGen {
+			if config.Configuration.Availability.Topic == nil && config.Configuration.AvailabilityTopic == nil && canGen {
 				n += 1
-				component.AvailabilityTopic = common.StringPointer(TopicAvailability(component.GetTopicBase()))
+				config.Configuration.AvailabilityTopic = common.StringPointer(TopicAvailability(config.Configuration.GetTopicBase()))
 			}
 		}
-		if component.AvailabilityTopic == nil {
-			err, canGen := component.CanGenerateTopic()
+		if config.Configuration.AvailabilityTopic == nil {
+			err, canGen := config.Configuration.CanGenerateTopic()
 
 			if unchanged && !canGen {
-				logging.LogError("Unable to generate component.AvailabilityTopic, missing " + err.Error())
+				logging.LogError("Unable to generate config.Configuration.AvailabilityTopic, missing " + err.Error())
 			}
 
-			if component.Availability.Topic == nil && component.AvailabilityTopic == nil && canGen {
+			if config.Configuration.Availability.Topic == nil && config.Configuration.AvailabilityTopic == nil && canGen {
 				n += 1
-				component.AvailabilityTopic = common.StringPointer(TopicAvailability(component.GetTopicBase()))
+				config.Configuration.AvailabilityTopic = common.StringPointer(TopicAvailability(config.Configuration.GetTopicBase()))
 			}
 		}
-		if component.CommandTopic == nil {
-			err, canGen := component.CanGenerateTopic()
+		if config.Configuration.CommandTopic == nil {
+			err, canGen := config.Configuration.CanGenerateTopic()
 
 			if unchanged && !canGen {
-				logging.LogError("Unable to generate component.CommandTopic, missing " + err.Error())
+				logging.LogError("Unable to generate config.Configuration.CommandTopic, missing " + err.Error())
 			}
 
-			if component.CommandTopic == nil && canGen {
+			if config.Configuration.CommandTopic == nil && canGen {
 				n += 1
-				component.CommandTopic = common.StringPointer(TopicCommand(component.GetTopicBase()))
+				config.Configuration.CommandTopic = common.StringPointer(TopicCommand(config.Configuration.GetTopicBase()))
 			}
 		}
-		if component.Device.Name == nil {
+		if config.Configuration.Device.Name == nil {
 			if common.InstanceName == "" {
 				if unchanged {
-					logging.LogError("Unable to generate component.Device.Name, missing common.InstanceName")
+					logging.LogError("Unable to generate config.Configuration.Device.Name, missing common.InstanceName")
 				}
 			} else {
 				n += 1
-				component.Device.Name = common.StringPointer(common.InstanceName)
+				config.Configuration.Device.Name = common.StringPointer(common.InstanceName)
 			}
 		}
 		if unchanged {
@@ -931,59 +931,59 @@ func (component *HADeviceSwitch) Generate() {
 	}
 	return
 }
-func (component *HADeviceTag) Generate() {
+func (config *HAConfigTag) Generate() {
 	n := 0
 	oldN := 0
 	unchanged := false
 	for {
-		if component.Device.Connections == nil {
+		if config.Configuration.Device.Connections == nil {
 			if unchanged {
-				logging.LogError("component.Device.Connections generator not found, but field is required!")
+				logging.LogError("config.Configuration.Device.Connections generator not found, but field is required!")
 			}
 		}
-		if component.Device.Identifiers == nil {
+		if config.Configuration.Device.Identifiers == nil {
 			if unchanged {
-				logging.LogError("component.Device.Identifiers generator not found, but field is required!")
+				logging.LogError("config.Configuration.Device.Identifiers generator not found, but field is required!")
 			}
 		}
-		if component.Device.Manufacturer == nil {
+		if config.Configuration.Device.Manufacturer == nil {
 			if unchanged {
-				logging.LogError("component.Device.Manufacturer generator not found, but field is required!")
+				logging.LogError("config.Configuration.Device.Manufacturer generator not found, but field is required!")
 			}
 		}
-		if component.Device.Model == nil {
+		if config.Configuration.Device.Model == nil {
 			if unchanged {
-				logging.LogError("component.Device.Model generator not found, but field is required!")
+				logging.LogError("config.Configuration.Device.Model generator not found, but field is required!")
 			}
 		}
-		if component.Device.Name == nil {
+		if config.Configuration.Device.Name == nil {
 			if common.InstanceName == "" {
 				if unchanged {
-					logging.LogError("Unable to generate component.Device.Name, missing common.InstanceName")
+					logging.LogError("Unable to generate config.Configuration.Device.Name, missing common.InstanceName")
 				}
 			} else {
 				n += 1
-				component.Device.Name = common.StringPointer(common.InstanceName)
+				config.Configuration.Device.Name = common.StringPointer(common.InstanceName)
 			}
 		}
-		if component.Device.SuggestedArea == nil {
+		if config.Configuration.Device.SuggestedArea == nil {
 			if unchanged {
-				logging.LogError("component.Device.SuggestedArea generator not found, but field is required!")
+				logging.LogError("config.Configuration.Device.SuggestedArea generator not found, but field is required!")
 			}
 		}
-		if component.Device.SwVersion == nil {
+		if config.Configuration.Device.SwVersion == nil {
 			if unchanged {
-				logging.LogError("component.Device.SwVersion generator not found, but field is required!")
+				logging.LogError("config.Configuration.Device.SwVersion generator not found, but field is required!")
 			}
 		}
-		if component.Device.ViaDevice == nil {
+		if config.Configuration.Device.ViaDevice == nil {
 			if unchanged {
-				logging.LogError("component.Device.ViaDevice generator not found, but field is required!")
+				logging.LogError("config.Configuration.Device.ViaDevice generator not found, but field is required!")
 			}
 		}
-		if component.Topic == nil {
+		if config.Configuration.Topic == nil {
 			if unchanged {
-				logging.LogError("component.Topic generator not found, but field is required!")
+				logging.LogError("config.Configuration.Topic generator not found, but field is required!")
 			}
 		}
 		if unchanged {
@@ -996,45 +996,45 @@ func (component *HADeviceTag) Generate() {
 	}
 	return
 }
-func (component *HADeviceVacuum) Generate() {
+func (config *HAConfigVacuum) Generate() {
 	n := 0
 	oldN := 0
 	unchanged := false
 	for {
-		if component.Availability.Topic == nil {
-			err, canGen := component.CanGenerateTopic()
+		if config.Configuration.Availability.Topic == nil {
+			err, canGen := config.Configuration.CanGenerateTopic()
 
 			if unchanged && !canGen {
-				logging.LogError("Unable to generate component.Availability.Topic, missing " + err.Error())
+				logging.LogError("Unable to generate config.Configuration.Availability.Topic, missing " + err.Error())
 			}
 
-			if component.Availability.Topic == nil && component.AvailabilityTopic == nil && canGen {
+			if config.Configuration.Availability.Topic == nil && config.Configuration.AvailabilityTopic == nil && canGen {
 				n += 1
-				component.AvailabilityTopic = common.StringPointer(TopicAvailability(component.GetTopicBase()))
+				config.Configuration.AvailabilityTopic = common.StringPointer(TopicAvailability(config.Configuration.GetTopicBase()))
 			}
 		}
-		if component.AvailabilityTopic == nil {
-			err, canGen := component.CanGenerateTopic()
+		if config.Configuration.AvailabilityTopic == nil {
+			err, canGen := config.Configuration.CanGenerateTopic()
 
 			if unchanged && !canGen {
-				logging.LogError("Unable to generate component.AvailabilityTopic, missing " + err.Error())
+				logging.LogError("Unable to generate config.Configuration.AvailabilityTopic, missing " + err.Error())
 			}
 
-			if component.Availability.Topic == nil && component.AvailabilityTopic == nil && canGen {
+			if config.Configuration.Availability.Topic == nil && config.Configuration.AvailabilityTopic == nil && canGen {
 				n += 1
-				component.AvailabilityTopic = common.StringPointer(TopicAvailability(component.GetTopicBase()))
+				config.Configuration.AvailabilityTopic = common.StringPointer(TopicAvailability(config.Configuration.GetTopicBase()))
 			}
 		}
-		if component.CommandTopic == nil {
-			err, canGen := component.CanGenerateTopic()
+		if config.Configuration.CommandTopic == nil {
+			err, canGen := config.Configuration.CanGenerateTopic()
 
 			if unchanged && !canGen {
-				logging.LogError("Unable to generate component.CommandTopic, missing " + err.Error())
+				logging.LogError("Unable to generate config.Configuration.CommandTopic, missing " + err.Error())
 			}
 
-			if component.CommandTopic == nil && canGen {
+			if config.Configuration.CommandTopic == nil && canGen {
 				n += 1
-				component.CommandTopic = common.StringPointer(TopicCommand(component.GetTopicBase()))
+				config.Configuration.CommandTopic = common.StringPointer(TopicCommand(config.Configuration.GetTopicBase()))
 			}
 		}
 		if unchanged {

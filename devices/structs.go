@@ -132,6 +132,15 @@ type HADeviceAlarmControlPanelFunctionsConfig struct {
 	State   *[]string `yaml:"state,omitempty"`
 }
 
+type HAConfigAlarmControlPanel struct {
+	Functions       *HADeviceAlarmControlPanelFunctions `yaml:"-"`
+	FunctionsConfig struct {
+		Watcher *HADeviceAlarmControlPanelFunctionsConfig `yaml:"watcher,omitempty"`
+		Caller  *HADeviceAlarmControlPanelFunctionsConfig `yaml:"caller,omitempty"`
+	} `yaml:"functions,omitempty"`
+	Configuration *HADeviceAlarmControlPanel `yaml:"configuration,omitempty"`
+}
+
 // binary_sensor
 type HADeviceBinarySensor struct {
 	// A list of MQTT topics subscribed to receive availability (online/offline)
@@ -261,6 +270,15 @@ type HADeviceBinarySensorFunctionsConfig struct {
 	State *[]string `yaml:"state,omitempty"`
 }
 
+type HAConfigBinarySensor struct {
+	Functions       *HADeviceBinarySensorFunctions `yaml:"-"`
+	FunctionsConfig struct {
+		Watcher *HADeviceBinarySensorFunctionsConfig `yaml:"watcher,omitempty"`
+		Caller  *HADeviceBinarySensorFunctionsConfig `yaml:"caller,omitempty"`
+	} `yaml:"functions,omitempty"`
+	Configuration *HADeviceBinarySensor `yaml:"configuration,omitempty"`
+}
+
 // camera
 type HADeviceCamera struct {
 	// A list of MQTT topics subscribed to receive availability (online/offline)
@@ -346,6 +364,15 @@ type HADeviceCameraFunctionsConfig struct {
 		State *[]string `yaml:"state,omitempty"`
 	} `yaml:"availability,omitempty"`
 	State *[]string `yaml:"state,omitempty"`
+}
+
+type HAConfigCamera struct {
+	Functions       *HADeviceCameraFunctions `yaml:"-"`
+	FunctionsConfig struct {
+		Watcher *HADeviceCameraFunctionsConfig `yaml:"watcher,omitempty"`
+		Caller  *HADeviceCameraFunctionsConfig `yaml:"caller,omitempty"`
+	} `yaml:"functions,omitempty"`
+	Configuration *HADeviceCamera `yaml:"configuration,omitempty"`
 }
 
 // cover
@@ -539,6 +566,15 @@ type HADeviceCoverFunctionsConfig struct {
 	TiltStatus  *[]string `yaml:"tilt_status,omitempty"`
 }
 
+type HAConfigCover struct {
+	Functions       *HADeviceCoverFunctions `yaml:"-"`
+	FunctionsConfig struct {
+		Watcher *HADeviceCoverFunctionsConfig `yaml:"watcher,omitempty"`
+		Caller  *HADeviceCoverFunctionsConfig `yaml:"caller,omitempty"`
+	} `yaml:"functions,omitempty"`
+	Configuration *HADeviceCover `yaml:"configuration,omitempty"`
+}
+
 // device_tracker
 type HADeviceDeviceTracker struct {
 	// List of devices with their topic.
@@ -559,6 +595,15 @@ type HADeviceDeviceTrackerFunctions struct {
 }
 
 type HADeviceDeviceTrackerFunctionsConfig struct {
+}
+
+type HAConfigDeviceTracker struct {
+	Functions       *HADeviceDeviceTrackerFunctions `yaml:"-"`
+	FunctionsConfig struct {
+		Watcher *HADeviceDeviceTrackerFunctionsConfig `yaml:"watcher,omitempty"`
+		Caller  *HADeviceDeviceTrackerFunctionsConfig `yaml:"caller,omitempty"`
+	} `yaml:"functions,omitempty"`
+	Configuration *HADeviceDeviceTracker `yaml:"configuration,omitempty"`
 }
 
 // device_trigger
@@ -619,6 +664,15 @@ type HADeviceDeviceTriggerFunctions struct {
 
 type HADeviceDeviceTriggerFunctionsConfig struct {
 	State *[]string `yaml:"state,omitempty"`
+}
+
+type HAConfigDeviceTrigger struct {
+	Functions       *HADeviceDeviceTriggerFunctions `yaml:"-"`
+	FunctionsConfig struct {
+		Watcher *HADeviceDeviceTriggerFunctionsConfig `yaml:"watcher,omitempty"`
+		Caller  *HADeviceDeviceTriggerFunctionsConfig `yaml:"caller,omitempty"`
+	} `yaml:"functions,omitempty"`
+	Configuration *HADeviceDeviceTrigger `yaml:"configuration,omitempty"`
 }
 
 // fan
@@ -799,6 +853,15 @@ type HADeviceFanFunctionsConfig struct {
 	State              *[]string `yaml:"state,omitempty"`
 }
 
+type HAConfigFan struct {
+	Functions       *HADeviceFanFunctions `yaml:"-"`
+	FunctionsConfig struct {
+		Watcher *HADeviceFanFunctionsConfig `yaml:"watcher,omitempty"`
+		Caller  *HADeviceFanFunctionsConfig `yaml:"caller,omitempty"`
+	} `yaml:"functions,omitempty"`
+	Configuration *HADeviceFan `yaml:"configuration,omitempty"`
+}
+
 // humidifier
 type HADeviceHumidifier struct {
 	// A list of MQTT topics subscribed to receive availability (online/offline)
@@ -960,6 +1023,15 @@ type HADeviceHumidifierFunctionsConfig struct {
 	State                 *[]string `yaml:"state,omitempty"`
 	TargetHumidityCommand *[]string `yaml:"target_humidity_command,omitempty"`
 	TargetHumidityState   *[]string `yaml:"target_humidity_state,omitempty"`
+}
+
+type HAConfigHumidifier struct {
+	Functions       *HADeviceHumidifierFunctions `yaml:"-"`
+	FunctionsConfig struct {
+		Watcher *HADeviceHumidifierFunctionsConfig `yaml:"watcher,omitempty"`
+		Caller  *HADeviceHumidifierFunctionsConfig `yaml:"caller,omitempty"`
+	} `yaml:"functions,omitempty"`
+	Configuration *HADeviceHumidifier `yaml:"configuration,omitempty"`
 }
 
 // climate
@@ -1220,6 +1292,15 @@ type HADeviceClimateFunctionsConfig struct {
 	TemperatureState       *[]string `yaml:"temperature_state,omitempty"`
 }
 
+type HAConfigClimate struct {
+	Functions       *HADeviceClimateFunctions `yaml:"-"`
+	FunctionsConfig struct {
+		Watcher *HADeviceClimateFunctionsConfig `yaml:"watcher,omitempty"`
+		Caller  *HADeviceClimateFunctionsConfig `yaml:"caller,omitempty"`
+	} `yaml:"functions,omitempty"`
+	Configuration *HADeviceClimate `yaml:"configuration,omitempty"`
+}
+
 // light
 type HADeviceLight struct {
 	// A list of MQTT topics subscribed to receive availability (online/offline)
@@ -1450,6 +1531,15 @@ type HADeviceLightFunctionsConfig struct {
 	XyState           *[]string `yaml:"xy_state,omitempty"`
 }
 
+type HAConfigLight struct {
+	Functions       *HADeviceLightFunctions `yaml:"-"`
+	FunctionsConfig struct {
+		Watcher *HADeviceLightFunctionsConfig `yaml:"watcher,omitempty"`
+		Caller  *HADeviceLightFunctionsConfig `yaml:"caller,omitempty"`
+	} `yaml:"functions,omitempty"`
+	Configuration *HADeviceLight `yaml:"configuration,omitempty"`
+}
+
 // lock
 type HADeviceLock struct {
 	// A list of MQTT topics subscribed to receive availability (online/offline)
@@ -1564,6 +1654,15 @@ type HADeviceLockFunctionsConfig struct {
 	State   *[]string `yaml:"state,omitempty"`
 }
 
+type HAConfigLock struct {
+	Functions       *HADeviceLockFunctions `yaml:"-"`
+	FunctionsConfig struct {
+		Watcher *HADeviceLockFunctionsConfig `yaml:"watcher,omitempty"`
+		Caller  *HADeviceLockFunctionsConfig `yaml:"caller,omitempty"`
+	} `yaml:"functions,omitempty"`
+	Configuration *HADeviceLock `yaml:"configuration,omitempty"`
+}
+
 // number
 type HADeviceNumber struct {
 	// A list of MQTT topics subscribed to receive availability (online/offline)
@@ -1671,6 +1770,15 @@ type HADeviceNumberFunctionsConfig struct {
 	State   *[]string `yaml:"state,omitempty"`
 }
 
+type HAConfigNumber struct {
+	Functions       *HADeviceNumberFunctions `yaml:"-"`
+	FunctionsConfig struct {
+		Watcher *HADeviceNumberFunctionsConfig `yaml:"watcher,omitempty"`
+		Caller  *HADeviceNumberFunctionsConfig `yaml:"caller,omitempty"`
+	} `yaml:"functions,omitempty"`
+	Configuration *HADeviceNumber `yaml:"configuration,omitempty"`
+}
+
 // scene
 type HADeviceScene struct {
 	// A list of MQTT topics subscribed to receive availability (online/offline)
@@ -1733,6 +1841,15 @@ type HADeviceSceneFunctionsConfig struct {
 		State *[]string `yaml:"state,omitempty"`
 	} `yaml:"availability,omitempty"`
 	Command *[]string `yaml:"command,omitempty"`
+}
+
+type HAConfigScene struct {
+	Functions       *HADeviceSceneFunctions `yaml:"-"`
+	FunctionsConfig struct {
+		Watcher *HADeviceSceneFunctionsConfig `yaml:"watcher,omitempty"`
+		Caller  *HADeviceSceneFunctionsConfig `yaml:"caller,omitempty"`
+	} `yaml:"functions,omitempty"`
+	Configuration *HADeviceScene `yaml:"configuration,omitempty"`
 }
 
 // select
@@ -1836,6 +1953,15 @@ type HADeviceSelectFunctionsConfig struct {
 	} `yaml:"availability,omitempty"`
 	Command *[]string `yaml:"command,omitempty"`
 	State   *[]string `yaml:"state,omitempty"`
+}
+
+type HAConfigSelect struct {
+	Functions       *HADeviceSelectFunctions `yaml:"-"`
+	FunctionsConfig struct {
+		Watcher *HADeviceSelectFunctionsConfig `yaml:"watcher,omitempty"`
+		Caller  *HADeviceSelectFunctionsConfig `yaml:"caller,omitempty"`
+	} `yaml:"functions,omitempty"`
+	Configuration *HADeviceSelect `yaml:"configuration,omitempty"`
 }
 
 // sensor
@@ -1957,6 +2083,15 @@ type HADeviceSensorFunctionsConfig struct {
 		State *[]string `yaml:"state,omitempty"`
 	} `yaml:"availability,omitempty"`
 	State *[]string `yaml:"state,omitempty"`
+}
+
+type HAConfigSensor struct {
+	Functions       *HADeviceSensorFunctions `yaml:"-"`
+	FunctionsConfig struct {
+		Watcher *HADeviceSensorFunctionsConfig `yaml:"watcher,omitempty"`
+		Caller  *HADeviceSensorFunctionsConfig `yaml:"caller,omitempty"`
+	} `yaml:"functions,omitempty"`
+	Configuration *HADeviceSensor `yaml:"configuration,omitempty"`
 }
 
 // switch
@@ -2084,6 +2219,15 @@ type HADeviceSwitchFunctionsConfig struct {
 	State   *[]string `yaml:"state,omitempty"`
 }
 
+type HAConfigSwitch struct {
+	Functions       *HADeviceSwitchFunctions `yaml:"-"`
+	FunctionsConfig struct {
+		Watcher *HADeviceSwitchFunctionsConfig `yaml:"watcher,omitempty"`
+		Caller  *HADeviceSwitchFunctionsConfig `yaml:"caller,omitempty"`
+	} `yaml:"functions,omitempty"`
+	Configuration *HADeviceSwitch `yaml:"configuration,omitempty"`
+}
+
 // tag
 type HADeviceTag struct {
 	// Information about the device this device trigger is a part of to tie it into
@@ -2126,6 +2270,15 @@ type HADeviceTagFunctions struct {
 
 type HADeviceTagFunctionsConfig struct {
 	State *[]string `yaml:"state,omitempty"`
+}
+
+type HAConfigTag struct {
+	Functions       *HADeviceTagFunctions `yaml:"-"`
+	FunctionsConfig struct {
+		Watcher *HADeviceTagFunctionsConfig `yaml:"watcher,omitempty"`
+		Caller  *HADeviceTagFunctionsConfig `yaml:"caller,omitempty"`
+	} `yaml:"functions,omitempty"`
+	Configuration *HADeviceTag `yaml:"configuration,omitempty"`
 }
 
 // vacuum
@@ -2260,133 +2413,33 @@ type HADeviceVacuumFunctionsConfig struct {
 	SetFanSpeed *[]string `yaml:"set_fan_speed,omitempty"`
 }
 
+type HAConfigVacuum struct {
+	Functions       *HADeviceVacuumFunctions `yaml:"-"`
+	FunctionsConfig struct {
+		Watcher *HADeviceVacuumFunctionsConfig `yaml:"watcher,omitempty"`
+		Caller  *HADeviceVacuumFunctionsConfig `yaml:"caller,omitempty"`
+	} `yaml:"functions,omitempty"`
+	Configuration *HADeviceVacuum `yaml:"configuration,omitempty"`
+}
 type Config struct {
 	Devices *struct {
-		AlarmControlPanel []struct {
-			Functions struct {
-				Watcher *HADeviceAlarmControlPanelFunctionsConfig `yaml:"watcher,omitempty"`
-				Caller  *HADeviceAlarmControlPanelFunctionsConfig `yaml:"caller,omitempty"`
-			} `yaml:"functions,omitempty"`
-			Configuration *HADeviceAlarmControlPanel `yaml:"configuration,omitempty"`
-		} `yaml:"alarm_control_panel,omitempty"`
-		BinarySensor []struct {
-			Functions struct {
-				Watcher *HADeviceBinarySensorFunctionsConfig `yaml:"watcher,omitempty"`
-				Caller  *HADeviceBinarySensorFunctionsConfig `yaml:"caller,omitempty"`
-			} `yaml:"functions,omitempty"`
-			Configuration *HADeviceBinarySensor `yaml:"configuration,omitempty"`
-		} `yaml:"binary_sensor,omitempty"`
-		Camera []struct {
-			Functions struct {
-				Watcher *HADeviceCameraFunctionsConfig `yaml:"watcher,omitempty"`
-				Caller  *HADeviceCameraFunctionsConfig `yaml:"caller,omitempty"`
-			} `yaml:"functions,omitempty"`
-			Configuration *HADeviceCamera `yaml:"configuration,omitempty"`
-		} `yaml:"camera,omitempty"`
-		Cover []struct {
-			Functions struct {
-				Watcher *HADeviceCoverFunctionsConfig `yaml:"watcher,omitempty"`
-				Caller  *HADeviceCoverFunctionsConfig `yaml:"caller,omitempty"`
-			} `yaml:"functions,omitempty"`
-			Configuration *HADeviceCover `yaml:"configuration,omitempty"`
-		} `yaml:"cover,omitempty"`
-		DeviceTracker []struct {
-			Functions struct {
-				Watcher *HADeviceDeviceTrackerFunctionsConfig `yaml:"watcher,omitempty"`
-				Caller  *HADeviceDeviceTrackerFunctionsConfig `yaml:"caller,omitempty"`
-			} `yaml:"functions,omitempty"`
-			Configuration *HADeviceDeviceTracker `yaml:"configuration,omitempty"`
-		} `yaml:"device_tracker,omitempty"`
-		DeviceTrigger []struct {
-			Functions struct {
-				Watcher *HADeviceDeviceTriggerFunctionsConfig `yaml:"watcher,omitempty"`
-				Caller  *HADeviceDeviceTriggerFunctionsConfig `yaml:"caller,omitempty"`
-			} `yaml:"functions,omitempty"`
-			Configuration *HADeviceDeviceTrigger `yaml:"configuration,omitempty"`
-		} `yaml:"device_trigger,omitempty"`
-		Fan []struct {
-			Functions struct {
-				Watcher *HADeviceFanFunctionsConfig `yaml:"watcher,omitempty"`
-				Caller  *HADeviceFanFunctionsConfig `yaml:"caller,omitempty"`
-			} `yaml:"functions,omitempty"`
-			Configuration *HADeviceFan `yaml:"configuration,omitempty"`
-		} `yaml:"fan,omitempty"`
-		Humidifier []struct {
-			Functions struct {
-				Watcher *HADeviceHumidifierFunctionsConfig `yaml:"watcher,omitempty"`
-				Caller  *HADeviceHumidifierFunctionsConfig `yaml:"caller,omitempty"`
-			} `yaml:"functions,omitempty"`
-			Configuration *HADeviceHumidifier `yaml:"configuration,omitempty"`
-		} `yaml:"humidifier,omitempty"`
-		Climate []struct {
-			Functions struct {
-				Watcher *HADeviceClimateFunctionsConfig `yaml:"watcher,omitempty"`
-				Caller  *HADeviceClimateFunctionsConfig `yaml:"caller,omitempty"`
-			} `yaml:"functions,omitempty"`
-			Configuration *HADeviceClimate `yaml:"configuration,omitempty"`
-		} `yaml:"climate,omitempty"`
-		Light []struct {
-			Functions struct {
-				Watcher *HADeviceLightFunctionsConfig `yaml:"watcher,omitempty"`
-				Caller  *HADeviceLightFunctionsConfig `yaml:"caller,omitempty"`
-			} `yaml:"functions,omitempty"`
-			Configuration *HADeviceLight `yaml:"configuration,omitempty"`
-		} `yaml:"light,omitempty"`
-		Lock []struct {
-			Functions struct {
-				Watcher *HADeviceLockFunctionsConfig `yaml:"watcher,omitempty"`
-				Caller  *HADeviceLockFunctionsConfig `yaml:"caller,omitempty"`
-			} `yaml:"functions,omitempty"`
-			Configuration *HADeviceLock `yaml:"configuration,omitempty"`
-		} `yaml:"lock,omitempty"`
-		Number []struct {
-			Functions struct {
-				Watcher *HADeviceNumberFunctionsConfig `yaml:"watcher,omitempty"`
-				Caller  *HADeviceNumberFunctionsConfig `yaml:"caller,omitempty"`
-			} `yaml:"functions,omitempty"`
-			Configuration *HADeviceNumber `yaml:"configuration,omitempty"`
-		} `yaml:"number,omitempty"`
-		Scene []struct {
-			Functions struct {
-				Watcher *HADeviceSceneFunctionsConfig `yaml:"watcher,omitempty"`
-				Caller  *HADeviceSceneFunctionsConfig `yaml:"caller,omitempty"`
-			} `yaml:"functions,omitempty"`
-			Configuration *HADeviceScene `yaml:"configuration,omitempty"`
-		} `yaml:"scene,omitempty"`
-		Select []struct {
-			Functions struct {
-				Watcher *HADeviceSelectFunctionsConfig `yaml:"watcher,omitempty"`
-				Caller  *HADeviceSelectFunctionsConfig `yaml:"caller,omitempty"`
-			} `yaml:"functions,omitempty"`
-			Configuration *HADeviceSelect `yaml:"configuration,omitempty"`
-		} `yaml:"select,omitempty"`
-		Sensor []struct {
-			Functions struct {
-				Watcher *HADeviceSensorFunctionsConfig `yaml:"watcher,omitempty"`
-				Caller  *HADeviceSensorFunctionsConfig `yaml:"caller,omitempty"`
-			} `yaml:"functions,omitempty"`
-			Configuration *HADeviceSensor `yaml:"configuration,omitempty"`
-		} `yaml:"sensor,omitempty"`
-		Switch []struct {
-			Functions struct {
-				Watcher *HADeviceSwitchFunctionsConfig `yaml:"watcher,omitempty"`
-				Caller  *HADeviceSwitchFunctionsConfig `yaml:"caller,omitempty"`
-			} `yaml:"functions,omitempty"`
-			Configuration *HADeviceSwitch `yaml:"configuration,omitempty"`
-		} `yaml:"switch,omitempty"`
-		Tag []struct {
-			Functions struct {
-				Watcher *HADeviceTagFunctionsConfig `yaml:"watcher,omitempty"`
-				Caller  *HADeviceTagFunctionsConfig `yaml:"caller,omitempty"`
-			} `yaml:"functions,omitempty"`
-			Configuration *HADeviceTag `yaml:"configuration,omitempty"`
-		} `yaml:"tag,omitempty"`
-		Vacuum []struct {
-			Functions struct {
-				Watcher *HADeviceVacuumFunctionsConfig `yaml:"watcher,omitempty"`
-				Caller  *HADeviceVacuumFunctionsConfig `yaml:"caller,omitempty"`
-			} `yaml:"functions,omitempty"`
-			Configuration *HADeviceVacuum `yaml:"configuration,omitempty"`
-		} `yaml:"vacuum,omitempty"`
+		AlarmControlPanel []*HAConfigAlarmControlPanel `yaml:"alarm_control_panel,omitempty"`
+		BinarySensor      []*HAConfigBinarySensor      `yaml:"binary_sensor,omitempty"`
+		Camera            []*HAConfigCamera            `yaml:"camera,omitempty"`
+		Cover             []*HAConfigCover             `yaml:"cover,omitempty"`
+		DeviceTracker     []*HAConfigDeviceTracker     `yaml:"device_tracker,omitempty"`
+		DeviceTrigger     []*HAConfigDeviceTrigger     `yaml:"device_trigger,omitempty"`
+		Fan               []*HAConfigFan               `yaml:"fan,omitempty"`
+		Humidifier        []*HAConfigHumidifier        `yaml:"humidifier,omitempty"`
+		Climate           []*HAConfigClimate           `yaml:"climate,omitempty"`
+		Light             []*HAConfigLight             `yaml:"light,omitempty"`
+		Lock              []*HAConfigLock              `yaml:"lock,omitempty"`
+		Number            []*HAConfigNumber            `yaml:"number,omitempty"`
+		Scene             []*HAConfigScene             `yaml:"scene,omitempty"`
+		Select            []*HAConfigSelect            `yaml:"select,omitempty"`
+		Sensor            []*HAConfigSensor            `yaml:"sensor,omitempty"`
+		Switch            []*HAConfigSwitch            `yaml:"switch,omitempty"`
+		Tag               []*HAConfigTag               `yaml:"tag,omitempty"`
+		Vacuum            []*HAConfigVacuum            `yaml:"vacuum,omitempty"`
 	} `yaml:"devices,omitempty"`
 }

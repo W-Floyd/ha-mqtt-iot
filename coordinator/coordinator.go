@@ -6,7 +6,7 @@ import (
 
 	"github.com/W-Floyd/ha-mqtt-iot/devices"
 	"github.com/W-Floyd/ha-mqtt-iot/logging"
-	"gopkg.in/yaml.v3"
+	"gopkg.in/yaml.v2"
 )
 
 var Config devices.Config
@@ -40,7 +40,7 @@ func UnmarshalYAML(filename string) error {
 		return errors.New("config is not empty")
 	}
 
-	err = yaml.Unmarshal(rawData, &Config)
+	err = yaml.UnmarshalStrict(rawData, &Config)
 	if err != nil {
 		logging.LogError("Error unmashalling config", err)
 	}

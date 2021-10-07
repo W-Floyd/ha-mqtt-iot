@@ -59,7 +59,7 @@ func main() {
 
 		output = append(output, "if structs.IsStruct(Config.Devices."+strcase.ToCamel(deviceName)+"[k].Configuration) {")
 
-		output = append(output, "Config.Devices."+strcase.ToCamel(deviceName)+"[k].Configuration.Generate()")
+		output = append(output, "Config.Devices."+strcase.ToCamel(deviceName)+"[k].Generate()")
 
 		output = append(output, "n+=1")
 

@@ -60,7 +60,9 @@ func main() {
 		output = append(output, funct...)
 		output = append(output, conf...)
 
-		configOut = append(configOut, strcase.ToCamel(deviceName)+" []struct {", "Functions struct {", "Watcher *HADevice"+strcase.ToCamel(deviceName)+"FunctionsConfig `yaml:\"watcher,omitempty\"`", "Caller *HADevice"+strcase.ToCamel(deviceName)+"FunctionsConfig `yaml:\"caller,omitempty\"`", "} `yaml:\"functions,omitempty\"`", "Configuration *HADevice"+strcase.ToCamel(deviceName)+"`yaml:\"configuration,omitempty\"`", "} `yaml:\""+strcase.ToSnake(deviceName)+",omitempty\"`")
+		output = append(output, "type HAConfig"+strcase.ToCamel(deviceName)+" struct {", "Functions *HADevice"+strcase.ToCamel(deviceName)+"Functions `yaml:\"-\"`", "FunctionsConfig struct {", "Watcher *HADevice"+strcase.ToCamel(deviceName)+"FunctionsConfig `yaml:\"watcher,omitempty\"`", "Caller *HADevice"+strcase.ToCamel(deviceName)+"FunctionsConfig `yaml:\"caller,omitempty\"`", "} `yaml:\"functions,omitempty\"`", "Configuration *HADevice"+strcase.ToCamel(deviceName)+"`yaml:\"configuration,omitempty\"`", "}")
+
+		configOut = append(configOut, strcase.ToCamel(deviceName)+" []*HAConfig"+strcase.ToCamel(deviceName)+" `yaml:\""+strcase.ToSnake(deviceName)+",omitempty\"`")
 
 	}
 

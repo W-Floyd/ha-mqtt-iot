@@ -65,7 +65,7 @@ func main() {
 }
 
 func generateDevice(deviceName string, item map[string]*gabs.Container) (returnlines []string) {
-	returnlines = append(returnlines, "func (component *HADevice"+strcase.ToCamel(deviceName)+") Generate"+"() {")
+	returnlines = append(returnlines, "func (config *HAConfig"+strcase.ToCamel(deviceName)+") Generate"+"() {")
 
 	keys := make([]string, 0, len(item))
 
@@ -130,7 +130,7 @@ func recurseItem(keyname string, item map[string]*gabs.Container, parentname []s
 
 			localType := yamlpuller.TypeTranslator(item["type"])
 
-			returnlines = append(returnlines, generateIfEmpty(substring+"."+camelName, "component"+substring+"."+camelName, localType, item, isRequired)...)
+			returnlines = append(returnlines, generateIfEmpty(substring+"."+camelName, "config.Configuration"+substring+"."+camelName, localType, item, isRequired)...)
 		}
 
 	}
@@ -187,7 +187,7 @@ func generateIfEmpty(source, target, ty string, item map[string]*gabs.Container,
 		hasSnippet = false
 	}
 
-	source = "component" + source
+	source = "config.Configuration" + source
 
 	isRequired := item["required"].String() == "true" || parentRequired
 

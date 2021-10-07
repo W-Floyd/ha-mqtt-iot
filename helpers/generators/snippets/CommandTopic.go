@@ -1,10 +1,10 @@
-err, canGen := component.CanGenerateTopic()
+err, canGen := config.Configuration.CanGenerateTopic()
 
 if unchanged && !canGen {
-	logging.LogError("Unable to generate componentTHIS, missing " + err.Error())
+	logging.LogError("Unable to generate config.ConfigurationTHIS, missing " + err.Error())
 }
 
-if component.CommandTopic == nil && canGen {
+if config.Configuration.CommandTopic == nil && canGen {
 	n += 1
-	componentTHIS = common.StringPointer(TopicCommand(component.GetTopicBase()))
+	config.ConfigurationTHIS = common.StringPointer(TopicCommand(config.Configuration.GetTopicBase()))
 }
