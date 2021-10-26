@@ -14,7 +14,7 @@ __exe_path="${__project_path}/${__bin_file}"
 (
     echo "[Unit]
 Description=${__project_name}
-After=network.target
+After=network-online.target
 
 [Service]
 Type=simple
