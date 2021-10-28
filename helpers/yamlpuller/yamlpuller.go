@@ -63,7 +63,7 @@ func splitDocument(devicename string) (string, error) {
 
 func fetchDocument(devicename string) ([]byte, error) {
 
-	url := "https://raw.githubusercontent.com/home-assistant/home-assistant.io/current/source/_integrations/" + devicename + ".mqtt.markdown"
+	url := "https://raw.githubusercontent.com/home-assistant/home-assistant.io/rc/source/_integrations/" + devicename + ".mqtt.markdown"
 
 	// Get the data
 	resp, err := http.Get(url)

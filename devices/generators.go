@@ -270,6 +270,11 @@ func (config *HAConfigDeviceTrigger) Generate() {
 				logging.LogError("config.Configuration.AutomationType generator not found, but field is required!")
 			}
 		}
+		if config.Configuration.Device.ConfigurationUrl == nil {
+			if unchanged {
+				logging.LogError("config.Configuration.Device.ConfigurationUrl generator not found, but field is required!")
+			}
+		}
 		if config.Configuration.Device.Connections == nil {
 			if unchanged {
 				logging.LogError("config.Configuration.Device.Connections generator not found, but field is required!")
@@ -936,6 +941,11 @@ func (config *HAConfigTag) Generate() {
 	oldN := 0
 	unchanged := false
 	for {
+		if config.Configuration.Device.ConfigurationUrl == nil {
+			if unchanged {
+				logging.LogError("config.Configuration.Device.ConfigurationUrl generator not found, but field is required!")
+			}
+		}
 		if config.Configuration.Device.Connections == nil {
 			if unchanged {
 				logging.LogError("config.Configuration.Device.Connections generator not found, but field is required!")
