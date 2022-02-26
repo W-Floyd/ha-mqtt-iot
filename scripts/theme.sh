@@ -19,6 +19,21 @@ get_uuid() {
   echo "$profile_name"
 }
 
+__color='blue'
+if ! [ -z "${__color}" ]; then
+  __color="-${__color}"
+fi
+
+__dark_theme="WhiteSur-dark-solid${__color}"
+__dark_shell="WhiteSur-dark${__color}"
+__dark_icon="WhiteSur${__color/-blue/}-dark"
+__dark_wallpaper='/home/william/Pictures/Wallpapers/dark.jpg'
+
+__light_theme="WhiteSur-light-solid${__color}"
+__light_shell="WhiteSur-light${__color}"
+__light_icon="WhiteSur${__color/-blue/}"
+__light_wallpaper='/home/william/Pictures/Wallpapers/light.jpg'
+
 if [ "${1}" == 'set' ]; then
 
   shift
@@ -34,24 +49,24 @@ user_pref(\"browser.tabs.drawInTitlebar\", true);
 user_pref(\"browser.uidensity\", 0);" >~/.mozilla/firefox/pcmd5xvl.default-release/user.js
 
   if [ $1 == "dark" ]; then
-    THEME='WhiteSur-dark-solid-purple'
-    ICON='Numix-Square'
-    WALLPAPER='/home/william/Pictures/Wallpapers/dark.jpg'
-    gsettings set com.solus-project.budgie-panel dark-theme true
+    THEME="${__dark_theme}"
+    ICON="${__dark_icon}"
+    WALLPAPER="${__dark_wallpaper}"
+    SHELL="${__dark_shell}"
     dconf write /org/gnome/terminal/legacy/theme-variant "'dark'"
     gsettings set org.gnome.desktop.background picture-uri "file://${WALLPAPER}"
-    spicetify -q config current_theme OneDarkish
-    spicetify -q update
+    # spicetify -q config current_theme OneDarkish
   elif [ $1 == "light" ]; then
-    THEME='WhiteSur-light-solid-purple'
-    ICON='Numix-Square-Light'
-    WALLPAPER='/home/william/Pictures/Wallpapers/light.png'
-    gsettings set com.solus-project.budgie-panel dark-theme false
+    THEME="${__light_theme}"
+    ICON="${__light_icon}"
+    WALLPAPER="${__light_wallpaper}"
+    SHELL="${__light_shell}"
     dconf write /org/gnome/terminal/legacy/theme-variant "'light'"
     gsettings set org.gnome.desktop.background picture-uri "file://${WALLPAPER}"
-    spicetify -q config current_theme Midnight-Light
-    spicetify -q update
+    # spicetify -q config current_theme Midnight-Light
   fi
+
+  # spicetify -q update
 
   # while read -r __window; do
   #   if [ "${__window}" != "" ]; then
@@ -61,6 +76,7 @@ user_pref(\"browser.uidensity\", 0);" >~/.mozilla/firefox/pcmd5xvl.default-relea
 
   gsettings set org.gnome.desktop.interface gtk-theme "${THEME}"
   gsettings set org.gnome.desktop.interface icon-theme "${ICON}"
+  gsettings set org.gnome.shell.extensions.user-theme name "${SHELL}"
 
   gdbus introspect -e -x -d org.gnome.Terminal -o /org/gnome/Terminal/window |
     xmllint --xpath '/node/node/@name' - |
@@ -69,12 +85,14 @@ user_pref(\"browser.uidensity\", 0);" >~/.mozilla/firefox/pcmd5xvl.default-relea
       gdbus call -e -d org.gnome.Terminal -o /org/gnome/Terminal/window/${__node} -m org.gtk.Actions.SetState profile "<'${UUID}'>" "{}" >/dev/null
     done
 
+  /home/william/Documents/git/clone/stylepak/stylepak
+
 elif [ "${1}" == 'get' ]; then
-  __state="$(gsettings get com.solus-project.budgie-panel dark-theme)"
-  if [ "${__state}" == 'false' ]; then
-    echo -n 'OFF'
-  else
+  __state="$(gsettings get org.gnome.desktop.interface gtk-theme)"
+  if [ "${__state}" == "'${__dark_theme}'" ]; then
     echo -n 'ON'
+  else
+    echo -n 'OFF'
   fi
 
 fi
