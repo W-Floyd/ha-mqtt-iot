@@ -15,6 +15,11 @@ type HADeviceAlarmControlPanel struct {
 		PayloadNotAvailable *string `yaml:"payload_not_available,omitempty"`
 		// An MQTT topic subscribed to receive availability (online/offline) updates.
 		Topic *string `yaml:"topic,omitempty"`
+		// Defines a [template](/docs/configuration/templating/#processing-incoming-data)
+		// to extract device's availability from the `topic`. To determine the devices's
+		// availability result of this template will be compared to `payload_available` and
+		// `payload_not_available`.
+		ValueTemplate *string `yaml:"value_template,omitempty"`
 	} `yaml:"availability,omitempty"`
 	// When `availability` is configured, this controls the conditions needed to set
 	// the entity to `available`. Valid entries are `all`, `any`, and `latest`. If set
@@ -25,6 +30,11 @@ type HADeviceAlarmControlPanel struct {
 	// `payload_available` or `payload_not_available` received on any configured
 	// availability topic controls the availability.
 	AvailabilityMode *string `yaml:"availability_mode,omitempty"`
+	// Defines a [template](/docs/configuration/templating/#processing-incoming-data)
+	// to extract device's availability from the `availability_topic`. To determine the
+	// devices's availability result of this template will be compared to
+	// `payload_available` and `payload_not_available`.
+	AvailabilityTemplate *string `yaml:"availability_template,omitempty"`
 	// The MQTT topic subscribed to receive availability (online/offline) updates.
 	// Must not be used together with `availability`.
 	AvailabilityTopic *string `yaml:"availability_topic,omitempty"`
@@ -43,6 +53,9 @@ type HADeviceAlarmControlPanel struct {
 	// If true the code is required to disarm the alarm. If false the code is not
 	// validated.
 	CodeDisarmRequired *bool `yaml:"code_disarm_required,omitempty"`
+	// If true the code is required to trigger the alarm. If false the code is not
+	// validated.
+	CodeTriggerRequired *bool `yaml:"code_trigger_required,omitempty"`
 	// The [template](/docs/configuration/templating/#processing-incoming-data) used
 	// for the command payload. Available variables: `action` and `code`.
 	CommandTemplate *string `yaml:"command_template,omitempty"`
@@ -81,6 +94,9 @@ type HADeviceAlarmControlPanel struct {
 	} `yaml:"device,omitempty"`
 	// Flag which defines if the entity should be enabled when first added.
 	EnabledByDefault *bool `yaml:"enabled_by_default,omitempty"`
+	// The encoding of the payloads received and published messages. Set to `\"\"` to
+	// disable decoding of incoming payload.
+	Encoding *string `yaml:"encoding,omitempty"`
 	// The
 	// [category](https://developers.home-assistant.io/docs/core/entity#generic-properties)
 	// of the entity.
@@ -100,6 +116,8 @@ type HADeviceAlarmControlPanel struct {
 	JsonAttributesTopic *string `yaml:"json_attributes_topic,omitempty"`
 	// The name of the alarm.
 	Name *string `yaml:"name,omitempty"`
+	// Used instead of `name` for automatic generation of `entity_id`
+	ObjectId *string `yaml:"object_id,omitempty"`
 	// The payload to set armed-away mode on your Alarm Panel.
 	PayloadArmAway *string `yaml:"payload_arm_away,omitempty"`
 	// The payload to set armed-custom-bypass mode on your Alarm Panel.
@@ -116,6 +134,8 @@ type HADeviceAlarmControlPanel struct {
 	PayloadDisarm *string `yaml:"payload_disarm,omitempty"`
 	// The payload that represents the unavailable state.
 	PayloadNotAvailable *string `yaml:"payload_not_available,omitempty"`
+	// The payload to trigger the alarm on your Alarm Panel.
+	PayloadTrigger *string `yaml:"payload_trigger,omitempty"`
 	// The maximum QoS level of the state topic.
 	Qos *int `yaml:"qos,omitempty"`
 	// If the published message should have the retain flag on or not.
@@ -166,6 +186,11 @@ type HADeviceBinarySensor struct {
 		PayloadNotAvailable *string `yaml:"payload_not_available,omitempty"`
 		// An MQTT topic subscribed to receive availability (online/offline) updates.
 		Topic *string `yaml:"topic,omitempty"`
+		// Defines a [template](/docs/configuration/templating/#processing-incoming-data)
+		// to extract device's availability from the `topic`. To determine the devices's
+		// availability result of this template will be compared to `payload_available` and
+		// `payload_not_available`.
+		ValueTemplate *string `yaml:"value_template,omitempty"`
 	} `yaml:"availability,omitempty"`
 	// When `availability` is configured, this controls the conditions needed to set
 	// the entity to `available`. Valid entries are `all`, `any`, and `latest`. If set
@@ -176,6 +201,11 @@ type HADeviceBinarySensor struct {
 	// `payload_available` or `payload_not_available` received on any configured
 	// availability topic controls the availability.
 	AvailabilityMode *string `yaml:"availability_mode,omitempty"`
+	// Defines a [template](/docs/configuration/templating/#processing-incoming-data)
+	// to extract device's availability from the `availability_topic`. To determine the
+	// devices's availability result of this template will be compared to
+	// `payload_available` and `payload_not_available`.
+	AvailabilityTemplate *string `yaml:"availability_template,omitempty"`
 	// The MQTT topic subscribed to receive birth and LWT messages from the MQTT
 	// device. If `availability` is not defined, the binary sensor will always be
 	// considered `available` and its state will be `on`, `off` or `unknown`. If
@@ -219,6 +249,9 @@ type HADeviceBinarySensor struct {
 	DeviceClass *string `yaml:"device_class,omitempty"`
 	// Flag which defines if the entity should be enabled when first added.
 	EnabledByDefault *bool `yaml:"enabled_by_default,omitempty"`
+	// The encoding of the payloads received. Set to `\"\"` to disable decoding of
+	// incoming payload.
+	Encoding *string `yaml:"encoding,omitempty"`
 	// The
 	// [category](https://developers.home-assistant.io/docs/core/entity#generic-properties)
 	// of the entity.
@@ -248,6 +281,8 @@ type HADeviceBinarySensor struct {
 	JsonAttributesTopic *string `yaml:"json_attributes_topic,omitempty"`
 	// The name of the binary sensor.
 	Name *string `yaml:"name,omitempty"`
+	// Used instead of `name` for automatic generation of `entity_id`
+	ObjectId *string `yaml:"object_id,omitempty"`
 	// For sensors that only send `on` state updates (like PIRs), this variable sets a
 	// delay in seconds after which the sensor's state will be updated back to `off`.
 	OffDelay *int `yaml:"off_delay,omitempty"`
@@ -311,6 +346,11 @@ type HADeviceCamera struct {
 		PayloadNotAvailable *string `yaml:"payload_not_available,omitempty"`
 		// An MQTT topic subscribed to receive availability (online/offline) updates.
 		Topic *string `yaml:"topic,omitempty"`
+		// Defines a [template](/docs/configuration/templating/#processing-incoming-data)
+		// to extract device's availability from the `topic`. To determine the devices's
+		// availability result of this template will be compared to `payload_available` and
+		// `payload_not_available`.
+		ValueTemplate *string `yaml:"value_template,omitempty"`
 	} `yaml:"availability,omitempty"`
 	// When `availability` is configured, this controls the conditions needed to set
 	// the entity to `available`. Valid entries are `all`, `any`, and `latest`. If set
@@ -321,6 +361,11 @@ type HADeviceCamera struct {
 	// `payload_available` or `payload_not_available` received on any configured
 	// availability topic controls the availability.
 	AvailabilityMode *string `yaml:"availability_mode,omitempty"`
+	// Defines a [template](/docs/configuration/templating/#processing-incoming-data)
+	// to extract device's availability from the `availability_topic`. To determine the
+	// devices's availability result of this template will be compared to
+	// `payload_available` and `payload_not_available`.
+	AvailabilityTemplate *string `yaml:"availability_template,omitempty"`
 	// The MQTT topic subscribed to receive availability (online/offline) updates.
 	// Must not be used together with `availability`.
 	AvailabilityTopic *string `yaml:"availability_topic,omitempty"`
@@ -373,6 +418,8 @@ type HADeviceCamera struct {
 	JsonAttributesTopic *string `yaml:"json_attributes_topic,omitempty"`
 	// The name of the camera.
 	Name *string `yaml:"name,omitempty"`
+	// Used instead of `name` for automatic generation of `entity_id`
+	ObjectId *string `yaml:"object_id,omitempty"`
 	// The MQTT topic to subscribe to.
 	Topic *string `yaml:"topic,omitempty"`
 	// An ID that uniquely identifies this camera. If two cameras have the same unique
@@ -414,6 +461,11 @@ type HADeviceCover struct {
 		PayloadNotAvailable *string `yaml:"payload_not_available,omitempty"`
 		// An MQTT topic subscribed to receive availability (online/offline) updates.
 		Topic *string `yaml:"topic,omitempty"`
+		// Defines a [template](/docs/configuration/templating/#processing-incoming-data)
+		// to extract device's availability from the `topic`. To determine the devices's
+		// availability result of this template will be compared to `payload_available` and
+		// `payload_not_available`.
+		ValueTemplate *string `yaml:"value_template,omitempty"`
 	} `yaml:"availability,omitempty"`
 	// When `availability` is configured, this controls the conditions needed to set
 	// the entity to `available`. Valid entries are `all`, `any`, and `latest`. If set
@@ -424,6 +476,11 @@ type HADeviceCover struct {
 	// `payload_available` or `payload_not_available` received on any configured
 	// availability topic controls the availability.
 	AvailabilityMode *string `yaml:"availability_mode,omitempty"`
+	// Defines a [template](/docs/configuration/templating/#processing-incoming-data)
+	// to extract device's availability from the `availability_topic`. To determine the
+	// devices's availability result of this template will be compared to
+	// `payload_available` and `payload_not_available`.
+	AvailabilityTemplate *string `yaml:"availability_template,omitempty"`
 	// The MQTT topic subscribed to to receive birth and LWT messages from the MQTT
 	// cover device. If an `availability` topic is not defined, the cover availability
 	// state will always be `available`. If an `availability` topic is defined, the
@@ -467,6 +524,9 @@ type HADeviceCover struct {
 	DeviceClass *string `yaml:"device_class,omitempty"`
 	// Flag which defines if the entity should be enabled when first added.
 	EnabledByDefault *bool `yaml:"enabled_by_default,omitempty"`
+	// The encoding of the payloads received and published messages. Set to `\"\"` to
+	// disable decoding of incoming payload.
+	Encoding *string `yaml:"encoding,omitempty"`
 	// The
 	// [category](https://developers.home-assistant.io/docs/core/entity#generic-properties)
 	// of the entity.
@@ -486,6 +546,8 @@ type HADeviceCover struct {
 	JsonAttributesTopic *string `yaml:"json_attributes_topic,omitempty"`
 	// The name of the cover.
 	Name *string `yaml:"name,omitempty"`
+	// Used instead of `name` for automatic generation of `entity_id`
+	ObjectId *string `yaml:"object_id,omitempty"`
 	// Flag that defines if switch works in optimistic mode.
 	Optimistic *bool `yaml:"optimistic,omitempty"`
 	// The payload that represents the online state.
@@ -694,6 +756,9 @@ type HADeviceDeviceTrigger struct {
 	// value, will render as `subtype type`, e.g. `button_1 spammed` with `type` set to
 	// `spammed` and `subtype` set to `button_1`
 	Type *string `yaml:"type,omitempty"`
+	// Defines a [template](/docs/configuration/templating/#processing-incoming-data)
+	// to extract the value.
+	ValueTemplate *string `yaml:"value_template,omitempty"`
 }
 
 type HADeviceDeviceTriggerFunctions struct {
@@ -724,6 +789,11 @@ type HADeviceFan struct {
 		PayloadNotAvailable *string `yaml:"payload_not_available,omitempty"`
 		// An MQTT topic subscribed to receive availability (online/offline) updates.
 		Topic *string `yaml:"topic,omitempty"`
+		// Defines a [template](/docs/configuration/templating/#processing-incoming-data)
+		// to extract device's availability from the `topic`. To determine the devices's
+		// availability result of this template will be compared to `payload_available` and
+		// `payload_not_available`.
+		ValueTemplate *string `yaml:"value_template,omitempty"`
 	} `yaml:"availability,omitempty"`
 	// When `availability` is configured, this controls the conditions needed to set
 	// the entity to `available`. Valid entries are `all`, `any`, and `latest`. If set
@@ -734,6 +804,11 @@ type HADeviceFan struct {
 	// `payload_available` or `payload_not_available` received on any configured
 	// availability topic controls the availability.
 	AvailabilityMode *string `yaml:"availability_mode,omitempty"`
+	// Defines a [template](/docs/configuration/templating/#processing-incoming-data)
+	// to extract device's availability from the `availability_topic`. To determine the
+	// devices's availability result of this template will be compared to
+	// `payload_available` and `payload_not_available`.
+	AvailabilityTemplate *string `yaml:"availability_template,omitempty"`
 	// The MQTT topic subscribed to receive availability (online/offline) updates.
 	// Must not be used together with `availability`.
 	AvailabilityTopic *string `yaml:"availability_topic,omitempty"`
@@ -774,6 +849,9 @@ type HADeviceFan struct {
 	} `yaml:"device,omitempty"`
 	// Flag which defines if the entity should be enabled when first added.
 	EnabledByDefault *bool `yaml:"enabled_by_default,omitempty"`
+	// The encoding of the payloads received and published messages. Set to `\"\"` to
+	// disable decoding of incoming payload.
+	Encoding *string `yaml:"encoding,omitempty"`
 	// The
 	// [category](https://developers.home-assistant.io/docs/core/entity#generic-properties)
 	// of the entity.
@@ -793,6 +871,8 @@ type HADeviceFan struct {
 	JsonAttributesTopic *string `yaml:"json_attributes_topic,omitempty"`
 	// The name of the fan.
 	Name *string `yaml:"name,omitempty"`
+	// Used instead of `name` for automatic generation of `entity_id`
+	ObjectId *string `yaml:"object_id,omitempty"`
 	// Flag that defines if fan works in optimistic mode
 	Optimistic *bool `yaml:"optimistic,omitempty"`
 	// Defines a [template](/docs/configuration/templating/#processing-incoming-data)
@@ -918,6 +998,11 @@ type HADeviceHumidifier struct {
 		PayloadNotAvailable *string `yaml:"payload_not_available,omitempty"`
 		// An MQTT topic subscribed to receive availability (online/offline) updates.
 		Topic *string `yaml:"topic,omitempty"`
+		// Defines a [template](/docs/configuration/templating/#processing-incoming-data)
+		// to extract device's availability from the `topic`. To determine the devices's
+		// availability result of this template will be compared to `payload_available` and
+		// `payload_not_available`.
+		ValueTemplate *string `yaml:"value_template,omitempty"`
 	} `yaml:"availability,omitempty"`
 	// When `availability` is configured, this controls the conditions needed to set
 	// the entity to `available`. Valid entries are `all`, `any`, and `latest`. If set
@@ -928,6 +1013,11 @@ type HADeviceHumidifier struct {
 	// `payload_available` or `payload_not_available` received on any configured
 	// availability topic controls the availability.
 	AvailabilityMode *string `yaml:"availability_mode,omitempty"`
+	// Defines a [template](/docs/configuration/templating/#processing-incoming-data)
+	// to extract device's availability from the `availability_topic`. To determine the
+	// devices's availability result of this template will be compared to
+	// `payload_available` and `payload_not_available`.
+	AvailabilityTemplate *string `yaml:"availability_template,omitempty"`
 	// The MQTT topic subscribed to receive availability (online/offline) updates.
 	// Must not be used together with `availability`.
 	AvailabilityTopic *string `yaml:"availability_topic,omitempty"`
@@ -972,6 +1062,9 @@ type HADeviceHumidifier struct {
 	DeviceClass *string `yaml:"device_class,omitempty"`
 	// Flag which defines if the entity should be enabled when first added.
 	EnabledByDefault *bool `yaml:"enabled_by_default,omitempty"`
+	// The encoding of the payloads received and published messages. Set to `\"\"` to
+	// disable decoding of incoming payload.
+	Encoding *string `yaml:"encoding,omitempty"`
 	// The
 	// [category](https://developers.home-assistant.io/docs/core/entity#generic-properties)
 	// of the entity.
@@ -1012,6 +1105,8 @@ type HADeviceHumidifier struct {
 	Modes *[]string `yaml:"modes,omitempty"`
 	// The name of the humidifier.
 	Name *string `yaml:"name,omitempty"`
+	// Used instead of `name` for automatic generation of `entity_id`
+	ObjectId *string `yaml:"object_id,omitempty"`
 	// Flag that defines if humidifier works in optimistic mode
 	Optimistic *bool `yaml:"optimistic,omitempty"`
 	// The payload that represents the available state.
@@ -1110,6 +1205,11 @@ type HADeviceClimate struct {
 		PayloadNotAvailable *string `yaml:"payload_not_available,omitempty"`
 		// An MQTT topic subscribed to receive availability (online/offline) updates.
 		Topic *string `yaml:"topic,omitempty"`
+		// Defines a [template](/docs/configuration/templating/#processing-incoming-data)
+		// to extract device's availability from the `topic`. To determine the devices's
+		// availability result of this template will be compared to `payload_available` and
+		// `payload_not_available`.
+		ValueTemplate *string `yaml:"value_template,omitempty"`
 	} `yaml:"availability,omitempty"`
 	// When `availability` is configured, this controls the conditions needed to set
 	// the entity to `available`. Valid entries are `all`, `any`, and `latest`. If set
@@ -1120,16 +1220,14 @@ type HADeviceClimate struct {
 	// `payload_available` or `payload_not_available` received on any configured
 	// availability topic controls the availability.
 	AvailabilityMode *string `yaml:"availability_mode,omitempty"`
+	// Defines a [template](/docs/configuration/templating/#processing-incoming-data)
+	// to extract device's availability from the `availability_topic`. To determine the
+	// devices's availability result of this template will be compared to
+	// `payload_available` and `payload_not_available`.
+	AvailabilityTemplate *string `yaml:"availability_template,omitempty"`
 	// The MQTT topic subscribed to receive availability (online/offline) updates.
 	// Must not be used together with `availability`.
 	AvailabilityTopic *string `yaml:"availability_topic,omitempty"`
-	// The MQTT topic to publish commands to change the away mode.
-	AwayModeCommandTopic *string `yaml:"away_mode_command_topic,omitempty"`
-	// A template to render the value received on the `away_mode_state_topic` with.
-	AwayModeStateTemplate *string `yaml:"away_mode_state_template,omitempty"`
-	// The MQTT topic to subscribe for changes of the HVAC away mode. If this is not
-	// set, the away mode works in optimistic mode (see below).
-	AwayModeStateTopic *string `yaml:"away_mode_state_topic,omitempty"`
 	// A template with which the value received on `current_temperature_topic` will be
 	// rendered.
 	CurrentTemperatureTemplate *string `yaml:"current_temperature_template,omitempty"`
@@ -1168,6 +1266,9 @@ type HADeviceClimate struct {
 	} `yaml:"device,omitempty"`
 	// Flag which defines if the entity should be enabled when first added.
 	EnabledByDefault *bool `yaml:"enabled_by_default,omitempty"`
+	// The encoding of the payloads received and published messages. Set to `\"\"` to
+	// disable decoding of incoming payload.
+	Encoding *string `yaml:"encoding,omitempty"`
 	// The
 	// [category](https://developers.home-assistant.io/docs/core/entity#generic-properties)
 	// of the entity.
@@ -1183,17 +1284,6 @@ type HADeviceClimate struct {
 	FanModeStateTopic *string `yaml:"fan_mode_state_topic,omitempty"`
 	// A list of supported fan modes.
 	FanModes *[]string `yaml:"fan_modes,omitempty"`
-	// A template to render the value sent to the `hold_command_topic` with.
-	HoldCommandTemplate *string `yaml:"hold_command_template,omitempty"`
-	// The MQTT topic to publish commands to change the hold mode.
-	HoldCommandTopic *string `yaml:"hold_command_topic,omitempty"`
-	// A list of available hold modes.
-	HoldModes *[]string `yaml:"hold_modes,omitempty"`
-	// A template to render the value received on the `hold_state_topic` with.
-	HoldStateTemplate *string `yaml:"hold_state_template,omitempty"`
-	// The MQTT topic to subscribe for changes of the HVAC hold mode. If this is not
-	// set, the hold mode works in optimistic mode (see below).
-	HoldStateTopic *string `yaml:"hold_state_topic,omitempty"`
 	// [Icon](/docs/configuration/customizing-devices/#icon) for the entity.
 	Icon *string `yaml:"icon,omitempty"`
 	// Set the initial target temperature.
@@ -1226,6 +1316,8 @@ type HADeviceClimate struct {
 	Modes *[]string `yaml:"modes,omitempty"`
 	// The name of the HVAC.
 	Name *string `yaml:"name,omitempty"`
+	// Used instead of `name` for automatic generation of `entity_id`
+	ObjectId *string `yaml:"object_id,omitempty"`
 	// The payload that represents the available state.
 	PayloadAvailable *string `yaml:"payload_available,omitempty"`
 	// The payload that represents the unavailable state.
@@ -1240,13 +1332,25 @@ type HADeviceClimate struct {
 	// The desired precision for this device. Can be used to match your actual
 	// thermostat's precision. Supported values are `0.1`, `0.5` and `1.0`.
 	Precision *float64 `yaml:"precision,omitempty"`
+	// Defines a [template](/docs/configuration/templating/#processing-incoming-data)
+	// to generate the payload to send to `preset_mode_command_topic`.
+	PresetModeCommandTemplate *string `yaml:"preset_mode_command_template,omitempty"`
+	// The MQTT topic to publish commands to change the preset mode.
+	PresetModeCommandTopic *string `yaml:"preset_mode_command_topic,omitempty"`
+	// The MQTT topic subscribed to receive climate speed based on presets. When
+	// preset 'none' is received or `None` the `preset_mode` will be reset.
+	PresetModeStateTopic *string `yaml:"preset_mode_state_topic,omitempty"`
+	// Defines a [template](/docs/configuration/templating/#processing-incoming-data)
+	// to extract the `preset_mode` value from the payload received on
+	// `preset_mode_state_topic`.
+	PresetModeValueTemplate *string `yaml:"preset_mode_value_template,omitempty"`
+	// List of preset modes this climate is supporting. Common examples include `eco`,
+	// `away`, `boost`, `comfort`, `home`, `sleep` and `activity`.
+	PresetModes *[]string `yaml:"preset_modes,omitempty"`
 	// The maximum QoS level to be used when receiving and publishing messages.
 	Qos *int `yaml:"qos,omitempty"`
 	// Defines if published messages should have the retain flag set.
 	Retain *bool `yaml:"retain,omitempty"`
-	// Set to `false` to suppress sending of all MQTT messages when the current mode
-	// is `Off`.
-	SendIfOff *bool `yaml:"send_if_off,omitempty"`
 	// A template to render the value sent to the `swing_mode_command_topic` with.
 	SwingModeCommandTemplate *string `yaml:"swing_mode_command_template,omitempty"`
 	// The MQTT topic to publish commands to change the swing mode.
@@ -1307,15 +1411,13 @@ type HADeviceClimateFunctions struct {
 	Availability struct {
 		State func() string
 	}
-	AwayModeCommand        func(mqtt.Message, mqtt.Client)
-	AwayModeState          func() string
 	FanModeCommand         func(mqtt.Message, mqtt.Client)
 	FanModeState           func() string
-	HoldCommand            func(mqtt.Message, mqtt.Client)
-	HoldState              func() string
 	ModeCommand            func(mqtt.Message, mqtt.Client)
 	ModeState              func() string
 	PowerCommand           func(mqtt.Message, mqtt.Client)
+	PresetModeCommand      func(mqtt.Message, mqtt.Client)
+	PresetModeState        func() string
 	SwingModeCommand       func(mqtt.Message, mqtt.Client)
 	SwingModeState         func() string
 	TemperatureCommand     func(mqtt.Message, mqtt.Client)
@@ -1332,15 +1434,13 @@ type HADeviceClimateFunctionsConfig struct {
 	Availability struct {
 		State *[]string `yaml:"state,omitempty"`
 	} `yaml:"availability,omitempty"`
-	AwayModeCommand        *[]string `yaml:"away_mode_command,omitempty"`
-	AwayModeState          *[]string `yaml:"away_mode_state,omitempty"`
 	FanModeCommand         *[]string `yaml:"fan_mode_command,omitempty"`
 	FanModeState           *[]string `yaml:"fan_mode_state,omitempty"`
-	HoldCommand            *[]string `yaml:"hold_command,omitempty"`
-	HoldState              *[]string `yaml:"hold_state,omitempty"`
 	ModeCommand            *[]string `yaml:"mode_command,omitempty"`
 	ModeState              *[]string `yaml:"mode_state,omitempty"`
 	PowerCommand           *[]string `yaml:"power_command,omitempty"`
+	PresetModeCommand      *[]string `yaml:"preset_mode_command,omitempty"`
+	PresetModeState        *[]string `yaml:"preset_mode_state,omitempty"`
 	SwingModeCommand       *[]string `yaml:"swing_mode_command,omitempty"`
 	SwingModeState         *[]string `yaml:"swing_mode_state,omitempty"`
 	TemperatureCommand     *[]string `yaml:"temperature_command,omitempty"`
@@ -1371,6 +1471,11 @@ type HADeviceLight struct {
 		PayloadNotAvailable *string `yaml:"payload_not_available,omitempty"`
 		// An MQTT topic subscribed to receive availability (online/offline) updates.
 		Topic *string `yaml:"topic,omitempty"`
+		// Defines a [template](/docs/configuration/templating/#processing-incoming-data)
+		// to extract device's availability from the `topic`. To determine the devices's
+		// availability result of this template will be compared to `payload_available` and
+		// `payload_not_available`.
+		ValueTemplate *string `yaml:"value_template,omitempty"`
 	} `yaml:"availability,omitempty"`
 	// When `availability` is configured, this controls the conditions needed to set
 	// the entity to `available`. Valid entries are `all`, `any`, and `latest`. If set
@@ -1381,9 +1486,17 @@ type HADeviceLight struct {
 	// `payload_available` or `payload_not_available` received on any configured
 	// availability topic controls the availability.
 	AvailabilityMode *string `yaml:"availability_mode,omitempty"`
+	// Defines a [template](/docs/configuration/templating/#processing-incoming-data)
+	// to extract device's availability from the `availability_topic`. To determine the
+	// devices's availability result of this template will be compared to
+	// `payload_available` and `payload_not_available`.
+	AvailabilityTemplate *string `yaml:"availability_template,omitempty"`
 	// The MQTT topic subscribed to receive availability (online/offline) updates.
 	// Must not be used together with `availability`.
 	AvailabilityTopic *string `yaml:"availability_topic,omitempty"`
+	// Defines a [template](/docs/configuration/templating/) to compose message which
+	// will be sent to `brightness_command_topic`. Available variables: `value`.
+	BrightnessCommandTemplate *string `yaml:"brightness_command_template,omitempty"`
 	// The MQTT topic to publish commands to change the light’s brightness.
 	BrightnessCommandTopic *string `yaml:"brightness_command_topic,omitempty"`
 	// Defines the maximum brightness value (i.e., 100%) of the MQTT device.
@@ -1444,6 +1557,9 @@ type HADeviceLight struct {
 		// This is used to show device topology in Home Assistant.
 		ViaDevice *string `yaml:"via_device,omitempty"`
 	} `yaml:"device,omitempty"`
+	// Defines a [template](/docs/configuration/templating/) to compose message which
+	// will be sent to `effect_command_topic`. Available variables: `value`.
+	EffectCommandTemplate *string `yaml:"effect_command_template,omitempty"`
 	// The MQTT topic to publish commands to change the light's effect state.
 	EffectCommandTopic *string `yaml:"effect_command_topic,omitempty"`
 	// The list of effects the light supports.
@@ -1455,6 +1571,9 @@ type HADeviceLight struct {
 	EffectValueTemplate *string `yaml:"effect_value_template,omitempty"`
 	// Flag which defines if the entity should be enabled when first added.
 	EnabledByDefault *bool `yaml:"enabled_by_default,omitempty"`
+	// The encoding of the payloads received and published messages. Set to `\"\"` to
+	// disable decoding of incoming payload.
+	Encoding *string `yaml:"encoding,omitempty"`
 	// The
 	// [category](https://developers.home-assistant.io/docs/core/entity#generic-properties)
 	// of the entity.
@@ -1488,6 +1607,8 @@ type HADeviceLight struct {
 	MinMireds *int `yaml:"min_mireds,omitempty"`
 	// The name of the light.
 	Name *string `yaml:"name,omitempty"`
+	// Used instead of `name` for automatic generation of `entity_id`
+	ObjectId *string `yaml:"object_id,omitempty"`
 	// Defines when on the payload_on is sent. Using `last` (the default) will send
 	// any style (brightness, color, etc) topics first and then a `payload_on` to the
 	// `command_topic`. Using `first` will send the `payload_on` and then any style
@@ -1526,7 +1647,7 @@ type HADeviceLight struct {
 	// Defines a [template](/docs/configuration/templating/#processing-incoming-data)
 	// to extract the RGB value.
 	RgbValueTemplate *string `yaml:"rgb_value_template,omitempty"`
-	// The schema to use. Must be `default` or omitted to select the default schema\".
+	// The schema to use. Must be `default` or omitted to select the default schema.
 	Schema *string `yaml:"schema,omitempty"`
 	// The MQTT topic subscribed to receive state updates.
 	StateTopic *string `yaml:"state_topic,omitempty"`
@@ -1617,6 +1738,11 @@ type HADeviceLock struct {
 		PayloadNotAvailable *string `yaml:"payload_not_available,omitempty"`
 		// An MQTT topic subscribed to receive availability (online/offline) updates.
 		Topic *string `yaml:"topic,omitempty"`
+		// Defines a [template](/docs/configuration/templating/#processing-incoming-data)
+		// to extract device's availability from the `topic`. To determine the devices's
+		// availability result of this template will be compared to `payload_available` and
+		// `payload_not_available`.
+		ValueTemplate *string `yaml:"value_template,omitempty"`
 	} `yaml:"availability,omitempty"`
 	// When `availability` is configured, this controls the conditions needed to set
 	// the entity to `available`. Valid entries are `all`, `any`, and `latest`. If set
@@ -1627,6 +1753,11 @@ type HADeviceLock struct {
 	// `payload_available` or `payload_not_available` received on any configured
 	// availability topic controls the availability.
 	AvailabilityMode *string `yaml:"availability_mode,omitempty"`
+	// Defines a [template](/docs/configuration/templating/#processing-incoming-data)
+	// to extract device's availability from the `availability_topic`. To determine the
+	// devices's availability result of this template will be compared to
+	// `payload_available` and `payload_not_available`.
+	AvailabilityTemplate *string `yaml:"availability_template,omitempty"`
 	// The MQTT topic subscribed to receive availability (online/offline) updates.
 	// Must not be used together with `availability`.
 	AvailabilityTopic *string `yaml:"availability_topic,omitempty"`
@@ -1664,6 +1795,9 @@ type HADeviceLock struct {
 	} `yaml:"device,omitempty"`
 	// Flag which defines if the entity should be enabled when first added.
 	EnabledByDefault *bool `yaml:"enabled_by_default,omitempty"`
+	// The encoding of the payloads received and published messages. Set to `\"\"` to
+	// disable decoding of incoming payload.
+	Encoding *string `yaml:"encoding,omitempty"`
 	// The
 	// [category](https://developers.home-assistant.io/docs/core/entity#generic-properties)
 	// of the entity.
@@ -1683,25 +1817,29 @@ type HADeviceLock struct {
 	JsonAttributesTopic *string `yaml:"json_attributes_topic,omitempty"`
 	// The name of the lock.
 	Name *string `yaml:"name,omitempty"`
+	// Used instead of `name` for automatic generation of `entity_id`
+	ObjectId *string `yaml:"object_id,omitempty"`
 	// Flag that defines if lock works in optimistic mode.
 	Optimistic *bool `yaml:"optimistic,omitempty"`
 	// The payload that represents the available state.
 	PayloadAvailable *string `yaml:"payload_available,omitempty"`
-	// The payload that represents enabled/locked state.
+	// The payload sent to the lock to lock it.
 	PayloadLock *string `yaml:"payload_lock,omitempty"`
 	// The payload that represents the unavailable state.
 	PayloadNotAvailable *string `yaml:"payload_not_available,omitempty"`
-	// The payload that represents disabled/unlocked state.
+	// The payload sent to the lock to open it.
+	PayloadOpen *string `yaml:"payload_open,omitempty"`
+	// The payload sent to the lock to unlock it.
 	PayloadUnlock *string `yaml:"payload_unlock,omitempty"`
 	// The maximum QoS level of the state topic.
 	Qos *int `yaml:"qos,omitempty"`
 	// If the published message should have the retain flag on or not.
 	Retain *bool `yaml:"retain,omitempty"`
-	// The value that represents the lock to be in locked state
+	// The payload sent to by the lock when it's locked.
 	StateLocked *string `yaml:"state_locked,omitempty"`
 	// The MQTT topic subscribed to receive state updates.
 	StateTopic *string `yaml:"state_topic,omitempty"`
-	// The value that represents the lock to be in unlocked state
+	// The payload sent to by the lock when it's unlocked.
 	StateUnlocked *string `yaml:"state_unlocked,omitempty"`
 	// An ID that uniquely identifies this lock. If two locks have the same unique ID,
 	// Home Assistant will raise an exception.
@@ -1760,6 +1898,9 @@ type HADeviceNumber struct {
 	// The MQTT topic subscribed to receive availability (online/offline) updates.
 	// Must not be used together with `availability`.
 	AvailabilityTopic *string `yaml:"availability_topic,omitempty"`
+	// Defines a [template](/docs/configuration/templating/#processing-incoming-data)
+	// to generate the payload to send to `command_topic`.
+	CommandTemplate *string `yaml:"command_template,omitempty"`
 	// The MQTT topic to publish commands to change the number.
 	CommandTopic *string `yaml:"command_topic,omitempty"`
 	// Information about the device this Number is a part of to tie it into the
@@ -1795,6 +1936,9 @@ type HADeviceNumber struct {
 	} `yaml:"device,omitempty"`
 	// Flag which defines if the entity should be enabled when first added.
 	EnabledByDefault *bool `yaml:"enabled_by_default,omitempty"`
+	// The encoding of the payloads received and published messages. Set to `\"\"` to
+	// disable decoding of incoming payload.
+	Encoding *string `yaml:"encoding,omitempty"`
 	// The
 	// [category](https://developers.home-assistant.io/docs/core/entity#generic-properties)
 	// of the entity.
@@ -1815,6 +1959,8 @@ type HADeviceNumber struct {
 	Min *float64 `yaml:"min,omitempty"`
 	// The name of the Number.
 	Name *string `yaml:"name,omitempty"`
+	// Used instead of `name` for automatic generation of `entity_id`
+	ObjectId *string `yaml:"object_id,omitempty"`
 	// Flag that defines if number works in optimistic mode.
 	Optimistic *bool `yaml:"optimistic,omitempty"`
 	// A special payload that resets the state to `None` when received on the
@@ -1875,6 +2021,11 @@ type HADeviceScene struct {
 		PayloadNotAvailable *string `yaml:"payload_not_available,omitempty"`
 		// An MQTT topic subscribed to receive availability (online/offline) updates.
 		Topic *string `yaml:"topic,omitempty"`
+		// Defines a [template](/docs/configuration/templating/#processing-incoming-data)
+		// to extract device's availability from the `topic`. To determine the devices's
+		// availability result of this template will be compared to `payload_available` and
+		// `payload_not_available`.
+		ValueTemplate *string `yaml:"value_template,omitempty"`
 	} `yaml:"availability,omitempty"`
 	// When `availability` is configured, this controls the conditions needed to set
 	// the entity to `available`. Valid entries are `all`, `any`, and `latest`. If set
@@ -1885,6 +2036,11 @@ type HADeviceScene struct {
 	// `payload_available` or `payload_not_available` received on any configured
 	// availability topic controls the availability.
 	AvailabilityMode *string `yaml:"availability_mode,omitempty"`
+	// Defines a [template](/docs/configuration/templating/#processing-incoming-data)
+	// to extract device's availability from the `availability_topic`. To determine the
+	// devices's availability result of this template will be compared to
+	// `payload_available` and `payload_not_available`.
+	AvailabilityTemplate *string `yaml:"availability_template,omitempty"`
 	// The MQTT topic subscribed to receive availability (online/offline) updates.
 	// Must not be used together with `availability`.
 	AvailabilityTopic *string `yaml:"availability_topic,omitempty"`
@@ -1900,6 +2056,8 @@ type HADeviceScene struct {
 	Icon *string `yaml:"icon,omitempty"`
 	// The name to use when displaying this scene.
 	Name *string `yaml:"name,omitempty"`
+	// Used instead of `name` for automatic generation of `entity_id`
+	ObjectId *string `yaml:"object_id,omitempty"`
 	// The payload that represents the available state.
 	PayloadAvailable *string `yaml:"payload_available,omitempty"`
 	// The payload that represents the unavailable state.
@@ -1952,6 +2110,11 @@ type HADeviceSelect struct {
 		PayloadNotAvailable *string `yaml:"payload_not_available,omitempty"`
 		// An MQTT topic subscribed to receive availability (online/offline) updates.
 		Topic *string `yaml:"topic,omitempty"`
+		// Defines a [template](/docs/configuration/templating/#processing-incoming-data)
+		// to extract device's availability from the `topic`. To determine the devices's
+		// availability result of this template will be compared to `payload_available` and
+		// `payload_not_available`.
+		ValueTemplate *string `yaml:"value_template,omitempty"`
 	} `yaml:"availability,omitempty"`
 	// When `availability` is configured, this controls the conditions needed to set
 	// the entity to `available`. Valid entries are `all`, `any`, and `latest`. If set
@@ -1962,9 +2125,17 @@ type HADeviceSelect struct {
 	// `payload_available` or `payload_not_available` received on any configured
 	// availability topic controls the availability.
 	AvailabilityMode *string `yaml:"availability_mode,omitempty"`
+	// Defines a [template](/docs/configuration/templating/#processing-incoming-data)
+	// to extract device's availability from the `availability_topic`. To determine the
+	// devices's availability result of this template will be compared to
+	// `payload_available` and `payload_not_available`.
+	AvailabilityTemplate *string `yaml:"availability_template,omitempty"`
 	// The MQTT topic subscribed to receive availability (online/offline) updates.
 	// Must not be used together with `availability`.
 	AvailabilityTopic *string `yaml:"availability_topic,omitempty"`
+	// Defines a [template](/docs/configuration/templating/#processing-incoming-data)
+	// to generate the payload to send to `command_topic`.
+	CommandTemplate *string `yaml:"command_template,omitempty"`
 	// The MQTT topic to publish commands to change the selected option.
 	CommandTopic *string `yaml:"command_topic,omitempty"`
 	// Information about the device this Select is a part of to tie it into the
@@ -2000,6 +2171,9 @@ type HADeviceSelect struct {
 	} `yaml:"device,omitempty"`
 	// Flag which defines if the entity should be enabled when first added.
 	EnabledByDefault *bool `yaml:"enabled_by_default,omitempty"`
+	// The encoding of the payloads received and published messages. Set to `\"\"` to
+	// disable decoding of incoming payload.
+	Encoding *string `yaml:"encoding,omitempty"`
 	// The
 	// [category](https://developers.home-assistant.io/docs/core/entity#generic-properties)
 	// of the entity.
@@ -2016,9 +2190,12 @@ type HADeviceSelect struct {
 	JsonAttributesTopic *string `yaml:"json_attributes_topic,omitempty"`
 	// The name of the Select.
 	Name *string `yaml:"name,omitempty"`
+	// Used instead of `name` for automatic generation of `entity_id`
+	ObjectId *string `yaml:"object_id,omitempty"`
 	// Flag that defines if the select works in optimistic mode.
 	Optimistic *bool `yaml:"optimistic,omitempty"`
-	// List of options that can be selected.
+	// List of options that can be selected. An empty list or a list with a single
+	// item is allowed.
 	Options *[]string `yaml:"options,omitempty"`
 	// The maximum QoS level of the state topic. Default is 0 and will also be used to
 	// publishing messages.
@@ -2071,6 +2248,11 @@ type HADeviceSensor struct {
 		PayloadNotAvailable *string `yaml:"payload_not_available,omitempty"`
 		// An MQTT topic subscribed to receive availability (online/offline) updates.
 		Topic *string `yaml:"topic,omitempty"`
+		// Defines a [template](/docs/configuration/templating/#processing-incoming-data)
+		// to extract device's availability from the `topic`. To determine the devices's
+		// availability result of this template will be compared to `payload_available` and
+		// `payload_not_available`.
+		ValueTemplate *string `yaml:"value_template,omitempty"`
 	} `yaml:"availability,omitempty"`
 	// When `availability` is configured, this controls the conditions needed to set
 	// the entity to `available`. Valid entries are `all`, `any`, and `latest`. If set
@@ -2081,6 +2263,11 @@ type HADeviceSensor struct {
 	// `payload_available` or `payload_not_available` received on any configured
 	// availability topic controls the availability.
 	AvailabilityMode *string `yaml:"availability_mode,omitempty"`
+	// Defines a [template](/docs/configuration/templating/#processing-incoming-data)
+	// to extract device's availability from the `availability_topic`. To determine the
+	// devices's availability result of this template will be compared to
+	// `payload_available` and `payload_not_available`.
+	AvailabilityTemplate *string `yaml:"availability_template,omitempty"`
 	// The MQTT topic subscribed to receive availability (online/offline) updates.
 	AvailabilityTopic *string `yaml:"availability_topic,omitempty"`
 	// Information about the device this sensor is a part of to tie it into the
@@ -2119,6 +2306,9 @@ type HADeviceSensor struct {
 	DeviceClass *string `yaml:"device_class,omitempty"`
 	// Flag which defines if the entity should be enabled when first added.
 	EnabledByDefault *bool `yaml:"enabled_by_default,omitempty"`
+	// The encoding of the payloads received. Set to `\"\"` to disable decoding of
+	// incoming payload.
+	Encoding *string `yaml:"encoding,omitempty"`
 	// The
 	// [category](https://developers.home-assistant.io/docs/core/entity#generic-properties)
 	// of the entity.
@@ -2139,18 +2329,14 @@ type HADeviceSensor struct {
 	// sensor attributes. Implies `force_update` of the current sensor state when a
 	// message is received on this topic.
 	JsonAttributesTopic *string `yaml:"json_attributes_topic,omitempty"`
-	// The MQTT topic subscribed to receive timestamps for when an accumulating sensor
-	// such as an energy meter was reset. If the sensor never resets, set
-	// `last_reset_topic` to same as `state_topic` and set the
-	// `last_reset_value_template` to a constant valid timstamp, for example UNIX epoch
-	// 0: `1970-01-01T00:00:00+00:00`.
-	LastResetTopic *string `yaml:"last_reset_topic,omitempty"`
 	// Defines a [template](/docs/configuration/templating/#processing-incoming-data)
 	// to extract the last_reset. Available variables: `entity_id`. The `entity_id` can
 	// be used to reference the entity's attributes.
 	LastResetValueTemplate *string `yaml:"last_reset_value_template,omitempty"`
 	// The name of the MQTT sensor.
 	Name *string `yaml:"name,omitempty"`
+	// Used instead of `name` for automatic generation of `entity_id`
+	ObjectId *string `yaml:"object_id,omitempty"`
 	// The payload that represents the available state.
 	PayloadAvailable *string `yaml:"payload_available,omitempty"`
 	// The payload that represents the unavailable state.
@@ -2170,7 +2356,8 @@ type HADeviceSensor struct {
 	UnitOfMeasurement *string `yaml:"unit_of_measurement,omitempty"`
 	// Defines a [template](/docs/configuration/templating/#processing-incoming-data)
 	// to extract the value. Available variables: `entity_id`. The `entity_id` can be
-	// used to reference the entity's attributes.
+	// used to reference the entity's attributes. If the template throws an error, the
+	// current state will be used instead.
 	ValueTemplate *string `yaml:"value_template,omitempty"`
 }
 
@@ -2208,6 +2395,11 @@ type HADeviceSwitch struct {
 		PayloadNotAvailable *string `yaml:"payload_not_available,omitempty"`
 		// An MQTT topic subscribed to receive availability (online/offline) updates.
 		Topic *string `yaml:"topic,omitempty"`
+		// Defines a [template](/docs/configuration/templating/#processing-incoming-data)
+		// to extract device's availability from the `topic`. To determine the devices's
+		// availability result of this template will be compared to `payload_available` and
+		// `payload_not_available`.
+		ValueTemplate *string `yaml:"value_template,omitempty"`
 	} `yaml:"availability,omitempty"`
 	// When `availability` is configured, this controls the conditions needed to set
 	// the entity to `available`. Valid entries are `all`, `any`, and `latest`. If set
@@ -2218,6 +2410,11 @@ type HADeviceSwitch struct {
 	// `payload_available` or `payload_not_available` received on any configured
 	// availability topic controls the availability.
 	AvailabilityMode *string `yaml:"availability_mode,omitempty"`
+	// Defines a [template](/docs/configuration/templating/#processing-incoming-data)
+	// to extract device's availability from the `availability_topic`. To determine the
+	// devices's availability result of this template will be compared to
+	// `payload_available` and `payload_not_available`.
+	AvailabilityTemplate *string `yaml:"availability_template,omitempty"`
 	// The MQTT topic subscribed to receive availability (online/offline) updates.
 	// Must not be used together with `availability`.
 	AvailabilityTopic *string `yaml:"availability_topic,omitempty"`
@@ -2254,8 +2451,14 @@ type HADeviceSwitch struct {
 		// This is used to show device topology in Home Assistant.
 		ViaDevice *string `yaml:"via_device,omitempty"`
 	} `yaml:"device,omitempty"`
+	// The [type/class](/integrations/switch/#device-class) of the switch to set the
+	// icon in the frontend.
+	DeviceClass *string `yaml:"device_class,omitempty"`
 	// Flag which defines if the entity should be enabled when first added.
 	EnabledByDefault *bool `yaml:"enabled_by_default,omitempty"`
+	// The encoding of the payloads received and published messages. Set to `\"\"` to
+	// disable decoding of incoming payload.
+	Encoding *string `yaml:"encoding,omitempty"`
 	// The
 	// [category](https://developers.home-assistant.io/docs/core/entity#generic-properties)
 	// of the entity.
@@ -2275,6 +2478,8 @@ type HADeviceSwitch struct {
 	JsonAttributesTopic *string `yaml:"json_attributes_topic,omitempty"`
 	// The name to use when displaying this switch.
 	Name *string `yaml:"name,omitempty"`
+	// Used instead of `name` for automatic generation of `entity_id`
+	ObjectId *string `yaml:"object_id,omitempty"`
 	// Flag that defines if switch works in optimistic mode.
 	Optimistic *bool `yaml:"optimistic,omitempty"`
 	// The payload that represents the available state.
@@ -2405,6 +2610,11 @@ type HADeviceVacuum struct {
 		PayloadNotAvailable *string `yaml:"payload_not_available,omitempty"`
 		// An MQTT topic subscribed to receive availability (online/offline) updates.
 		Topic *string `yaml:"topic,omitempty"`
+		// Defines a [template](/docs/configuration/templating/#processing-incoming-data)
+		// to extract device's availability from the `topic`. To determine the devices's
+		// availability result of this template will be compared to `payload_available` and
+		// `payload_not_available`.
+		ValueTemplate *string `yaml:"value_template,omitempty"`
 	} `yaml:"availability,omitempty"`
 	// When `availability` is configured, this controls the conditions needed to set
 	// the entity to `available`. Valid entries are `all`, `any`, and `latest`. If set
@@ -2415,6 +2625,11 @@ type HADeviceVacuum struct {
 	// `payload_available` or `payload_not_available` received on any configured
 	// availability topic controls the availability.
 	AvailabilityMode *string `yaml:"availability_mode,omitempty"`
+	// Defines a [template](/docs/configuration/templating/#processing-incoming-data)
+	// to extract device's availability from the `availability_topic`. To determine the
+	// devices's availability result of this template will be compared to
+	// `payload_available` and `payload_not_available`.
+	AvailabilityTemplate *string `yaml:"availability_template,omitempty"`
 	// The MQTT topic subscribed to receive availability (online/offline) updates.
 	// Must not be used together with `availability`.
 	AvailabilityTopic *string `yaml:"availability_topic,omitempty"`
@@ -2442,6 +2657,9 @@ type HADeviceVacuum struct {
 	DockedTopic *string `yaml:"docked_topic,omitempty"`
 	// Flag which defines if the entity should be enabled when first added.
 	EnabledByDefault *bool `yaml:"enabled_by_default,omitempty"`
+	// The encoding of the payloads received and published messages. Set to `\"\"` to
+	// disable decoding of incoming payload.
+	Encoding *string `yaml:"encoding,omitempty"`
 	// The
 	// [category](https://developers.home-assistant.io/docs/core/entity#generic-properties)
 	// of the entity.
@@ -2473,6 +2691,8 @@ type HADeviceVacuum struct {
 	JsonAttributesTopic *string `yaml:"json_attributes_topic,omitempty"`
 	// The name of the vacuum.
 	Name *string `yaml:"name,omitempty"`
+	// Used instead of `name` for automatic generation of `entity_id`
+	ObjectId *string `yaml:"object_id,omitempty"`
 	// The payload that represents the available state.
 	PayloadAvailable *string `yaml:"payload_available,omitempty"`
 	// The payload to send to the `command_topic` to begin a spot cleaning cycle.
