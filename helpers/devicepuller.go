@@ -1,7 +1,9 @@
 package main
 
 import (
+	"errors"
 	"fmt"
+	"io/fs"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -37,6 +39,8 @@ type Device struct {
 	Name          string
 	JSONContainer *gabs.Container
 }
+
+var PullNew = false
 
 func DevicesInit() (retval []Device) {
 	for _, name := range DeviceNames {
@@ -102,9 +106,29 @@ func splitDocument(devicename string) (string, error) {
 
 }
 
+func exists(path string) bool {
+	_, err := os.Stat(path)
+	return !errors.Is(err, os.ErrNotExist)
+}
+
 func fetchDocument(devicename string) ([]byte, error) {
 
 	url := "https://raw.githubusercontent.com/home-assistant/home-assistant.io/rc/source/_integrations/" + devicename + ".mqtt.markdown"
+
+	targetFile := "../helpers/cache/" + devicename + ".md"
+
+	if exists(targetFile) && PullNew == false {
+
+		log.Println("Using " + targetFile)
+
+		data, err := ioutil.ReadFile(targetFile)
+		if err != nil {
+			return nil, err
+		}
+
+		return data, nil
+
+	}
 
 	log.Println("Fetching " + devicename)
 
@@ -118,7 +142,14 @@ func fetchDocument(devicename string) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	err = ioutil.WriteFile(targetFile, bodyBytes, fs.FileMode(0644))
+	if err != nil {
+		return nil, err
+	}
+
 	return bodyBytes, nil
+
 }
 
 func Unquote(s string) string {

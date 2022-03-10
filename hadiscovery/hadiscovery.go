@@ -49,56 +49,6 @@ type store struct {
 	Switch map[string]string
 }
 
-///////////////////
-
-// GetTopicPrefix gets the prefix for all state/command topics
-// This is for a light
-func (device Light) GetTopicPrefix() string {
-	return NodeID + "/light/" + device.UniqueID + "/"
-}
-
-// GetTopicPrefix gets the prefix for all state/command topics
-// This is for a sensor
-func (device Sensor) GetTopicPrefix() string {
-	return NodeID + "/sensor/" + device.UniqueID + "/"
-}
-
-// GetTopicPrefix gets the prefix for all state/command topics
-// This is for a switch
-func (device Switch) GetTopicPrefix() string {
-	return NodeID + "/switch/" + device.UniqueID + "/"
-}
-
-// GetTopicPrefix gets the prefix for all state/command topics
-// This is for a binary sensor
-func (device BinarySensor) GetTopicPrefix() string {
-	return NodeID + "/binary_sensor/" + device.UniqueID + "/"
-}
-
-// GetDiscoveryTopic gets the topic for a device's discovery topic.
-// This is for a light
-func (device Light) GetDiscoveryTopic() string {
-	return DiscoveryPrefix + "/light/" + NodeID + "/" + device.UniqueID + "/" + "config"
-}
-
-// GetDiscoveryTopic gets the topic for a device's discovery topic.
-// This is for a sensor
-func (device Sensor) GetDiscoveryTopic() string {
-	return DiscoveryPrefix + "/sensor/" + NodeID + "/" + device.UniqueID + "/" + "config"
-}
-
-// GetDiscoveryTopic gets the topic for a device's discovery topic.
-// This is for a switch
-func (device Switch) GetDiscoveryTopic() string {
-	return DiscoveryPrefix + "/switch/" + NodeID + "/" + device.UniqueID + "/" + "config"
-}
-
-// GetDiscoveryTopic gets the topic for a device's discovery topic.
-// This is for a binary sensor
-func (device BinarySensor) GetDiscoveryTopic() string {
-	return DiscoveryPrefix + "/binary_sensor/" + NodeID + "/" + device.UniqueID + "/" + "config"
-}
-
 // GetCommandTopic gets the command topic for a device
 // This is for a light
 func (device Light) GetCommandTopic() string {
