@@ -10,14 +10,7 @@ import (
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 )
 
-//go:generate go run ../helpers/ha-devices/main.go
-//go:generate go run ../helpers/translators/main.go
-//go:generate go run ../helpers/generators/main.go
-//go:generate go run ../helpers/topics/main.go
-//go:generate gofmt -w structs.go
-//go:generate gofmt -w translators.go
-//go:generate gofmt -w generators.go
-//go:generate gofmt -w topics.go
+//go:generate go run ../helpers/main.go
 
 func AddStateFunction(command *[]string, target *func() string) {
 	if command != nil {
