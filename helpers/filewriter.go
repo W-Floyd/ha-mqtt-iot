@@ -16,14 +16,21 @@ type Function struct {
 }
 
 type GoFile struct {
-	Name     string
-	heading  []string
-	Contents []Function
-	footing  []string
+	Name      string
+	heading   []string
+	Functions []Function
+	footing   []string
 }
 
 func (f *GoFile) Write() error {
 	f.heading = []string{"package devices"}
+
+	f.heading = append(f.heading, "type HAEntity interface {",
+		"GetDiscoveryTopic() string",
+		"GetAvailabilityTopic() string",
+		"}",
+		"",
+	)
 
 	// f.Contents = append(f.Contents, "")
 	// f.footing=append(f.footing, "")
@@ -31,7 +38,7 @@ func (f *GoFile) Write() error {
 	lines := []string{}
 	lines = append(lines, f.heading...)
 
-	for _, fn := range f.Contents {
+	for _, fn := range f.Functions {
 		lines = append(lines, fn.convert()...)
 	}
 
