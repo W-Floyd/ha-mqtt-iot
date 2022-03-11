@@ -8,29 +8,41 @@ import (
 	"github.com/iancoleman/strcase"
 )
 
-var fileList = []string{
-	"types",
-	"store",
-}
-
 func main() {
 
 	devices := DevicesInit()
 	loadKeyNames()
 
-	files := make(map[string]*jen.File)
+	filesHa := make(map[string]*jen.File)
+
+	fileList := []string{
+		"types",
+		"store",
+	}
 
 	for _, v := range append(DeviceNames, fileList...) {
-		files[v] = jen.NewFilePathName("../hadiscovery/"+v+".go", "hadiscovery")
-		files[v].ImportAlias("github.com/eclipse/paho.mqtt.golang", "mqtt")
-		files[v].Comment("////////////////////////////////////////////////////////////////////////////////")
-		files[v].Comment("Do not modify this file, it is automatically generated")
-		files[v].Comment("////////////////////////////////////////////////////////////////////////////////")
+		filesHa[v] = jen.NewFilePathName("../hadiscovery/"+v+".go", "hadiscovery")
+		filesHa[v].ImportAlias("github.com/eclipse/paho.mqtt.golang", "mqtt")
+		filesHa[v].Comment("////////////////////////////////////////////////////////////////////////////////")
+		filesHa[v].Comment("Do not modify this file, it is automatically generated")
+		filesHa[v].Comment("////////////////////////////////////////////////////////////////////////////////")
+	}
+
+	filesDev := make(map[string]*jen.File)
+
+	fileList = []string{}
+
+	for _, v := range append(DeviceNames, fileList...) {
+		filesDev[v] = jen.NewFilePathName("../devices/"+v+".go", "iotconfig")
+		filesDev[v].ImportAlias("github.com/eclipse/paho.mqtt.golang", "mqtt")
+		filesDev[v].Comment("////////////////////////////////////////////////////////////////////////////////")
+		filesDev[v].Comment("Do not modify this file, it is automatically generated")
+		filesDev[v].Comment("////////////////////////////////////////////////////////////////////////////////")
 	}
 
 	sort.Strings(keyNames)
 
-	files["types"].Type().Id("Device").Interface(
+	filesHa["types"].Type().Id("Device").Interface(
 		// jen.UnionFunc(
 		// 	func(g *jen.Group) {
 		// 		for _, d := range devices {
@@ -47,7 +59,7 @@ func main() {
 		jen.Id("AddMessageHandler").Params(),
 	)
 
-	files["store"].Type().Id("store").StructFunc(
+	filesHa["store"].Type().Id("store").StructFunc(
 		func(g *jen.Group) {
 			for _, d := range devices {
 				g.Add(
@@ -69,7 +81,7 @@ func main() {
 		},
 	)
 
-	files["store"].Func().Id("initStore").Params().Id("store").BlockFunc(
+	filesHa["store"].Func().Id("initStore").Params().Id("store").BlockFunc(
 		func(g *jen.Group) {
 			g.Add(
 				jen.Id("s").Op(":=").Id("store").Block(),
@@ -98,14 +110,14 @@ func main() {
 		camName := strcase.ToCamel(d.Name)
 
 		// d.GetRawID()
-		files[d.Name].Func().Params(
+		filesHa[d.Name].Func().Params(
 			jen.Id("d").Id(strcase.ToCamel(d.Name)),
 		).Id("GetRawId").Params().String().Block(
 			jen.Return(jen.Lit(d.Name)),
 		)
 
 		// d.AddMessageHandler()
-		files[d.Name].Func().Params(
+		filesHa[d.Name].Func().Params(
 			jen.Id("d").Id(strcase.ToCamel(d.Name)),
 		).Id("AddMessageHandler").Params().Block(
 			jen.Id("d").Dot("MQTT").Dot("MessageHandler").Op("=").Id("MakeMessageHandler").Params(jen.Id("d")),
@@ -113,13 +125,13 @@ func main() {
 
 		// d.GetUniqueID()
 		if d.JSONContainer.Exists("unique_id") {
-			files[d.Name].Func().Params(
+			filesHa[d.Name].Func().Params(
 				jen.Id("d").Id(strcase.ToCamel(d.Name)),
 			).Id("GetUniqueId").Params().String().Block(
 				jen.Return(jen.Id("d.UniqueId")),
 			)
 		} else {
-			files[d.Name].Func().Params(
+			filesHa[d.Name].Func().Params(
 				jen.Id("d").Id(strcase.ToCamel(d.Name)),
 			).Id("GetUniqueId").Params().String().Block(
 				jen.Return(jen.Lit("")),
@@ -151,7 +163,7 @@ func main() {
 
 		// d.PopulateDevice()
 		if d.JSONContainer.Exists("device") {
-			files[d.Name].Func().Params(
+			filesHa[d.Name].Func().Params(
 				jen.Id("d").Id(strcase.ToCamel(d.Name)),
 			).Id("PopulateDevice").Params().Block(
 				jen.Id("d.Device.Manufacturer").Op("=").Id("Manufacturer"),
@@ -160,7 +172,7 @@ func main() {
 				jen.Id("d.Device.SwVersion").Op("=").Id("SWVersion"),
 			)
 		} else {
-			files[d.Name].Func().Params(
+			filesHa[d.Name].Func().Params(
 				jen.Id("d").Id(strcase.ToCamel(d.Name)),
 			).Id("PopulateDevice").Params().Block()
 		}
@@ -172,7 +184,7 @@ func main() {
 		sort.Strings(sortedKeys)
 
 		// Device MQTT Struct
-		files[d.Name].Type().Id(strcase.ToCamel(d.Name)).StructFunc(
+		filesHa[d.Name].Type().Id(strcase.ToCamel(d.Name)).StructFunc(
 			func(g *jen.Group) {
 				for _, key := range sortedKeys {
 					v := st[key]
@@ -184,7 +196,7 @@ func main() {
 			},
 		)
 
-		files[d.Name].Func().Params(
+		filesHa[d.Name].Func().Params(
 			jen.Id("d").Id(strcase.ToCamel(d.Name)),
 		).Id("UpdateState").Params().BlockFunc(
 			func(g *jen.Group) {
@@ -224,7 +236,7 @@ func main() {
 		)
 
 		// d.Subscribe()
-		files[d.Name].Func().Params(
+		filesHa[d.Name].Func().Params(
 			jen.Id("d").Id(strcase.ToCamel(d.Name)),
 		).Id("Subscribe").Params().BlockFunc(
 			func(g *jen.Group) {
@@ -301,7 +313,7 @@ func main() {
 		)
 
 		// d.UnSubscribe()
-		files[d.Name].Func().Params(
+		filesHa[d.Name].Func().Params(
 			jen.Id("d").Id(strcase.ToCamel(d.Name)),
 		).Id("UnSubscribe").Params().BlockFunc(
 			func(g *jen.Group) {
@@ -353,7 +365,7 @@ func main() {
 		)
 
 		// d.AnnounceAvailable()
-		files[d.Name].Func().Params(
+		filesHa[d.Name].Func().Params(
 			jen.Id("d").Id(strcase.ToCamel(d.Name)),
 		).Id("AnnounceAvailable").Params().BlockFunc(
 			func(g *jen.Group) {
@@ -376,7 +388,7 @@ func main() {
 			},
 		)
 
-		files[d.Name].Func().Params(jen.Id("d").Id(strcase.ToCamel(d.Name))).Id("Initialize").Params().BlockFunc(func(g *jen.Group) {
+		filesHa[d.Name].Func().Params(jen.Id("d").Id(strcase.ToCamel(d.Name))).Id("Initialize").Params().BlockFunc(func(g *jen.Group) {
 			if d.JSONContainer.Exists("retain") {
 				g.Add(jen.Id("d").Dot("Retain").Op("=").Lit(false))
 			}
@@ -386,7 +398,7 @@ func main() {
 		})
 
 		// d.PopulateTopics()
-		files[d.Name].Func().Params(
+		filesHa[d.Name].Func().Params(
 			jen.Id("d").Id(strcase.ToCamel(d.Name)),
 		).Id("PopulateTopics").Params().BlockFunc(func(g *jen.Group) {
 			for _, name := range keyNames {
@@ -412,8 +424,12 @@ func main() {
 
 	}
 
-	for k, v := range files {
+	for k, v := range filesHa {
 		v.Save("../hadiscovery/" + k + ".go")
+	}
+
+	for k, v := range filesDev {
+		v.Save("../devices/" + k + ".go")
 	}
 
 }
