@@ -186,6 +186,7 @@ func main() {
 		jen.Id("GetUniqueId").Params().String(),
 		jen.Id("PopulateDevice").Params(),
 		jen.Id("PopulateTopics").Params(),
+		jen.Id("UpdateState").Params(jen.Qual("github.com/eclipse/paho.mqtt.golang", "Client")),
 	)
 
 	devicetypesfile.Save("../hadiscovery/devicetypes.go")

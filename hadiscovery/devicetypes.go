@@ -853,4 +853,5 @@ type Device interface {
 	GetUniqueId() string
 	PopulateDevice()
 	PopulateTopics()
+	UpdateState(mqtt.Client)
 }
