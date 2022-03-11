@@ -326,7 +326,7 @@ func (device Switch) Subscribe(client mqtt.Client) {
 	device.AnnounceAvailable(client)
 
 	if device.StateFunc != nil {
-		device.UpdateState(client)
+		device.UpdateState(&client)
 	}
 
 	if token := client.Subscribe(GetCommandTopic(device), 0, device.messageHandler); token.Wait() && token.Error() != nil {

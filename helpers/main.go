@@ -192,6 +192,9 @@ func main() {
 		jen.Id("UpdateState").Params(
 			jen.Op("*").Qual("github.com/eclipse/paho.mqtt.golang", "Client"),
 		),
+		jen.Id("Subscribe").Params(
+			jen.Op("*").Qual("github.com/eclipse/paho.mqtt.golang", "Client"),
+		),
 	)
 
 	devicetypesfile.Save("../hadiscovery/devicetypes.go")
