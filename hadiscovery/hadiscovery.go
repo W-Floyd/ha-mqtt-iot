@@ -25,11 +25,15 @@ const DiscoveryPrefix = "homeassistant"
 // TODO - Move this elsewhere maybe?
 const SWVersion = "0.4.5"
 
+var SoftwareName = "Homeassistant MQTT IOT"
+
 // InstanceName is the instance name, helpful for identifying a given client
 var InstanceName = "Homeassistant MQTT IOT"
 
 // NodeID is the Node ID, that is, what that node connects under.
 var NodeID = "ha-mqtt-iot"
+
+var Manufacturer = "William Floyd"
 
 ///////////////////
 
@@ -49,72 +53,12 @@ type store struct {
 	Switch map[string]string
 }
 
-// GetCommandTopic gets the command topic for a device
-// This is for a light
-func (device Light) GetCommandTopic() string {
-	return device.GetTopicPrefix() + "command"
-}
-
-// GetCommandTopic gets the command topic for a device
-// This is for a switch
-func (device Switch) GetCommandTopic() string {
-	return device.GetTopicPrefix() + "command"
-}
-
-// GetStateTopic gets the state topic for a device
-// This is for a light
-func (device Light) GetStateTopic() string {
-	return device.GetTopicPrefix() + "state"
-}
-
-// GetStateTopic gets the state topic for a device
-// This is for a sensor
-func (device Sensor) GetStateTopic() string {
-	return device.GetTopicPrefix() + "state"
-}
-
-// GetStateTopic gets the state topic for a device
-// This is for a switch
-func (device Switch) GetStateTopic() string {
-	return device.GetTopicPrefix() + "state"
-}
-
-// GetStateTopic gets the state topic for a device
-// This is for a binary sensor
-func (device BinarySensor) GetStateTopic() string {
-	return device.GetTopicPrefix() + "state"
-}
-
-// GetAvailabilityTopic gets the availability topic for a device
-// This is for a light
-func (device Light) GetAvailabilityTopic() string {
-	return device.GetTopicPrefix() + "availability"
-}
-
-// GetAvailabilityTopic gets the availability topic for a device
-// This is for a sensor
-func (device Sensor) GetAvailabilityTopic() string {
-	return device.GetTopicPrefix() + "availability"
-}
-
-// GetAvailabilityTopic gets the availability topic for a device
-// This is for a switch
-func (device Switch) GetAvailabilityTopic() string {
-	return device.GetTopicPrefix() + "availability"
-}
-
-// GetAvailabilityTopic gets the availability topic for a device
-// This is for a binary sensor
-func (device BinarySensor) GetAvailabilityTopic() string {
-	return device.GetTopicPrefix() + "availability"
-}
-
 // Initialize sets topics as needed on a Light
 func (device *Light) Initialize() {
 	device.Retain = false
 	device.Device = getDevice()
 
-	device.AvailabilityTopic = device.GetAvailabilityTopic()
+	device.AvailabilityTopic = GetAvailabilityTopic(*device)
 
 	// Brightness
 	if device.BrightnessCommandFunc != nil {

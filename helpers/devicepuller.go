@@ -2,7 +2,6 @@ package main
 
 import (
 	"errors"
-	"fmt"
 	"io/fs"
 	"io/ioutil"
 	"log"
@@ -11,7 +10,9 @@ import (
 	"strings"
 
 	"github.com/Jeffail/gabs/v2"
+	"github.com/dave/jennifer/jen"
 	"github.com/ghodss/yaml"
+	"github.com/iancoleman/strcase"
 )
 
 var DeviceNames = []string{
@@ -102,6 +103,13 @@ func splitDocument(devicename string) (string, error) {
 
 	match := between(string(data), "{% configuration %}", "{% endconfiguration %}")
 
+	targetFile := "../helpers/cache/" + devicename + "_split.yaml"
+
+	err = ioutil.WriteFile(targetFile, []byte(match), fs.FileMode(0644))
+	if err != nil {
+		return "nil", err
+	}
+
 	return match, nil
 
 }
@@ -122,11 +130,11 @@ func fetchDocument(devicename string) ([]byte, error) {
 		log.Println("Using " + targetFile)
 
 		data, err := ioutil.ReadFile(targetFile)
-		if err != nil {
-			return nil, err
+		if err == nil {
+			return data, nil
 		}
 
-		return data, nil
+		log.Println("Loading " + targetFile + " failed")
 
 	}
 
@@ -162,44 +170,32 @@ func Unquote(s string) string {
 	return s
 }
 
-func TypeTranslator(t *gabs.Container) string {
+func TypeTranslator(t string, s *jen.Statement) *jen.Statement {
 
-	if len(t.Children()) > 0 {
-
-		if len(t.Children()) == 1 {
-			if Unquote(t.Children()[0].String()) == "list" {
-				return "[]string"
-			}
-		}
-
-		first := Unquote(t.Children()[0].String())
-		second := Unquote(t.Children()[1].String())
-
-		if (first == "list" && second == "map") || (second == "list" && first == "map") {
-			return "[][2]string"
-		} else if (first == "string" && second == "list") || (second == "string" && first == "list") {
-			return "[]string"
-		}
-		fmt.Println("Don't know what to do with: ", t.Children())
-		os.Exit(1)
-	}
-	v := Unquote(t.String())
+	v := Unquote(t)
 	switch v {
-	case "template", "icon":
-		return "string"
+	case "string", "template", "icon", "device_class":
+		return s.String()
 	case "integer":
-		return "int"
+		return s.Int()
 	case "boolean":
-		return "bool"
-	case "list":
-		return "[]string"
+		return s.Bool()
+	case "list", "[\"list\"]", "[\"string\",\"list\"]":
+		return s.Index().String()
 	case "map":
-		return "map[string]string"
+		return s.Map(jen.String()).String()
 	case "float":
-		return "float64"
-	case "device_class":
-		return "string"
+		return s.Float64()
 	default:
-		return v
+		log.Fatalln("Unknown type " + t)
+		return nil
 	}
+}
+
+func (dev *Device) FieldAdder(key string) *jen.Statement {
+	dat := dev.JSONContainer.ChildrenMap()
+
+	t := Unquote(dat[key].ChildrenMap()["type"].String())
+
+	return TypeTranslator(t, jen.Id(strcase.ToCamel(key))).Tag(map[string]string{"json": key})
 }
