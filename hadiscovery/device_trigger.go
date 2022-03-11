@@ -60,16 +60,8 @@ func (d DeviceTrigger) Subscribe() {
 	d.AnnounceAvailable()
 	d.UpdateState()
 }
-func (d DeviceTrigger) UnSubscribe() {
-	c := *d.MQTT.Client
-	token := c.Publish(d.AvailabilityTopic, qos, retain, "offline")
-	token.Wait()
-}
-func (d DeviceTrigger) AnnounceAvailable() {
-	c := *d.MQTT.Client
-	token := c.Publish(d.AvailabilityTopic, qos, retain, "online")
-	token.Wait()
-}
+func (d DeviceTrigger) UnSubscribe()       {}
+func (d DeviceTrigger) AnnounceAvailable() {}
 func (d DeviceTrigger) Initialize() {
 	d.PopulateDevice()
 	d.PopulateTopics()

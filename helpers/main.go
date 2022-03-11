@@ -305,45 +305,47 @@ func main() {
 			jen.Id("d").Id(strcase.ToCamel(d.Name)),
 		).Id("UnSubscribe").Params().BlockFunc(
 			func(g *jen.Group) {
-				g.Add(
-					jen.Id("c").Op(":=").Op("*").Id("d").Dot("MQTT").Dot("Client"),
-				)
+				if d.JSONContainer.Exists("availability_topic") {
+					g.Add(
+						jen.Id("c").Op(":=").Op("*").Id("d").Dot("MQTT").Dot("Client"),
+					)
 
-				g.Add(
-					jen.Id("token").Op(":=").Id("c").Dot("Publish").Params(
-						jen.Id("d").Dot("AvailabilityTopic"),
-						jen.Id("qos"),
-						jen.Id("retain"),
-						jen.Lit("offline"),
-					),
-				)
+					g.Add(
+						jen.Id("token").Op(":=").Id("c").Dot("Publish").Params(
+							jen.Id("d").Dot("AvailabilityTopic"),
+							jen.Id("qos"),
+							jen.Id("retain"),
+							jen.Lit("offline"),
+						),
+					)
 
-				g.Add(
-					jen.Id("token").Dot("Wait").Params(),
-				)
+					g.Add(
+						jen.Id("token").Dot("Wait").Params(),
+					)
 
-				for _, key := range sortedKeys {
-					if strings.HasSuffix(key, "_topic") {
-						if IsCommand(key, d) {
-							// trimmed := strings.TrimSuffix(key, "_topic")
-							cam := strcase.ToCamel(key)
-							// camTrimmed := strcase.ToCamel(trimmed)
+					for _, key := range sortedKeys {
+						if strings.HasSuffix(key, "_topic") {
+							if IsCommand(key, d) {
+								// trimmed := strings.TrimSuffix(key, "_topic")
+								cam := strcase.ToCamel(key)
+								// camTrimmed := strcase.ToCamel(trimmed)
 
-							g.Add(
-								jen.If(
-									jen.Id("d").Dot(cam).Op("!=").Lit(""),
-								).Block(
-									jen.Id("t").Op(":=").Id("c").Dot("Unsubscribe").Params(
-										jen.Id("d").Dot(cam),
-									),
-									jen.Id("t").Dot("Wait").Params(),
+								g.Add(
 									jen.If(
-										jen.Id("t").Dot("Error").Params().Op("!=").Nil(),
+										jen.Id("d").Dot(cam).Op("!=").Lit(""),
 									).Block(
-										jen.Qual("log", "Fatal").Params(jen.Id("t").Dot("Error").Params()),
+										jen.Id("t").Op(":=").Id("c").Dot("Unsubscribe").Params(
+											jen.Id("d").Dot(cam),
+										),
+										jen.Id("t").Dot("Wait").Params(),
+										jen.If(
+											jen.Id("t").Dot("Error").Params().Op("!=").Nil(),
+										).Block(
+											jen.Qual("log", "Fatal").Params(jen.Id("t").Dot("Error").Params()),
+										),
 									),
-								),
-							)
+								)
+							}
 						}
 					}
 				}
@@ -355,20 +357,22 @@ func main() {
 			jen.Id("d").Id(strcase.ToCamel(d.Name)),
 		).Id("AnnounceAvailable").Params().BlockFunc(
 			func(g *jen.Group) {
-				g.Add(
-					jen.Id("c").Op(":=").Op("*").Id("d").Dot("MQTT").Dot("Client"),
-				)
-				g.Add(
-					jen.Id("token").Op(":=").Id("c").Dot("Publish").Params(
-						jen.Id("d").Dot("AvailabilityTopic"),
-						jen.Id("qos"),
-						jen.Id("retain"),
-						jen.Lit("online"),
-					),
-				)
-				g.Add(
-					jen.Id("token").Dot("Wait").Params(),
-				)
+				if d.JSONContainer.Exists("availability_topic") {
+					g.Add(
+						jen.Id("c").Op(":=").Op("*").Id("d").Dot("MQTT").Dot("Client"),
+					)
+					g.Add(
+						jen.Id("token").Op(":=").Id("c").Dot("Publish").Params(
+							jen.Id("d").Dot("AvailabilityTopic"),
+							jen.Id("qos"),
+							jen.Id("retain"),
+							jen.Lit("online"),
+						),
+					)
+					g.Add(
+						jen.Id("token").Dot("Wait").Params(),
+					)
+				}
 			},
 		)
 
