@@ -1,5 +1,11 @@
 package hadiscovery
 
+func (d Light) PopulateDevice() {
+	d.Device.Manufacturer = Manufacturer
+	d.Device.Model = SoftwareName
+	d.Device.Name = InstanceName
+	d.Device.SwVersion = SWVersion
+}
 func (d Light) Initialize() {
 	d.Retain = false
 	d.PopulateDevice()

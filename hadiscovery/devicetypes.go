@@ -2,6 +2,15 @@ package hadiscovery
 
 import mqtt "github.com/eclipse/paho.mqtt.golang"
 
+type Device interface {
+	GetRawId() string
+	GetUniqueId() string
+	PopulateDevice()
+	PopulateTopics()
+	UpdateState()
+	Subscribe()
+	AddMessageHandler()
+}
 type Light struct {
 	AvailabilityMode     string                          `json:"availability_mode"`
 	AvailabilityTemplate string                          `json:"availability_template"`
@@ -45,15 +54,5 @@ type Light struct {
 	StateFunc           func() string `json:"-"`
 	SupportedColorModes []string      `json:"supported_color_modes"`
 	UniqueId            string        `json:"unique_id"`
-	RawId               string        `json:"-"`
 	MQTT                MQTTFields    `json:"-"`
-}
-type Device interface {
-	GetRawId() string
-	GetUniqueId() string
-	PopulateDevice()
-	PopulateTopics()
-	UpdateState()
-	Subscribe()
-	AddMessageHandler()
 }

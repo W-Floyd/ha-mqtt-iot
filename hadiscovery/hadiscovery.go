@@ -49,31 +49,6 @@ type store struct {
 	Switch map[string]string
 }
 
-// Initialize sets topics as needed on a Light
-// func (device *Light) Initialize() {
-// 	device.Retain = false
-// 	device.PopulateDevice()
-// 	device.PopulateTopics()
-
-// 	device.messageHandler = func(client mqtt.Client, msg mqtt.Message) {
-
-// 		topicFound := false
-
-// 		for topic, f := range topicStore {
-// 			if msg.Topic() == topic {
-// 				topicFound = true
-// 				(*f)(msg, client)
-// 				device.UpdateState(device.MQTTClient)
-// 			}
-// 		}
-
-// 		if !topicFound {
-// 			log.Println("Unknown Message on topic " + msg.Topic())
-// 			log.Println(msg.Payload())
-// 		}
-// 	}
-// }
-
 // UpdateState publishes any new state for a device
 // This is for a light
 // func (device Light) UpdateState(client mqtt.Client) {

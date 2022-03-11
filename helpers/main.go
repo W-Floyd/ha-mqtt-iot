@@ -27,6 +27,23 @@ func main() {
 
 	sort.Strings(keyNames)
 
+	devicetypesfile.Type().Id("Device").Interface(
+		// jen.UnionFunc(
+		// 	func(g *jen.Group) {
+		// 		for _, d := range devices {
+		// 			g.Add(jen.Id(strcase.ToCamel(d.Name)))
+		// 		}
+		// 	},
+		// ),
+		jen.Id("GetRawId").Params().String(),
+		jen.Id("GetUniqueId").Params().String(),
+		jen.Id("PopulateDevice").Params(),
+		jen.Id("PopulateTopics").Params(),
+		jen.Id("UpdateState").Params(),
+		jen.Id("Subscribe").Params(),
+		jen.Id("AddMessageHandler").Params(),
+	)
+
 	for _, d := range devices {
 
 		// d.GetRawID()
@@ -36,12 +53,12 @@ func main() {
 			jen.Return(jen.Lit(d.Name)),
 		)
 
-		// d.GetMQTTClient()
-		devicefunctionsfile.Func().Params(
-			jen.Id("d").Id(strcase.ToCamel(d.Name)),
-		).Id("GetMQTTClient").Params().Qual("github.com/eclipse/paho.mqtt.golang", "Client").Block(
-			jen.Return(jen.Op("*").Id("d").Dot("MQTT").Dot("Client")),
-		)
+		// // d.GetMQTTClient()
+		// devicefunctionsfile.Func().Params(
+		// 	jen.Id("d").Id(strcase.ToCamel(d.Name)),
+		// ).Id("GetMQTTClient").Params().Qual("github.com/eclipse/paho.mqtt.golang", "Client").Block(
+		// 	jen.Return(jen.Op("*").Id("d").Dot("MQTT").Dot("Client")),
+		// )
 
 		// d.AddMessageHandler()
 		devicefunctionsfile.Func().Params(
@@ -90,7 +107,7 @@ func main() {
 
 		// d.PopulateDevice()
 		if d.JSONContainer.Exists("device") {
-			devicefunctionsfile.Func().Params(
+			deviceinitfile.Func().Params(
 				jen.Id("d").Id(strcase.ToCamel(d.Name)),
 			).Id("PopulateDevice").Params().Block(
 				jen.Id("d.Device.Manufacturer").Op("=").Id("Manufacturer"),
@@ -119,7 +136,6 @@ func main() {
 						g.Add(val)
 					}
 				}
-				g.Id("RawId").String().Tag(map[string]string{"json": "-"})
 				g.Id("MQTT").Id("MQTTFields").Tag(map[string]string{"json": "-"})
 			},
 		)
@@ -218,23 +234,6 @@ func main() {
 		})
 
 	}
-
-	devicetypesfile.Type().Id("Device").Interface(
-		// jen.UnionFunc(
-		// 	func(g *jen.Group) {
-		// 		for _, d := range devices {
-		// 			g.Add(jen.Id(strcase.ToCamel(d.Name)))
-		// 		}
-		// 	},
-		// ),
-		jen.Id("GetRawId").Params().String(),
-		jen.Id("GetUniqueId").Params().String(),
-		jen.Id("PopulateDevice").Params(),
-		jen.Id("PopulateTopics").Params(),
-		jen.Id("UpdateState").Params(),
-		jen.Id("Subscribe").Params(),
-		jen.Id("AddMessageHandler").Params(),
-	)
 
 	devicetypesfile.Save("../hadiscovery/devicetypes.go")
 
