@@ -48,3 +48,10 @@ func MakeMessageHandler(d Device) func(client mqtt.Client, msg mqtt.Message) {
 	}
 
 }
+
+type MQTTFields struct {
+	Client         *mqtt.Client
+	ForceUpdate    bool
+	MessageHandler mqtt.MessageHandler
+	UpdateInterval float64
+}

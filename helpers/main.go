@@ -8,26 +8,29 @@ import (
 	"github.com/iancoleman/strcase"
 )
 
+var fileList = []string{
+	"devicetypes",
+	"deviceinit",
+	"devicefunctions",
+	"state",
+	"subscribe",
+}
+
 func main() {
 
 	devices := DevicesInit()
 	loadKeyNames()
 
-	devicetypesfile := jen.NewFilePathName("../hadiscovery/devicetypes.go", "hadiscovery")
+	files := make(map[string]*jen.File)
 
-	devicetypesfile.ImportAlias("github.com/eclipse/paho.mqtt.golang", "mqtt")
-
-	deviceinitfile := jen.NewFilePathName("../hadiscovery/deviceinit.go", "hadiscovery")
-
-	deviceinitfile.ImportAlias("github.com/eclipse/paho.mqtt.golang", "mqtt")
-
-	devicefunctionsfile := jen.NewFilePathName("../hadiscovery/devicefunctions.go", "hadiscovery")
-
-	devicefunctionsfile.ImportAlias("github.com/eclipse/paho.mqtt.golang", "mqtt")
+	for _, v := range fileList {
+		files[v] = jen.NewFilePathName("../hadiscovery/"+v+".go", "hadiscovery")
+		files[v].ImportAlias("github.com/eclipse/paho.mqtt.golang", "mqtt")
+	}
 
 	sort.Strings(keyNames)
 
-	devicetypesfile.Type().Id("Device").Interface(
+	files["devicetypes"].Type().Id("Device").Interface(
 		// jen.UnionFunc(
 		// 	func(g *jen.Group) {
 		// 		for _, d := range devices {
@@ -47,21 +50,21 @@ func main() {
 	for _, d := range devices {
 
 		// d.GetRawID()
-		devicefunctionsfile.Func().Params(
+		files["devicefunctions"].Func().Params(
 			jen.Id("d").Id(strcase.ToCamel(d.Name)),
 		).Id("GetRawId").Params().String().Block(
 			jen.Return(jen.Lit(d.Name)),
 		)
 
 		// // d.GetMQTTClient()
-		// devicefunctionsfile.Func().Params(
+		// files["devicefunctions"].Func().Params(
 		// 	jen.Id("d").Id(strcase.ToCamel(d.Name)),
 		// ).Id("GetMQTTClient").Params().Qual("github.com/eclipse/paho.mqtt.golang", "Client").Block(
 		// 	jen.Return(jen.Op("*").Id("d").Dot("MQTT").Dot("Client")),
 		// )
 
 		// d.AddMessageHandler()
-		devicefunctionsfile.Func().Params(
+		files["devicefunctions"].Func().Params(
 			jen.Id("d").Id(strcase.ToCamel(d.Name)),
 		).Id("AddMessageHandler").Params().Block(
 			jen.Id("d").Dot("MQTT").Dot("MessageHandler").Op("=").Id("MakeMessageHandler").Params(jen.Id("d")),
@@ -69,13 +72,13 @@ func main() {
 
 		// d.GetUniqueID()
 		if d.JSONContainer.Exists("unique_id") {
-			devicefunctionsfile.Func().Params(
+			files["devicefunctions"].Func().Params(
 				jen.Id("d").Id(strcase.ToCamel(d.Name)),
 			).Id("GetUniqueId").Params().String().Block(
 				jen.Return(jen.Id("d.UniqueId")),
 			)
 		} else {
-			devicefunctionsfile.Func().Params(
+			files["devicefunctions"].Func().Params(
 				jen.Id("d").Id(strcase.ToCamel(d.Name)),
 			).Id("GetUniqueId").Params().String().Block(
 				jen.Return(jen.Lit("")),
@@ -107,7 +110,7 @@ func main() {
 
 		// d.PopulateDevice()
 		if d.JSONContainer.Exists("device") {
-			deviceinitfile.Func().Params(
+			files["deviceinit"].Func().Params(
 				jen.Id("d").Id(strcase.ToCamel(d.Name)),
 			).Id("PopulateDevice").Params().Block(
 				jen.Id("d.Device.Manufacturer").Op("=").Id("Manufacturer"),
@@ -116,7 +119,7 @@ func main() {
 				jen.Id("d.Device.SwVersion").Op("=").Id("SWVersion"),
 			)
 		} else {
-			devicefunctionsfile.Func().Params(
+			files["devicefunctions"].Func().Params(
 				jen.Id("d").Id(strcase.ToCamel(d.Name)),
 			).Id("PopulateDevice").Params().Block()
 		}
@@ -128,7 +131,7 @@ func main() {
 		sort.Strings(sortedKeys)
 
 		// Device MQTT Struct
-		devicetypesfile.Type().Id(strcase.ToCamel(d.Name)).StructFunc(
+		files["devicetypes"].Type().Id(strcase.ToCamel(d.Name)).StructFunc(
 			func(g *jen.Group) {
 				for _, key := range sortedKeys {
 					v := st[key]
@@ -140,7 +143,7 @@ func main() {
 			},
 		)
 
-		devicefunctionsfile.Func().Params(
+		files["state"].Func().Params(
 			jen.Id("d").Id(strcase.ToCamel(d.Name)),
 		).Id("UpdateState").Params().BlockFunc(
 			func(g *jen.Group) {
@@ -155,7 +158,7 @@ func main() {
 		)
 
 		// d.Subscribe()
-		devicefunctionsfile.Func().Params(
+		files["subscribe"].Func().Params(
 			jen.Id("d").Id(strcase.ToCamel(d.Name)),
 		).Id("Subscribe").Params().BlockFunc(
 			func(g *jen.Group) {
@@ -170,7 +173,7 @@ func main() {
 		)
 
 		// d.UnSubscribe()
-		devicefunctionsfile.Func().Params(
+		files["devicefunctions"].Func().Params(
 			jen.Id("d").Id(strcase.ToCamel(d.Name)),
 		).Id("UnSubscribe").Params().BlockFunc(
 			func(g *jen.Group) {
@@ -185,7 +188,7 @@ func main() {
 		)
 
 		// d.AnnounceAvailable()
-		devicefunctionsfile.Func().Params(
+		files["devicefunctions"].Func().Params(
 			jen.Id("d").Id(strcase.ToCamel(d.Name)),
 		).Id("AnnounceAvailable").Params().BlockFunc(
 			func(g *jen.Group) {
@@ -199,7 +202,7 @@ func main() {
 			},
 		)
 
-		deviceinitfile.Func().Params(jen.Id("d").Id(strcase.ToCamel(d.Name))).Id("Initialize").Params().BlockFunc(func(g *jen.Group) {
+		files["deviceinit"].Func().Params(jen.Id("d").Id(strcase.ToCamel(d.Name))).Id("Initialize").Params().BlockFunc(func(g *jen.Group) {
 			if d.JSONContainer.Exists("retain") {
 				g.Add(jen.Id("d").Dot("Retain").Op("=").Lit(false))
 			}
@@ -209,7 +212,7 @@ func main() {
 		})
 
 		// d.PopulateTopics()
-		deviceinitfile.Func().Params(
+		files["deviceinit"].Func().Params(
 			jen.Id("d").Id(strcase.ToCamel(d.Name)),
 		).Id("PopulateTopics").Params().BlockFunc(func(g *jen.Group) {
 			for _, name := range keyNames {
@@ -235,10 +238,8 @@ func main() {
 
 	}
 
-	devicetypesfile.Save("../hadiscovery/devicetypes.go")
-
-	deviceinitfile.Save("../hadiscovery/deviceinit.go")
-
-	devicefunctionsfile.Save("../hadiscovery/devicefunctions.go")
+	for k, v := range files {
+		v.Save("../hadiscovery/" + k + ".go")
+	}
 
 }

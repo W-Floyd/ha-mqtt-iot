@@ -1,9 +1,6 @@
 package hadiscovery
 
 import (
-	"log"
-
-	"github.com/denisbrodbeck/machineid"
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 )
 
@@ -33,24 +30,6 @@ var InstanceName = "Homeassistant MQTT IOT"
 var NodeID = "ha-mqtt-iot"
 
 var Manufacturer = "William Floyd"
-
-///////////////////
-
-func getDevice() (d device) {
-
-	id, err := machineid.ProtectedID(NodeID)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	d.Identifiers = []string{id}
-	d.Manufacturer = "William Floyd"
-	d.Model = NodeID
-	d.Name = InstanceName
-	d.SWVersion = SWVersion
-
-	return
-}
 
 ///////////////////
 
