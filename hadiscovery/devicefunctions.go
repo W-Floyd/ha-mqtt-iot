@@ -14,7 +14,7 @@ func (d *AlarmControlPanel) PopulateDevice() {
 	d.Device.Name = InstanceName
 	d.Device.SwVersion = SWVersion
 }
-func (d *AlarmControlPanel) UpdateState()                 {}
+func (d *AlarmControlPanel) UpdateState(*mqtt.Client)     {}
 func (d *AlarmControlPanel) Subscribe(client mqtt.Client) {}
 func (d BinarySensor) GetRawId() string {
 	return "binary_sensor"
@@ -28,7 +28,7 @@ func (d *BinarySensor) PopulateDevice() {
 	d.Device.Name = InstanceName
 	d.Device.SwVersion = SWVersion
 }
-func (d *BinarySensor) UpdateState()                 {}
+func (d *BinarySensor) UpdateState(*mqtt.Client)     {}
 func (d *BinarySensor) Subscribe(client mqtt.Client) {}
 func (d Button) GetRawId() string {
 	return "button"
@@ -42,7 +42,7 @@ func (d *Button) PopulateDevice() {
 	d.Device.Name = InstanceName
 	d.Device.SwVersion = SWVersion
 }
-func (d *Button) UpdateState()                 {}
+func (d *Button) UpdateState(*mqtt.Client)     {}
 func (d *Button) Subscribe(client mqtt.Client) {}
 func (d Camera) GetRawId() string {
 	return "camera"
@@ -56,7 +56,7 @@ func (d *Camera) PopulateDevice() {
 	d.Device.Name = InstanceName
 	d.Device.SwVersion = SWVersion
 }
-func (d *Camera) UpdateState()                 {}
+func (d *Camera) UpdateState(*mqtt.Client)     {}
 func (d *Camera) Subscribe(client mqtt.Client) {}
 func (d Cover) GetRawId() string {
 	return "cover"
@@ -70,7 +70,7 @@ func (d *Cover) PopulateDevice() {
 	d.Device.Name = InstanceName
 	d.Device.SwVersion = SWVersion
 }
-func (d *Cover) UpdateState()                 {}
+func (d *Cover) UpdateState(*mqtt.Client)     {}
 func (d *Cover) Subscribe(client mqtt.Client) {}
 func (d DeviceTracker) GetRawId() string {
 	return "device_tracker"
@@ -79,7 +79,7 @@ func (d DeviceTracker) GetUniqueId() string {
 	return ""
 }
 func (d *DeviceTracker) PopulateDevice()              {}
-func (d *DeviceTracker) UpdateState()                 {}
+func (d *DeviceTracker) UpdateState(*mqtt.Client)     {}
 func (d *DeviceTracker) Subscribe(client mqtt.Client) {}
 func (d DeviceTrigger) GetRawId() string {
 	return "device_trigger"
@@ -93,7 +93,7 @@ func (d *DeviceTrigger) PopulateDevice() {
 	d.Device.Name = InstanceName
 	d.Device.SwVersion = SWVersion
 }
-func (d *DeviceTrigger) UpdateState()                 {}
+func (d *DeviceTrigger) UpdateState(*mqtt.Client)     {}
 func (d *DeviceTrigger) Subscribe(client mqtt.Client) {}
 func (d Fan) GetRawId() string {
 	return "fan"
@@ -107,7 +107,7 @@ func (d *Fan) PopulateDevice() {
 	d.Device.Name = InstanceName
 	d.Device.SwVersion = SWVersion
 }
-func (d *Fan) UpdateState()                 {}
+func (d *Fan) UpdateState(*mqtt.Client)     {}
 func (d *Fan) Subscribe(client mqtt.Client) {}
 func (d Humidifier) GetRawId() string {
 	return "humidifier"
@@ -121,7 +121,7 @@ func (d *Humidifier) PopulateDevice() {
 	d.Device.Name = InstanceName
 	d.Device.SwVersion = SWVersion
 }
-func (d *Humidifier) UpdateState()                 {}
+func (d *Humidifier) UpdateState(*mqtt.Client)     {}
 func (d *Humidifier) Subscribe(client mqtt.Client) {}
 func (d Climate) GetRawId() string {
 	return "climate"
@@ -135,7 +135,7 @@ func (d *Climate) PopulateDevice() {
 	d.Device.Name = InstanceName
 	d.Device.SwVersion = SWVersion
 }
-func (d *Climate) UpdateState()                 {}
+func (d *Climate) UpdateState(*mqtt.Client)     {}
 func (d *Climate) Subscribe(client mqtt.Client) {}
 func (d Light) GetRawId() string {
 	return "light"
@@ -149,7 +149,7 @@ func (d *Light) PopulateDevice() {
 	d.Device.Name = InstanceName
 	d.Device.SwVersion = SWVersion
 }
-func (d *Light) UpdateState()                 {}
+func (d *Light) UpdateState(*mqtt.Client)     {}
 func (d *Light) Subscribe(client mqtt.Client) {}
 func (d Lock) GetRawId() string {
 	return "lock"
@@ -163,7 +163,7 @@ func (d *Lock) PopulateDevice() {
 	d.Device.Name = InstanceName
 	d.Device.SwVersion = SWVersion
 }
-func (d *Lock) UpdateState()                 {}
+func (d *Lock) UpdateState(*mqtt.Client)     {}
 func (d *Lock) Subscribe(client mqtt.Client) {}
 func (d Number) GetRawId() string {
 	return "number"
@@ -177,7 +177,7 @@ func (d *Number) PopulateDevice() {
 	d.Device.Name = InstanceName
 	d.Device.SwVersion = SWVersion
 }
-func (d *Number) UpdateState()                 {}
+func (d *Number) UpdateState(*mqtt.Client)     {}
 func (d *Number) Subscribe(client mqtt.Client) {}
 func (d Scene) GetRawId() string {
 	return "scene"
@@ -186,7 +186,7 @@ func (d Scene) GetUniqueId() string {
 	return d.UniqueId
 }
 func (d *Scene) PopulateDevice()              {}
-func (d *Scene) UpdateState()                 {}
+func (d *Scene) UpdateState(*mqtt.Client)     {}
 func (d *Scene) Subscribe(client mqtt.Client) {}
 func (d Select) GetRawId() string {
 	return "select"
@@ -200,7 +200,7 @@ func (d *Select) PopulateDevice() {
 	d.Device.Name = InstanceName
 	d.Device.SwVersion = SWVersion
 }
-func (d *Select) UpdateState()                 {}
+func (d *Select) UpdateState(*mqtt.Client)     {}
 func (d *Select) Subscribe(client mqtt.Client) {}
 func (d Sensor) GetRawId() string {
 	return "sensor"
@@ -214,7 +214,7 @@ func (d *Sensor) PopulateDevice() {
 	d.Device.Name = InstanceName
 	d.Device.SwVersion = SWVersion
 }
-func (d *Sensor) UpdateState()                 {}
+func (d *Sensor) UpdateState(*mqtt.Client)     {}
 func (d *Sensor) Subscribe(client mqtt.Client) {}
 func (d Siren) GetRawId() string {
 	return "siren"
@@ -228,7 +228,7 @@ func (d *Siren) PopulateDevice() {
 	d.Device.Name = InstanceName
 	d.Device.SwVersion = SWVersion
 }
-func (d *Siren) UpdateState()                 {}
+func (d *Siren) UpdateState(*mqtt.Client)     {}
 func (d *Siren) Subscribe(client mqtt.Client) {}
 func (d Switch) GetRawId() string {
 	return "switch"
@@ -242,7 +242,7 @@ func (d *Switch) PopulateDevice() {
 	d.Device.Name = InstanceName
 	d.Device.SwVersion = SWVersion
 }
-func (d *Switch) UpdateState()                 {}
+func (d *Switch) UpdateState(*mqtt.Client)     {}
 func (d *Switch) Subscribe(client mqtt.Client) {}
 func (d Tag) GetRawId() string {
 	return "tag"
@@ -256,7 +256,7 @@ func (d *Tag) PopulateDevice() {
 	d.Device.Name = InstanceName
 	d.Device.SwVersion = SWVersion
 }
-func (d *Tag) UpdateState()                 {}
+func (d *Tag) UpdateState(*mqtt.Client)     {}
 func (d *Tag) Subscribe(client mqtt.Client) {}
 func (d Vacuum) GetRawId() string {
 	return "vacuum"
@@ -270,5 +270,5 @@ func (d *Vacuum) PopulateDevice() {
 	d.Device.Name = InstanceName
 	d.Device.SwVersion = SWVersion
 }
-func (d *Vacuum) UpdateState()                 {}
+func (d *Vacuum) UpdateState(*mqtt.Client)     {}
 func (d *Vacuum) Subscribe(client mqtt.Client) {}

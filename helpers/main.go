@@ -106,12 +106,15 @@ func main() {
 					}
 				}
 				g.Id("RawId").String().Tag(map[string]string{"json": "-"})
+				g.Id("MQTTClient").Op("*").Qual("github.com/eclipse/paho.mqtt.golang", "Client").Tag(map[string]string{"json": "-"})
 			},
 		)
 
 		devicefunctionsfile.Func().Params(
 			jen.Id("d").Id("*" + strcase.ToCamel(d.Name)),
-		).Id("UpdateState").Params().BlockFunc(
+		).Id("UpdateState").Params(
+			jen.Op("*").Qual("github.com/eclipse/paho.mqtt.golang", "Client"),
+		).BlockFunc(
 			func(g *jen.Group) {
 				for _, key := range sortedKeys {
 					if strings.HasSuffix(key, "_topic") {
@@ -186,7 +189,9 @@ func main() {
 		jen.Id("GetUniqueId").Params().String(),
 		jen.Id("PopulateDevice").Params(),
 		jen.Id("PopulateTopics").Params(),
-		jen.Id("UpdateState").Params(jen.Qual("github.com/eclipse/paho.mqtt.golang", "Client")),
+		jen.Id("UpdateState").Params(
+			jen.Op("*").Qual("github.com/eclipse/paho.mqtt.golang", "Client"),
+		),
 	)
 
 	devicetypesfile.Save("../hadiscovery/devicetypes.go")

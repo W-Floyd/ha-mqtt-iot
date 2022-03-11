@@ -47,6 +47,7 @@ type AlarmControlPanel struct {
 	UniqueId               string        `json:"unique_id"`
 	ValueTemplate          string        `json:"value_template"`
 	RawId                  string        `json:"-"`
+	MQTTClient             *mqtt.Client  `json:"-"`
 }
 type BinarySensor struct {
 	AvailabilityMode     string        `json:"availability_mode"`
@@ -84,6 +85,7 @@ type BinarySensor struct {
 	UniqueId            string        `json:"unique_id"`
 	ValueTemplate       string        `json:"value_template"`
 	RawId               string        `json:"-"`
+	MQTTClient          *mqtt.Client  `json:"-"`
 }
 type Button struct {
 	AvailabilityMode     string                          `json:"availability_mode"`
@@ -104,20 +106,21 @@ type Button struct {
 		SwVersion        string   `json:"sw_version"`
 		ViaDevice        string   `json:"via_device"`
 	} `json:"device"`
-	DeviceClass         string `json:"device_class"`
-	EnabledByDefault    bool   `json:"enabled_by_default"`
-	Encoding            string `json:"encoding"`
-	EntityCategory      string `json:"entity_category"`
-	Icon                string `json:"icon"`
-	Name                string `json:"name"`
-	ObjectId            string `json:"object_id"`
-	PayloadAvailable    string `json:"payload_available"`
-	PayloadNotAvailable string `json:"payload_not_available"`
-	PayloadPress        string `json:"payload_press"`
-	Qos                 int    `json:"qos"`
-	Retain              bool   `json:"retain"`
-	UniqueId            string `json:"unique_id"`
-	RawId               string `json:"-"`
+	DeviceClass         string       `json:"device_class"`
+	EnabledByDefault    bool         `json:"enabled_by_default"`
+	Encoding            string       `json:"encoding"`
+	EntityCategory      string       `json:"entity_category"`
+	Icon                string       `json:"icon"`
+	Name                string       `json:"name"`
+	ObjectId            string       `json:"object_id"`
+	PayloadAvailable    string       `json:"payload_available"`
+	PayloadNotAvailable string       `json:"payload_not_available"`
+	PayloadPress        string       `json:"payload_press"`
+	Qos                 int          `json:"qos"`
+	Retain              bool         `json:"retain"`
+	UniqueId            string       `json:"unique_id"`
+	RawId               string       `json:"-"`
+	MQTTClient          *mqtt.Client `json:"-"`
 }
 type Camera struct {
 	AvailabilityMode     string        `json:"availability_mode"`
@@ -135,14 +138,15 @@ type Camera struct {
 		SwVersion        string   `json:"sw_version"`
 		ViaDevice        string   `json:"via_device"`
 	} `json:"device"`
-	EnabledByDefault bool   `json:"enabled_by_default"`
-	EntityCategory   string `json:"entity_category"`
-	Icon             string `json:"icon"`
-	Name             string `json:"name"`
-	ObjectId         string `json:"object_id"`
-	Topic            string `json:"topic"`
-	UniqueId         string `json:"unique_id"`
-	RawId            string `json:"-"`
+	EnabledByDefault bool         `json:"enabled_by_default"`
+	EntityCategory   string       `json:"entity_category"`
+	Icon             string       `json:"icon"`
+	Name             string       `json:"name"`
+	ObjectId         string       `json:"object_id"`
+	Topic            string       `json:"topic"`
+	UniqueId         string       `json:"unique_id"`
+	RawId            string       `json:"-"`
+	MQTTClient       *mqtt.Client `json:"-"`
 }
 type Cover struct {
 	AvailabilityMode     string                          `json:"availability_mode"`
@@ -206,14 +210,16 @@ type Cover struct {
 	UniqueId            string                          `json:"unique_id"`
 	ValueTemplate       string                          `json:"value_template"`
 	RawId               string                          `json:"-"`
+	MQTTClient          *mqtt.Client                    `json:"-"`
 }
 type DeviceTracker struct {
-	Devices        []string `json:"devices"`
-	PayloadHome    string   `json:"payload_home"`
-	PayloadNotHome string   `json:"payload_not_home"`
-	Qos            int      `json:"qos"`
-	SourceType     string   `json:"source_type"`
-	RawId          string   `json:"-"`
+	Devices        []string     `json:"devices"`
+	PayloadHome    string       `json:"payload_home"`
+	PayloadNotHome string       `json:"payload_not_home"`
+	Qos            int          `json:"qos"`
+	SourceType     string       `json:"source_type"`
+	RawId          string       `json:"-"`
+	MQTTClient     *mqtt.Client `json:"-"`
 }
 type DeviceTrigger struct {
 	AutomationType string `json:"automation_type"`
@@ -228,13 +234,14 @@ type DeviceTrigger struct {
 		SwVersion        string   `json:"sw_version"`
 		ViaDevice        string   `json:"via_device"`
 	} `json:"device"`
-	Payload       string `json:"payload"`
-	Qos           int    `json:"qos"`
-	Subtype       string `json:"subtype"`
-	Topic         string `json:"topic"`
-	Type          string `json:"type"`
-	ValueTemplate string `json:"value_template"`
-	RawId         string `json:"-"`
+	Payload       string       `json:"payload"`
+	Qos           int          `json:"qos"`
+	Subtype       string       `json:"subtype"`
+	Topic         string       `json:"topic"`
+	Type          string       `json:"type"`
+	ValueTemplate string       `json:"value_template"`
+	RawId         string       `json:"-"`
+	MQTTClient    *mqtt.Client `json:"-"`
 }
 type Fan struct {
 	AvailabilityMode     string                          `json:"availability_mode"`
@@ -298,6 +305,7 @@ type Fan struct {
 	StateValueTemplate         string                          `json:"state_value_template"`
 	UniqueId                   string                          `json:"unique_id"`
 	RawId                      string                          `json:"-"`
+	MQTTClient                 *mqtt.Client                    `json:"-"`
 }
 type Humidifier struct {
 	AvailabilityMode     string                          `json:"availability_mode"`
@@ -354,6 +362,7 @@ type Humidifier struct {
 	TargetHumidityStateFunc       func() string                   `json:"-"`
 	UniqueId                      string                          `json:"unique_id"`
 	RawId                         string                          `json:"-"`
+	MQTTClient                    *mqtt.Client                    `json:"-"`
 }
 type Climate struct {
 	ActionTemplate             string                          `json:"action_template"`
@@ -451,6 +460,7 @@ type Climate struct {
 	UniqueId                       string                          `json:"unique_id"`
 	ValueTemplate                  string                          `json:"value_template"`
 	RawId                          string                          `json:"-"`
+	MQTTClient                     *mqtt.Client                    `json:"-"`
 }
 type Light struct {
 	AvailabilityMode          string                          `json:"availability_mode"`
@@ -534,6 +544,7 @@ type Light struct {
 	XyStateFunc           func() string                   `json:"-"`
 	XyValueTemplate       string                          `json:"xy_value_template"`
 	RawId                 string                          `json:"-"`
+	MQTTClient            *mqtt.Client                    `json:"-"`
 }
 type Lock struct {
 	AvailabilityMode     string                          `json:"availability_mode"`
@@ -574,6 +585,7 @@ type Lock struct {
 	UniqueId            string        `json:"unique_id"`
 	ValueTemplate       string        `json:"value_template"`
 	RawId               string        `json:"-"`
+	MQTTClient          *mqtt.Client  `json:"-"`
 }
 type Number struct {
 	AvailabilityMode  string                          `json:"availability_mode"`
@@ -612,6 +624,7 @@ type Number struct {
 	UnitOfMeasurement string        `json:"unit_of_measurement"`
 	ValueTemplate     string        `json:"value_template"`
 	RawId             string        `json:"-"`
+	MQTTClient        *mqtt.Client  `json:"-"`
 }
 type Scene struct {
 	AvailabilityMode     string                          `json:"availability_mode"`
@@ -632,6 +645,7 @@ type Scene struct {
 	Retain               bool                            `json:"retain"`
 	UniqueId             string                          `json:"unique_id"`
 	RawId                string                          `json:"-"`
+	MQTTClient           *mqtt.Client                    `json:"-"`
 }
 type Select struct {
 	AvailabilityMode     string                          `json:"availability_mode"`
@@ -667,6 +681,7 @@ type Select struct {
 	UniqueId         string        `json:"unique_id"`
 	ValueTemplate    string        `json:"value_template"`
 	RawId            string        `json:"-"`
+	MQTTClient       *mqtt.Client  `json:"-"`
 }
 type Sensor struct {
 	AvailabilityMode     string        `json:"availability_mode"`
@@ -704,6 +719,7 @@ type Sensor struct {
 	UnitOfMeasurement      string        `json:"unit_of_measurement"`
 	ValueTemplate          string        `json:"value_template"`
 	RawId                  string        `json:"-"`
+	MQTTClient             *mqtt.Client  `json:"-"`
 }
 type Siren struct {
 	AvailabilityMode     string                          `json:"availability_mode"`
@@ -748,6 +764,7 @@ type Siren struct {
 	SupportVolumeSet    bool          `json:"support_volume_set"`
 	UniqueId            string        `json:"unique_id"`
 	RawId               string        `json:"-"`
+	MQTTClient          *mqtt.Client  `json:"-"`
 }
 type Switch struct {
 	AvailabilityMode     string                          `json:"availability_mode"`
@@ -788,6 +805,7 @@ type Switch struct {
 	UniqueId            string        `json:"unique_id"`
 	ValueTemplate       string        `json:"value_template"`
 	RawId               string        `json:"-"`
+	MQTTClient          *mqtt.Client  `json:"-"`
 }
 type Tag struct {
 	Device struct {
@@ -801,9 +819,10 @@ type Tag struct {
 		SwVersion        string   `json:"sw_version"`
 		ViaDevice        string   `json:"via_device"`
 	} `json:"device"`
-	Topic         string `json:"topic"`
-	ValueTemplate string `json:"value_template"`
-	RawId         string `json:"-"`
+	Topic         string       `json:"topic"`
+	ValueTemplate string       `json:"value_template"`
+	RawId         string       `json:"-"`
+	MQTTClient    *mqtt.Client `json:"-"`
 }
 type Vacuum struct {
 	AvailabilityMode     string                          `json:"availability_mode"`
@@ -847,11 +866,12 @@ type Vacuum struct {
 	SupportedFeatures   []string                        `json:"supported_features"`
 	UniqueId            string                          `json:"unique_id"`
 	RawId               string                          `json:"-"`
+	MQTTClient          *mqtt.Client                    `json:"-"`
 }
 type Device interface {
 	GetRawId() string
 	GetUniqueId() string
 	PopulateDevice()
 	PopulateTopics()
-	UpdateState(mqtt.Client)
+	UpdateState(*mqtt.Client)
 }

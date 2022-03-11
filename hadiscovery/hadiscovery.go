@@ -69,7 +69,7 @@ func (device *Light) Initialize() {
 			if msg.Topic() == topic {
 				topicFound = true
 				(*f)(msg, client)
-				device.UpdateState(client)
+				device.UpdateState(device.MQTTClient)
 			}
 		}
 

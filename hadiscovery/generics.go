@@ -37,7 +37,7 @@ func addMessageHandler(d Device) func(client mqtt.Client, msg mqtt.Message) {
 			if msg.Topic() == topic {
 				topicFound = true
 				(*f)(msg, client)
-				d.UpdateState(client)
+				d.UpdateState(&client)
 			}
 		}
 
