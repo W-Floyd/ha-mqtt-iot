@@ -10,6 +10,7 @@ import (
 
 var fileList = []string{
 	"types",
+	"store",
 }
 
 func main() {
@@ -46,6 +47,52 @@ func main() {
 		jen.Id("UpdateState").Params(),
 		jen.Id("Subscribe").Params(),
 		jen.Id("AddMessageHandler").Params(),
+	)
+
+	files["store"].Type().Id("store").StructFunc(
+		func(g *jen.Group) {
+			for _, d := range devices {
+				g.Add(
+					jen.Id(strcase.ToCamel(d.Name)).StructFunc(
+						func(h *jen.Group) {
+							for _, key := range keyNames {
+								if d.JSONContainer.Exists(key) && strings.HasSuffix(key, "_topic") {
+									if !IsCommand(key, d) {
+										h.Add(
+											jen.Id(strcase.ToCamel(strings.TrimSuffix(key, "_topic"))).Map(jen.String()).String(),
+										)
+									}
+								}
+							}
+						},
+					),
+				)
+			}
+		},
+	)
+
+	files["store"].Func().Id("initStore").Params().Id("store").BlockFunc(
+		func(g *jen.Group) {
+			g.Add(
+				jen.Id("s").Op(":=").Id("store").Block(),
+			)
+			for _, d := range devices {
+				for _, key := range keyNames {
+					if d.JSONContainer.Exists(key) && strings.HasSuffix(key, "_topic") {
+						if !IsCommand(key, d) {
+							g.Add(
+								jen.Id("s").Dot(strcase.ToCamel(d.Name)).Dot(strcase.ToCamel(strings.TrimSuffix(key, "_topic"))).
+									Op("=").
+									Make(jen.Map(jen.String()).String()),
+							)
+						}
+					}
+				}
+			}
+			g.Add(
+				jen.Return(jen.Id("s")),
+			)
+		},
 	)
 
 	for _, d := range devices {
