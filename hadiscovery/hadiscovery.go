@@ -1,6 +1,9 @@
 package hadiscovery
 
 import (
+	"log"
+
+	"github.com/denisbrodbeck/machineid"
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 )
 
@@ -30,6 +33,24 @@ var InstanceName = "Homeassistant MQTT IOT"
 var NodeID = "ha-mqtt-iot"
 
 var Manufacturer = "William Floyd"
+
+///////////////////
+
+func getDevice() (d device) {
+
+	id, err := machineid.ProtectedID(NodeID)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	d.Identifiers = []string{id}
+	d.Manufacturer = "William Floyd"
+	d.Model = NodeID
+	d.Name = InstanceName
+	d.SWVersion = SWVersion
+
+	return
+}
 
 ///////////////////
 
@@ -266,3 +287,22 @@ type store struct {
 // }
 
 ///////////////////
+
+func initStore() store {
+	var s store
+	s.BinarySensor = make(map[string]string)
+	s.Light.BrightnessState = make(map[string]string)
+	s.Light.ColorTempState = make(map[string]string)
+	s.Light.EffectState = make(map[string]string)
+	s.Light.HsState = make(map[string]string)
+	s.Light.RgbState = make(map[string]string)
+	s.Light.State = make(map[string]string)
+	s.Light.WhiteValueState = make(map[string]string)
+	s.Light.XyState = make(map[string]string)
+	s.Sensor = make(map[string]string)
+	s.Switch = make(map[string]string)
+	return s
+}
+
+var topicStore = make(map[string]*func(mqtt.Message, mqtt.Client))
+var stateStore = initStore()
