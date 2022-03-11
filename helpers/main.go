@@ -36,6 +36,20 @@ func main() {
 			jen.Return(jen.Lit(d.Name)),
 		)
 
+		// d.GetMQTTClient()
+		devicefunctionsfile.Func().Params(
+			jen.Id("d").Id(strcase.ToCamel(d.Name)),
+		).Id("GetMQTTClient").Params().Qual("github.com/eclipse/paho.mqtt.golang", "Client").Block(
+			jen.Return(jen.Op("*").Id("d").Dot("MQTT").Dot("Client")),
+		)
+
+		// d.AddMessageHandler()
+		devicefunctionsfile.Func().Params(
+			jen.Id("d").Id(strcase.ToCamel(d.Name)),
+		).Id("AddMessageHandler").Params().Block(
+			jen.Id("d").Dot("MQTT").Dot("MessageHandler").Op("=").Id("MakeMessageHandler").Params(jen.Id("d")),
+		)
+
 		// d.GetUniqueID()
 		if d.JSONContainer.Exists("unique_id") {
 			devicefunctionsfile.Func().Params(
@@ -77,7 +91,7 @@ func main() {
 		// d.PopulateDevice()
 		if d.JSONContainer.Exists("device") {
 			devicefunctionsfile.Func().Params(
-				jen.Id("d").Id("*"+strcase.ToCamel(d.Name)),
+				jen.Id("d").Id(strcase.ToCamel(d.Name)),
 			).Id("PopulateDevice").Params().Block(
 				jen.Id("d.Device.Manufacturer").Op("=").Id("Manufacturer"),
 				jen.Id("d.Device.Model").Op("=").Id("SoftwareName"),
@@ -86,7 +100,7 @@ func main() {
 			)
 		} else {
 			devicefunctionsfile.Func().Params(
-				jen.Id("d").Id("*" + strcase.ToCamel(d.Name)),
+				jen.Id("d").Id(strcase.ToCamel(d.Name)),
 			).Id("PopulateDevice").Params().Block()
 		}
 
@@ -106,15 +120,13 @@ func main() {
 					}
 				}
 				g.Id("RawId").String().Tag(map[string]string{"json": "-"})
-				g.Id("MQTTClient").Op("*").Qual("github.com/eclipse/paho.mqtt.golang", "Client").Tag(map[string]string{"json": "-"})
+				g.Id("MQTT").Id("MQTTFields").Tag(map[string]string{"json": "-"})
 			},
 		)
 
 		devicefunctionsfile.Func().Params(
-			jen.Id("d").Id("*" + strcase.ToCamel(d.Name)),
-		).Id("UpdateState").Params(
-			jen.Op("*").Qual("github.com/eclipse/paho.mqtt.golang", "Client"),
-		).BlockFunc(
+			jen.Id("d").Id(strcase.ToCamel(d.Name)),
+		).Id("UpdateState").Params().BlockFunc(
 			func(g *jen.Group) {
 				for _, key := range sortedKeys {
 					if strings.HasSuffix(key, "_topic") {
@@ -126,11 +138,10 @@ func main() {
 			},
 		)
 
+		// d.Subscribe()
 		devicefunctionsfile.Func().Params(
-			jen.Id("d").Id("*" + strcase.ToCamel(d.Name)),
-		).Id("Subscribe").Params(
-			jen.Id("client").Qual("github.com/eclipse/paho.mqtt.golang", "Client"),
-		).BlockFunc(
+			jen.Id("d").Id(strcase.ToCamel(d.Name)),
+		).Id("Subscribe").Params().BlockFunc(
 			func(g *jen.Group) {
 				for _, key := range sortedKeys {
 					if strings.HasSuffix(key, "_topic") {
@@ -142,17 +153,48 @@ func main() {
 			},
 		)
 
-		deviceinitfile.Func().Params(jen.Id("d").Id(strcase.ToCamel(d.Name))).Id("Init").Params().BlockFunc(func(g *jen.Group) {
+		// d.UnSubscribe()
+		devicefunctionsfile.Func().Params(
+			jen.Id("d").Id(strcase.ToCamel(d.Name)),
+		).Id("UnSubscribe").Params().BlockFunc(
+			func(g *jen.Group) {
+				for _, key := range sortedKeys {
+					if strings.HasSuffix(key, "_topic") {
+						if !IsCommand(key, d) {
+							// TODO - implement Subscribe to all topics
+						}
+					}
+				}
+			},
+		)
+
+		// d.AnnounceAvailable()
+		devicefunctionsfile.Func().Params(
+			jen.Id("d").Id(strcase.ToCamel(d.Name)),
+		).Id("AnnounceAvailable").Params().BlockFunc(
+			func(g *jen.Group) {
+				for _, key := range sortedKeys {
+					if strings.HasSuffix(key, "_topic") {
+						if !IsCommand(key, d) {
+							// TODO - implement Subscribe to all topics
+						}
+					}
+				}
+			},
+		)
+
+		deviceinitfile.Func().Params(jen.Id("d").Id(strcase.ToCamel(d.Name))).Id("Initialize").Params().BlockFunc(func(g *jen.Group) {
 			if d.JSONContainer.Exists("retain") {
 				g.Add(jen.Id("d").Dot("Retain").Op("=").Lit(false))
 			}
 			g.Add(jen.Id("d").Dot("PopulateDevice").Params())
 			g.Add(jen.Id("d").Dot("PopulateTopics").Params())
+			g.Add(jen.Id("d").Dot("AddMessageHandler").Params())
 		})
 
 		// d.PopulateTopics()
 		deviceinitfile.Func().Params(
-			jen.Id("d").Id("*" + strcase.ToCamel(d.Name)),
+			jen.Id("d").Id(strcase.ToCamel(d.Name)),
 		).Id("PopulateTopics").Params().BlockFunc(func(g *jen.Group) {
 			for _, name := range keyNames {
 				if strings.HasSuffix(name, "_topic") && d.JSONContainer.Exists(name) {
@@ -189,12 +231,9 @@ func main() {
 		jen.Id("GetUniqueId").Params().String(),
 		jen.Id("PopulateDevice").Params(),
 		jen.Id("PopulateTopics").Params(),
-		jen.Id("UpdateState").Params(
-			jen.Op("*").Qual("github.com/eclipse/paho.mqtt.golang", "Client"),
-		),
-		jen.Id("Subscribe").Params(
-			jen.Op("*").Qual("github.com/eclipse/paho.mqtt.golang", "Client"),
-		),
+		jen.Id("UpdateState").Params(),
+		jen.Id("Subscribe").Params(),
+		jen.Id("AddMessageHandler").Params(),
 	)
 
 	devicetypesfile.Save("../hadiscovery/devicetypes.go")

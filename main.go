@@ -74,7 +74,7 @@ func main() {
 
 	}
 
-	opts, switches, sensors, binarySensors, lights := sconfig.Convert()
+	opts, lights := sconfig.Convert()
 
 	if sconfig.Logging.Debug {
 		mqtt.DEBUG = debugLog
@@ -90,17 +90,8 @@ func main() {
 	}
 
 	sub := func(client mqtt.Client) {
-		for _, sw := range switches {
-			go sw.Subscribe(client)
-		}
-		for _, se := range sensors {
-			go se.Subscribe(client)
-		}
-		for _, bse := range binarySensors {
-			go bse.Subscribe(client)
-		}
 		for _, li := range lights {
-			go li.Subscribe(client)
+			go li.Subscribe()
 		}
 	}
 
@@ -108,64 +99,32 @@ func main() {
 
 	client := mqtt.NewClient(opts)
 
-	if token := client.Connect(); token.Wait() && token.Error() != nil {
-		logError(token.Error())
+	for _, li := range lights {
+		li.MQTT.Client = &client
 	}
 
-	updatingSwitches := 0
-
-	for _, sw := range switches {
-		if !almostEqual(sw.UpdateInterval, 0) {
-			updatingSwitches++
-		}
+	if token := client.Connect(); token.Wait() && token.Error() != nil {
+		logError(token.Error())
 	}
 
 	updatingLights := 0
 
 	for _, li := range lights {
-		if !almostEqual(li.UpdateInterval, 0) {
+		if !almostEqual(li.MQTT.UpdateInterval, 0) {
 			updatingLights++
 		}
 	}
 
-	tickers := make([]*time.Ticker, len(sensors)+len(binarySensors)+updatingSwitches+updatingLights)
+	tickers := make([]*time.Ticker, updatingLights)
 
 	tickerN := 0
-	for _, se := range sensors {
-		tickers[tickerN] = time.NewTicker(time.Duration(se.UpdateInterval*1000) * time.Millisecond)
-		go func(t *time.Ticker, sen hadiscovery.Sensor) {
-			for range t.C {
-				go sen.UpdateState(client)
-			}
-		}(tickers[tickerN], se)
-		tickerN++
-	}
-	for _, bse := range binarySensors {
-		tickers[tickerN] = time.NewTicker(time.Duration(bse.UpdateInterval*1000) * time.Millisecond)
-		go func(t *time.Ticker, bsen hadiscovery.BinarySensor) {
-			for range t.C {
-				go bsen.UpdateState(client)
-			}
-		}(tickers[tickerN], bse)
-		tickerN++
-	}
-	for _, sw := range switches {
-		if !almostEqual(sw.UpdateInterval, 0) {
-			tickers[tickerN] = time.NewTicker(time.Duration(sw.UpdateInterval*1000) * time.Millisecond)
-			go func(t *time.Ticker, swi hadiscovery.Switch) {
-				for range t.C {
-					go swi.UpdateState(client)
-				}
-			}(tickers[tickerN], sw)
-			tickerN++
-		}
-	}
+
 	for _, li := range lights {
-		if !almostEqual(li.UpdateInterval, 0) {
-			tickers[tickerN] = time.NewTicker(time.Duration(li.UpdateInterval*1000) * time.Millisecond)
+		if !almostEqual(li.MQTT.UpdateInterval, 0) {
+			tickers[tickerN] = time.NewTicker(time.Duration(li.MQTT.UpdateInterval*1000) * time.Millisecond)
 			go func(t *time.Ticker, lig hadiscovery.Light) {
 				for range t.C {
-					go lig.UpdateState(client)
+					go lig.UpdateState()
 				}
 			}(tickers[tickerN], li)
 			tickerN++
@@ -175,17 +134,8 @@ func main() {
 	availableTicker := time.NewTicker(60 * time.Second)
 	go func() {
 		for range availableTicker.C {
-			for _, sw := range switches {
-				go sw.AnnounceAvailable(client)
-			}
-			for _, se := range sensors {
-				go se.AnnounceAvailable(client)
-			}
-			for _, bse := range binarySensors {
-				go bse.AnnounceAvailable(client)
-			}
 			for _, li := range lights {
-				go li.AnnounceAvailable(client)
+				go li.AnnounceAvailable()
 			}
 		}
 	}()
@@ -200,17 +150,8 @@ func main() {
 	}
 	logDebug("Server Stopped")
 
-	for _, sw := range switches {
-		sw.UnSubscribe(client)
-	}
-	for _, se := range sensors {
-		se.UnSubscribe(client)
-	}
-	for _, bse := range binarySensors {
-		bse.UnSubscribe(client)
-	}
 	for _, li := range lights {
-		li.UnSubscribe(client)
+		li.UnSubscribe()
 	}
 
 	client.Disconnect(250)

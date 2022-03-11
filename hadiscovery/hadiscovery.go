@@ -1,12 +1,6 @@
 package hadiscovery
 
 import (
-	"encoding/json"
-	"log"
-	"os"
-	"strconv"
-	"time"
-
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 )
 
@@ -56,443 +50,244 @@ type store struct {
 }
 
 // Initialize sets topics as needed on a Light
-func (device *Light) Initialize() {
-	device.Retain = false
-	device.PopulateDevice()
-	device.PopulateTopics()
+// func (device *Light) Initialize() {
+// 	device.Retain = false
+// 	device.PopulateDevice()
+// 	device.PopulateTopics()
 
-	device.messageHandler = func(client mqtt.Client, msg mqtt.Message) {
+// 	device.messageHandler = func(client mqtt.Client, msg mqtt.Message) {
 
-		topicFound := false
+// 		topicFound := false
 
-		for topic, f := range topicStore {
-			if msg.Topic() == topic {
-				topicFound = true
-				(*f)(msg, client)
-				device.UpdateState(device.MQTTClient)
-			}
-		}
+// 		for topic, f := range topicStore {
+// 			if msg.Topic() == topic {
+// 				topicFound = true
+// 				(*f)(msg, client)
+// 				device.UpdateState(device.MQTTClient)
+// 			}
+// 		}
 
-		if !topicFound {
-			log.Println("Unknown Message on topic " + msg.Topic())
-			log.Println(msg.Payload())
-		}
-	}
-}
-
-// Initialize sets topics as needed on a Switch
-func (device *Switch) Initialize() {
-
-	topicStore[device.CommandTopic] = &device.CommandFunc
-
-	device.messageHandler = func(client mqtt.Client, msg mqtt.Message) {
-
-		topicFound := false
-
-		for topic, f := range topicStore {
-			if msg.Topic() == topic {
-				topicFound = true
-				(*f)(msg, client)
-				device.UpdateState(client)
-			}
-		}
-
-		if !topicFound {
-			log.Println("Unknown Message on topic " + msg.Topic())
-			log.Println(msg.Payload())
-		}
-	}
-
-}
-
-// Initialize sets topics as needed on a Sensor
-func (device *Sensor) Initialize() {
-	device.StateTopic = device.GetStateTopic()
-	device.AvailabilityTopic = device.GetAvailabilityTopic()
-	device.Device = getDevice()
-}
-
-// Initialize sets topics as needed on a Binary Sensor
-func (device *BinarySensor) Initialize() {
-	device.StateTopic = device.GetStateTopic()
-	device.AvailabilityTopic = device.GetAvailabilityTopic()
-	device.Device = getDevice()
-}
+// 		if !topicFound {
+// 			log.Println("Unknown Message on topic " + msg.Topic())
+// 			log.Println(msg.Payload())
+// 		}
+// 	}
+// }
 
 // UpdateState publishes any new state for a device
 // This is for a light
-func (device Light) UpdateState(client mqtt.Client) {
-	if device.BrightnessStateTopic != "" {
-		state := device.BrightnessStateFunc()
-		if state != stateStore.Light.BrightnessState[device.UniqueID] || device.ForceUpdateMQTT {
-			token := client.Publish(device.BrightnessStateTopic, qos, retain, state)
-			stateStore.Light.BrightnessState[device.UniqueID] = state
-			token.Wait()
-		}
-	}
-	if device.ColorTempStateTopic != "" {
-		state := device.ColorTempStateFunc()
-		if state != stateStore.Light.ColorTempState[device.UniqueID] || device.ForceUpdateMQTT {
-			token := client.Publish(device.ColorTempStateTopic, qos, retain, state)
-			stateStore.Light.ColorTempState[device.UniqueID] = state
-			token.Wait()
-		}
-	}
-	if device.EffectStateTopic != "" {
-		state := device.EffectStateFunc()
-		if state != stateStore.Light.EffectState[device.UniqueID] || device.ForceUpdateMQTT {
-			token := client.Publish(device.EffectStateTopic, qos, retain, state)
-			stateStore.Light.EffectState[device.UniqueID] = state
-			token.Wait()
-		}
-	}
-	if device.HsStateTopic != "" {
-		state := device.HsStateFunc()
-		if state != stateStore.Light.HsState[device.UniqueID] || device.ForceUpdateMQTT {
-			token := client.Publish(device.HsStateTopic, qos, retain, state)
-			stateStore.Light.HsState[device.UniqueID] = state
-			token.Wait()
-		}
-	}
-	if device.RgbStateTopic != "" {
-		state := device.RgbStateFunc()
-		if state != stateStore.Light.RgbState[device.UniqueID] || device.ForceUpdateMQTT {
-			token := client.Publish(device.RgbStateTopic, qos, retain, state)
-			stateStore.Light.RgbState[device.UniqueID] = state
-			token.Wait()
-		}
-	}
-	if device.StateTopic != "" {
-		state := device.StateFunc()
-		if state != stateStore.Light.State[device.UniqueID] || device.ForceUpdateMQTT {
-			token := client.Publish(device.StateTopic, qos, retain, state)
-			stateStore.Light.State[device.UniqueID] = state
-			token.Wait()
-		}
-	}
-	if device.WhiteValueStateTopic != "" {
-		state := device.WhiteValueStateFunc()
-		if state != stateStore.Light.WhiteValueState[device.UniqueID] || device.ForceUpdateMQTT {
-			token := client.Publish(device.WhiteValueStateTopic, qos, retain, state)
-			stateStore.Light.WhiteValueState[device.UniqueID] = state
-			token.Wait()
-		}
-	}
-	if device.XyStateTopic != "" {
-		state := device.XyStateFunc()
-		if state != stateStore.Light.XyState[device.UniqueID] || device.ForceUpdateMQTT {
-			token := client.Publish(device.XyStateTopic, qos, retain, state)
-			stateStore.Light.XyState[device.UniqueID] = state
-			token.Wait()
-		}
-	}
-}
-
-// UpdateState publishes any new state for a device
-// This is for a switch
-func (device Switch) UpdateState(client mqtt.Client) {
-	if device.StateFunc != nil {
-		state := device.StateFunc()
-		if state != stateStore.Switch[device.UniqueID] || device.ForceUpdateMQTT {
-			token := client.Publish(device.StateTopic, qos, retain, state)
-			stateStore.Switch[device.UniqueID] = state
-			token.Wait()
-		}
-	} else {
-		log.Println("No statefunc for " + device.UniqueID + strconv.FormatFloat(float64(device.UpdateInterval), 'g', 1, 64))
-	}
-}
-
-// UpdateState publishes any new state for a device
-// This is for a sensor
-func (device Sensor) UpdateState(client mqtt.Client) {
-	if device.StateFunc != nil {
-		state := device.StateFunc()
-		if state != stateStore.Sensor[device.UniqueID] || device.ForceUpdateMQTT {
-			token := client.Publish(device.StateTopic, qos, retain, state)
-			token.Wait()
-			stateStore.Sensor[device.UniqueID] = state
-		}
-	} else {
-		log.Fatalln("No statefunc, this makes no sensor for a sensor!")
-	}
-}
-
-// UpdateState publishes any new state for a device
-// This is for a binary sensor
-func (device BinarySensor) UpdateState(client mqtt.Client) {
-	if device.StateFunc != nil {
-		state := device.StateFunc()
-		if state != stateStore.BinarySensor[device.UniqueID] || device.ForceUpdateMQTT {
-			token := client.Publish(device.StateTopic, qos, retain, state)
-			token.Wait()
-			stateStore.BinarySensor[device.UniqueID] = state
-		}
-	} else {
-		log.Fatalln("No statefunc, this makes no sensor for a binary sensor!")
-	}
-}
+// func (device Light) UpdateState(client mqtt.Client) {
+// 	if device.BrightnessStateTopic != "" {
+// 		state := device.BrightnessStateFunc()
+// 		if state != stateStore.Light.BrightnessState[device.UniqueID] || device.ForceUpdateMQTT {
+// 			token := client.Publish(device.BrightnessStateTopic, qos, retain, state)
+// 			stateStore.Light.BrightnessState[device.UniqueID] = state
+// 			token.Wait()
+// 		}
+// 	}
+// 	if device.ColorTempStateTopic != "" {
+// 		state := device.ColorTempStateFunc()
+// 		if state != stateStore.Light.ColorTempState[device.UniqueID] || device.ForceUpdateMQTT {
+// 			token := client.Publish(device.ColorTempStateTopic, qos, retain, state)
+// 			stateStore.Light.ColorTempState[device.UniqueID] = state
+// 			token.Wait()
+// 		}
+// 	}
+// 	if device.EffectStateTopic != "" {
+// 		state := device.EffectStateFunc()
+// 		if state != stateStore.Light.EffectState[device.UniqueID] || device.ForceUpdateMQTT {
+// 			token := client.Publish(device.EffectStateTopic, qos, retain, state)
+// 			stateStore.Light.EffectState[device.UniqueID] = state
+// 			token.Wait()
+// 		}
+// 	}
+// 	if device.HsStateTopic != "" {
+// 		state := device.HsStateFunc()
+// 		if state != stateStore.Light.HsState[device.UniqueID] || device.ForceUpdateMQTT {
+// 			token := client.Publish(device.HsStateTopic, qos, retain, state)
+// 			stateStore.Light.HsState[device.UniqueID] = state
+// 			token.Wait()
+// 		}
+// 	}
+// 	if device.RgbStateTopic != "" {
+// 		state := device.RgbStateFunc()
+// 		if state != stateStore.Light.RgbState[device.UniqueID] || device.ForceUpdateMQTT {
+// 			token := client.Publish(device.RgbStateTopic, qos, retain, state)
+// 			stateStore.Light.RgbState[device.UniqueID] = state
+// 			token.Wait()
+// 		}
+// 	}
+// 	if device.StateTopic != "" {
+// 		state := device.StateFunc()
+// 		if state != stateStore.Light.State[device.UniqueID] || device.ForceUpdateMQTT {
+// 			token := client.Publish(device.StateTopic, qos, retain, state)
+// 			stateStore.Light.State[device.UniqueID] = state
+// 			token.Wait()
+// 		}
+// 	}
+// 	if device.WhiteValueStateTopic != "" {
+// 		state := device.WhiteValueStateFunc()
+// 		if state != stateStore.Light.WhiteValueState[device.UniqueID] || device.ForceUpdateMQTT {
+// 			token := client.Publish(device.WhiteValueStateTopic, qos, retain, state)
+// 			stateStore.Light.WhiteValueState[device.UniqueID] = state
+// 			token.Wait()
+// 		}
+// 	}
+// 	if device.XyStateTopic != "" {
+// 		state := device.XyStateFunc()
+// 		if state != stateStore.Light.XyState[device.UniqueID] || device.ForceUpdateMQTT {
+// 			token := client.Publish(device.XyStateTopic, qos, retain, state)
+// 			stateStore.Light.XyState[device.UniqueID] = state
+// 			token.Wait()
+// 		}
+// 	}
+// }
 
 // Subscribe announces and starts listening to MQTT topics appropriate for a device
 // This is for a light
-func (device Light) Subscribe(client mqtt.Client) {
+// func (device Light) Subscribe(client mqtt.Client) {
 
-	message, err := json.Marshal(device)
-	if err != nil {
-		log.Fatal(err)
-	}
+// 	message, err := json.Marshal(device)
+// 	if err != nil {
+// 		log.Fatal(err)
+// 	}
 
-	if device.BrightnessCommandTopic != "" {
-		if token := client.Subscribe(device.BrightnessCommandTopic, 0, device.messageHandler); token.Wait() && token.Error() != nil {
-			log.Println(token.Error())
-			os.Exit(1)
-		}
-	}
-	if device.ColorTempCommandTopic != "" {
-		if token := client.Subscribe(device.ColorTempCommandTopic, 0, device.messageHandler); token.Wait() && token.Error() != nil {
-			log.Println(token.Error())
-			os.Exit(1)
-		}
-	}
-	if device.EffectCommandTopic != "" {
-		if token := client.Subscribe(device.EffectCommandTopic, 0, device.messageHandler); token.Wait() && token.Error() != nil {
-			log.Println(token.Error())
-			os.Exit(1)
-		}
-	}
-	if device.HsCommandTopic != "" {
-		if token := client.Subscribe(device.HsCommandTopic, 0, device.messageHandler); token.Wait() && token.Error() != nil {
-			log.Println(token.Error())
-			os.Exit(1)
-		}
-	}
-	if device.RgbCommandTopic != "" {
-		if token := client.Subscribe(device.RgbCommandTopic, 0, device.messageHandler); token.Wait() && token.Error() != nil {
-			log.Println(token.Error())
-			os.Exit(1)
-		}
-	}
-	if device.CommandTopic != "" {
-		if token := client.Subscribe(device.CommandTopic, 0, device.messageHandler); token.Wait() && token.Error() != nil {
-			log.Println(token.Error())
-			os.Exit(1)
-		}
-	}
-	if device.WhiteValueCommandTopic != "" {
-		if token := client.Subscribe(device.WhiteValueCommandTopic, 0, device.messageHandler); token.Wait() && token.Error() != nil {
-			log.Println(token.Error())
-			os.Exit(1)
-		}
-	}
-	if device.XyCommandTopic != "" {
-		if token := client.Subscribe(device.XyCommandTopic, 0, device.messageHandler); token.Wait() && token.Error() != nil {
-			log.Println(token.Error())
-			os.Exit(1)
-		}
-	}
+// 	if device.BrightnessCommandTopic != "" {
+// 		if token := client.Subscribe(device.BrightnessCommandTopic, 0, device.messageHandler); token.Wait() && token.Error() != nil {
+// 			log.Println(token.Error())
+// 			os.Exit(1)
+// 		}
+// 	}
+// 	if device.ColorTempCommandTopic != "" {
+// 		if token := client.Subscribe(device.ColorTempCommandTopic, 0, device.messageHandler); token.Wait() && token.Error() != nil {
+// 			log.Println(token.Error())
+// 			os.Exit(1)
+// 		}
+// 	}
+// 	if device.EffectCommandTopic != "" {
+// 		if token := client.Subscribe(device.EffectCommandTopic, 0, device.messageHandler); token.Wait() && token.Error() != nil {
+// 			log.Println(token.Error())
+// 			os.Exit(1)
+// 		}
+// 	}
+// 	if device.HsCommandTopic != "" {
+// 		if token := client.Subscribe(device.HsCommandTopic, 0, device.messageHandler); token.Wait() && token.Error() != nil {
+// 			log.Println(token.Error())
+// 			os.Exit(1)
+// 		}
+// 	}
+// 	if device.RgbCommandTopic != "" {
+// 		if token := client.Subscribe(device.RgbCommandTopic, 0, device.messageHandler); token.Wait() && token.Error() != nil {
+// 			log.Println(token.Error())
+// 			os.Exit(1)
+// 		}
+// 	}
+// 	if device.CommandTopic != "" {
+// 		if token := client.Subscribe(device.CommandTopic, 0, device.messageHandler); token.Wait() && token.Error() != nil {
+// 			log.Println(token.Error())
+// 			os.Exit(1)
+// 		}
+// 	}
+// 	if device.WhiteValueCommandTopic != "" {
+// 		if token := client.Subscribe(device.WhiteValueCommandTopic, 0, device.messageHandler); token.Wait() && token.Error() != nil {
+// 			log.Println(token.Error())
+// 			os.Exit(1)
+// 		}
+// 	}
+// 	if device.XyCommandTopic != "" {
+// 		if token := client.Subscribe(device.XyCommandTopic, 0, device.messageHandler); token.Wait() && token.Error() != nil {
+// 			log.Println(token.Error())
+// 			os.Exit(1)
+// 		}
+// 	}
 
-	token := client.Publish(device.GetDiscoveryTopic(), 0, true, message)
-	token.Wait()
+// 	token := client.Publish(device.GetDiscoveryTopic(), 0, true, message)
+// 	token.Wait()
 
-	// HA needs time to process
-	time.Sleep(500 * time.Millisecond)
+// 	// HA needs time to process
+// 	time.Sleep(500 * time.Millisecond)
 
-	device.AnnounceAvailable(client)
+// 	device.AnnounceAvailable(client)
 
-	device.UpdateState(client)
+// 	device.UpdateState(client)
 
-	if token := client.Subscribe(GetCommandTopic(device), 0, device.messageHandler); token.Wait() && token.Error() != nil {
-		log.Println(token.Error())
-		os.Exit(1)
-	}
+// 	if token := client.Subscribe(GetCommandTopic(device), 0, device.messageHandler); token.Wait() && token.Error() != nil {
+// 		log.Println(token.Error())
+// 		os.Exit(1)
+// 	}
 
-}
-
-// Subscribe announces and starts listening to MQTT topics appropriate for a device
-// This is for a switch
-func (device Switch) Subscribe(client mqtt.Client) {
-
-	message, err := json.Marshal(device)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	token := client.Publish(device.GetDiscoveryTopic(), 0, true, message)
-	token.Wait()
-
-	// HA needs time to process
-	time.Sleep(500 * time.Millisecond)
-
-	device.AnnounceAvailable(client)
-
-	if device.StateFunc != nil {
-		device.UpdateState(&client)
-	}
-
-	if token := client.Subscribe(GetCommandTopic(device), 0, device.messageHandler); token.Wait() && token.Error() != nil {
-		log.Println(token.Error())
-		os.Exit(1)
-	}
-
-}
-
-// Subscribe announces and MQTT topics appropriate for a device
-// This is for a sensor
-func (device Sensor) Subscribe(client mqtt.Client) {
-
-	message, err := json.Marshal(device)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	token := client.Publish(device.GetDiscoveryTopic(), 0, true, message)
-	token.Wait()
-
-	// HA needs time to process
-	time.Sleep(500 * time.Millisecond)
-
-	device.UpdateState(client)
-	device.AnnounceAvailable(client)
-
-}
-
-// Subscribe announces and MQTT topics appropriate for a device
-// This is for a binary sensor
-func (device BinarySensor) Subscribe(client mqtt.Client) {
-
-	message, err := json.Marshal(device)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	token := client.Publish(device.GetDiscoveryTopic(), 0, true, message)
-	token.Wait()
-
-	// HA needs time to process
-	time.Sleep(500 * time.Millisecond)
-
-	device.UpdateState(client)
-	device.AnnounceAvailable(client)
-
-}
+// }
 
 // UnSubscribe from MQTT topics appropriate for a device, and publishes unavailability
 // This is for a light
-func (device Light) UnSubscribe(client mqtt.Client) {
-	token := client.Publish(device.GetAvailabilityTopic(), qos, retain, "offline")
-	token.Wait()
+// func (device Light) UnSubscribe(client mqtt.Client) {
+// 	token := client.Publish(device.GetAvailabilityTopic(), qos, retain, "offline")
+// 	token.Wait()
 
-	if device.BrightnessCommandTopic != "" {
-		if token := client.Unsubscribe(device.BrightnessCommandTopic); token.Wait() && token.Error() != nil {
-			log.Println(token.Error())
-			os.Exit(1)
-		}
+// 	if device.BrightnessCommandTopic != "" {
+// 		if token := client.Unsubscribe(device.BrightnessCommandTopic); token.Wait() && token.Error() != nil {
+// 			log.Println(token.Error())
+// 			os.Exit(1)
+// 		}
 
-	}
-	if device.ColorTempCommandTopic != "" {
-		if token := client.Unsubscribe(device.ColorTempCommandTopic); token.Wait() && token.Error() != nil {
-			log.Println(token.Error())
-			os.Exit(1)
-		}
+// 	}
+// 	if device.ColorTempCommandTopic != "" {
+// 		if token := client.Unsubscribe(device.ColorTempCommandTopic); token.Wait() && token.Error() != nil {
+// 			log.Println(token.Error())
+// 			os.Exit(1)
+// 		}
 
-	}
-	if device.EffectCommandTopic != "" {
-		if token := client.Unsubscribe(device.EffectCommandTopic); token.Wait() && token.Error() != nil {
-			log.Println(token.Error())
-			os.Exit(1)
-		}
+// 	}
+// 	if device.EffectCommandTopic != "" {
+// 		if token := client.Unsubscribe(device.EffectCommandTopic); token.Wait() && token.Error() != nil {
+// 			log.Println(token.Error())
+// 			os.Exit(1)
+// 		}
 
-	}
-	if device.HsCommandTopic != "" {
-		if token := client.Unsubscribe(device.HsCommandTopic); token.Wait() && token.Error() != nil {
-			log.Println(token.Error())
-			os.Exit(1)
-		}
+// 	}
+// 	if device.HsCommandTopic != "" {
+// 		if token := client.Unsubscribe(device.HsCommandTopic); token.Wait() && token.Error() != nil {
+// 			log.Println(token.Error())
+// 			os.Exit(1)
+// 		}
 
-	}
-	if device.RgbCommandTopic != "" {
-		if token := client.Unsubscribe(device.RgbCommandTopic); token.Wait() && token.Error() != nil {
-			log.Println(token.Error())
-			os.Exit(1)
-		}
+// 	}
+// 	if device.RgbCommandTopic != "" {
+// 		if token := client.Unsubscribe(device.RgbCommandTopic); token.Wait() && token.Error() != nil {
+// 			log.Println(token.Error())
+// 			os.Exit(1)
+// 		}
 
-	}
-	if device.CommandTopic != "" {
-		if token := client.Unsubscribe(device.CommandTopic); token.Wait() && token.Error() != nil {
-			log.Println(token.Error())
-			os.Exit(1)
-		}
+// 	}
+// 	if device.CommandTopic != "" {
+// 		if token := client.Unsubscribe(device.CommandTopic); token.Wait() && token.Error() != nil {
+// 			log.Println(token.Error())
+// 			os.Exit(1)
+// 		}
 
-	}
-	if device.WhiteValueCommandTopic != "" {
-		if token := client.Unsubscribe(device.WhiteValueCommandTopic); token.Wait() && token.Error() != nil {
-			log.Println(token.Error())
-			os.Exit(1)
-		}
+// 	}
+// 	if device.WhiteValueCommandTopic != "" {
+// 		if token := client.Unsubscribe(device.WhiteValueCommandTopic); token.Wait() && token.Error() != nil {
+// 			log.Println(token.Error())
+// 			os.Exit(1)
+// 		}
 
-	}
-	if device.XyCommandTopic != "" {
-		if token := client.Unsubscribe(device.XyCommandTopic); token.Wait() && token.Error() != nil {
-			log.Println(token.Error())
-			os.Exit(1)
-		}
+// 	}
+// 	if device.XyCommandTopic != "" {
+// 		if token := client.Unsubscribe(device.XyCommandTopic); token.Wait() && token.Error() != nil {
+// 			log.Println(token.Error())
+// 			os.Exit(1)
+// 		}
 
-	}
+// 	}
 
-}
-
-// UnSubscribe from MQTT topics appropriate for a device, and publishes unavailability
-// This is for a switch
-func (device Switch) UnSubscribe(client mqtt.Client) {
-	token := client.Publish(device.GetAvailabilityTopic(), qos, retain, "offline")
-	token.Wait()
-
-	if token := client.Unsubscribe(GetCommandTopic(device)); token.Wait() && token.Error() != nil {
-		log.Println(token.Error())
-		os.Exit(1)
-	}
-}
-
-// UnSubscribe publishes unavailability for a device
-// This is for a sensor
-func (device Sensor) UnSubscribe(client mqtt.Client) {
-	token := client.Publish(device.GetAvailabilityTopic(), qos, retain, "offline")
-	token.Wait()
-}
-
-// UnSubscribe publishes unavailability for a device
-// This is for a binary sensor
-func (device BinarySensor) UnSubscribe(client mqtt.Client) {
-	token := client.Publish(device.GetAvailabilityTopic(), qos, retain, "offline")
-	token.Wait()
-}
+// }
 
 // AnnounceAvailable publishes availability for a device
 // This is for a light
-func (device Light) AnnounceAvailable(client mqtt.Client) {
-	token := client.Publish(device.GetAvailabilityTopic(), qos, retain, "online")
-	token.Wait()
-}
-
-// AnnounceAvailable publishes availability for a device
-// This is for a switch
-func (device Switch) AnnounceAvailable(client mqtt.Client) {
-	token := client.Publish(device.GetAvailabilityTopic(), qos, retain, "online")
-	token.Wait()
-}
-
-// AnnounceAvailable publishes availability for a device
-// This is for a sensor
-func (device Sensor) AnnounceAvailable(client mqtt.Client) {
-	token := client.Publish(device.GetAvailabilityTopic(), qos, retain, "online")
-	token.Wait()
-}
-
-// AnnounceAvailable publishes availability for a device
-// This is for a binary sensor
-func (device BinarySensor) AnnounceAvailable(client mqtt.Client) {
-	token := client.Publish(device.GetAvailabilityTopic(), qos, retain, "online")
-	token.Wait()
-}
+// func (device Light) AnnounceAvailable(client mqtt.Client) {
+// 	token := client.Publish(device.GetAvailabilityTopic(), qos, retain, "online")
+// 	token.Wait()
+// }
 
 ///////////////////

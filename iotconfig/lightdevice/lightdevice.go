@@ -32,16 +32,15 @@ type LightHA struct {
 
 func (li LightHA) Translate() hadiscovery.Light {
 	nli := hadiscovery.Light{}
-	nli.UpdateInterval = li.UpdateInterval
-	nli.ForceUpdateMQTT = li.ForceUpdateMQTT
+	nli.MQTT.ForceUpdate = li.ForceUpdateMQTT
 
 	nli.Name = li.Info.Name
-	nli.UniqueID = li.Info.ID + "_" + hadiscovery.NodeID
+	nli.UniqueId = li.Info.ID + "_" + hadiscovery.NodeID
 
 	if !common.AlmostEqual(li.UpdateInterval, 0.0) {
-		nli.UpdateInterval = li.UpdateInterval
+		nli.MQTT.UpdateInterval = li.UpdateInterval
 	} else {
-		nli.UpdateInterval = 1
+		nli.MQTT.UpdateInterval = 1
 	}
 
 	if li.BrightnessScale != 0 {
@@ -59,51 +58,9 @@ func (li LightHA) Translate() hadiscovery.Light {
 	if len(li.CommandState) > 0 {
 		nli.StateFunc = common.ConstructStateFunc(li.CommandState)
 	}
-	if len(li.CommandBrightnessState) > 0 {
-		nli.BrightnessStateFunc = common.ConstructStateFunc(li.CommandBrightnessState)
-	}
-	if len(li.CommandColorTempState) > 0 {
-		nli.ColorTempStateFunc = common.ConstructStateFunc(li.CommandColorTempState)
-	}
-	if len(li.CommandEffectState) > 0 {
-		nli.EffectStateFunc = common.ConstructStateFunc(li.CommandEffectState)
-	}
-	if len(li.CommandHsState) > 0 {
-		nli.HsStateFunc = common.ConstructStateFunc(li.CommandHsState)
-	}
-	if len(li.CommandRgbState) > 0 {
-		nli.RgbStateFunc = common.ConstructStateFunc(li.CommandRgbState)
-	}
-	if len(li.CommandWhiteValueState) > 0 {
-		nli.WhiteValueStateFunc = common.ConstructStateFunc(li.CommandWhiteValueState)
-	}
-	if len(li.CommandXyState) > 0 {
-		nli.XyStateFunc = common.ConstructStateFunc(li.CommandXyState)
-	}
 
 	if len(li.Command) > 0 {
 		nli.CommandFunc = common.ConstructCommandFunc(li.Command)
-	}
-	if len(li.CommandBrightness) > 0 {
-		nli.BrightnessCommandFunc = common.ConstructCommandFunc(li.CommandBrightness)
-	}
-	if len(li.CommandColorTemp) > 0 {
-		nli.ColorTempCommandFunc = common.ConstructCommandFunc(li.CommandColorTemp)
-	}
-	if len(li.CommandEffect) > 0 {
-		nli.EffectCommandFunc = common.ConstructCommandFunc(li.CommandEffect)
-	}
-	if len(li.CommandHs) > 0 {
-		nli.HsCommandFunc = common.ConstructCommandFunc(li.CommandHs)
-	}
-	if len(li.CommandRgb) > 0 {
-		nli.RgbCommandFunc = common.ConstructCommandFunc(li.CommandRgb)
-	}
-	if len(li.CommandWhiteValue) > 0 {
-		nli.WhiteValueCommandFunc = common.ConstructCommandFunc(li.CommandWhiteValue)
-	}
-	if len(li.CommandXy) > 0 {
-		nli.XyCommandFunc = common.ConstructCommandFunc(li.CommandXy)
 	}
 
 	nli.Initialize()

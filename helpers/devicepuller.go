@@ -17,7 +17,7 @@ import (
 
 var DeviceNames = []string{
 	// "alarm_control_panel",
-	"binary_sensor",
+	// "binary_sensor",
 	// "button",
 	// "camera",
 	// "cover",
@@ -31,9 +31,9 @@ var DeviceNames = []string{
 	// "number",
 	// "scene",
 	// "select",
-	"sensor",
+	// "sensor",
 	// "siren",
-	"switch",
+	// "switch",
 	// "tag",
 	// "vacuum",
 }
@@ -109,7 +109,9 @@ func splitDocument(devicename string) (string, error) {
 	dat := string(data)
 
 	if devicename == "vacuum" {
-		dat = dat[strings.Index(dat, "State Configuration"):]
+		dat = dat[strings.Index(dat, "## State Configuration"):]
+	} else if devicename == "light" {
+		dat = between(dat, "## JSON schema - Configuration", "## JSON schema - Examples")
 	}
 
 	match := between(dat, "{% configuration %}", "{% endconfiguration %}")
