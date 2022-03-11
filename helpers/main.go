@@ -2,6 +2,7 @@ package main
 
 import (
 	"sort"
+	"strings"
 
 	"github.com/dave/jennifer/jen"
 	"github.com/iancoleman/strcase"
@@ -221,32 +222,41 @@ func main() {
 
 	devicetypesfile := jen.NewFilePathName("../hadiscovery/devicetypes.go", "hadiscovery")
 
-	state := []*jen.Statement{}
+	deviceinitfile := jen.NewFilePathName("../hadiscovery/deviceinit.go", "hadiscovery")
+
+	devicefunctionsfile := jen.NewFilePathName("../hadiscovery/devicefunctions.go", "hadiscovery")
 
 	sort.Strings(keyNames)
 
 	for _, d := range devices {
 
-		// d.RawID()
-		devicetypesfile.Func().Params(
+		// d.GetRawID()
+		devicefunctionsfile.Func().Params(
 			jen.Id("d").Id(strcase.ToCamel(d.Name)),
-		).Id("RawID").Params().String().Block(
+		).Id("GetRawId").Params().String().Block(
 			jen.Return(jen.Lit(d.Name)),
 		)
 
-		// d.UniqueID()
-		devicetypesfile.Func().Params(
-			jen.Id("d").Id(strcase.ToCamel(d.Name)),
-		).Id("UniqueID").Params().String().Block(
-			jen.Return(jen.Id("d.uniqueID")),
-		)
+		// d.GetUniqueID()
+		if d.JSONContainer.Exists("unique_id") {
+			devicefunctionsfile.Func().Params(
+				jen.Id("d").Id(strcase.ToCamel(d.Name)),
+			).Id("GetUniqueId").Params().String().Block(
+				jen.Return(jen.Id("d.UniqueId")),
+			)
+		} else {
+			devicefunctionsfile.Func().Params(
+				jen.Id("d").Id(strcase.ToCamel(d.Name)),
+			).Id("GetUniqueId").Params().String().Block(
+				jen.Return(jen.Lit("")),
+			)
+		}
 
 		st := make(map[string][]*jen.Statement)
 
 		// Add standalone base level fields
 		for _, key := range keyNames {
 			if d.JSONContainer.Exists(key) {
-				state = append(state, jen.Id(strcase.ToCamel(d.Name)))
 				st[key] = append(st[key], d.FieldAdder(key))
 			}
 		}
@@ -265,9 +275,9 @@ func main() {
 			).Tag(map[string]string{"json": "device"}))
 		}
 
+		// d.PopulateDevice()
 		if d.JSONContainer.Exists("device") {
-			// d.PopulateDevice()
-			devicetypesfile.Func().Params(
+			devicefunctionsfile.Func().Params(
 				jen.Id("d").Id("*"+strcase.ToCamel(d.Name)),
 			).Id("PopulateDevice").Params().Block(
 				jen.Id("d.Device.Manufacturer").Op("=").Id("Manufacturer"),
@@ -276,8 +286,7 @@ func main() {
 				jen.Id("d.Device.SwVersion").Op("=").Id("SWVersion"),
 			)
 		} else {
-			// d.PopulateDevice()
-			devicetypesfile.Func().Params(
+			devicefunctionsfile.Func().Params(
 				jen.Id("d").Id("*" + strcase.ToCamel(d.Name)),
 			).Id("PopulateDevice").Params().Block()
 		}
@@ -297,26 +306,60 @@ func main() {
 						g.Add(val)
 					}
 				}
-				g.Id("uniqueID").String()
-				g.Id("rawID").String()
+				g.Id("RawId").String().Tag(map[string]string{"json": "-"})
 			},
 		)
+
+		deviceinitfile.Func().Params(jen.Id("d").Id(strcase.ToCamel(d.Name))).Id("Init").Params().BlockFunc(func(g *jen.Group) {
+			if d.JSONContainer.Exists("retain") {
+				g.Add(jen.Id("d").Dot("Retain").Op("=").Lit(false))
+			}
+			g.Add(jen.Id("d").Dot("PopulateDevice").Params())
+			g.Add(jen.Id("d").Dot("PopulateTopics").Params())
+		})
+
+		// d.PopulateTopics()
+		deviceinitfile.Func().Params(
+			jen.Id("d").Id("*" + strcase.ToCamel(d.Name)),
+		).Id("PopulateTopics").Params().BlockFunc(func(g *jen.Group) {
+			for _, name := range keyNames {
+				if strings.HasSuffix(name, "_topic") && d.JSONContainer.Exists(name) {
+					lName := strcase.ToCamel(strings.TrimSuffix(name, "_topic"))
+					g.Add(
+						jen.If(
+							jen.Id("d").Dot(lName+"Func").Op("!=").Nil(),
+						).Block(
+							jen.Id("d").Dot(strcase.ToCamel(name)).Op("=").Id("GetTopic").Params(jen.Id("d"), jen.Lit(name)),
+							jen.Id("topicStore").Index(
+								jen.Id("d").Dot(strcase.ToCamel(name)),
+							).Op("=").Id("&d").Dot(lName+"Func"),
+							// topicStore[device.BrightnessCommandTopic] = &device.BrightnessCommandFunc
+						),
+					)
+				}
+			}
+		})
 
 	}
 
 	devicetypesfile.Type().Id("Device").Interface(
-		jen.UnionFunc(
-			func(g *jen.Group) {
-				for _, d := range devices {
-					g.Add(jen.Id(strcase.ToCamel(d.Name)))
-				}
-			},
-		),
-		jen.Id("RawID").Params().String(),
-		jen.Id("UniqueID").Params().String(),
+		// jen.UnionFunc(
+		// 	func(g *jen.Group) {
+		// 		for _, d := range devices {
+		// 			g.Add(jen.Id(strcase.ToCamel(d.Name)))
+		// 		}
+		// 	},
+		// ),
+		jen.Id("GetRawId").Params().String(),
+		jen.Id("GetUniqueId").Params().String(),
 		jen.Id("PopulateDevice").Params(),
+		jen.Id("PopulateTopics").Params(),
 	)
 
 	devicetypesfile.Save("../hadiscovery/devicetypes.go")
+
+	deviceinitfile.Save("../hadiscovery/deviceinit.go")
+
+	devicefunctionsfile.Save("../hadiscovery/devicefunctions.go")
 
 }

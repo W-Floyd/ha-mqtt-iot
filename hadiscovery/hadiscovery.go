@@ -56,9 +56,8 @@ type store struct {
 // Initialize sets topics as needed on a Light
 func (device *Light) Initialize() {
 	device.Retain = false
-	device.Device = getDevice()
-
-	device.AvailabilityTopic = GetAvailabilityTopic(*device)
+	device.PopulateDevice()
+	device.PopulateTopics()
 
 	// Brightness
 	if device.BrightnessCommandFunc != nil {

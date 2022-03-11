@@ -1,18 +1,5 @@
 package hadiscovery
 
-func (d AlarmControlPanel) RawID() string {
-	return "alarm_control_panel"
-}
-func (d AlarmControlPanel) UniqueID() string {
-	return d.uniqueID
-}
-func (d *AlarmControlPanel) PopulateDevice() {
-	d.Device.Manufacturer = Manufacturer
-	d.Device.Model = SoftwareName
-	d.Device.Name = InstanceName
-	d.Device.SwVersion = SWVersion
-}
-
 type AlarmControlPanel struct {
 	AvailabilityMode     string `json:"availability_mode"`
 	AvailabilityTemplate string `json:"availability_template"`
@@ -56,23 +43,8 @@ type AlarmControlPanel struct {
 	StateTopic             string `json:"state_topic"`
 	UniqueId               string `json:"unique_id"`
 	ValueTemplate          string `json:"value_template"`
-	uniqueID               string
-	rawID                  string
+	RawId                  string `json:"-"`
 }
-
-func (d BinarySensor) RawID() string {
-	return "binary_sensor"
-}
-func (d BinarySensor) UniqueID() string {
-	return d.uniqueID
-}
-func (d *BinarySensor) PopulateDevice() {
-	d.Device.Manufacturer = Manufacturer
-	d.Device.Model = SoftwareName
-	d.Device.Name = InstanceName
-	d.Device.SwVersion = SWVersion
-}
-
 type BinarySensor struct {
 	AvailabilityMode     string `json:"availability_mode"`
 	AvailabilityTemplate string `json:"availability_template"`
@@ -108,23 +80,8 @@ type BinarySensor struct {
 	StateTopic             string `json:"state_topic"`
 	UniqueId               string `json:"unique_id"`
 	ValueTemplate          string `json:"value_template"`
-	uniqueID               string
-	rawID                  string
+	RawId                  string `json:"-"`
 }
-
-func (d Camera) RawID() string {
-	return "camera"
-}
-func (d Camera) UniqueID() string {
-	return d.uniqueID
-}
-func (d *Camera) PopulateDevice() {
-	d.Device.Manufacturer = Manufacturer
-	d.Device.Model = SoftwareName
-	d.Device.Name = InstanceName
-	d.Device.SwVersion = SWVersion
-}
-
 type Camera struct {
 	AvailabilityMode     string `json:"availability_mode"`
 	AvailabilityTemplate string `json:"availability_template"`
@@ -149,23 +106,8 @@ type Camera struct {
 	ObjectId               string `json:"object_id"`
 	Topic                  string `json:"topic"`
 	UniqueId               string `json:"unique_id"`
-	uniqueID               string
-	rawID                  string
+	RawId                  string `json:"-"`
 }
-
-func (d Cover) RawID() string {
-	return "cover"
-}
-func (d Cover) UniqueID() string {
-	return d.uniqueID
-}
-func (d *Cover) PopulateDevice() {
-	d.Device.Manufacturer = Manufacturer
-	d.Device.Model = SoftwareName
-	d.Device.Name = InstanceName
-	d.Device.SwVersion = SWVersion
-}
-
 type Cover struct {
 	AvailabilityMode     string `json:"availability_mode"`
 	AvailabilityTemplate string `json:"availability_template"`
@@ -222,41 +164,16 @@ type Cover struct {
 	TiltStatusTopic        string `json:"tilt_status_topic"`
 	UniqueId               string `json:"unique_id"`
 	ValueTemplate          string `json:"value_template"`
-	uniqueID               string
-	rawID                  string
+	RawId                  string `json:"-"`
 }
-
-func (d DeviceTracker) RawID() string {
-	return "device_tracker"
-}
-func (d DeviceTracker) UniqueID() string {
-	return d.uniqueID
-}
-func (d *DeviceTracker) PopulateDevice() {}
-
 type DeviceTracker struct {
 	Devices        []string `json:"devices"`
 	PayloadHome    string   `json:"payload_home"`
 	PayloadNotHome string   `json:"payload_not_home"`
 	Qos            int      `json:"qos"`
 	SourceType     string   `json:"source_type"`
-	uniqueID       string
-	rawID          string
+	RawId          string   `json:"-"`
 }
-
-func (d DeviceTrigger) RawID() string {
-	return "device_trigger"
-}
-func (d DeviceTrigger) UniqueID() string {
-	return d.uniqueID
-}
-func (d *DeviceTrigger) PopulateDevice() {
-	d.Device.Manufacturer = Manufacturer
-	d.Device.Model = SoftwareName
-	d.Device.Name = InstanceName
-	d.Device.SwVersion = SWVersion
-}
-
 type DeviceTrigger struct {
 	AutomationType string `json:"automation_type"`
 	Device         struct {
@@ -276,23 +193,8 @@ type DeviceTrigger struct {
 	Topic         string `json:"topic"`
 	Type          string `json:"type"`
 	ValueTemplate string `json:"value_template"`
-	uniqueID      string
-	rawID         string
+	RawId         string `json:"-"`
 }
-
-func (d Fan) RawID() string {
-	return "fan"
-}
-func (d Fan) UniqueID() string {
-	return d.uniqueID
-}
-func (d *Fan) PopulateDevice() {
-	d.Device.Manufacturer = Manufacturer
-	d.Device.Model = SoftwareName
-	d.Device.Name = InstanceName
-	d.Device.SwVersion = SWVersion
-}
-
 type Fan struct {
 	AvailabilityMode     string `json:"availability_mode"`
 	AvailabilityTemplate string `json:"availability_template"`
@@ -347,23 +249,8 @@ type Fan struct {
 	StateTopic                 string   `json:"state_topic"`
 	StateValueTemplate         string   `json:"state_value_template"`
 	UniqueId                   string   `json:"unique_id"`
-	uniqueID                   string
-	rawID                      string
+	RawId                      string   `json:"-"`
 }
-
-func (d Humidifier) RawID() string {
-	return "humidifier"
-}
-func (d Humidifier) UniqueID() string {
-	return d.uniqueID
-}
-func (d *Humidifier) PopulateDevice() {
-	d.Device.Manufacturer = Manufacturer
-	d.Device.Model = SoftwareName
-	d.Device.Name = InstanceName
-	d.Device.SwVersion = SWVersion
-}
-
 type Humidifier struct {
 	AvailabilityMode     string `json:"availability_mode"`
 	AvailabilityTemplate string `json:"availability_template"`
@@ -413,23 +300,8 @@ type Humidifier struct {
 	TargetHumidityStateTemplate   string   `json:"target_humidity_state_template"`
 	TargetHumidityStateTopic      string   `json:"target_humidity_state_topic"`
 	UniqueId                      string   `json:"unique_id"`
-	uniqueID                      string
-	rawID                         string
+	RawId                         string   `json:"-"`
 }
-
-func (d Climate) RawID() string {
-	return "climate"
-}
-func (d Climate) UniqueID() string {
-	return d.uniqueID
-}
-func (d *Climate) PopulateDevice() {
-	d.Device.Manufacturer = Manufacturer
-	d.Device.Model = SoftwareName
-	d.Device.Name = InstanceName
-	d.Device.SwVersion = SWVersion
-}
-
 type Climate struct {
 	ActionTemplate             string `json:"action_template"`
 	ActionTopic                string `json:"action_topic"`
@@ -507,23 +379,8 @@ type Climate struct {
 	TemperatureUnit                string   `json:"temperature_unit"`
 	UniqueId                       string   `json:"unique_id"`
 	ValueTemplate                  string   `json:"value_template"`
-	uniqueID                       string
-	rawID                          string
+	RawId                          string   `json:"-"`
 }
-
-func (d Light) RawID() string {
-	return "light"
-}
-func (d Light) UniqueID() string {
-	return d.uniqueID
-}
-func (d *Light) PopulateDevice() {
-	d.Device.Manufacturer = Manufacturer
-	d.Device.Model = SoftwareName
-	d.Device.Name = InstanceName
-	d.Device.SwVersion = SWVersion
-}
-
 type Light struct {
 	AvailabilityMode          string `json:"availability_mode"`
 	AvailabilityTemplate      string `json:"availability_template"`
@@ -588,23 +445,8 @@ type Light struct {
 	XyCommandTopic         string   `json:"xy_command_topic"`
 	XyStateTopic           string   `json:"xy_state_topic"`
 	XyValueTemplate        string   `json:"xy_value_template"`
-	uniqueID               string
-	rawID                  string
+	RawId                  string   `json:"-"`
 }
-
-func (d Lock) RawID() string {
-	return "lock"
-}
-func (d Lock) UniqueID() string {
-	return d.uniqueID
-}
-func (d *Lock) PopulateDevice() {
-	d.Device.Manufacturer = Manufacturer
-	d.Device.Model = SoftwareName
-	d.Device.Name = InstanceName
-	d.Device.SwVersion = SWVersion
-}
-
 type Lock struct {
 	AvailabilityMode     string `json:"availability_mode"`
 	AvailabilityTemplate string `json:"availability_template"`
@@ -642,23 +484,8 @@ type Lock struct {
 	StateUnlocked          string `json:"state_unlocked"`
 	UniqueId               string `json:"unique_id"`
 	ValueTemplate          string `json:"value_template"`
-	uniqueID               string
-	rawID                  string
+	RawId                  string `json:"-"`
 }
-
-func (d Number) RawID() string {
-	return "number"
-}
-func (d Number) UniqueID() string {
-	return d.uniqueID
-}
-func (d *Number) PopulateDevice() {
-	d.Device.Manufacturer = Manufacturer
-	d.Device.Model = SoftwareName
-	d.Device.Name = InstanceName
-	d.Device.SwVersion = SWVersion
-}
-
 type Number struct {
 	AvailabilityMode  string `json:"availability_mode"`
 	AvailabilityTopic string `json:"availability_topic"`
@@ -694,18 +521,8 @@ type Number struct {
 	UniqueId               string  `json:"unique_id"`
 	UnitOfMeasurement      string  `json:"unit_of_measurement"`
 	ValueTemplate          string  `json:"value_template"`
-	uniqueID               string
-	rawID                  string
+	RawId                  string  `json:"-"`
 }
-
-func (d Scene) RawID() string {
-	return "scene"
-}
-func (d Scene) UniqueID() string {
-	return d.uniqueID
-}
-func (d *Scene) PopulateDevice() {}
-
 type Scene struct {
 	AvailabilityMode     string `json:"availability_mode"`
 	AvailabilityTemplate string `json:"availability_template"`
@@ -722,23 +539,8 @@ type Scene struct {
 	Qos                  int    `json:"qos"`
 	Retain               bool   `json:"retain"`
 	UniqueId             string `json:"unique_id"`
-	uniqueID             string
-	rawID                string
+	RawId                string `json:"-"`
 }
-
-func (d Select) RawID() string {
-	return "select"
-}
-func (d Select) UniqueID() string {
-	return d.uniqueID
-}
-func (d *Select) PopulateDevice() {
-	d.Device.Manufacturer = Manufacturer
-	d.Device.Model = SoftwareName
-	d.Device.Name = InstanceName
-	d.Device.SwVersion = SWVersion
-}
-
 type Select struct {
 	AvailabilityMode     string `json:"availability_mode"`
 	AvailabilityTemplate string `json:"availability_template"`
@@ -771,23 +573,8 @@ type Select struct {
 	StateTopic             string   `json:"state_topic"`
 	UniqueId               string   `json:"unique_id"`
 	ValueTemplate          string   `json:"value_template"`
-	uniqueID               string
-	rawID                  string
+	RawId                  string   `json:"-"`
 }
-
-func (d Sensor) RawID() string {
-	return "sensor"
-}
-func (d Sensor) UniqueID() string {
-	return d.uniqueID
-}
-func (d *Sensor) PopulateDevice() {
-	d.Device.Manufacturer = Manufacturer
-	d.Device.Model = SoftwareName
-	d.Device.Name = InstanceName
-	d.Device.SwVersion = SWVersion
-}
-
 type Sensor struct {
 	AvailabilityMode     string `json:"availability_mode"`
 	AvailabilityTemplate string `json:"availability_template"`
@@ -823,23 +610,8 @@ type Sensor struct {
 	UniqueId               string `json:"unique_id"`
 	UnitOfMeasurement      string `json:"unit_of_measurement"`
 	ValueTemplate          string `json:"value_template"`
-	uniqueID               string
-	rawID                  string
+	RawId                  string `json:"-"`
 }
-
-func (d Switch) RawID() string {
-	return "switch"
-}
-func (d Switch) UniqueID() string {
-	return d.uniqueID
-}
-func (d *Switch) PopulateDevice() {
-	d.Device.Manufacturer = Manufacturer
-	d.Device.Model = SoftwareName
-	d.Device.Name = InstanceName
-	d.Device.SwVersion = SWVersion
-}
-
 type Switch struct {
 	AvailabilityMode     string `json:"availability_mode"`
 	AvailabilityTemplate string `json:"availability_template"`
@@ -877,23 +649,8 @@ type Switch struct {
 	StateTopic             string `json:"state_topic"`
 	UniqueId               string `json:"unique_id"`
 	ValueTemplate          string `json:"value_template"`
-	uniqueID               string
-	rawID                  string
+	RawId                  string `json:"-"`
 }
-
-func (d Tag) RawID() string {
-	return "tag"
-}
-func (d Tag) UniqueID() string {
-	return d.uniqueID
-}
-func (d *Tag) PopulateDevice() {
-	d.Device.Manufacturer = Manufacturer
-	d.Device.Model = SoftwareName
-	d.Device.Name = InstanceName
-	d.Device.SwVersion = SWVersion
-}
-
 type Tag struct {
 	Device struct {
 		ConfigurationUrl string   `json:"configuration_url"`
@@ -908,18 +665,8 @@ type Tag struct {
 	} `json:"device"`
 	Topic         string `json:"topic"`
 	ValueTemplate string `json:"value_template"`
-	uniqueID      string
-	rawID         string
+	RawId         string `json:"-"`
 }
-
-func (d Vacuum) RawID() string {
-	return "vacuum"
-}
-func (d Vacuum) UniqueID() string {
-	return d.uniqueID
-}
-func (d *Vacuum) PopulateDevice() {}
-
 type Vacuum struct {
 	AvailabilityMode       string   `json:"availability_mode"`
 	AvailabilityTemplate   string   `json:"availability_template"`
@@ -962,12 +709,11 @@ type Vacuum struct {
 	SetFanSpeedTopic       string   `json:"set_fan_speed_topic"`
 	SupportedFeatures      []string `json:"supported_features"`
 	UniqueId               string   `json:"unique_id"`
-	uniqueID               string
-	rawID                  string
+	RawId                  string   `json:"-"`
 }
 type Device interface {
-	AlarmControlPanel | BinarySensor | Camera | Cover | DeviceTracker | DeviceTrigger | Fan | Humidifier | Climate | Light | Lock | Number | Scene | Select | Sensor | Switch | Tag | Vacuum
-	RawID() string
-	UniqueID() string
+	GetRawId() string
+	GetUniqueId() string
 	PopulateDevice()
+	PopulateTopics()
 }

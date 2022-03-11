@@ -1,17 +1,23 @@
 package hadiscovery
 
-func GetTopicPrefix[T Device](d T) string {
-	return NodeID + d.RawID() + d.UniqueID() + "/"
+import "strings"
+
+func GetTopicPrefix(d Device) string {
+	uID := d.GetUniqueId()
+	if uID != "" {
+		uID = uID + "/"
+	}
+	return NodeID + "/" + d.GetRawId() + "/" + uID
 }
 
-func GetDiscoveryTopic[T Device](d T) string {
-	return DiscoveryPrefix + "/" + d.RawID() + "/" + NodeID + "/" + d.UniqueID() + "/"
+func GetDiscoveryTopic(d Device) string {
+	uID := d.GetUniqueId()
+	if uID != "" {
+		uID = uID + "/"
+	}
+	return DiscoveryPrefix + "/" + d.GetRawId() + "/" + NodeID + "/" + uID
 }
 
-func GetCommandTopic[T Device](d T) string {
-	return GetTopicPrefix(d) + "command"
-}
-
-func GetAvailabilityTopic[T Device](d T) string {
-	return GetTopicPrefix(d) + "availability"
+func GetTopic(d Device, rawTopicString string) string {
+	return GetTopicPrefix(d) + strings.TrimSuffix(rawTopicString, "_topic")
 }

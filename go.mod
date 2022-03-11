@@ -1,6 +1,6 @@
 module github.com/W-Floyd/ha-mqtt-iot
 
-go 1.18
+go 1.17
 
 require (
 	github.com/Jeffail/gabs/v2 v2.6.1 // indirect
