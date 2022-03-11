@@ -13,10 +13,6 @@ func (d *AlarmControlPanel) PopulateTopics() {
 		d.CommandTopic = GetTopic(d, "command_topic")
 		topicStore[d.CommandTopic] = &d.CommandFunc
 	}
-	if d.JsonAttributesFunc != nil {
-		d.JsonAttributesTopic = GetTopic(d, "json_attributes_topic")
-		topicStore[d.JsonAttributesTopic] = &d.JsonAttributesFunc
-	}
 	if d.StateFunc != nil {
 		d.StateTopic = GetTopic(d, "state_topic")
 	}
@@ -29,12 +25,22 @@ func (d *BinarySensor) PopulateTopics() {
 	if d.AvailabilityFunc != nil {
 		d.AvailabilityTopic = GetTopic(d, "availability_topic")
 	}
-	if d.JsonAttributesFunc != nil {
-		d.JsonAttributesTopic = GetTopic(d, "json_attributes_topic")
-		topicStore[d.JsonAttributesTopic] = &d.JsonAttributesFunc
-	}
 	if d.StateFunc != nil {
 		d.StateTopic = GetTopic(d, "state_topic")
+	}
+}
+func (d Button) Init() {
+	d.Retain = false
+	d.PopulateDevice()
+	d.PopulateTopics()
+}
+func (d *Button) PopulateTopics() {
+	if d.AvailabilityFunc != nil {
+		d.AvailabilityTopic = GetTopic(d, "availability_topic")
+	}
+	if d.CommandFunc != nil {
+		d.CommandTopic = GetTopic(d, "command_topic")
+		topicStore[d.CommandTopic] = &d.CommandFunc
 	}
 }
 func (d Camera) Init() {
@@ -44,10 +50,6 @@ func (d Camera) Init() {
 func (d *Camera) PopulateTopics() {
 	if d.AvailabilityFunc != nil {
 		d.AvailabilityTopic = GetTopic(d, "availability_topic")
-	}
-	if d.JsonAttributesFunc != nil {
-		d.JsonAttributesTopic = GetTopic(d, "json_attributes_topic")
-		topicStore[d.JsonAttributesTopic] = &d.JsonAttributesFunc
 	}
 }
 func (d Cover) Init() {
@@ -62,10 +64,6 @@ func (d *Cover) PopulateTopics() {
 	if d.CommandFunc != nil {
 		d.CommandTopic = GetTopic(d, "command_topic")
 		topicStore[d.CommandTopic] = &d.CommandFunc
-	}
-	if d.JsonAttributesFunc != nil {
-		d.JsonAttributesTopic = GetTopic(d, "json_attributes_topic")
-		topicStore[d.JsonAttributesTopic] = &d.JsonAttributesFunc
 	}
 	if d.PositionFunc != nil {
 		d.PositionTopic = GetTopic(d, "position_topic")
@@ -108,10 +106,6 @@ func (d *Fan) PopulateTopics() {
 		d.CommandTopic = GetTopic(d, "command_topic")
 		topicStore[d.CommandTopic] = &d.CommandFunc
 	}
-	if d.JsonAttributesFunc != nil {
-		d.JsonAttributesTopic = GetTopic(d, "json_attributes_topic")
-		topicStore[d.JsonAttributesTopic] = &d.JsonAttributesFunc
-	}
 	if d.OscillationCommandFunc != nil {
 		d.OscillationCommandTopic = GetTopic(d, "oscillation_command_topic")
 		topicStore[d.OscillationCommandTopic] = &d.OscillationCommandFunc
@@ -149,10 +143,6 @@ func (d *Humidifier) PopulateTopics() {
 	if d.CommandFunc != nil {
 		d.CommandTopic = GetTopic(d, "command_topic")
 		topicStore[d.CommandTopic] = &d.CommandFunc
-	}
-	if d.JsonAttributesFunc != nil {
-		d.JsonAttributesTopic = GetTopic(d, "json_attributes_topic")
-		topicStore[d.JsonAttributesTopic] = &d.JsonAttributesFunc
 	}
 	if d.ModeCommandFunc != nil {
 		d.ModeCommandTopic = GetTopic(d, "mode_command_topic")
@@ -201,10 +191,6 @@ func (d *Climate) PopulateTopics() {
 	}
 	if d.FanModeStateFunc != nil {
 		d.FanModeStateTopic = GetTopic(d, "fan_mode_state_topic")
-	}
-	if d.JsonAttributesFunc != nil {
-		d.JsonAttributesTopic = GetTopic(d, "json_attributes_topic")
-		topicStore[d.JsonAttributesTopic] = &d.JsonAttributesFunc
 	}
 	if d.ModeCommandFunc != nil {
 		d.ModeCommandTopic = GetTopic(d, "mode_command_topic")
@@ -290,9 +276,12 @@ func (d *Light) PopulateTopics() {
 	if d.EffectStateFunc != nil {
 		d.EffectStateTopic = GetTopic(d, "effect_state_topic")
 	}
-	if d.JsonAttributesFunc != nil {
-		d.JsonAttributesTopic = GetTopic(d, "json_attributes_topic")
-		topicStore[d.JsonAttributesTopic] = &d.JsonAttributesFunc
+	if d.HsCommandFunc != nil {
+		d.HsCommandTopic = GetTopic(d, "hs_command_topic")
+		topicStore[d.HsCommandTopic] = &d.HsCommandFunc
+	}
+	if d.HsStateFunc != nil {
+		d.HsStateTopic = GetTopic(d, "hs_state_topic")
 	}
 	if d.RgbCommandFunc != nil {
 		d.RgbCommandTopic = GetTopic(d, "rgb_command_topic")
@@ -329,10 +318,6 @@ func (d *Lock) PopulateTopics() {
 		d.CommandTopic = GetTopic(d, "command_topic")
 		topicStore[d.CommandTopic] = &d.CommandFunc
 	}
-	if d.JsonAttributesFunc != nil {
-		d.JsonAttributesTopic = GetTopic(d, "json_attributes_topic")
-		topicStore[d.JsonAttributesTopic] = &d.JsonAttributesFunc
-	}
 	if d.StateFunc != nil {
 		d.StateTopic = GetTopic(d, "state_topic")
 	}
@@ -349,10 +334,6 @@ func (d *Number) PopulateTopics() {
 	if d.CommandFunc != nil {
 		d.CommandTopic = GetTopic(d, "command_topic")
 		topicStore[d.CommandTopic] = &d.CommandFunc
-	}
-	if d.JsonAttributesFunc != nil {
-		d.JsonAttributesTopic = GetTopic(d, "json_attributes_topic")
-		topicStore[d.JsonAttributesTopic] = &d.JsonAttributesFunc
 	}
 	if d.StateFunc != nil {
 		d.StateTopic = GetTopic(d, "state_topic")
@@ -385,10 +366,6 @@ func (d *Select) PopulateTopics() {
 		d.CommandTopic = GetTopic(d, "command_topic")
 		topicStore[d.CommandTopic] = &d.CommandFunc
 	}
-	if d.JsonAttributesFunc != nil {
-		d.JsonAttributesTopic = GetTopic(d, "json_attributes_topic")
-		topicStore[d.JsonAttributesTopic] = &d.JsonAttributesFunc
-	}
 	if d.StateFunc != nil {
 		d.StateTopic = GetTopic(d, "state_topic")
 	}
@@ -401,9 +378,22 @@ func (d *Sensor) PopulateTopics() {
 	if d.AvailabilityFunc != nil {
 		d.AvailabilityTopic = GetTopic(d, "availability_topic")
 	}
-	if d.JsonAttributesFunc != nil {
-		d.JsonAttributesTopic = GetTopic(d, "json_attributes_topic")
-		topicStore[d.JsonAttributesTopic] = &d.JsonAttributesFunc
+	if d.StateFunc != nil {
+		d.StateTopic = GetTopic(d, "state_topic")
+	}
+}
+func (d Siren) Init() {
+	d.Retain = false
+	d.PopulateDevice()
+	d.PopulateTopics()
+}
+func (d *Siren) PopulateTopics() {
+	if d.AvailabilityFunc != nil {
+		d.AvailabilityTopic = GetTopic(d, "availability_topic")
+	}
+	if d.CommandFunc != nil {
+		d.CommandTopic = GetTopic(d, "command_topic")
+		topicStore[d.CommandTopic] = &d.CommandFunc
 	}
 	if d.StateFunc != nil {
 		d.StateTopic = GetTopic(d, "state_topic")
@@ -421,10 +411,6 @@ func (d *Switch) PopulateTopics() {
 	if d.CommandFunc != nil {
 		d.CommandTopic = GetTopic(d, "command_topic")
 		topicStore[d.CommandTopic] = &d.CommandFunc
-	}
-	if d.JsonAttributesFunc != nil {
-		d.JsonAttributesTopic = GetTopic(d, "json_attributes_topic")
-		topicStore[d.JsonAttributesTopic] = &d.JsonAttributesFunc
 	}
 	if d.StateFunc != nil {
 		d.StateTopic = GetTopic(d, "state_topic")
@@ -447,10 +433,6 @@ func (d *Vacuum) PopulateTopics() {
 	if d.CommandFunc != nil {
 		d.CommandTopic = GetTopic(d, "command_topic")
 		topicStore[d.CommandTopic] = &d.CommandFunc
-	}
-	if d.JsonAttributesFunc != nil {
-		d.JsonAttributesTopic = GetTopic(d, "json_attributes_topic")
-		topicStore[d.JsonAttributesTopic] = &d.JsonAttributesFunc
 	}
 	if d.SendCommandFunc != nil {
 		d.SendCommandTopic = GetTopic(d, "send_command_topic")

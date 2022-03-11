@@ -25,8 +25,6 @@ type AlarmControlPanel struct {
 	Encoding               string `json:"encoding"`
 	EntityCategory         string `json:"entity_category"`
 	Icon                   string `json:"icon"`
-	JsonAttributesTemplate string `json:"json_attributes_template"`
-	JsonAttributesTopic    string `json:"json_attributes_topic"`
 	Name                   string `json:"name"`
 	ObjectId               string `json:"object_id"`
 	PayloadArmAway         string `json:"payload_arm_away"`
@@ -60,27 +58,57 @@ type BinarySensor struct {
 		SwVersion        string   `json:"sw_version"`
 		ViaDevice        string   `json:"via_device"`
 	} `json:"device"`
-	DeviceClass            string `json:"device_class"`
-	EnabledByDefault       bool   `json:"enabled_by_default"`
-	Encoding               string `json:"encoding"`
-	EntityCategory         string `json:"entity_category"`
-	ExpireAfter            int    `json:"expire_after"`
-	ForceUpdate            bool   `json:"force_update"`
-	Icon                   string `json:"icon"`
-	JsonAttributesTemplate string `json:"json_attributes_template"`
-	JsonAttributesTopic    string `json:"json_attributes_topic"`
-	Name                   string `json:"name"`
-	ObjectId               string `json:"object_id"`
-	OffDelay               int    `json:"off_delay"`
-	PayloadAvailable       string `json:"payload_available"`
-	PayloadNotAvailable    string `json:"payload_not_available"`
-	PayloadOff             string `json:"payload_off"`
-	PayloadOn              string `json:"payload_on"`
-	Qos                    int    `json:"qos"`
-	StateTopic             string `json:"state_topic"`
-	UniqueId               string `json:"unique_id"`
-	ValueTemplate          string `json:"value_template"`
-	RawId                  string `json:"-"`
+	DeviceClass         string `json:"device_class"`
+	EnabledByDefault    bool   `json:"enabled_by_default"`
+	Encoding            string `json:"encoding"`
+	EntityCategory      string `json:"entity_category"`
+	ExpireAfter         int    `json:"expire_after"`
+	ForceUpdate         bool   `json:"force_update"`
+	Icon                string `json:"icon"`
+	Name                string `json:"name"`
+	ObjectId            string `json:"object_id"`
+	OffDelay            int    `json:"off_delay"`
+	PayloadAvailable    string `json:"payload_available"`
+	PayloadNotAvailable string `json:"payload_not_available"`
+	PayloadOff          string `json:"payload_off"`
+	PayloadOn           string `json:"payload_on"`
+	Qos                 int    `json:"qos"`
+	StateTopic          string `json:"state_topic"`
+	UniqueId            string `json:"unique_id"`
+	ValueTemplate       string `json:"value_template"`
+	RawId               string `json:"-"`
+}
+type Button struct {
+	AvailabilityMode     string `json:"availability_mode"`
+	AvailabilityTemplate string `json:"availability_template"`
+	AvailabilityTopic    string `json:"availability_topic"`
+	CommandTemplate      string `json:"command_template"`
+	CommandTopic         string `json:"command_topic"`
+	Device               struct {
+		ConfigurationUrl string   `json:"configuration_url"`
+		Connections      []string `json:"connections"`
+		Identifiers      []string `json:"identifiers"`
+		Manufacturer     string   `json:"manufacturer"`
+		Model            string   `json:"model"`
+		Name             string   `json:"name"`
+		SuggestedArea    string   `json:"suggested_area"`
+		SwVersion        string   `json:"sw_version"`
+		ViaDevice        string   `json:"via_device"`
+	} `json:"device"`
+	DeviceClass         string `json:"device_class"`
+	EnabledByDefault    bool   `json:"enabled_by_default"`
+	Encoding            string `json:"encoding"`
+	EntityCategory      string `json:"entity_category"`
+	Icon                string `json:"icon"`
+	Name                string `json:"name"`
+	ObjectId            string `json:"object_id"`
+	PayloadAvailable    string `json:"payload_available"`
+	PayloadNotAvailable string `json:"payload_not_available"`
+	PayloadPress        string `json:"payload_press"`
+	Qos                 int    `json:"qos"`
+	Retain              bool   `json:"retain"`
+	UniqueId            string `json:"unique_id"`
+	RawId               string `json:"-"`
 }
 type Camera struct {
 	AvailabilityMode     string `json:"availability_mode"`
@@ -97,16 +125,14 @@ type Camera struct {
 		SwVersion        string   `json:"sw_version"`
 		ViaDevice        string   `json:"via_device"`
 	} `json:"device"`
-	EnabledByDefault       bool   `json:"enabled_by_default"`
-	EntityCategory         string `json:"entity_category"`
-	Icon                   string `json:"icon"`
-	JsonAttributesTemplate string `json:"json_attributes_template"`
-	JsonAttributesTopic    string `json:"json_attributes_topic"`
-	Name                   string `json:"name"`
-	ObjectId               string `json:"object_id"`
-	Topic                  string `json:"topic"`
-	UniqueId               string `json:"unique_id"`
-	RawId                  string `json:"-"`
+	EnabledByDefault bool   `json:"enabled_by_default"`
+	EntityCategory   string `json:"entity_category"`
+	Icon             string `json:"icon"`
+	Name             string `json:"name"`
+	ObjectId         string `json:"object_id"`
+	Topic            string `json:"topic"`
+	UniqueId         string `json:"unique_id"`
+	RawId            string `json:"-"`
 }
 type Cover struct {
 	AvailabilityMode     string `json:"availability_mode"`
@@ -124,47 +150,45 @@ type Cover struct {
 		SwVersion        string   `json:"sw_version"`
 		ViaDevice        string   `json:"via_device"`
 	} `json:"device"`
-	DeviceClass            string `json:"device_class"`
-	EnabledByDefault       bool   `json:"enabled_by_default"`
-	Encoding               string `json:"encoding"`
-	EntityCategory         string `json:"entity_category"`
-	Icon                   string `json:"icon"`
-	JsonAttributesTemplate string `json:"json_attributes_template"`
-	JsonAttributesTopic    string `json:"json_attributes_topic"`
-	Name                   string `json:"name"`
-	ObjectId               string `json:"object_id"`
-	Optimistic             bool   `json:"optimistic"`
-	PayloadAvailable       string `json:"payload_available"`
-	PayloadClose           string `json:"payload_close"`
-	PayloadNotAvailable    string `json:"payload_not_available"`
-	PayloadOpen            string `json:"payload_open"`
-	PayloadStop            string `json:"payload_stop"`
-	PositionClosed         int    `json:"position_closed"`
-	PositionOpen           int    `json:"position_open"`
-	PositionTemplate       string `json:"position_template"`
-	PositionTopic          string `json:"position_topic"`
-	Qos                    int    `json:"qos"`
-	Retain                 bool   `json:"retain"`
-	SetPositionTemplate    string `json:"set_position_template"`
-	SetPositionTopic       string `json:"set_position_topic"`
-	StateClosed            string `json:"state_closed"`
-	StateClosing           string `json:"state_closing"`
-	StateOpen              string `json:"state_open"`
-	StateOpening           string `json:"state_opening"`
-	StateStopped           string `json:"state_stopped"`
-	StateTopic             string `json:"state_topic"`
-	TiltClosedValue        int    `json:"tilt_closed_value"`
-	TiltCommandTemplate    string `json:"tilt_command_template"`
-	TiltCommandTopic       string `json:"tilt_command_topic"`
-	TiltMax                int    `json:"tilt_max"`
-	TiltMin                int    `json:"tilt_min"`
-	TiltOpenedValue        int    `json:"tilt_opened_value"`
-	TiltOptimistic         bool   `json:"tilt_optimistic"`
-	TiltStatusTemplate     string `json:"tilt_status_template"`
-	TiltStatusTopic        string `json:"tilt_status_topic"`
-	UniqueId               string `json:"unique_id"`
-	ValueTemplate          string `json:"value_template"`
-	RawId                  string `json:"-"`
+	DeviceClass         string `json:"device_class"`
+	EnabledByDefault    bool   `json:"enabled_by_default"`
+	Encoding            string `json:"encoding"`
+	EntityCategory      string `json:"entity_category"`
+	Icon                string `json:"icon"`
+	Name                string `json:"name"`
+	ObjectId            string `json:"object_id"`
+	Optimistic          bool   `json:"optimistic"`
+	PayloadAvailable    string `json:"payload_available"`
+	PayloadClose        string `json:"payload_close"`
+	PayloadNotAvailable string `json:"payload_not_available"`
+	PayloadOpen         string `json:"payload_open"`
+	PayloadStop         string `json:"payload_stop"`
+	PositionClosed      int    `json:"position_closed"`
+	PositionOpen        int    `json:"position_open"`
+	PositionTemplate    string `json:"position_template"`
+	PositionTopic       string `json:"position_topic"`
+	Qos                 int    `json:"qos"`
+	Retain              bool   `json:"retain"`
+	SetPositionTemplate string `json:"set_position_template"`
+	SetPositionTopic    string `json:"set_position_topic"`
+	StateClosed         string `json:"state_closed"`
+	StateClosing        string `json:"state_closing"`
+	StateOpen           string `json:"state_open"`
+	StateOpening        string `json:"state_opening"`
+	StateStopped        string `json:"state_stopped"`
+	StateTopic          string `json:"state_topic"`
+	TiltClosedValue     int    `json:"tilt_closed_value"`
+	TiltCommandTemplate string `json:"tilt_command_template"`
+	TiltCommandTopic    string `json:"tilt_command_topic"`
+	TiltMax             int    `json:"tilt_max"`
+	TiltMin             int    `json:"tilt_min"`
+	TiltOpenedValue     int    `json:"tilt_opened_value"`
+	TiltOptimistic      bool   `json:"tilt_optimistic"`
+	TiltStatusTemplate  string `json:"tilt_status_template"`
+	TiltStatusTopic     string `json:"tilt_status_topic"`
+	UniqueId            string `json:"unique_id"`
+	ValueTemplate       string `json:"value_template"`
+	RawId               string `json:"-"`
 }
 type DeviceTracker struct {
 	Devices        []string `json:"devices"`
@@ -216,8 +240,6 @@ type Fan struct {
 	Encoding                   string   `json:"encoding"`
 	EntityCategory             string   `json:"entity_category"`
 	Icon                       string   `json:"icon"`
-	JsonAttributesTemplate     string   `json:"json_attributes_template"`
-	JsonAttributesTopic        string   `json:"json_attributes_topic"`
 	Name                       string   `json:"name"`
 	ObjectId                   string   `json:"object_id"`
 	Optimistic                 bool     `json:"optimistic"`
@@ -273,8 +295,6 @@ type Humidifier struct {
 	Encoding                      string   `json:"encoding"`
 	EntityCategory                string   `json:"entity_category"`
 	Icon                          string   `json:"icon"`
-	JsonAttributesTemplate        string   `json:"json_attributes_template"`
-	JsonAttributesTopic           string   `json:"json_attributes_topic"`
 	MaxHumidity                   int      `json:"max_humidity"`
 	MinHumidity                   int      `json:"min_humidity"`
 	ModeCommandTemplate           string   `json:"mode_command_template"`
@@ -334,8 +354,6 @@ type Climate struct {
 	FanModes                       []string `json:"fan_modes"`
 	Icon                           string   `json:"icon"`
 	Initial                        int      `json:"initial"`
-	JsonAttributesTemplate         string   `json:"json_attributes_template"`
-	JsonAttributesTopic            string   `json:"json_attributes_topic"`
 	MaxTemp                        float64  `json:"max_temp"`
 	MinTemp                        float64  `json:"min_temp"`
 	ModeCommandTemplate            string   `json:"mode_command_template"`
@@ -408,44 +426,44 @@ type Light struct {
 		SwVersion        string   `json:"sw_version"`
 		ViaDevice        string   `json:"via_device"`
 	} `json:"device"`
-	EffectCommandTemplate  string   `json:"effect_command_template"`
-	EffectCommandTopic     string   `json:"effect_command_topic"`
-	EffectList             []string `json:"effect_list"`
-	EffectStateTopic       string   `json:"effect_state_topic"`
-	EffectValueTemplate    string   `json:"effect_value_template"`
-	EnabledByDefault       bool     `json:"enabled_by_default"`
-	Encoding               string   `json:"encoding"`
-	EntityCategory         string   `json:"entity_category"`
-	HsValueTemplate        string   `json:"hs_value_template"`
-	Icon                   string   `json:"icon"`
-	JsonAttributesTemplate string   `json:"json_attributes_template"`
-	JsonAttributesTopic    string   `json:"json_attributes_topic"`
-	MaxMireds              int      `json:"max_mireds"`
-	MinMireds              int      `json:"min_mireds"`
-	Name                   string   `json:"name"`
-	ObjectId               string   `json:"object_id"`
-	OnCommandType          string   `json:"on_command_type"`
-	Optimistic             bool     `json:"optimistic"`
-	PayloadAvailable       string   `json:"payload_available"`
-	PayloadNotAvailable    string   `json:"payload_not_available"`
-	PayloadOff             string   `json:"payload_off"`
-	PayloadOn              string   `json:"payload_on"`
-	Qos                    int      `json:"qos"`
-	Retain                 bool     `json:"retain"`
-	RgbCommandTemplate     string   `json:"rgb_command_template"`
-	RgbCommandTopic        string   `json:"rgb_command_topic"`
-	RgbStateTopic          string   `json:"rgb_state_topic"`
-	RgbValueTemplate       string   `json:"rgb_value_template"`
-	Schema                 string   `json:"schema"`
-	StateTopic             string   `json:"state_topic"`
-	StateValueTemplate     string   `json:"state_value_template"`
-	UniqueId               string   `json:"unique_id"`
-	WhiteCommandTopic      string   `json:"white_command_topic"`
-	WhiteScale             int      `json:"white_scale"`
-	XyCommandTopic         string   `json:"xy_command_topic"`
-	XyStateTopic           string   `json:"xy_state_topic"`
-	XyValueTemplate        string   `json:"xy_value_template"`
-	RawId                  string   `json:"-"`
+	EffectCommandTemplate string   `json:"effect_command_template"`
+	EffectCommandTopic    string   `json:"effect_command_topic"`
+	EffectList            []string `json:"effect_list"`
+	EffectStateTopic      string   `json:"effect_state_topic"`
+	EffectValueTemplate   string   `json:"effect_value_template"`
+	EnabledByDefault      bool     `json:"enabled_by_default"`
+	Encoding              string   `json:"encoding"`
+	EntityCategory        string   `json:"entity_category"`
+	HsCommandTopic        string   `json:"hs_command_topic"`
+	HsStateTopic          string   `json:"hs_state_topic"`
+	HsValueTemplate       string   `json:"hs_value_template"`
+	Icon                  string   `json:"icon"`
+	MaxMireds             int      `json:"max_mireds"`
+	MinMireds             int      `json:"min_mireds"`
+	Name                  string   `json:"name"`
+	ObjectId              string   `json:"object_id"`
+	OnCommandType         string   `json:"on_command_type"`
+	Optimistic            bool     `json:"optimistic"`
+	PayloadAvailable      string   `json:"payload_available"`
+	PayloadNotAvailable   string   `json:"payload_not_available"`
+	PayloadOff            string   `json:"payload_off"`
+	PayloadOn             string   `json:"payload_on"`
+	Qos                   int      `json:"qos"`
+	Retain                bool     `json:"retain"`
+	RgbCommandTemplate    string   `json:"rgb_command_template"`
+	RgbCommandTopic       string   `json:"rgb_command_topic"`
+	RgbStateTopic         string   `json:"rgb_state_topic"`
+	RgbValueTemplate      string   `json:"rgb_value_template"`
+	Schema                string   `json:"schema"`
+	StateTopic            string   `json:"state_topic"`
+	StateValueTemplate    string   `json:"state_value_template"`
+	UniqueId              string   `json:"unique_id"`
+	WhiteCommandTopic     string   `json:"white_command_topic"`
+	WhiteScale            int      `json:"white_scale"`
+	XyCommandTopic        string   `json:"xy_command_topic"`
+	XyStateTopic          string   `json:"xy_state_topic"`
+	XyValueTemplate       string   `json:"xy_value_template"`
+	RawId                 string   `json:"-"`
 }
 type Lock struct {
 	AvailabilityMode     string `json:"availability_mode"`
@@ -463,28 +481,26 @@ type Lock struct {
 		SwVersion        string   `json:"sw_version"`
 		ViaDevice        string   `json:"via_device"`
 	} `json:"device"`
-	EnabledByDefault       bool   `json:"enabled_by_default"`
-	Encoding               string `json:"encoding"`
-	EntityCategory         string `json:"entity_category"`
-	Icon                   string `json:"icon"`
-	JsonAttributesTemplate string `json:"json_attributes_template"`
-	JsonAttributesTopic    string `json:"json_attributes_topic"`
-	Name                   string `json:"name"`
-	ObjectId               string `json:"object_id"`
-	Optimistic             bool   `json:"optimistic"`
-	PayloadAvailable       string `json:"payload_available"`
-	PayloadLock            string `json:"payload_lock"`
-	PayloadNotAvailable    string `json:"payload_not_available"`
-	PayloadOpen            string `json:"payload_open"`
-	PayloadUnlock          string `json:"payload_unlock"`
-	Qos                    int    `json:"qos"`
-	Retain                 bool   `json:"retain"`
-	StateLocked            string `json:"state_locked"`
-	StateTopic             string `json:"state_topic"`
-	StateUnlocked          string `json:"state_unlocked"`
-	UniqueId               string `json:"unique_id"`
-	ValueTemplate          string `json:"value_template"`
-	RawId                  string `json:"-"`
+	EnabledByDefault    bool   `json:"enabled_by_default"`
+	Encoding            string `json:"encoding"`
+	EntityCategory      string `json:"entity_category"`
+	Icon                string `json:"icon"`
+	Name                string `json:"name"`
+	ObjectId            string `json:"object_id"`
+	Optimistic          bool   `json:"optimistic"`
+	PayloadAvailable    string `json:"payload_available"`
+	PayloadLock         string `json:"payload_lock"`
+	PayloadNotAvailable string `json:"payload_not_available"`
+	PayloadOpen         string `json:"payload_open"`
+	PayloadUnlock       string `json:"payload_unlock"`
+	Qos                 int    `json:"qos"`
+	Retain              bool   `json:"retain"`
+	StateLocked         string `json:"state_locked"`
+	StateTopic          string `json:"state_topic"`
+	StateUnlocked       string `json:"state_unlocked"`
+	UniqueId            string `json:"unique_id"`
+	ValueTemplate       string `json:"value_template"`
+	RawId               string `json:"-"`
 }
 type Number struct {
 	AvailabilityMode  string `json:"availability_mode"`
@@ -502,26 +518,24 @@ type Number struct {
 		SwVersion        string   `json:"sw_version"`
 		ViaDevice        string   `json:"via_device"`
 	} `json:"device"`
-	EnabledByDefault       bool    `json:"enabled_by_default"`
-	Encoding               string  `json:"encoding"`
-	EntityCategory         string  `json:"entity_category"`
-	Icon                   string  `json:"icon"`
-	JsonAttributesTemplate string  `json:"json_attributes_template"`
-	JsonAttributesTopic    string  `json:"json_attributes_topic"`
-	Max                    float64 `json:"max"`
-	Min                    float64 `json:"min"`
-	Name                   string  `json:"name"`
-	ObjectId               string  `json:"object_id"`
-	Optimistic             bool    `json:"optimistic"`
-	PayloadReset           string  `json:"payload_reset"`
-	Qos                    int     `json:"qos"`
-	Retain                 bool    `json:"retain"`
-	StateTopic             string  `json:"state_topic"`
-	Step                   float64 `json:"step"`
-	UniqueId               string  `json:"unique_id"`
-	UnitOfMeasurement      string  `json:"unit_of_measurement"`
-	ValueTemplate          string  `json:"value_template"`
-	RawId                  string  `json:"-"`
+	EnabledByDefault  bool    `json:"enabled_by_default"`
+	Encoding          string  `json:"encoding"`
+	EntityCategory    string  `json:"entity_category"`
+	Icon              string  `json:"icon"`
+	Max               float64 `json:"max"`
+	Min               float64 `json:"min"`
+	Name              string  `json:"name"`
+	ObjectId          string  `json:"object_id"`
+	Optimistic        bool    `json:"optimistic"`
+	PayloadReset      string  `json:"payload_reset"`
+	Qos               int     `json:"qos"`
+	Retain            bool    `json:"retain"`
+	StateTopic        string  `json:"state_topic"`
+	Step              float64 `json:"step"`
+	UniqueId          string  `json:"unique_id"`
+	UnitOfMeasurement string  `json:"unit_of_measurement"`
+	ValueTemplate     string  `json:"value_template"`
+	RawId             string  `json:"-"`
 }
 type Scene struct {
 	AvailabilityMode     string `json:"availability_mode"`
@@ -558,22 +572,20 @@ type Select struct {
 		SwVersion        string   `json:"sw_version"`
 		ViaDevice        string   `json:"via_device"`
 	} `json:"device"`
-	EnabledByDefault       bool     `json:"enabled_by_default"`
-	Encoding               string   `json:"encoding"`
-	EntityCategory         string   `json:"entity_category"`
-	Icon                   string   `json:"icon"`
-	JsonAttributesTemplate string   `json:"json_attributes_template"`
-	JsonAttributesTopic    string   `json:"json_attributes_topic"`
-	Name                   string   `json:"name"`
-	ObjectId               string   `json:"object_id"`
-	Optimistic             bool     `json:"optimistic"`
-	Options                []string `json:"options"`
-	Qos                    int      `json:"qos"`
-	Retain                 bool     `json:"retain"`
-	StateTopic             string   `json:"state_topic"`
-	UniqueId               string   `json:"unique_id"`
-	ValueTemplate          string   `json:"value_template"`
-	RawId                  string   `json:"-"`
+	EnabledByDefault bool     `json:"enabled_by_default"`
+	Encoding         string   `json:"encoding"`
+	EntityCategory   string   `json:"entity_category"`
+	Icon             string   `json:"icon"`
+	Name             string   `json:"name"`
+	ObjectId         string   `json:"object_id"`
+	Optimistic       bool     `json:"optimistic"`
+	Options          []string `json:"options"`
+	Qos              int      `json:"qos"`
+	Retain           bool     `json:"retain"`
+	StateTopic       string   `json:"state_topic"`
+	UniqueId         string   `json:"unique_id"`
+	ValueTemplate    string   `json:"value_template"`
+	RawId            string   `json:"-"`
 }
 type Sensor struct {
 	AvailabilityMode     string `json:"availability_mode"`
@@ -597,8 +609,6 @@ type Sensor struct {
 	ExpireAfter            int    `json:"expire_after"`
 	ForceUpdate            bool   `json:"force_update"`
 	Icon                   string `json:"icon"`
-	JsonAttributesTemplate string `json:"json_attributes_template"`
-	JsonAttributesTopic    string `json:"json_attributes_topic"`
 	LastResetValueTemplate string `json:"last_reset_value_template"`
 	Name                   string `json:"name"`
 	ObjectId               string `json:"object_id"`
@@ -611,6 +621,47 @@ type Sensor struct {
 	UnitOfMeasurement      string `json:"unit_of_measurement"`
 	ValueTemplate          string `json:"value_template"`
 	RawId                  string `json:"-"`
+}
+type Siren struct {
+	AvailabilityMode     string   `json:"availability_mode"`
+	AvailabilityTemplate string   `json:"availability_template"`
+	AvailabilityTopic    string   `json:"availability_topic"`
+	AvailableTones       []string `json:"available_tones"`
+	CommandOffTemplate   string   `json:"command_off_template"`
+	CommandTemplate      string   `json:"command_template"`
+	CommandTopic         string   `json:"command_topic"`
+	Device               struct {
+		ConfigurationUrl string   `json:"configuration_url"`
+		Connections      []string `json:"connections"`
+		Identifiers      []string `json:"identifiers"`
+		Manufacturer     string   `json:"manufacturer"`
+		Model            string   `json:"model"`
+		Name             string   `json:"name"`
+		SuggestedArea    string   `json:"suggested_area"`
+		SwVersion        string   `json:"sw_version"`
+		ViaDevice        string   `json:"via_device"`
+	} `json:"device"`
+	EnabledByDefault    bool   `json:"enabled_by_default"`
+	Encoding            string `json:"encoding"`
+	EntityCategory      string `json:"entity_category"`
+	Icon                string `json:"icon"`
+	Name                string `json:"name"`
+	ObjectId            string `json:"object_id"`
+	Optimistic          bool   `json:"optimistic"`
+	PayloadAvailable    string `json:"payload_available"`
+	PayloadNotAvailable string `json:"payload_not_available"`
+	PayloadOff          string `json:"payload_off"`
+	PayloadOn           string `json:"payload_on"`
+	Qos                 int    `json:"qos"`
+	Retain              bool   `json:"retain"`
+	StateOff            string `json:"state_off"`
+	StateOn             string `json:"state_on"`
+	StateTopic          string `json:"state_topic"`
+	StateValueTemplate  string `json:"state_value_template"`
+	SupportDuration     bool   `json:"support_duration"`
+	SupportVolumeSet    bool   `json:"support_volume_set"`
+	UniqueId            string `json:"unique_id"`
+	RawId               string `json:"-"`
 }
 type Switch struct {
 	AvailabilityMode     string `json:"availability_mode"`
@@ -628,28 +679,26 @@ type Switch struct {
 		SwVersion        string   `json:"sw_version"`
 		ViaDevice        string   `json:"via_device"`
 	} `json:"device"`
-	DeviceClass            string `json:"device_class"`
-	EnabledByDefault       bool   `json:"enabled_by_default"`
-	Encoding               string `json:"encoding"`
-	EntityCategory         string `json:"entity_category"`
-	Icon                   string `json:"icon"`
-	JsonAttributesTemplate string `json:"json_attributes_template"`
-	JsonAttributesTopic    string `json:"json_attributes_topic"`
-	Name                   string `json:"name"`
-	ObjectId               string `json:"object_id"`
-	Optimistic             bool   `json:"optimistic"`
-	PayloadAvailable       string `json:"payload_available"`
-	PayloadNotAvailable    string `json:"payload_not_available"`
-	PayloadOff             string `json:"payload_off"`
-	PayloadOn              string `json:"payload_on"`
-	Qos                    int    `json:"qos"`
-	Retain                 bool   `json:"retain"`
-	StateOff               string `json:"state_off"`
-	StateOn                string `json:"state_on"`
-	StateTopic             string `json:"state_topic"`
-	UniqueId               string `json:"unique_id"`
-	ValueTemplate          string `json:"value_template"`
-	RawId                  string `json:"-"`
+	DeviceClass         string `json:"device_class"`
+	EnabledByDefault    bool   `json:"enabled_by_default"`
+	Encoding            string `json:"encoding"`
+	EntityCategory      string `json:"entity_category"`
+	Icon                string `json:"icon"`
+	Name                string `json:"name"`
+	ObjectId            string `json:"object_id"`
+	Optimistic          bool   `json:"optimistic"`
+	PayloadAvailable    string `json:"payload_available"`
+	PayloadNotAvailable string `json:"payload_not_available"`
+	PayloadOff          string `json:"payload_off"`
+	PayloadOn           string `json:"payload_on"`
+	Qos                 int    `json:"qos"`
+	Retain              bool   `json:"retain"`
+	StateOff            string `json:"state_off"`
+	StateOn             string `json:"state_on"`
+	StateTopic          string `json:"state_topic"`
+	UniqueId            string `json:"unique_id"`
+	ValueTemplate       string `json:"value_template"`
+	RawId               string `json:"-"`
 }
 type Tag struct {
 	Device struct {
@@ -683,29 +732,27 @@ type Vacuum struct {
 		SwVersion        string   `json:"sw_version"`
 		ViaDevice        string   `json:"via_device"`
 	} `json:"device"`
-	Encoding               string   `json:"encoding"`
-	FanSpeedList           []string `json:"fan_speed_list"`
-	JsonAttributesTemplate string   `json:"json_attributes_template"`
-	JsonAttributesTopic    string   `json:"json_attributes_topic"`
-	Name                   string   `json:"name"`
-	ObjectId               string   `json:"object_id"`
-	PayloadAvailable       string   `json:"payload_available"`
-	PayloadCleanSpot       string   `json:"payload_clean_spot"`
-	PayloadLocate          string   `json:"payload_locate"`
-	PayloadNotAvailable    string   `json:"payload_not_available"`
-	PayloadPause           string   `json:"payload_pause"`
-	PayloadReturnToBase    string   `json:"payload_return_to_base"`
-	PayloadStart           string   `json:"payload_start"`
-	PayloadStop            string   `json:"payload_stop"`
-	Qos                    int      `json:"qos"`
-	Retain                 bool     `json:"retain"`
-	Schema                 string   `json:"schema"`
-	SendCommandTopic       string   `json:"send_command_topic"`
-	SetFanSpeedTopic       string   `json:"set_fan_speed_topic"`
-	StateTopic             string   `json:"state_topic"`
-	SupportedFeatures      []string `json:"supported_features"`
-	UniqueId               string   `json:"unique_id"`
-	RawId                  string   `json:"-"`
+	Encoding            string   `json:"encoding"`
+	FanSpeedList        []string `json:"fan_speed_list"`
+	Name                string   `json:"name"`
+	ObjectId            string   `json:"object_id"`
+	PayloadAvailable    string   `json:"payload_available"`
+	PayloadCleanSpot    string   `json:"payload_clean_spot"`
+	PayloadLocate       string   `json:"payload_locate"`
+	PayloadNotAvailable string   `json:"payload_not_available"`
+	PayloadPause        string   `json:"payload_pause"`
+	PayloadReturnToBase string   `json:"payload_return_to_base"`
+	PayloadStart        string   `json:"payload_start"`
+	PayloadStop         string   `json:"payload_stop"`
+	Qos                 int      `json:"qos"`
+	Retain              bool     `json:"retain"`
+	Schema              string   `json:"schema"`
+	SendCommandTopic    string   `json:"send_command_topic"`
+	SetFanSpeedTopic    string   `json:"set_fan_speed_topic"`
+	StateTopic          string   `json:"state_topic"`
+	SupportedFeatures   []string `json:"supported_features"`
+	UniqueId            string   `json:"unique_id"`
+	RawId               string   `json:"-"`
 }
 type Device interface {
 	GetRawId() string

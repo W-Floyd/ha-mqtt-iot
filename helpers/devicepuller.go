@@ -18,6 +18,7 @@ import (
 var DeviceNames = []string{
 	"alarm_control_panel",
 	"binary_sensor",
+	"button",
 	"camera",
 	"cover",
 	"device_tracker",
@@ -31,6 +32,7 @@ var DeviceNames = []string{
 	"scene",
 	"select",
 	"sensor",
+	"siren",
 	"switch",
 	"tag",
 	"vacuum",
@@ -135,8 +137,6 @@ func fetchDocument(devicename string) ([]byte, error) {
 	targetFile := "../helpers/cache/" + devicename + ".md"
 
 	if exists(targetFile) && PullNew == false {
-
-		log.Println("Using " + targetFile)
 
 		data, err := ioutil.ReadFile(targetFile)
 		if err == nil {

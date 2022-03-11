@@ -24,6 +24,18 @@ func (d *BinarySensor) PopulateDevice() {
 	d.Device.Name = InstanceName
 	d.Device.SwVersion = SWVersion
 }
+func (d Button) GetRawId() string {
+	return "button"
+}
+func (d Button) GetUniqueId() string {
+	return d.UniqueId
+}
+func (d *Button) PopulateDevice() {
+	d.Device.Manufacturer = Manufacturer
+	d.Device.Model = SoftwareName
+	d.Device.Name = InstanceName
+	d.Device.SwVersion = SWVersion
+}
 func (d Camera) GetRawId() string {
 	return "camera"
 }
@@ -165,6 +177,18 @@ func (d Sensor) GetUniqueId() string {
 	return d.UniqueId
 }
 func (d *Sensor) PopulateDevice() {
+	d.Device.Manufacturer = Manufacturer
+	d.Device.Model = SoftwareName
+	d.Device.Name = InstanceName
+	d.Device.SwVersion = SWVersion
+}
+func (d Siren) GetRawId() string {
+	return "siren"
+}
+func (d Siren) GetUniqueId() string {
+	return d.UniqueId
+}
+func (d *Siren) PopulateDevice() {
 	d.Device.Manufacturer = Manufacturer
 	d.Device.Model = SoftwareName
 	d.Device.Name = InstanceName
