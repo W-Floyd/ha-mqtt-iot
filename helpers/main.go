@@ -50,19 +50,14 @@ func main() {
 
 	for _, d := range devices {
 
+		camName := strcase.ToCamel(d.Name)
+
 		// d.GetRawID()
 		files[d.Name].Func().Params(
 			jen.Id("d").Id(strcase.ToCamel(d.Name)),
 		).Id("GetRawId").Params().String().Block(
 			jen.Return(jen.Lit(d.Name)),
 		)
-
-		// // d.GetMQTTClient()
-		// files[d.Name].Func().Params(
-		// 	jen.Id("d").Id(strcase.ToCamel(d.Name)),
-		// ).Id("GetMQTTClient").Params().Qual("github.com/eclipse/paho.mqtt.golang", "Client").Block(
-		// 	jen.Return(jen.Op("*").Id("d").Dot("MQTT").Dot("Client")),
-		// )
 
 		// d.AddMessageHandler()
 		files[d.Name].Func().Params(
@@ -151,7 +146,32 @@ func main() {
 				for _, key := range sortedKeys {
 					if strings.HasSuffix(key, "_topic") {
 						if !IsCommand(key, d) {
-							// TODO - implement UpdateState for all state topics
+							trimmed := strings.TrimSuffix(key, "_topic")
+							cam := strcase.ToCamel(key)
+							camTrimmed := strcase.ToCamel(trimmed)
+							g.Add(
+								jen.If(
+									jen.Id("d").Dot(cam).Op("!=").Lit(""),
+								).Block(
+									jen.Id("state").Op(":=").Id("d").Dot(strcase.ToCamel(trimmed+"_func")).Params(),
+									jen.If(
+										jen.Id("state").Op("!=").Id("stateStore").Dot(strcase.ToCamel(d.Name)).Dot(camTrimmed).Index(jen.Id("d").Dot("UniqueId")).
+											Op("||").
+											Id("d").Dot("MQTT").Dot("ForceUpdate"),
+										// state != stateStore.Light.BrightnessState[device.UniqueID] || device.ForceUpdateMQTT {
+									).Block(
+										jen.Id("c").Op(":=").Op("*").Id("d").Dot("MQTT").Dot("Client"),
+										jen.Id("token").Op(":=").Id("c").Dot("Publish").Params(
+											jen.Id("d").Dot(cam),
+											jen.Id("qos"),
+											jen.Id("retain"),
+											jen.Id("state"),
+										),
+										jen.Id("stateStore").Dot(camName).Dot(camTrimmed).Index(jen.Id("d").Dot("UniqueId")).Op("=").Id("state"),
+										jen.Id("token").Dot("Wait").Params(),
+									),
+								),
+							)
 						}
 					}
 				}
@@ -163,13 +183,75 @@ func main() {
 			jen.Id("d").Id(strcase.ToCamel(d.Name)),
 		).Id("Subscribe").Params().BlockFunc(
 			func(g *jen.Group) {
+
+				g.Add(
+					jen.Id("c").Op(":=").Op("*").Id("d").Dot("MQTT").Dot("Client"),
+				)
+
+				g.Add(
+					jen.List(jen.Id("message"), jen.Err()).Op(":=").Qual("encoding/json", "Marshal").Params(jen.Id("d")),
+				)
+				g.Add(
+					jen.If(
+						jen.Id("err").Op("!=").Id("nil"),
+					).Block(
+						jen.Qual("log", "Fatal").Params(jen.Err()),
+					),
+				)
+
 				for _, key := range sortedKeys {
 					if strings.HasSuffix(key, "_topic") {
-						if !IsCommand(key, d) {
-							// TODO - implement Subscribe to all topics
+						if IsCommand(key, d) {
+							// trimmed := strings.TrimSuffix(key, "_topic")
+							cam := strcase.ToCamel(key)
+							// camTrimmed := strcase.ToCamel(trimmed)
+
+							g.Add(
+								jen.If(
+									jen.Id("d").Dot(cam).Op("!=").Lit(""),
+								).Block(
+									jen.Id("t").Op(":=").Id("c").Dot("Subscribe").Params(
+										jen.Id("d").Dot(cam),
+										jen.Lit(0),
+										jen.Id("d").Dot("MQTT").Dot("MessageHandler"),
+									),
+									jen.Id("t").Dot("Wait").Params(),
+									jen.If(
+										jen.Id("t").Dot("Error").Params().Op("!=").Nil(),
+									).Block(
+										jen.Qual("log", "Fatal").Params(jen.Id("t").Dot("Error").Params()),
+									),
+								),
+							)
 						}
 					}
 				}
+
+				g.Add(
+					jen.Id("token").Op(":=").Id("c").Dot("Publish").Params(
+						jen.Id("GetDiscoveryTopic").Params(jen.Id("d")),
+						jen.Lit(0),
+						jen.Lit(true),
+						jen.Id("message"),
+					),
+				)
+
+				g.Add(
+					jen.Id("token").Dot("Wait").Params(),
+				)
+
+				g.Add(
+					jen.Qual("time", "Sleep").Params(jen.Lit(500).Op("*").Qual("time", "Millisecond")),
+				)
+
+				g.Add(
+					jen.Id("d").Dot("AnnounceAvailable").Params(),
+				)
+
+				g.Add(
+					jen.Id("d").Dot("UpdateState").Params(),
+				)
+
 			},
 		)
 
@@ -178,10 +260,45 @@ func main() {
 			jen.Id("d").Id(strcase.ToCamel(d.Name)),
 		).Id("UnSubscribe").Params().BlockFunc(
 			func(g *jen.Group) {
+				g.Add(
+					jen.Id("c").Op(":=").Op("*").Id("d").Dot("MQTT").Dot("Client"),
+				)
+
+				g.Add(
+					jen.Id("token").Op(":=").Id("c").Dot("Publish").Params(
+						jen.Id("d").Dot("AvailabilityTopic"),
+						jen.Id("qos"),
+						jen.Id("retain"),
+						jen.Lit("offline"),
+					),
+				)
+
+				g.Add(
+					jen.Id("token").Dot("Wait").Params(),
+				)
+
 				for _, key := range sortedKeys {
 					if strings.HasSuffix(key, "_topic") {
-						if !IsCommand(key, d) {
-							// TODO - implement Subscribe to all topics
+						if IsCommand(key, d) {
+							// trimmed := strings.TrimSuffix(key, "_topic")
+							cam := strcase.ToCamel(key)
+							// camTrimmed := strcase.ToCamel(trimmed)
+
+							g.Add(
+								jen.If(
+									jen.Id("d").Dot(cam).Op("!=").Lit(""),
+								).Block(
+									jen.Id("t").Op(":=").Id("c").Dot("Unsubscribe").Params(
+										jen.Id("d").Dot(cam),
+									),
+									jen.Id("t").Dot("Wait").Params(),
+									jen.If(
+										jen.Id("t").Dot("Error").Params().Op("!=").Nil(),
+									).Block(
+										jen.Qual("log", "Fatal").Params(jen.Id("t").Dot("Error").Params()),
+									),
+								),
+							)
 						}
 					}
 				}
@@ -193,13 +310,20 @@ func main() {
 			jen.Id("d").Id(strcase.ToCamel(d.Name)),
 		).Id("AnnounceAvailable").Params().BlockFunc(
 			func(g *jen.Group) {
-				for _, key := range sortedKeys {
-					if strings.HasSuffix(key, "_topic") {
-						if !IsCommand(key, d) {
-							// TODO - implement Subscribe to all topics
-						}
-					}
-				}
+				g.Add(
+					jen.Id("c").Op(":=").Op("*").Id("d").Dot("MQTT").Dot("Client"),
+				)
+				g.Add(
+					jen.Id("token").Op(":=").Id("c").Dot("Publish").Params(
+						jen.Id("d").Dot("AvailabilityTopic"),
+						jen.Id("qos"),
+						jen.Id("retain"),
+						jen.Lit("online"),
+					),
+				)
+				g.Add(
+					jen.Id("token").Dot("Wait").Params(),
+				)
 			},
 		)
 

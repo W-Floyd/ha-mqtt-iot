@@ -1,6 +1,11 @@
 package hadiscovery
 
-import mqtt "github.com/eclipse/paho.mqtt.golang"
+import (
+	"encoding/json"
+	mqtt "github.com/eclipse/paho.mqtt.golang"
+	"log"
+	"time"
+)
 
 func (d Light) GetRawId() string {
 	return "light"
@@ -64,10 +69,62 @@ type Light struct {
 	MQTT                MQTTFields    `json:"-"`
 }
 
-func (d Light) UpdateState()       {}
-func (d Light) Subscribe()         {}
-func (d Light) UnSubscribe()       {}
-func (d Light) AnnounceAvailable() {}
+func (d Light) UpdateState() {
+	if d.AvailabilityTopic != "" {
+		state := d.AvailabilityFunc()
+		if state != stateStore.Light.Availability[d.UniqueId] || d.MQTT.ForceUpdate {
+			c := *d.MQTT.Client
+			token := c.Publish(d.AvailabilityTopic, qos, retain, state)
+			stateStore.Light.Availability[d.UniqueId] = state
+			token.Wait()
+		}
+	}
+	if d.StateTopic != "" {
+		state := d.StateFunc()
+		if state != stateStore.Light.State[d.UniqueId] || d.MQTT.ForceUpdate {
+			c := *d.MQTT.Client
+			token := c.Publish(d.StateTopic, qos, retain, state)
+			stateStore.Light.State[d.UniqueId] = state
+			token.Wait()
+		}
+	}
+}
+func (d Light) Subscribe() {
+	c := *d.MQTT.Client
+	message, err := json.Marshal(d)
+	if err != nil {
+		log.Fatal(err)
+	}
+	if d.CommandTopic != "" {
+		t := c.Subscribe(d.CommandTopic, 0, d.MQTT.MessageHandler)
+		t.Wait()
+		if t.Error() != nil {
+			log.Fatal(t.Error())
+		}
+	}
+	token := c.Publish(GetDiscoveryTopic(d), 0, true, message)
+	token.Wait()
+	time.Sleep(500 * time.Millisecond)
+	d.AnnounceAvailable()
+	d.UpdateState()
+}
+func (d Light) UnSubscribe() {
+	c := *d.MQTT.Client
+	token := c.Publish(d.AvailabilityTopic, qos, retain, "offline")
+	token.Wait()
+	if d.CommandTopic != "" {
+		t := c.Unsubscribe(d.CommandTopic)
+		t.Wait()
+		if t.Error() != nil {
+			log.Fatal(t.Error())
+		}
+	}
+}
+func (d Light) AnnounceAvailable() {
+	c := *d.MQTT.Client
+	token := c.Publish(d.AvailabilityTopic, qos, retain, "online")
+	token.Wait()
+}
 func (d Light) Initialize() {
 	d.Retain = false
 	d.PopulateDevice()
