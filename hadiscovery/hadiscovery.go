@@ -17,6 +17,8 @@ var (
 	qos    byte = 0
 )
 
+var topicStore = make(map[string]*func(mqtt.Message, mqtt.Client))
+
 // DiscoveryPrefix is the prefix that HA uses to discover on.
 // Does not usually need changing.
 const DiscoveryPrefix = "homeassistant"

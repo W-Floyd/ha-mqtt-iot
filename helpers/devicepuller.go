@@ -208,3 +208,30 @@ func (dev *Device) FieldAdder(key string) *jen.Statement {
 
 	return TypeTranslator(t, jen.Id(strcase.ToCamel(key))).Tag(map[string]string{"json": key})
 }
+
+func (dev *Device) FunctionAdder(key string) *jen.Statement {
+
+	retval := jen.Statement{}
+
+	if strings.HasSuffix(key, "_topic") {
+
+		nk := strings.TrimSuffix(key, "_topic")
+
+		retval.Id(strcase.ToCamel(nk) + "Func").Func()
+
+		if IsCommand(key, *dev) {
+			retval.Params(
+				jen.Qual("github.com/eclipse/paho.mqtt.golang", "Message"),
+				jen.Qual("github.com/eclipse/paho.mqtt.golang", "Client"),
+			)
+		} else {
+			retval.Params().String()
+		}
+
+		retval.Tag(map[string]string{"json": "-"})
+
+	}
+
+	return &retval
+
+}

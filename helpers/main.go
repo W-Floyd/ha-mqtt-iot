@@ -15,6 +15,8 @@ func main() {
 
 	devicetypesfile := jen.NewFilePathName("../hadiscovery/devicetypes.go", "hadiscovery")
 
+	devicetypesfile.ImportAlias("github.com/eclipse/paho.mqtt.golang", "mqtt")
+
 	deviceinitfile := jen.NewFilePathName("../hadiscovery/deviceinit.go", "hadiscovery")
 
 	devicefunctionsfile := jen.NewFilePathName("../hadiscovery/devicefunctions.go", "hadiscovery")
@@ -50,7 +52,7 @@ func main() {
 		// Add standalone base level fields
 		for _, key := range keyNames {
 			if d.JSONContainer.Exists(key) {
-				st[key] = append(st[key], d.FieldAdder(key))
+				st[key] = append(st[key], d.FieldAdder(key), d.FunctionAdder(key))
 			}
 		}
 
