@@ -1,9 +1,6 @@
 package hadiscovery
 
 import (
-	"log"
-	"strconv"
-
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 )
 
@@ -73,50 +70,5 @@ func (device Light) UpdateState(client mqtt.Client) {
 			stateStore.Light.XyState[device.UniqueID] = state
 			token.Wait()
 		}
-	}
-}
-
-// UpdateState publishes any new state for a device
-// This is for a switch
-func (device Switch) UpdateState(client mqtt.Client) {
-	if device.StateFunc != nil {
-		state := device.StateFunc()
-		if state != stateStore.Switch[device.UniqueID] || device.ForceUpdateMQTT {
-			token := client.Publish(device.StateTopic, qos, retain, state)
-			stateStore.Switch[device.UniqueID] = state
-			token.Wait()
-		}
-	} else {
-		log.Println("No statefunc for " + device.UniqueID + strconv.FormatFloat(float64(device.UpdateInterval), 'g', 1, 64))
-	}
-}
-
-// UpdateState publishes any new state for a device
-// This is for a sensor
-func (device Sensor) UpdateState(client mqtt.Client) {
-	if device.StateFunc != nil {
-		state := device.StateFunc()
-		if state != stateStore.Sensor[device.UniqueID] || device.ForceUpdateMQTT {
-			token := client.Publish(device.StateTopic, qos, retain, state)
-			token.Wait()
-			stateStore.Sensor[device.UniqueID] = state
-		}
-	} else {
-		log.Fatalln("No statefunc, this makes no sensor for a sensor!")
-	}
-}
-
-// UpdateState publishes any new state for a device
-// This is for a binary sensor
-func (device BinarySensor) UpdateState(client mqtt.Client) {
-	if device.StateFunc != nil {
-		state := device.StateFunc()
-		if state != stateStore.BinarySensor[device.UniqueID] || device.ForceUpdateMQTT {
-			token := client.Publish(device.StateTopic, qos, retain, state)
-			token.Wait()
-			stateStore.BinarySensor[device.UniqueID] = state
-		}
-	} else {
-		log.Fatalln("No statefunc, this makes no sensor for a binary sensor!")
 	}
 }
