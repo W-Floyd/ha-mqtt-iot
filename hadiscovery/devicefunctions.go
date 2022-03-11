@@ -200,4 +200,9 @@ func (d Vacuum) GetRawId() string {
 func (d Vacuum) GetUniqueId() string {
 	return d.UniqueId
 }
-func (d *Vacuum) PopulateDevice() {}
+func (d *Vacuum) PopulateDevice() {
+	d.Device.Manufacturer = Manufacturer
+	d.Device.Model = SoftwareName
+	d.Device.Name = InstanceName
+	d.Device.SwVersion = SWVersion
+}

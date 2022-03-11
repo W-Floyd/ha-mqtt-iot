@@ -668,27 +668,23 @@ type Tag struct {
 	RawId         string `json:"-"`
 }
 type Vacuum struct {
-	AvailabilityMode       string   `json:"availability_mode"`
-	AvailabilityTemplate   string   `json:"availability_template"`
-	AvailabilityTopic      string   `json:"availability_topic"`
-	BatteryLevelTemplate   string   `json:"battery_level_template"`
-	BatteryLevelTopic      string   `json:"battery_level_topic"`
-	ChargingTemplate       string   `json:"charging_template"`
-	ChargingTopic          string   `json:"charging_topic"`
-	CleaningTemplate       string   `json:"cleaning_template"`
-	CleaningTopic          string   `json:"cleaning_topic"`
-	CommandTopic           string   `json:"command_topic"`
-	DockedTemplate         string   `json:"docked_template"`
-	DockedTopic            string   `json:"docked_topic"`
-	EnabledByDefault       bool     `json:"enabled_by_default"`
+	AvailabilityMode     string `json:"availability_mode"`
+	AvailabilityTemplate string `json:"availability_template"`
+	AvailabilityTopic    string `json:"availability_topic"`
+	CommandTopic         string `json:"command_topic"`
+	Device               struct {
+		ConfigurationUrl string   `json:"configuration_url"`
+		Connections      []string `json:"connections"`
+		Identifiers      []string `json:"identifiers"`
+		Manufacturer     string   `json:"manufacturer"`
+		Model            string   `json:"model"`
+		Name             string   `json:"name"`
+		SuggestedArea    string   `json:"suggested_area"`
+		SwVersion        string   `json:"sw_version"`
+		ViaDevice        string   `json:"via_device"`
+	} `json:"device"`
 	Encoding               string   `json:"encoding"`
-	EntityCategory         string   `json:"entity_category"`
-	ErrorTemplate          string   `json:"error_template"`
-	ErrorTopic             string   `json:"error_topic"`
 	FanSpeedList           []string `json:"fan_speed_list"`
-	FanSpeedTemplate       string   `json:"fan_speed_template"`
-	FanSpeedTopic          string   `json:"fan_speed_topic"`
-	Icon                   string   `json:"icon"`
 	JsonAttributesTemplate string   `json:"json_attributes_template"`
 	JsonAttributesTopic    string   `json:"json_attributes_topic"`
 	Name                   string   `json:"name"`
@@ -697,16 +693,16 @@ type Vacuum struct {
 	PayloadCleanSpot       string   `json:"payload_clean_spot"`
 	PayloadLocate          string   `json:"payload_locate"`
 	PayloadNotAvailable    string   `json:"payload_not_available"`
+	PayloadPause           string   `json:"payload_pause"`
 	PayloadReturnToBase    string   `json:"payload_return_to_base"`
-	PayloadStartPause      string   `json:"payload_start_pause"`
+	PayloadStart           string   `json:"payload_start"`
 	PayloadStop            string   `json:"payload_stop"`
-	PayloadTurnOff         string   `json:"payload_turn_off"`
-	PayloadTurnOn          string   `json:"payload_turn_on"`
 	Qos                    int      `json:"qos"`
 	Retain                 bool     `json:"retain"`
 	Schema                 string   `json:"schema"`
 	SendCommandTopic       string   `json:"send_command_topic"`
 	SetFanSpeedTopic       string   `json:"set_fan_speed_topic"`
+	StateTopic             string   `json:"state_topic"`
 	SupportedFeatures      []string `json:"supported_features"`
 	UniqueId               string   `json:"unique_id"`
 	RawId                  string   `json:"-"`

@@ -81,14 +81,17 @@ func between(value string, a string, b string) string {
 	// Get substring between two strings.
 	posFirst := strings.Index(value, a)
 	if posFirst == -1 {
+		log.Println("Failed to find first match")
 		return ""
 	}
 	posLast := strings.Index(value, b)
 	if posLast == -1 {
+		log.Println("Failed to find last match")
 		return ""
 	}
 	posFirstAdjusted := posFirst + len(a)
 	if posFirstAdjusted >= posLast {
+		log.Println("First is after last")
 		return ""
 	}
 	return value[posFirstAdjusted:posLast]
@@ -101,7 +104,13 @@ func splitDocument(devicename string) (string, error) {
 		return "", err
 	}
 
-	match := between(string(data), "{% configuration %}", "{% endconfiguration %}")
+	dat := string(data)
+
+	if devicename == "vacuum" {
+		dat = dat[strings.Index(dat, "State Configuration"):]
+	}
+
+	match := between(dat, "{% configuration %}", "{% endconfiguration %}")
 
 	targetFile := "../helpers/cache/" + devicename + "_split.yaml"
 

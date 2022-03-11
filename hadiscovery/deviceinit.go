@@ -8,7 +8,6 @@ func (d AlarmControlPanel) Init() {
 func (d *AlarmControlPanel) PopulateTopics() {
 	if d.AvailabilityFunc != nil {
 		d.AvailabilityTopic = GetTopic(d, "availability_topic")
-		topicStore[d.AvailabilityTopic] = &d.AvailabilityFunc
 	}
 	if d.CommandFunc != nil {
 		d.CommandTopic = GetTopic(d, "command_topic")
@@ -20,7 +19,6 @@ func (d *AlarmControlPanel) PopulateTopics() {
 	}
 	if d.StateFunc != nil {
 		d.StateTopic = GetTopic(d, "state_topic")
-		topicStore[d.StateTopic] = &d.StateFunc
 	}
 }
 func (d BinarySensor) Init() {
@@ -30,7 +28,6 @@ func (d BinarySensor) Init() {
 func (d *BinarySensor) PopulateTopics() {
 	if d.AvailabilityFunc != nil {
 		d.AvailabilityTopic = GetTopic(d, "availability_topic")
-		topicStore[d.AvailabilityTopic] = &d.AvailabilityFunc
 	}
 	if d.JsonAttributesFunc != nil {
 		d.JsonAttributesTopic = GetTopic(d, "json_attributes_topic")
@@ -38,7 +35,6 @@ func (d *BinarySensor) PopulateTopics() {
 	}
 	if d.StateFunc != nil {
 		d.StateTopic = GetTopic(d, "state_topic")
-		topicStore[d.StateTopic] = &d.StateFunc
 	}
 }
 func (d Camera) Init() {
@@ -48,7 +44,6 @@ func (d Camera) Init() {
 func (d *Camera) PopulateTopics() {
 	if d.AvailabilityFunc != nil {
 		d.AvailabilityTopic = GetTopic(d, "availability_topic")
-		topicStore[d.AvailabilityTopic] = &d.AvailabilityFunc
 	}
 	if d.JsonAttributesFunc != nil {
 		d.JsonAttributesTopic = GetTopic(d, "json_attributes_topic")
@@ -63,7 +58,6 @@ func (d Cover) Init() {
 func (d *Cover) PopulateTopics() {
 	if d.AvailabilityFunc != nil {
 		d.AvailabilityTopic = GetTopic(d, "availability_topic")
-		topicStore[d.AvailabilityTopic] = &d.AvailabilityFunc
 	}
 	if d.CommandFunc != nil {
 		d.CommandTopic = GetTopic(d, "command_topic")
@@ -75,7 +69,6 @@ func (d *Cover) PopulateTopics() {
 	}
 	if d.PositionFunc != nil {
 		d.PositionTopic = GetTopic(d, "position_topic")
-		topicStore[d.PositionTopic] = &d.PositionFunc
 	}
 	if d.SetPositionFunc != nil {
 		d.SetPositionTopic = GetTopic(d, "set_position_topic")
@@ -83,7 +76,6 @@ func (d *Cover) PopulateTopics() {
 	}
 	if d.StateFunc != nil {
 		d.StateTopic = GetTopic(d, "state_topic")
-		topicStore[d.StateTopic] = &d.StateFunc
 	}
 	if d.TiltCommandFunc != nil {
 		d.TiltCommandTopic = GetTopic(d, "tilt_command_topic")
@@ -91,7 +83,6 @@ func (d *Cover) PopulateTopics() {
 	}
 	if d.TiltStatusFunc != nil {
 		d.TiltStatusTopic = GetTopic(d, "tilt_status_topic")
-		topicStore[d.TiltStatusTopic] = &d.TiltStatusFunc
 	}
 }
 func (d DeviceTracker) Init() {
@@ -112,7 +103,6 @@ func (d Fan) Init() {
 func (d *Fan) PopulateTopics() {
 	if d.AvailabilityFunc != nil {
 		d.AvailabilityTopic = GetTopic(d, "availability_topic")
-		topicStore[d.AvailabilityTopic] = &d.AvailabilityFunc
 	}
 	if d.CommandFunc != nil {
 		d.CommandTopic = GetTopic(d, "command_topic")
@@ -128,7 +118,6 @@ func (d *Fan) PopulateTopics() {
 	}
 	if d.OscillationStateFunc != nil {
 		d.OscillationStateTopic = GetTopic(d, "oscillation_state_topic")
-		topicStore[d.OscillationStateTopic] = &d.OscillationStateFunc
 	}
 	if d.PercentageCommandFunc != nil {
 		d.PercentageCommandTopic = GetTopic(d, "percentage_command_topic")
@@ -136,7 +125,6 @@ func (d *Fan) PopulateTopics() {
 	}
 	if d.PercentageStateFunc != nil {
 		d.PercentageStateTopic = GetTopic(d, "percentage_state_topic")
-		topicStore[d.PercentageStateTopic] = &d.PercentageStateFunc
 	}
 	if d.PresetModeCommandFunc != nil {
 		d.PresetModeCommandTopic = GetTopic(d, "preset_mode_command_topic")
@@ -144,11 +132,9 @@ func (d *Fan) PopulateTopics() {
 	}
 	if d.PresetModeStateFunc != nil {
 		d.PresetModeStateTopic = GetTopic(d, "preset_mode_state_topic")
-		topicStore[d.PresetModeStateTopic] = &d.PresetModeStateFunc
 	}
 	if d.StateFunc != nil {
 		d.StateTopic = GetTopic(d, "state_topic")
-		topicStore[d.StateTopic] = &d.StateFunc
 	}
 }
 func (d Humidifier) Init() {
@@ -159,7 +145,6 @@ func (d Humidifier) Init() {
 func (d *Humidifier) PopulateTopics() {
 	if d.AvailabilityFunc != nil {
 		d.AvailabilityTopic = GetTopic(d, "availability_topic")
-		topicStore[d.AvailabilityTopic] = &d.AvailabilityFunc
 	}
 	if d.CommandFunc != nil {
 		d.CommandTopic = GetTopic(d, "command_topic")
@@ -175,11 +160,9 @@ func (d *Humidifier) PopulateTopics() {
 	}
 	if d.ModeStateFunc != nil {
 		d.ModeStateTopic = GetTopic(d, "mode_state_topic")
-		topicStore[d.ModeStateTopic] = &d.ModeStateFunc
 	}
 	if d.StateFunc != nil {
 		d.StateTopic = GetTopic(d, "state_topic")
-		topicStore[d.StateTopic] = &d.StateFunc
 	}
 	if d.TargetHumidityCommandFunc != nil {
 		d.TargetHumidityCommandTopic = GetTopic(d, "target_humidity_command_topic")
@@ -187,7 +170,6 @@ func (d *Humidifier) PopulateTopics() {
 	}
 	if d.TargetHumidityStateFunc != nil {
 		d.TargetHumidityStateTopic = GetTopic(d, "target_humidity_state_topic")
-		topicStore[d.TargetHumidityStateTopic] = &d.TargetHumidityStateFunc
 	}
 }
 func (d Climate) Init() {
@@ -206,15 +188,12 @@ func (d *Climate) PopulateTopics() {
 	}
 	if d.AuxStateFunc != nil {
 		d.AuxStateTopic = GetTopic(d, "aux_state_topic")
-		topicStore[d.AuxStateTopic] = &d.AuxStateFunc
 	}
 	if d.AvailabilityFunc != nil {
 		d.AvailabilityTopic = GetTopic(d, "availability_topic")
-		topicStore[d.AvailabilityTopic] = &d.AvailabilityFunc
 	}
 	if d.CurrentTemperatureFunc != nil {
 		d.CurrentTemperatureTopic = GetTopic(d, "current_temperature_topic")
-		topicStore[d.CurrentTemperatureTopic] = &d.CurrentTemperatureFunc
 	}
 	if d.FanModeCommandFunc != nil {
 		d.FanModeCommandTopic = GetTopic(d, "fan_mode_command_topic")
@@ -222,7 +201,6 @@ func (d *Climate) PopulateTopics() {
 	}
 	if d.FanModeStateFunc != nil {
 		d.FanModeStateTopic = GetTopic(d, "fan_mode_state_topic")
-		topicStore[d.FanModeStateTopic] = &d.FanModeStateFunc
 	}
 	if d.JsonAttributesFunc != nil {
 		d.JsonAttributesTopic = GetTopic(d, "json_attributes_topic")
@@ -234,7 +212,6 @@ func (d *Climate) PopulateTopics() {
 	}
 	if d.ModeStateFunc != nil {
 		d.ModeStateTopic = GetTopic(d, "mode_state_topic")
-		topicStore[d.ModeStateTopic] = &d.ModeStateFunc
 	}
 	if d.PowerCommandFunc != nil {
 		d.PowerCommandTopic = GetTopic(d, "power_command_topic")
@@ -246,7 +223,6 @@ func (d *Climate) PopulateTopics() {
 	}
 	if d.PresetModeStateFunc != nil {
 		d.PresetModeStateTopic = GetTopic(d, "preset_mode_state_topic")
-		topicStore[d.PresetModeStateTopic] = &d.PresetModeStateFunc
 	}
 	if d.SwingModeCommandFunc != nil {
 		d.SwingModeCommandTopic = GetTopic(d, "swing_mode_command_topic")
@@ -254,7 +230,6 @@ func (d *Climate) PopulateTopics() {
 	}
 	if d.SwingModeStateFunc != nil {
 		d.SwingModeStateTopic = GetTopic(d, "swing_mode_state_topic")
-		topicStore[d.SwingModeStateTopic] = &d.SwingModeStateFunc
 	}
 	if d.TemperatureCommandFunc != nil {
 		d.TemperatureCommandTopic = GetTopic(d, "temperature_command_topic")
@@ -266,7 +241,6 @@ func (d *Climate) PopulateTopics() {
 	}
 	if d.TemperatureHighStateFunc != nil {
 		d.TemperatureHighStateTopic = GetTopic(d, "temperature_high_state_topic")
-		topicStore[d.TemperatureHighStateTopic] = &d.TemperatureHighStateFunc
 	}
 	if d.TemperatureLowCommandFunc != nil {
 		d.TemperatureLowCommandTopic = GetTopic(d, "temperature_low_command_topic")
@@ -274,11 +248,9 @@ func (d *Climate) PopulateTopics() {
 	}
 	if d.TemperatureLowStateFunc != nil {
 		d.TemperatureLowStateTopic = GetTopic(d, "temperature_low_state_topic")
-		topicStore[d.TemperatureLowStateTopic] = &d.TemperatureLowStateFunc
 	}
 	if d.TemperatureStateFunc != nil {
 		d.TemperatureStateTopic = GetTopic(d, "temperature_state_topic")
-		topicStore[d.TemperatureStateTopic] = &d.TemperatureStateFunc
 	}
 }
 func (d Light) Init() {
@@ -289,7 +261,6 @@ func (d Light) Init() {
 func (d *Light) PopulateTopics() {
 	if d.AvailabilityFunc != nil {
 		d.AvailabilityTopic = GetTopic(d, "availability_topic")
-		topicStore[d.AvailabilityTopic] = &d.AvailabilityFunc
 	}
 	if d.BrightnessCommandFunc != nil {
 		d.BrightnessCommandTopic = GetTopic(d, "brightness_command_topic")
@@ -297,11 +268,9 @@ func (d *Light) PopulateTopics() {
 	}
 	if d.BrightnessStateFunc != nil {
 		d.BrightnessStateTopic = GetTopic(d, "brightness_state_topic")
-		topicStore[d.BrightnessStateTopic] = &d.BrightnessStateFunc
 	}
 	if d.ColorModeStateFunc != nil {
 		d.ColorModeStateTopic = GetTopic(d, "color_mode_state_topic")
-		topicStore[d.ColorModeStateTopic] = &d.ColorModeStateFunc
 	}
 	if d.ColorTempCommandFunc != nil {
 		d.ColorTempCommandTopic = GetTopic(d, "color_temp_command_topic")
@@ -309,7 +278,6 @@ func (d *Light) PopulateTopics() {
 	}
 	if d.ColorTempStateFunc != nil {
 		d.ColorTempStateTopic = GetTopic(d, "color_temp_state_topic")
-		topicStore[d.ColorTempStateTopic] = &d.ColorTempStateFunc
 	}
 	if d.CommandFunc != nil {
 		d.CommandTopic = GetTopic(d, "command_topic")
@@ -321,7 +289,6 @@ func (d *Light) PopulateTopics() {
 	}
 	if d.EffectStateFunc != nil {
 		d.EffectStateTopic = GetTopic(d, "effect_state_topic")
-		topicStore[d.EffectStateTopic] = &d.EffectStateFunc
 	}
 	if d.JsonAttributesFunc != nil {
 		d.JsonAttributesTopic = GetTopic(d, "json_attributes_topic")
@@ -333,11 +300,9 @@ func (d *Light) PopulateTopics() {
 	}
 	if d.RgbStateFunc != nil {
 		d.RgbStateTopic = GetTopic(d, "rgb_state_topic")
-		topicStore[d.RgbStateTopic] = &d.RgbStateFunc
 	}
 	if d.StateFunc != nil {
 		d.StateTopic = GetTopic(d, "state_topic")
-		topicStore[d.StateTopic] = &d.StateFunc
 	}
 	if d.WhiteCommandFunc != nil {
 		d.WhiteCommandTopic = GetTopic(d, "white_command_topic")
@@ -349,7 +314,6 @@ func (d *Light) PopulateTopics() {
 	}
 	if d.XyStateFunc != nil {
 		d.XyStateTopic = GetTopic(d, "xy_state_topic")
-		topicStore[d.XyStateTopic] = &d.XyStateFunc
 	}
 }
 func (d Lock) Init() {
@@ -360,7 +324,6 @@ func (d Lock) Init() {
 func (d *Lock) PopulateTopics() {
 	if d.AvailabilityFunc != nil {
 		d.AvailabilityTopic = GetTopic(d, "availability_topic")
-		topicStore[d.AvailabilityTopic] = &d.AvailabilityFunc
 	}
 	if d.CommandFunc != nil {
 		d.CommandTopic = GetTopic(d, "command_topic")
@@ -372,7 +335,6 @@ func (d *Lock) PopulateTopics() {
 	}
 	if d.StateFunc != nil {
 		d.StateTopic = GetTopic(d, "state_topic")
-		topicStore[d.StateTopic] = &d.StateFunc
 	}
 }
 func (d Number) Init() {
@@ -383,7 +345,6 @@ func (d Number) Init() {
 func (d *Number) PopulateTopics() {
 	if d.AvailabilityFunc != nil {
 		d.AvailabilityTopic = GetTopic(d, "availability_topic")
-		topicStore[d.AvailabilityTopic] = &d.AvailabilityFunc
 	}
 	if d.CommandFunc != nil {
 		d.CommandTopic = GetTopic(d, "command_topic")
@@ -395,7 +356,6 @@ func (d *Number) PopulateTopics() {
 	}
 	if d.StateFunc != nil {
 		d.StateTopic = GetTopic(d, "state_topic")
-		topicStore[d.StateTopic] = &d.StateFunc
 	}
 }
 func (d Scene) Init() {
@@ -406,7 +366,6 @@ func (d Scene) Init() {
 func (d *Scene) PopulateTopics() {
 	if d.AvailabilityFunc != nil {
 		d.AvailabilityTopic = GetTopic(d, "availability_topic")
-		topicStore[d.AvailabilityTopic] = &d.AvailabilityFunc
 	}
 	if d.CommandFunc != nil {
 		d.CommandTopic = GetTopic(d, "command_topic")
@@ -421,7 +380,6 @@ func (d Select) Init() {
 func (d *Select) PopulateTopics() {
 	if d.AvailabilityFunc != nil {
 		d.AvailabilityTopic = GetTopic(d, "availability_topic")
-		topicStore[d.AvailabilityTopic] = &d.AvailabilityFunc
 	}
 	if d.CommandFunc != nil {
 		d.CommandTopic = GetTopic(d, "command_topic")
@@ -433,7 +391,6 @@ func (d *Select) PopulateTopics() {
 	}
 	if d.StateFunc != nil {
 		d.StateTopic = GetTopic(d, "state_topic")
-		topicStore[d.StateTopic] = &d.StateFunc
 	}
 }
 func (d Sensor) Init() {
@@ -443,7 +400,6 @@ func (d Sensor) Init() {
 func (d *Sensor) PopulateTopics() {
 	if d.AvailabilityFunc != nil {
 		d.AvailabilityTopic = GetTopic(d, "availability_topic")
-		topicStore[d.AvailabilityTopic] = &d.AvailabilityFunc
 	}
 	if d.JsonAttributesFunc != nil {
 		d.JsonAttributesTopic = GetTopic(d, "json_attributes_topic")
@@ -451,7 +407,6 @@ func (d *Sensor) PopulateTopics() {
 	}
 	if d.StateFunc != nil {
 		d.StateTopic = GetTopic(d, "state_topic")
-		topicStore[d.StateTopic] = &d.StateFunc
 	}
 }
 func (d Switch) Init() {
@@ -462,7 +417,6 @@ func (d Switch) Init() {
 func (d *Switch) PopulateTopics() {
 	if d.AvailabilityFunc != nil {
 		d.AvailabilityTopic = GetTopic(d, "availability_topic")
-		topicStore[d.AvailabilityTopic] = &d.AvailabilityFunc
 	}
 	if d.CommandFunc != nil {
 		d.CommandTopic = GetTopic(d, "command_topic")
@@ -474,7 +428,6 @@ func (d *Switch) PopulateTopics() {
 	}
 	if d.StateFunc != nil {
 		d.StateTopic = GetTopic(d, "state_topic")
-		topicStore[d.StateTopic] = &d.StateFunc
 	}
 }
 func (d Tag) Init() {
@@ -490,35 +443,10 @@ func (d Vacuum) Init() {
 func (d *Vacuum) PopulateTopics() {
 	if d.AvailabilityFunc != nil {
 		d.AvailabilityTopic = GetTopic(d, "availability_topic")
-		topicStore[d.AvailabilityTopic] = &d.AvailabilityFunc
-	}
-	if d.BatteryLevelFunc != nil {
-		d.BatteryLevelTopic = GetTopic(d, "battery_level_topic")
-		topicStore[d.BatteryLevelTopic] = &d.BatteryLevelFunc
-	}
-	if d.ChargingFunc != nil {
-		d.ChargingTopic = GetTopic(d, "charging_topic")
-		topicStore[d.ChargingTopic] = &d.ChargingFunc
-	}
-	if d.CleaningFunc != nil {
-		d.CleaningTopic = GetTopic(d, "cleaning_topic")
-		topicStore[d.CleaningTopic] = &d.CleaningFunc
 	}
 	if d.CommandFunc != nil {
 		d.CommandTopic = GetTopic(d, "command_topic")
 		topicStore[d.CommandTopic] = &d.CommandFunc
-	}
-	if d.DockedFunc != nil {
-		d.DockedTopic = GetTopic(d, "docked_topic")
-		topicStore[d.DockedTopic] = &d.DockedFunc
-	}
-	if d.ErrorFunc != nil {
-		d.ErrorTopic = GetTopic(d, "error_topic")
-		topicStore[d.ErrorTopic] = &d.ErrorFunc
-	}
-	if d.FanSpeedFunc != nil {
-		d.FanSpeedTopic = GetTopic(d, "fan_speed_topic")
-		topicStore[d.FanSpeedTopic] = &d.FanSpeedFunc
 	}
 	if d.JsonAttributesFunc != nil {
 		d.JsonAttributesTopic = GetTopic(d, "json_attributes_topic")
@@ -531,5 +459,8 @@ func (d *Vacuum) PopulateTopics() {
 	if d.SetFanSpeedFunc != nil {
 		d.SetFanSpeedTopic = GetTopic(d, "set_fan_speed_topic")
 		topicStore[d.SetFanSpeedTopic] = &d.SetFanSpeedFunc
+	}
+	if d.StateFunc != nil {
+		d.StateTopic = GetTopic(d, "state_topic")
 	}
 }
