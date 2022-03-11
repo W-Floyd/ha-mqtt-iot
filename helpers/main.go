@@ -20,14 +20,12 @@ func main() {
 
 	files := make(map[string]*jen.File)
 
-	for _, v := range DeviceNames {
+	for _, v := range append(DeviceNames, fileList...) {
 		files[v] = jen.NewFilePathName("../hadiscovery/"+v+".go", "hadiscovery")
 		files[v].ImportAlias("github.com/eclipse/paho.mqtt.golang", "mqtt")
-	}
-
-	for _, v := range fileList {
-		files[v] = jen.NewFilePathName("../hadiscovery/"+v+".go", "hadiscovery")
-		files[v].ImportAlias("github.com/eclipse/paho.mqtt.golang", "mqtt")
+		files[v].Comment("////////////////////////////////////////////////////////////////////////////////")
+		files[v].Comment("Do not modify this file, it is automatically generated")
+		files[v].Comment("////////////////////////////////////////////////////////////////////////////////")
 	}
 
 	sort.Strings(keyNames)

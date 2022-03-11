@@ -89,8 +89,9 @@ func main() {
 		mqtt.CRITICAL = criticalLog
 	}
 
-	sub := func(client mqtt.Client) {
+	sub := func(c mqtt.Client) {
 		for _, li := range lights {
+			li.MQTT.Client = &c
 			go li.Subscribe()
 		}
 	}
@@ -98,10 +99,6 @@ func main() {
 	opts.SetOnConnectHandler(sub)
 
 	client := mqtt.NewClient(opts)
-
-	for _, li := range lights {
-		li.MQTT.Client = &client
-	}
 
 	if token := client.Connect(); token.Wait() && token.Error() != nil {
 		logError(token.Error())
