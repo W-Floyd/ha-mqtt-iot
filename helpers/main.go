@@ -19,7 +19,11 @@ func main() {
 
 	deviceinitfile := jen.NewFilePathName("../hadiscovery/deviceinit.go", "hadiscovery")
 
+	deviceinitfile.ImportAlias("github.com/eclipse/paho.mqtt.golang", "mqtt")
+
 	devicefunctionsfile := jen.NewFilePathName("../hadiscovery/devicefunctions.go", "hadiscovery")
+
+	devicefunctionsfile.ImportAlias("github.com/eclipse/paho.mqtt.golang", "mqtt")
 
 	sort.Strings(keyNames)
 
@@ -102,6 +106,36 @@ func main() {
 					}
 				}
 				g.Id("RawId").String().Tag(map[string]string{"json": "-"})
+			},
+		)
+
+		devicefunctionsfile.Func().Params(
+			jen.Id("d").Id("*" + strcase.ToCamel(d.Name)),
+		).Id("UpdateState").Params().BlockFunc(
+			func(g *jen.Group) {
+				for _, key := range sortedKeys {
+					if strings.HasSuffix(key, "_topic") {
+						if !IsCommand(key, d) {
+							// TODO - implement UpdateState for all state topics
+						}
+					}
+				}
+			},
+		)
+
+		devicefunctionsfile.Func().Params(
+			jen.Id("d").Id("*" + strcase.ToCamel(d.Name)),
+		).Id("Subscribe").Params(
+			jen.Id("client").Qual("github.com/eclipse/paho.mqtt.golang", "Client"),
+		).BlockFunc(
+			func(g *jen.Group) {
+				for _, key := range sortedKeys {
+					if strings.HasSuffix(key, "_topic") {
+						if !IsCommand(key, d) {
+							// TODO - implement Subscribe to all topics
+						}
+					}
+				}
 			},
 		)
 
