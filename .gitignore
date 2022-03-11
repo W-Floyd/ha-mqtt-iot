@@ -4,3 +4,4 @@
 /secrets.json
 /nohup.out
 /.vscode/
+/helpers/cache/*
