@@ -6,14 +6,13 @@ import (
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 
-	"github.com/W-Floyd/ha-mqtt-iot/hadiscovery"
 	"github.com/W-Floyd/ha-mqtt-iot/iotconfig/config"
 )
 
 type Config config.Config
 
 // Convert takes a config and turns it into a format that can be used for HA.
-func (sconfig Config) Convert() (opts *mqtt.ClientOptions, lights []hadiscovery.Light) {
+func (sconfig Config) Convert() (opts *mqtt.ClientOptions, lights []ExternalDevice.Light) {
 	opts = mqtt.NewClientOptions()
 	opts.AddBroker(sconfig.MQTT.Broker)
 	opts.SetUsername(sconfig.MQTT.Username)

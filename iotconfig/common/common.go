@@ -50,15 +50,3 @@ func ConstructStateFunc(command []string) (f func() string) {
 		return string(out)
 	}
 }
-
-type InfoIcon struct {
-	Name string `json:"name"`
-	ID   string `json:"id"`
-	Icon string `json:"icon"`
-}
-
-type InfoClass struct {
-	Name        string `json:"name"`
-	ID          string `json:"id"`
-	DeviceClass string `json:"device_class"`
-}

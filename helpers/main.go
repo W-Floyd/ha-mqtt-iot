@@ -21,7 +21,7 @@ func main() {
 	}
 
 	for _, v := range append(DeviceNames, fileList...) {
-		filesHa[v] = jen.NewFilePathName("../hadiscovery/"+v+".go", "hadiscovery")
+		filesHa[v] = jen.NewFilePathName("../devices/external/"+v+".go", "ExternalDevice")
 		filesHa[v].ImportAlias("github.com/eclipse/paho.mqtt.golang", "mqtt")
 		filesHa[v].Comment("////////////////////////////////////////////////////////////////////////////////")
 		filesHa[v].Comment("Do not modify this file, it is automatically generated")
@@ -33,7 +33,7 @@ func main() {
 	fileList = []string{}
 
 	for _, v := range append(DeviceNames, fileList...) {
-		filesDev[v] = jen.NewFilePathName("../devices/"+v+".go", "iotconfig")
+		filesDev[v] = jen.NewFilePathName("../devices/internal/"+v+".go", "InternalDevice")
 		filesDev[v].ImportAlias("github.com/eclipse/paho.mqtt.golang", "mqtt")
 		filesDev[v].Comment("////////////////////////////////////////////////////////////////////////////////")
 		filesDev[v].Comment("Do not modify this file, it is automatically generated")
@@ -201,7 +201,7 @@ func main() {
 		).Id("UpdateState").Params().BlockFunc(
 			func(g *jen.Group) {
 				for _, key := range sortedKeys {
-					if strings.HasSuffix(key, "_topic") {
+					if strings.HasSuffix(key, "_topic") && !strings.HasPrefix(key, "availability") {
 						if !IsCommand(key, d) {
 							trimmed := strings.TrimSuffix(key, "_topic")
 							cam := strcase.ToCamel(key)
@@ -402,7 +402,7 @@ func main() {
 			jen.Id("d").Id(strcase.ToCamel(d.Name)),
 		).Id("PopulateTopics").Params().BlockFunc(func(g *jen.Group) {
 			for _, name := range keyNames {
-				if strings.HasSuffix(name, "_topic") && d.JSONContainer.Exists(name) {
+				if strings.HasSuffix(name, "_topic") && d.JSONContainer.Exists(name) && !strings.HasPrefix(name, "availability") {
 					lName := strcase.ToCamel(strings.TrimSuffix(name, "_topic"))
 					g.Add(
 						jen.If(
@@ -444,11 +444,11 @@ func main() {
 	}
 
 	for k, v := range filesHa {
-		v.Save("../hadiscovery/" + k + ".go")
+		v.Save("../devices/external/" + k + ".go")
 	}
 
 	for k, v := range filesDev {
-		v.Save("../devices/" + k + ".go")
+		v.Save("../devices/internal/" + k + ".go")
 	}
 
 }

@@ -14,7 +14,6 @@ import (
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/imdario/mergo"
 
-	"github.com/W-Floyd/ha-mqtt-iot/hadiscovery"
 	"github.com/W-Floyd/ha-mqtt-iot/iotconfig"
 )
 
