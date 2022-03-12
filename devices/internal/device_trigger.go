@@ -1,11 +1,19 @@
 package InternalDevice
 
+import ExternalDevice "github.com/W-Floyd/ha-mqtt-iot/devices/external"
+
 ////////////////////////////////////////////////////////////////////////////////
 // Do not modify this file, it is automatically generated
 ////////////////////////////////////////////////////////////////////////////////
+func (iDevice DeviceTrigger) Translate() ExternalDevice.DeviceTrigger {
+	eDevice := ExternalDevice.DeviceTrigger{}
+	eDevice.MQTT.ForceUpdate = iDevice.MQTT.ForceUpdate
+	return eDevice
+}
+
 type DeviceTrigger struct {
 	MQTT struct {
 		UpdateInterval float64 `json:"update_interval"`
-		ForceUpdate    float64 `json:"force_update"`
+		ForceUpdate    bool    `json:"force_update"`
 	} `json:"mqtt"`
 }

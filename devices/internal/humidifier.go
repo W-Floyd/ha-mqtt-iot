@@ -1,8 +1,16 @@
 package InternalDevice
 
+import ExternalDevice "github.com/W-Floyd/ha-mqtt-iot/devices/external"
+
 ////////////////////////////////////////////////////////////////////////////////
 // Do not modify this file, it is automatically generated
 ////////////////////////////////////////////////////////////////////////////////
+func (iDevice Humidifier) Translate() ExternalDevice.Humidifier {
+	eDevice := ExternalDevice.Humidifier{}
+	eDevice.MQTT.ForceUpdate = iDevice.MQTT.ForceUpdate
+	return eDevice
+}
+
 type Humidifier struct {
 	Command               []string `json:"command"`
 	ModeCommand           []string `json:"mode_command"`
@@ -12,6 +20,6 @@ type Humidifier struct {
 	TargetHumidityState   []string `json:"target_humidity_state"`
 	MQTT                  struct {
 		UpdateInterval float64 `json:"update_interval"`
-		ForceUpdate    float64 `json:"force_update"`
+		ForceUpdate    bool    `json:"force_update"`
 	} `json:"mqtt"`
 }

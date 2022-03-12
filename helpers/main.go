@@ -13,7 +13,7 @@ func main() {
 	devices := DevicesInit()
 	loadKeyNames()
 
-	filesHa := make(map[string]*jen.File)
+	external := make(map[string]*jen.File)
 
 	fileList := []string{
 		"types",
@@ -21,28 +21,29 @@ func main() {
 	}
 
 	for _, v := range append(DeviceNames, fileList...) {
-		filesHa[v] = jen.NewFilePathName("../devices/external/"+v+".go", "ExternalDevice")
-		filesHa[v].ImportAlias("github.com/eclipse/paho.mqtt.golang", "mqtt")
-		filesHa[v].Comment("////////////////////////////////////////////////////////////////////////////////")
-		filesHa[v].Comment("Do not modify this file, it is automatically generated")
-		filesHa[v].Comment("////////////////////////////////////////////////////////////////////////////////")
+		external[v] = jen.NewFilePathName("../devices/external/"+v+".go", "ExternalDevice")
+		external[v].ImportAlias("github.com/eclipse/paho.mqtt.golang", "mqtt")
+		external[v].Comment("////////////////////////////////////////////////////////////////////////////////")
+		external[v].Comment("Do not modify this file, it is automatically generated")
+		external[v].Comment("////////////////////////////////////////////////////////////////////////////////")
 	}
 
-	filesDev := make(map[string]*jen.File)
+	internal := make(map[string]*jen.File)
 
 	fileList = []string{}
 
 	for _, v := range append(DeviceNames, fileList...) {
-		filesDev[v] = jen.NewFilePathName("../devices/internal/"+v+".go", "InternalDevice")
-		filesDev[v].ImportAlias("github.com/eclipse/paho.mqtt.golang", "mqtt")
-		filesDev[v].Comment("////////////////////////////////////////////////////////////////////////////////")
-		filesDev[v].Comment("Do not modify this file, it is automatically generated")
-		filesDev[v].Comment("////////////////////////////////////////////////////////////////////////////////")
+		internal[v] = jen.NewFilePathName("../devices/internal/"+v+".go", "InternalDevice")
+		internal[v].ImportAlias("github.com/eclipse/paho.mqtt.golang", "mqtt")
+		internal[v].ImportAlias("github.com/W-Floyd/ha-mqtt-iot/devices/external", "ExternalDevice")
+		internal[v].Comment("////////////////////////////////////////////////////////////////////////////////")
+		internal[v].Comment("Do not modify this file, it is automatically generated")
+		internal[v].Comment("////////////////////////////////////////////////////////////////////////////////")
 	}
 
 	sort.Strings(keyNames)
 
-	filesHa["types"].Type().Id("Device").Interface(
+	external["types"].Type().Id("Device").Interface(
 		// jen.UnionFunc(
 		// 	func(g *jen.Group) {
 		// 		for _, d := range devices {
@@ -59,7 +60,7 @@ func main() {
 		jen.Id("AddMessageHandler").Params(),
 	)
 
-	filesHa["store"].Type().Id("store").StructFunc(
+	external["store"].Type().Id("store").StructFunc(
 		func(g *jen.Group) {
 			for _, d := range devices {
 				g.Add(
@@ -81,7 +82,7 @@ func main() {
 		},
 	)
 
-	filesHa["store"].Func().Id("initStore").Params().Id("store").BlockFunc(
+	external["store"].Func().Id("initStore").Params().Id("store").BlockFunc(
 		func(g *jen.Group) {
 			g.Add(
 				jen.Id("s").Op(":=").Id("store").Block(),
@@ -110,14 +111,14 @@ func main() {
 		camName := strcase.ToCamel(d.Name)
 
 		// d.GetRawID()
-		filesHa[d.Name].Func().Params(
+		external[d.Name].Func().Params(
 			jen.Id("d").Id(strcase.ToCamel(d.Name)),
 		).Id("GetRawId").Params().String().Block(
 			jen.Return(jen.Lit(d.Name)),
 		)
 
 		// d.AddMessageHandler()
-		filesHa[d.Name].Func().Params(
+		external[d.Name].Func().Params(
 			jen.Id("d").Id(strcase.ToCamel(d.Name)),
 		).Id("AddMessageHandler").Params().Block(
 			jen.Id("d").Dot("MQTT").Dot("MessageHandler").Op("=").Id("MakeMessageHandler").Params(jen.Id("d")),
@@ -125,13 +126,13 @@ func main() {
 
 		// d.GetUniqueID()
 		if d.JSONContainer.Exists("unique_id") {
-			filesHa[d.Name].Func().Params(
+			external[d.Name].Func().Params(
 				jen.Id("d").Id(strcase.ToCamel(d.Name)),
 			).Id("GetUniqueId").Params().String().Block(
 				jen.Return(jen.Id("d.UniqueId")),
 			)
 		} else {
-			filesHa[d.Name].Func().Params(
+			external[d.Name].Func().Params(
 				jen.Id("d").Id(strcase.ToCamel(d.Name)),
 			).Id("GetUniqueId").Params().String().Block(
 				jen.Return(jen.Lit("")),
@@ -163,7 +164,7 @@ func main() {
 
 		// d.PopulateDevice()
 		if d.JSONContainer.Exists("device") {
-			filesHa[d.Name].Func().Params(
+			external[d.Name].Func().Params(
 				jen.Id("d").Id(strcase.ToCamel(d.Name)),
 			).Id("PopulateDevice").Params().Block(
 				jen.Id("d.Device.Manufacturer").Op("=").Id("Manufacturer"),
@@ -172,7 +173,7 @@ func main() {
 				jen.Id("d.Device.SwVersion").Op("=").Id("SWVersion"),
 			)
 		} else {
-			filesHa[d.Name].Func().Params(
+			external[d.Name].Func().Params(
 				jen.Id("d").Id(strcase.ToCamel(d.Name)),
 			).Id("PopulateDevice").Params().Block()
 		}
@@ -184,7 +185,7 @@ func main() {
 		sort.Strings(sortedKeys)
 
 		// Device MQTT Struct
-		filesHa[d.Name].Type().Id(strcase.ToCamel(d.Name)).StructFunc(
+		external[d.Name].Type().Id(strcase.ToCamel(d.Name)).StructFunc(
 			func(g *jen.Group) {
 				for _, key := range sortedKeys {
 					v := st[key]
@@ -196,7 +197,7 @@ func main() {
 			},
 		)
 
-		filesHa[d.Name].Func().Params(
+		external[d.Name].Func().Params(
 			jen.Id("d").Id(strcase.ToCamel(d.Name)),
 		).Id("UpdateState").Params().BlockFunc(
 			func(g *jen.Group) {
@@ -236,7 +237,7 @@ func main() {
 		)
 
 		// d.Subscribe()
-		filesHa[d.Name].Func().Params(
+		external[d.Name].Func().Params(
 			jen.Id("d").Id(strcase.ToCamel(d.Name)),
 		).Id("Subscribe").Params().BlockFunc(
 			func(g *jen.Group) {
@@ -313,7 +314,7 @@ func main() {
 		)
 
 		// d.UnSubscribe()
-		filesHa[d.Name].Func().Params(
+		external[d.Name].Func().Params(
 			jen.Id("d").Id(strcase.ToCamel(d.Name)),
 		).Id("UnSubscribe").Params().BlockFunc(
 			func(g *jen.Group) {
@@ -365,7 +366,7 @@ func main() {
 		)
 
 		// d.AnnounceAvailable()
-		filesHa[d.Name].Func().Params(
+		external[d.Name].Func().Params(
 			jen.Id("d").Id(strcase.ToCamel(d.Name)),
 		).Id("AnnounceAvailable").Params().BlockFunc(
 			func(g *jen.Group) {
@@ -388,7 +389,7 @@ func main() {
 			},
 		)
 
-		filesHa[d.Name].Func().Params(jen.Id("d").Id(strcase.ToCamel(d.Name))).Id("Initialize").Params().BlockFunc(func(g *jen.Group) {
+		external[d.Name].Func().Params(jen.Id("d").Id(strcase.ToCamel(d.Name))).Id("Initialize").Params().BlockFunc(func(g *jen.Group) {
 			if d.JSONContainer.Exists("retain") {
 				g.Add(jen.Id("d").Dot("Retain").Op("=").Lit(false))
 			}
@@ -398,7 +399,7 @@ func main() {
 		})
 
 		// d.PopulateTopics()
-		filesHa[d.Name].Func().Params(
+		external[d.Name].Func().Params(
 			jen.Id("d").Id(strcase.ToCamel(d.Name)),
 		).Id("PopulateTopics").Params().BlockFunc(func(g *jen.Group) {
 			for _, name := range keyNames {
@@ -422,7 +423,27 @@ func main() {
 			}
 		})
 
-		filesDev[d.Name].Type().Id(strcase.ToCamel(d.Name)).StructFunc(
+		// d.Translate() ExternalDevice.Light
+		internal[d.Name].Func().Params(jen.Id("iDevice").Id(strcase.ToCamel(d.Name))).Id("Translate").Params().Qual("github.com/W-Floyd/ha-mqtt-iot/devices/external", strcase.ToCamel(d.Name)).BlockFunc(
+			func(g *jen.Group) {
+				g.Add(
+					jen.Id("eDevice").Op(":=").Qual("github.com/W-Floyd/ha-mqtt-iot/devices/external", strcase.ToCamel(d.Name)).Block(),
+				)
+				g.Add(
+					jen.Id("eDevice").Dot("MQTT").Dot("ForceUpdate").Op("=").Id("iDevice").Dot("MQTT").Dot("ForceUpdate"),
+				)
+
+				// TODO
+
+				g.Add(
+					jen.Return(
+						jen.Id("eDevice"),
+					),
+				)
+			},
+		)
+
+		internal[d.Name].Type().Id(strcase.ToCamel(d.Name)).StructFunc(
 			func(g *jen.Group) {
 				for _, key := range keyNames {
 					if strings.HasSuffix(key, "_topic") && d.JSONContainer.Exists(key) && !strings.HasPrefix(key, "availability") {
@@ -435,7 +456,7 @@ func main() {
 				g.Add(
 					jen.Id("MQTT").Struct(
 						jen.Id("UpdateInterval").Float64().Tag(map[string]string{"json": "update_interval"}),
-						jen.Id("ForceUpdate").Float64().Tag(map[string]string{"json": "force_update"}),
+						jen.Id("ForceUpdate").Bool().Tag(map[string]string{"json": "force_update"}),
 					).Tag(map[string]string{"json": "mqtt"}),
 				)
 			},
@@ -443,11 +464,11 @@ func main() {
 
 	}
 
-	for k, v := range filesHa {
+	for k, v := range external {
 		v.Save("../devices/external/" + k + ".go")
 	}
 
-	for k, v := range filesDev {
+	for k, v := range internal {
 		v.Save("../devices/internal/" + k + ".go")
 	}
 
