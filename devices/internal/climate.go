@@ -8,6 +8,7 @@ import ExternalDevice "github.com/W-Floyd/ha-mqtt-iot/devices/external"
 func (iDevice Climate) Translate() ExternalDevice.Climate {
 	eDevice := ExternalDevice.Climate{}
 	eDevice.MQTT.ForceUpdate = iDevice.MQTT.ForceUpdate
+	eDevice.MQTT.UpdateInterval = iDevice.MQTT.UpdateInterval
 	return eDevice
 }
 

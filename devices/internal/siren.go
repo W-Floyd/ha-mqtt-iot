@@ -8,6 +8,7 @@ import ExternalDevice "github.com/W-Floyd/ha-mqtt-iot/devices/external"
 func (iDevice Siren) Translate() ExternalDevice.Siren {
 	eDevice := ExternalDevice.Siren{}
 	eDevice.MQTT.ForceUpdate = iDevice.MQTT.ForceUpdate
+	eDevice.MQTT.UpdateInterval = iDevice.MQTT.UpdateInterval
 	return eDevice
 }
 

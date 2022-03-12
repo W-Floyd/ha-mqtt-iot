@@ -432,6 +432,9 @@ func main() {
 				g.Add(
 					jen.Id("eDevice").Dot("MQTT").Dot("ForceUpdate").Op("=").Id("iDevice").Dot("MQTT").Dot("ForceUpdate"),
 				)
+				g.Add(
+					jen.Id("eDevice").Dot("MQTT").Dot("UpdateInterval").Op("=").Id("iDevice").Dot("MQTT").Dot("UpdateInterval"),
+				)
 
 				// TODO
 

@@ -8,6 +8,7 @@ import ExternalDevice "github.com/W-Floyd/ha-mqtt-iot/devices/external"
 func (iDevice Camera) Translate() ExternalDevice.Camera {
 	eDevice := ExternalDevice.Camera{}
 	eDevice.MQTT.ForceUpdate = iDevice.MQTT.ForceUpdate
+	eDevice.MQTT.UpdateInterval = iDevice.MQTT.UpdateInterval
 	return eDevice
 }
 
