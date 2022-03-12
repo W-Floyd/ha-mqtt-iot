@@ -38,7 +38,6 @@ type Climate struct {
 	AvailabilityMode           string                          `json:"availability_mode"`
 	AvailabilityTemplate       string                          `json:"availability_template"`
 	AvailabilityTopic          string                          `json:"availability_topic"`
-	AvailabilityFunc           func() string                   `json:"-"`
 	CurrentTemperatureTemplate string                          `json:"current_temperature_template"`
 	CurrentTemperatureTopic    string                          `json:"current_temperature_topic"`
 	CurrentTemperatureFunc     func() string                   `json:"-"`

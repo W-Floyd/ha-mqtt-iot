@@ -30,7 +30,6 @@ type Siren struct {
 	AvailabilityMode     string                          `json:"availability_mode"`
 	AvailabilityTemplate string                          `json:"availability_template"`
 	AvailabilityTopic    string                          `json:"availability_topic"`
-	AvailabilityFunc     func() string                   `json:"-"`
 	AvailableTones       []string                        `json:"available_tones"`
 	CommandOffTemplate   string                          `json:"command_off_template"`
 	CommandTemplate      string                          `json:"command_template"`

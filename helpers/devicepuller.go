@@ -215,7 +215,7 @@ func (dev *Device) FunctionAdder(key string) *jen.Statement {
 
 	retval := jen.Statement{}
 
-	if strings.HasSuffix(key, "_topic") {
+	if strings.HasSuffix(key, "_topic") && !strings.HasPrefix(key, "availability") {
 
 		nk := strings.TrimSuffix(key, "_topic")
 

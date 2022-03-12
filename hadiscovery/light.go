@@ -30,7 +30,6 @@ type Light struct {
 	AvailabilityMode     string                          `json:"availability_mode"`
 	AvailabilityTemplate string                          `json:"availability_template"`
 	AvailabilityTopic    string                          `json:"availability_topic"`
-	AvailabilityFunc     func() string                   `json:"-"`
 	Brightness           bool                            `json:"brightness"`
 	BrightnessScale      int                             `json:"brightness_scale"`
 	ColorMode            bool                            `json:"color_mode"`

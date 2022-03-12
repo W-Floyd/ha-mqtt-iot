@@ -26,10 +26,9 @@ func (d Sensor) PopulateDevice() {
 }
 
 type Sensor struct {
-	AvailabilityMode     string        `json:"availability_mode"`
-	AvailabilityTemplate string        `json:"availability_template"`
-	AvailabilityTopic    string        `json:"availability_topic"`
-	AvailabilityFunc     func() string `json:"-"`
+	AvailabilityMode     string `json:"availability_mode"`
+	AvailabilityTemplate string `json:"availability_template"`
+	AvailabilityTopic    string `json:"availability_topic"`
 	Device               struct {
 		ConfigurationUrl string   `json:"configuration_url"`
 		Connections      []string `json:"connections"`

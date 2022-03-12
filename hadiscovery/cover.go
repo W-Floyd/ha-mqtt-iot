@@ -30,7 +30,6 @@ type Cover struct {
 	AvailabilityMode     string                          `json:"availability_mode"`
 	AvailabilityTemplate string                          `json:"availability_template"`
 	AvailabilityTopic    string                          `json:"availability_topic"`
-	AvailabilityFunc     func() string                   `json:"-"`
 	CommandTopic         string                          `json:"command_topic"`
 	CommandFunc          func(mqtt.Message, mqtt.Client) `json:"-"`
 	Device               struct {

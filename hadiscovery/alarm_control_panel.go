@@ -30,7 +30,6 @@ type AlarmControlPanel struct {
 	AvailabilityMode     string                          `json:"availability_mode"`
 	AvailabilityTemplate string                          `json:"availability_template"`
 	AvailabilityTopic    string                          `json:"availability_topic"`
-	AvailabilityFunc     func() string                   `json:"-"`
 	Code                 string                          `json:"code"`
 	CodeArmRequired      bool                            `json:"code_arm_required"`
 	CodeDisarmRequired   bool                            `json:"code_disarm_required"`

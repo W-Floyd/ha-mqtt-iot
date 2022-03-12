@@ -422,6 +422,25 @@ func main() {
 			}
 		})
 
+		filesDev[d.Name].Type().Id(strcase.ToCamel(d.Name)).StructFunc(
+			func(g *jen.Group) {
+				for _, key := range keyNames {
+					if strings.HasSuffix(key, "_topic") && d.JSONContainer.Exists(key) && !strings.HasPrefix(key, "availability") {
+						lName := strcase.ToCamel(strings.TrimSuffix(key, "_topic"))
+						g.Add(
+							jen.Id(lName).Index().String().Tag(map[string]string{"json": strings.TrimSuffix(key, "_topic")}),
+						)
+					}
+				}
+				g.Add(
+					jen.Id("MQTT").Struct(
+						jen.Id("UpdateInterval").Float64().Tag(map[string]string{"json": "update_interval"}),
+						jen.Id("ForceUpdate").Float64().Tag(map[string]string{"json": "force_update"}),
+					).Tag(map[string]string{"json": "mqtt"}),
+				)
+			},
+		)
+
 	}
 
 	for k, v := range filesHa {
