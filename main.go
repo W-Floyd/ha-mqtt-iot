@@ -17,6 +17,8 @@ import (
 	"github.com/W-Floyd/ha-mqtt-iot/iotconfig"
 )
 
+//go:generate go run ./helpers/
+
 var debugLog = log.New(os.Stdout, "DEBUG   ", 0)
 var errorLog = log.New(os.Stdout, "ERROR   ", 0)
 var warnLog = log.New(os.Stdout, "WARN    ", 0)

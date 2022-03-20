@@ -116,7 +116,7 @@ func splitDocument(devicename string) (string, error) {
 
 	match := between(dat, "{% configuration %}", "{% endconfiguration %}")
 
-	targetFile := "../helpers/cache/" + devicename + "_split.yaml"
+	targetFile := "./helpers/cache/" + devicename + "_split.yaml"
 
 	err = ioutil.WriteFile(targetFile, []byte(match), fs.FileMode(0644))
 	if err != nil {
@@ -136,7 +136,7 @@ func fetchDocument(devicename string) ([]byte, error) {
 
 	url := "https://raw.githubusercontent.com/home-assistant/home-assistant.io/rc/source/_integrations/" + devicename + ".mqtt.markdown"
 
-	targetFile := "../helpers/cache/" + devicename + ".md"
+	targetFile := "./helpers/cache/" + devicename + ".md"
 
 	if exists(targetFile) && PullNew == false {
 

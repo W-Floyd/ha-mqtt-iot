@@ -4,8 +4,6 @@ import (
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 )
 
-//go:generate go run ../helpers/
-
 var (
 	retain bool = true
 	qos    byte = 0

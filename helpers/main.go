@@ -21,7 +21,7 @@ func main() {
 	}
 
 	for _, v := range append(DeviceNames, fileList...) {
-		external[v] = jen.NewFilePathName("../devices/external/"+v+".go", "ExternalDevice")
+		external[v] = jen.NewFilePathName("./devices/external/"+v+".go", "ExternalDevice")
 		external[v].ImportAlias("github.com/eclipse/paho.mqtt.golang", "mqtt")
 		external[v].Comment("////////////////////////////////////////////////////////////////////////////////")
 		external[v].Comment("Do not modify this file, it is automatically generated")
@@ -33,7 +33,7 @@ func main() {
 	fileList = []string{}
 
 	for _, v := range append(DeviceNames, fileList...) {
-		internal[v] = jen.NewFilePathName("../devices/internal/"+v+".go", "InternalDevice")
+		internal[v] = jen.NewFilePathName("./devices/internal/"+v+".go", "InternalDevice")
 		internal[v].ImportAlias("github.com/eclipse/paho.mqtt.golang", "mqtt")
 		internal[v].ImportAlias("github.com/W-Floyd/ha-mqtt-iot/devices/external", "ExternalDevice")
 		internal[v].Comment("////////////////////////////////////////////////////////////////////////////////")
@@ -436,7 +436,31 @@ func main() {
 					jen.Id("eDevice").Dot("MQTT").Dot("UpdateInterval").Op("=").Id("iDevice").Dot("MQTT").Dot("UpdateInterval"),
 				)
 
-				// TODO
+				for _, key := range keyNames {
+					if d.JSONContainer.Exists(key) && !strings.HasPrefix(key, "availability") {
+						if !strings.HasSuffix(key, "_topic") {
+							cam := strcase.ToCamel(key)
+							g.Add(
+								jen.Id("eDevice").Dot(cam).Op("=").Id("iDevice").Dot(cam),
+							)
+						} else {
+							lName := strcase.ToCamel(strings.TrimSuffix(key, "_topic") + "_func")
+							g.Add(
+								jen.Id("eDevice").Dot(lName).Op("=").Qual("github.com/W-Floyd/ha-mqtt-iot/devices/common", "Construct"+func() string {
+									if IsCommand(key, d) {
+										return "Command"
+									} else {
+										return "State"
+									}
+								}()+"Func").Params(jen.Id("iDevice").Dot(strcase.ToCamel(strings.TrimSuffix(key, "_topic")))),
+							)
+						}
+					}
+				}
+
+				g.Add(
+					jen.Id("eDevice").Dot("Initialize").Params(),
+				)
 
 				g.Add(
 					jen.Return(
@@ -449,13 +473,20 @@ func main() {
 		internal[d.Name].Type().Id(strcase.ToCamel(d.Name)).StructFunc(
 			func(g *jen.Group) {
 				for _, key := range keyNames {
-					if strings.HasSuffix(key, "_topic") && d.JSONContainer.Exists(key) && !strings.HasPrefix(key, "availability") {
-						lName := strcase.ToCamel(strings.TrimSuffix(key, "_topic"))
-						g.Add(
-							jen.Id(lName).Index().String().Tag(map[string]string{"json": strings.TrimSuffix(key, "_topic")}),
-						)
+					if d.JSONContainer.Exists(key) && !strings.HasPrefix(key, "availability") {
+						if strings.HasSuffix(key, "_topic") {
+							lName := strcase.ToCamel(strings.TrimSuffix(key, "_topic"))
+							g.Add(
+								jen.Id(lName).Index().String().Tag(map[string]string{"json": strings.TrimSuffix(key, "_topic")}),
+							)
+						} else {
+							g.Add(
+								d.FieldAdder(key),
+							)
+						}
 					}
 				}
+
 				g.Add(
 					jen.Id("MQTT").Struct(
 						jen.Id("UpdateInterval").Float64().Tag(map[string]string{"json": "update_interval"}),
@@ -468,11 +499,11 @@ func main() {
 	}
 
 	for k, v := range external {
-		v.Save("../devices/external/" + k + ".go")
+		v.Save("./devices/external/" + k + ".go")
 	}
 
 	for k, v := range internal {
-		v.Save("../devices/internal/" + k + ".go")
+		v.Save("./devices/internal/" + k + ".go")
 	}
 
 }
