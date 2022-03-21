@@ -2,6 +2,7 @@ package ExternalDevice
 
 import (
 	"encoding/json"
+	common "github.com/W-Floyd/ha-mqtt-iot/common"
 	"log"
 	"time"
 )
@@ -38,7 +39,7 @@ func (d DeviceTracker) Subscribe() {
 	}
 	token := c.Publish(GetDiscoveryTopic(d), 0, true, message)
 	token.Wait()
-	time.Sleep(500 * time.Millisecond)
+	time.Sleep(common.HADiscoveryDelay)
 	d.AnnounceAvailable()
 	d.UpdateState()
 }

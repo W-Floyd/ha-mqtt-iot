@@ -111,7 +111,7 @@ func (d Vacuum) Subscribe() {
 	}
 	token := c.Publish(GetDiscoveryTopic(d), 0, true, message)
 	token.Wait()
-	time.Sleep(500 * time.Millisecond)
+	time.Sleep(common.HADiscoveryDelay)
 	d.AnnounceAvailable()
 	d.UpdateState()
 }

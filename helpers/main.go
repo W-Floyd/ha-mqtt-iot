@@ -302,7 +302,7 @@ func main() {
 				)
 
 				g.Add(
-					jen.Qual("time", "Sleep").Params(jen.Lit(500).Op("*").Qual("time", "Millisecond")),
+					jen.Qual("time", "Sleep").Params(jen.Qual("github.com/W-Floyd/ha-mqtt-iot/common", "HADiscoveryDelay")),
 				)
 
 				g.Add(
