@@ -21,7 +21,7 @@ func main() {
 	}
 
 	for _, v := range append(DeviceNames, fileList...) {
-		external[v] = jen.NewFilePathName("./devices/external/"+v+".go", "ExternalDevice")
+		external[v] = jen.NewFilePathName("./devices/externaldevice/"+v+".go", "ExternalDevice")
 		external[v].ImportAlias("github.com/eclipse/paho.mqtt.golang", "mqtt")
 		external[v].Comment("////////////////////////////////////////////////////////////////////////////////")
 		external[v].Comment("Do not modify this file, it is automatically generated")
@@ -30,18 +30,21 @@ func main() {
 
 	internal := make(map[string]*jen.File)
 
-	fileList = []string{}
+	fileList = []string{"types"}
 
 	for _, v := range append(DeviceNames, fileList...) {
-		internal[v] = jen.NewFilePathName("./devices/internal/"+v+".go", "InternalDevice")
+		internal[v] = jen.NewFilePathName("./devices/internaldevice/"+v+".go", "InternalDevice")
 		internal[v].ImportAlias("github.com/eclipse/paho.mqtt.golang", "mqtt")
-		internal[v].ImportAlias("github.com/W-Floyd/ha-mqtt-iot/devices/external", "ExternalDevice")
 		internal[v].Comment("////////////////////////////////////////////////////////////////////////////////")
 		internal[v].Comment("Do not modify this file, it is automatically generated")
 		internal[v].Comment("////////////////////////////////////////////////////////////////////////////////")
 	}
 
 	sort.Strings(keyNames)
+
+	internal["types"].Type().Id("Device").Interface(
+		jen.Id("Translate").Params().String(),
+	)
 
 	external["types"].Type().Id("Device").Interface(
 		// jen.UnionFunc(
@@ -60,7 +63,7 @@ func main() {
 		jen.Id("AddMessageHandler").Params(),
 	)
 
-	external["store"].Type().Id("store").StructFunc(
+	external["store"].Type().Id("StateStore").StructFunc(
 		func(g *jen.Group) {
 			for _, d := range devices {
 				g.Add(
@@ -82,10 +85,10 @@ func main() {
 		},
 	)
 
-	external["store"].Func().Id("initStore").Params().Id("store").BlockFunc(
+	external["store"].Func().Id("initStore").Params().Id("StateStore").BlockFunc(
 		func(g *jen.Group) {
 			g.Add(
-				jen.Id("s").Op(":=").Id("store").Block(),
+				jen.Id("s").Op(":=").Id("StateStore").Block(),
 			)
 			for _, d := range devices {
 				for _, key := range keyNames {
@@ -158,7 +161,7 @@ func main() {
 				jen.Id(strcase.ToCamel("name")).String().Tag(map[string]string{"json": "name"}),
 				jen.Id(strcase.ToCamel("suggested_area")).String().Tag(map[string]string{"json": "suggested_area"}),
 				jen.Id(strcase.ToCamel("sw_version")).String().Tag(map[string]string{"json": "sw_version"}),
-				jen.Id(strcase.ToCamel("via_device")).String().Tag(map[string]string{"json": "via_device"}),
+				jen.Id(strcase.ToCamel("viadevice")).String().Tag(map[string]string{"json": "viadevice"}),
 			).Tag(map[string]string{"json": "device"}))
 		}
 
@@ -221,8 +224,8 @@ func main() {
 										jen.Id("c").Op(":=").Op("*").Id("d").Dot("MQTT").Dot("Client"),
 										jen.Id("token").Op(":=").Id("c").Dot("Publish").Params(
 											jen.Id("d").Dot(cam),
-											jen.Id("qos"),
-											jen.Id("retain"),
+											jen.Qual("github.com/W-Floyd/ha-mqtt-iot/common", "QoS"),
+											jen.Qual("github.com/W-Floyd/ha-mqtt-iot/common", "Retain"),
 											jen.Id("state"),
 										),
 										jen.Id("stateStore").Dot(camName).Dot(camTrimmed).Index(jen.Id("d").Dot("UniqueId")).Op("=").Id("state"),
@@ -326,8 +329,8 @@ func main() {
 					g.Add(
 						jen.Id("token").Op(":=").Id("c").Dot("Publish").Params(
 							jen.Id("d").Dot("AvailabilityTopic"),
-							jen.Id("qos"),
-							jen.Id("retain"),
+							jen.Qual("github.com/W-Floyd/ha-mqtt-iot/common", "QoS"),
+							jen.Qual("github.com/W-Floyd/ha-mqtt-iot/common", "Retain"),
 							jen.Lit("offline"),
 						),
 					)
@@ -377,8 +380,8 @@ func main() {
 					g.Add(
 						jen.Id("token").Op(":=").Id("c").Dot("Publish").Params(
 							jen.Id("d").Dot("AvailabilityTopic"),
-							jen.Id("qos"),
-							jen.Id("retain"),
+							jen.Qual("github.com/W-Floyd/ha-mqtt-iot/common", "QoS"),
+							jen.Qual("github.com/W-Floyd/ha-mqtt-iot/common", "Retain"),
 							jen.Lit("online"),
 						),
 					)
@@ -412,7 +415,7 @@ func main() {
 							func(g *jen.Group) {
 								g.Add(jen.Id("d").Dot(strcase.ToCamel(name)).Op("=").Id("GetTopic").Params(jen.Id("d"), jen.Lit(name)))
 								if IsCommand(name, d) {
-									g.Add(jen.Id("topicStore").Index(
+									g.Add(jen.Qual("github.com/W-Floyd/ha-mqtt-iot/store", "TopicStore").Index(
 										jen.Id("d").Dot(strcase.ToCamel(name)),
 									).Op("=").Id("&d").Dot(lName + "Func"))
 								}
@@ -424,10 +427,10 @@ func main() {
 		})
 
 		// d.Translate() ExternalDevice.Light
-		internal[d.Name].Func().Params(jen.Id("iDevice").Id(strcase.ToCamel(d.Name))).Id("Translate").Params().Qual("github.com/W-Floyd/ha-mqtt-iot/devices/external", strcase.ToCamel(d.Name)).BlockFunc(
+		internal[d.Name].Func().Params(jen.Id("iDevice").Id(strcase.ToCamel(d.Name))).Id("Translate").Params().Qual("github.com/W-Floyd/ha-mqtt-iot/devices/externaldevice", strcase.ToCamel(d.Name)).BlockFunc(
 			func(g *jen.Group) {
 				g.Add(
-					jen.Id("eDevice").Op(":=").Qual("github.com/W-Floyd/ha-mqtt-iot/devices/external", strcase.ToCamel(d.Name)).Block(),
+					jen.Id("eDevice").Op(":=").Qual("github.com/W-Floyd/ha-mqtt-iot/devices/externaldevice", strcase.ToCamel(d.Name)).Block(),
 				)
 				g.Add(
 					jen.Id("eDevice").Dot("MQTT").Dot("ForceUpdate").Op("=").Id("iDevice").Dot("MQTT").Dot("ForceUpdate"),
@@ -498,12 +501,55 @@ func main() {
 
 	}
 
+	////////////////////////////////////////////////////////////////////////////////
+
+	config := jen.NewFilePathName("./config/config.go", "config")
+	config.ImportAlias("github.com/eclipse/paho.mqtt.golang", "mqtt")
+	config.ImportAlias("github.com/W-Floyd/ha-mqtt-iot/devices/externaldevice", "ExternalDevice")
+	config.Comment("////////////////////////////////////////////////////////////////////////////////")
+	config.Comment("Do not modify this file, it is automatically generated")
+	config.Comment("////////////////////////////////////////////////////////////////////////////////")
+
+	config.Add(jen.Type().Id("Config").StructFunc(
+		func(g *jen.Group) {
+			g.Add(
+				jen.Id("MQTT").StructFunc(
+					func(h *jen.Group) {
+						p := []string{"Broker", "Username", "Password", "NodeID", "InstanceName"}
+						for _, n := range p {
+							h.Add(jen.Id(n).String())
+						}
+					},
+				),
+			)
+			g.Add(
+				jen.Id("Logging").StructFunc(
+					func(h *jen.Group) {
+						p := []string{"Critical", "Debug", "Error", "Warn"}
+						for _, n := range p {
+							h.Add(jen.Id(n).Bool())
+						}
+					},
+				),
+			)
+			for _, d := range devices {
+				g.Add(
+					jen.Id(strcase.ToCamel(d.Name)).Index().Qual("github.com/W-Floyd/ha-mqtt-iot/devices/internaldevice", strcase.ToCamel(d.Name)),
+				)
+			}
+		},
+	))
+
+	////////////////////////////////////////////////////////////////////////////////
+
 	for k, v := range external {
-		v.Save("./devices/external/" + k + ".go")
+		v.Save("./devices/externaldevice/" + k + ".go")
 	}
 
 	for k, v := range internal {
-		v.Save("./devices/internal/" + k + ".go")
+		v.Save("./devices/internaldevice/" + k + ".go")
 	}
+
+	config.Save("./config/config.go")
 
 }

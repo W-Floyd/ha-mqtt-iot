@@ -11,10 +11,9 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/W-Floyd/ha-mqtt-iot/config"
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/imdario/mergo"
-
-	"github.com/W-Floyd/ha-mqtt-iot/iotconfig"
 )
 
 //go:generate go run ./helpers/
@@ -54,10 +53,10 @@ func main() {
 
 	configFiles := [...]string{*configFile, *secretsFile}
 
-	var sconfig iotconfig.Config
+	var sconfig config.Config
 
 	for _, configFile := range configFiles {
-		var tConfig iotconfig.Config
+		var tConfig config.Config
 
 		// read file
 		data, err := ioutil.ReadFile(configFile)
