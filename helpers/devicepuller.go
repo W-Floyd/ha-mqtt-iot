@@ -134,7 +134,7 @@ func exists(path string) bool {
 
 func fetchDocument(devicename string) ([]byte, error) {
 
-	url := "https://raw.githubusercontent.com/home-assistant/home-assistant.io/rc/source/_integrations/" + devicename + ".mqtt.markdown"
+	url := "https://raw.githubusercontent.com/home-assistant/home-assistant.io/next/source/_integrations/" + devicename + ".mqtt.markdown"
 
 	targetFile := "./helpers/cache/" + devicename + ".md"
 
