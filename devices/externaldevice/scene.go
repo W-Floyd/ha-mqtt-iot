@@ -29,6 +29,7 @@ type Scene struct {
 	AvailabilityTopic    string                          `json:"availability_topic"`
 	CommandTopic         string                          `json:"command_topic"`
 	CommandFunc          func(mqtt.Message, mqtt.Client) `json:"-"`
+	EnabledByDefault     bool                            `json:"enabled_by_default"`
 	EntityCategory       string                          `json:"entity_category"`
 	Icon                 string                          `json:"icon"`
 	Name                 string                          `json:"name"`

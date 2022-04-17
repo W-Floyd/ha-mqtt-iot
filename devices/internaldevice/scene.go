@@ -13,6 +13,7 @@ func (iDevice Scene) Translate() externaldevice.Scene {
 	eDevice.MQTT.ForceUpdate = iDevice.MQTT.ForceUpdate
 	eDevice.MQTT.UpdateInterval = iDevice.MQTT.UpdateInterval
 	eDevice.CommandFunc = common.ConstructCommandFunc(iDevice.Command)
+	eDevice.EnabledByDefault = iDevice.EnabledByDefault
 	eDevice.EntityCategory = iDevice.EntityCategory
 	eDevice.Icon = iDevice.Icon
 	eDevice.Name = iDevice.Name
@@ -29,6 +30,7 @@ func (iDevice Scene) Translate() externaldevice.Scene {
 
 type Scene struct {
 	Command             []string `json:"command"`
+	EnabledByDefault    bool     `json:"enabled_by_default"`
 	EntityCategory      string   `json:"entity_category"`
 	Icon                string   `json:"icon"`
 	Name                string   `json:"name"`
