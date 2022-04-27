@@ -38,6 +38,7 @@ func main() {
 		internal[v].Comment("////////////////////////////////////////////////////////////////////////////////")
 		internal[v].Comment("Do not modify this file, it is automatically generated")
 		internal[v].Comment("////////////////////////////////////////////////////////////////////////////////")
+		internal[v].Comment("")
 	}
 
 	sort.Strings(keyNames)
@@ -152,16 +153,24 @@ func main() {
 		}
 
 		if d.JSONContainer.Exists("device") {
-			st["device"] = append(st["device"], jen.Id(strcase.ToCamel("device")).Struct(
-				jen.Id(strcase.ToCamel("configuration_url")).String().Tag(map[string]string{"json": "configuration_url"}),
-				jen.Id(strcase.ToCamel("connections")).Index().String().Tag(map[string]string{"json": "connections"}),
-				jen.Id(strcase.ToCamel("identifiers")).Index().String().Tag(map[string]string{"json": "identifiers"}),
-				jen.Id(strcase.ToCamel("manufacturer")).String().Tag(map[string]string{"json": "manufacturer"}),
-				jen.Id(strcase.ToCamel("model")).String().Tag(map[string]string{"json": "model"}),
-				jen.Id(strcase.ToCamel("name")).String().Tag(map[string]string{"json": "name"}),
-				jen.Id(strcase.ToCamel("suggested_area")).String().Tag(map[string]string{"json": "suggested_area"}),
-				jen.Id(strcase.ToCamel("sw_version")).String().Tag(map[string]string{"json": "sw_version"}),
-				jen.Id(strcase.ToCamel("viadevice")).String().Tag(map[string]string{"json": "viadevice"}),
+			st["device"] = append(st["device"], jen.Id(strcase.ToCamel("device")).StructFunc(
+				func(g *jen.Group) {
+					for _, v := range []string{
+						"configuration_url",
+						"connections",
+						"identifiers",
+						"manufacturer",
+						"model",
+						"name",
+						"suggested_area",
+						"sw_version",
+						"viadevice",
+					} {
+						g.Add(
+							jen.Id(strcase.ToCamel(v)).String().Tag(map[string]string{"json": v}).Comment(d.JSONContainer.Path("device.keys." + v + ".description").String()),
+						)
+					}
+				},
 			).Tag(map[string]string{"json": "device"}))
 		}
 

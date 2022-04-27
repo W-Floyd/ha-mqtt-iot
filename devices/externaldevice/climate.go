@@ -29,99 +29,99 @@ func (d Climate) PopulateDevice() {
 }
 
 type Climate struct {
-	ActionTemplate             string                          `json:"action_template"`
-	ActionTopic                string                          `json:"action_topic"`
+	ActionTemplate             string                          `json:"action_template"` // "A template to render the value received on the `action_topic` with."
+	ActionTopic                string                          `json:"action_topic"`    // "The MQTT topic to subscribe for changes of the current action. If this is set, the climate graph uses the value received as data source. Valid values: `off`, `heating`, `cooling`, `drying`, `idle`, `fan`."
 	ActionFunc                 func(mqtt.Message, mqtt.Client) `json:"-"`
-	AuxCommandTopic            string                          `json:"aux_command_topic"`
+	AuxCommandTopic            string                          `json:"aux_command_topic"` // "The MQTT topic to publish commands to switch auxiliary heat."
 	AuxCommandFunc             func(mqtt.Message, mqtt.Client) `json:"-"`
-	AuxStateTemplate           string                          `json:"aux_state_template"`
-	AuxStateTopic              string                          `json:"aux_state_topic"`
+	AuxStateTemplate           string                          `json:"aux_state_template"` // "A template to render the value received on the `aux_state_topic` with."
+	AuxStateTopic              string                          `json:"aux_state_topic"`    // "The MQTT topic to subscribe for changes of the auxiliary heat mode. If this is not set, the auxiliary heat mode works in optimistic mode (see below)."
 	AuxStateFunc               func() string                   `json:"-"`
-	AvailabilityMode           string                          `json:"availability_mode"`
-	AvailabilityTemplate       string                          `json:"availability_template"`
-	AvailabilityTopic          string                          `json:"availability_topic"`
-	CurrentTemperatureTemplate string                          `json:"current_temperature_template"`
-	CurrentTemperatureTopic    string                          `json:"current_temperature_topic"`
+	AvailabilityMode           string                          `json:"availability_mode"`            // "When `availability` is configured, this controls the conditions needed to set the entity to `available`. Valid entries are `all`, `any`, and `latest`. If set to `all`, `payload_available` must be received on all configured availability topics before the entity is marked as online. If set to `any`, `payload_available` must be received on at least one configured availability topic before the entity is marked as online. If set to `latest`, the last `payload_available` or `payload_not_available` received on any configured availability topic controls the availability."
+	AvailabilityTemplate       string                          `json:"availability_template"`        // "Defines a [template](/docs/configuration/templating/#processing-incoming-data) to extract device's availability from the `availability_topic`. To determine the devices's availability result of this template will be compared to `payload_available` and `payload_not_available`."
+	AvailabilityTopic          string                          `json:"availability_topic"`           // "The MQTT topic subscribed to receive availability (online/offline) updates. Must not be used together with `availability`."
+	CurrentTemperatureTemplate string                          `json:"current_temperature_template"` // "A template with which the value received on `current_temperature_topic` will be rendered."
+	CurrentTemperatureTopic    string                          `json:"current_temperature_topic"`    // "The MQTT topic on which to listen for the current temperature."
 	CurrentTemperatureFunc     func() string                   `json:"-"`
 	Device                     struct {
-		ConfigurationUrl string   `json:"configuration_url"`
-		Connections      []string `json:"connections"`
-		Identifiers      []string `json:"identifiers"`
-		Manufacturer     string   `json:"manufacturer"`
-		Model            string   `json:"model"`
-		Name             string   `json:"name"`
-		SuggestedArea    string   `json:"suggested_area"`
-		SwVersion        string   `json:"sw_version"`
-		Viadevice        string   `json:"viadevice"`
+		ConfigurationUrl string `json:"configuration_url"` // "A link to the webpage that can manage the configuration of this device. Can be either an HTTP or HTTPS link."
+		Connections      string `json:"connections"`       // "A list of connections of the device to the outside world as a list of tuples `[connection_type, connection_identifier]`. For example the MAC address of a network interface: `\"connections\": [[\"mac\", \"02:5b:26:a8:dc:12\"]]`."
+		Identifiers      string `json:"identifiers"`       // "A list of IDs that uniquely identify the device. For example a serial number."
+		Manufacturer     string `json:"manufacturer"`      // "The manufacturer of the device."
+		Model            string `json:"model"`             // "The model of the device."
+		Name             string `json:"name"`              // "The name of the device."
+		SuggestedArea    string `json:"suggested_area"`    // "Suggest an area if the device isn’t in one yet."
+		SwVersion        string `json:"sw_version"`        // "The firmware version of the device."
+		Viadevice        string `json:"viadevice"`         // null
 	} `json:"device"`
-	EnabledByDefault               bool                            `json:"enabled_by_default"`
-	Encoding                       string                          `json:"encoding"`
-	EntityCategory                 string                          `json:"entity_category"`
-	FanModeCommandTemplate         string                          `json:"fan_mode_command_template"`
-	FanModeCommandTopic            string                          `json:"fan_mode_command_topic"`
+	EnabledByDefault               bool                            `json:"enabled_by_default"`        // "Flag which defines if the entity should be enabled when first added."
+	Encoding                       string                          `json:"encoding"`                  // "The encoding of the payloads received and published messages. Set to `\"\"` to disable decoding of incoming payload."
+	EntityCategory                 string                          `json:"entity_category"`           // "The [category](https://developers.home-assistant.io/docs/core/entity#generic-properties) of the entity."
+	FanModeCommandTemplate         string                          `json:"fan_mode_command_template"` // "A template to render the value sent to the `fan_mode_command_topic` with."
+	FanModeCommandTopic            string                          `json:"fan_mode_command_topic"`    // "The MQTT topic to publish commands to change the fan mode."
 	FanModeCommandFunc             func(mqtt.Message, mqtt.Client) `json:"-"`
-	FanModeStateTemplate           string                          `json:"fan_mode_state_template"`
-	FanModeStateTopic              string                          `json:"fan_mode_state_topic"`
+	FanModeStateTemplate           string                          `json:"fan_mode_state_template"` // "A template to render the value received on the `fan_mode_state_topic` with."
+	FanModeStateTopic              string                          `json:"fan_mode_state_topic"`    // "The MQTT topic to subscribe for changes of the HVAC fan mode. If this is not set, the fan mode works in optimistic mode (see below)."
 	FanModeStateFunc               func() string                   `json:"-"`
-	FanModes                       []string                        `json:"fan_modes"`
-	Icon                           string                          `json:"icon"`
-	Initial                        int                             `json:"initial"`
-	MaxTemp                        float64                         `json:"max_temp"`
-	MinTemp                        float64                         `json:"min_temp"`
-	ModeCommandTemplate            string                          `json:"mode_command_template"`
-	ModeCommandTopic               string                          `json:"mode_command_topic"`
+	FanModes                       []string                        `json:"fan_modes"`             // "A list of supported fan modes."
+	Icon                           string                          `json:"icon"`                  // "[Icon](/docs/configuration/customizing-devices/#icon) for the entity."
+	Initial                        int                             `json:"initial"`               // "Set the initial target temperature."
+	MaxTemp                        float64                         `json:"max_temp"`              // "Maximum set point available."
+	MinTemp                        float64                         `json:"min_temp"`              // "Minimum set point available."
+	ModeCommandTemplate            string                          `json:"mode_command_template"` // "A template to render the value sent to the `mode_command_topic` with."
+	ModeCommandTopic               string                          `json:"mode_command_topic"`    // "The MQTT topic to publish commands to change the HVAC operation mode."
 	ModeCommandFunc                func(mqtt.Message, mqtt.Client) `json:"-"`
-	ModeStateTemplate              string                          `json:"mode_state_template"`
-	ModeStateTopic                 string                          `json:"mode_state_topic"`
+	ModeStateTemplate              string                          `json:"mode_state_template"` // "A template to render the value received on the `mode_state_topic` with."
+	ModeStateTopic                 string                          `json:"mode_state_topic"`    // "The MQTT topic to subscribe for changes of the HVAC operation mode. If this is not set, the operation mode works in optimistic mode (see below)."
 	ModeStateFunc                  func() string                   `json:"-"`
-	Modes                          []string                        `json:"modes"`
-	Name                           string                          `json:"name"`
-	ObjectId                       string                          `json:"object_id"`
-	PayloadAvailable               string                          `json:"payload_available"`
-	PayloadNotAvailable            string                          `json:"payload_not_available"`
-	PayloadOff                     string                          `json:"payload_off"`
-	PayloadOn                      string                          `json:"payload_on"`
-	PowerCommandTopic              string                          `json:"power_command_topic"`
+	Modes                          []string                        `json:"modes"`                 // "A list of supported modes. Needs to be a subset of the default values."
+	Name                           string                          `json:"name"`                  // "The name of the HVAC."
+	ObjectId                       string                          `json:"object_id"`             // "Used instead of `name` for automatic generation of `entity_id`"
+	PayloadAvailable               string                          `json:"payload_available"`     // "The payload that represents the available state."
+	PayloadNotAvailable            string                          `json:"payload_not_available"` // "The payload that represents the unavailable state."
+	PayloadOff                     string                          `json:"payload_off"`           // "The payload that represents disabled state."
+	PayloadOn                      string                          `json:"payload_on"`            // "The payload that represents enabled state."
+	PowerCommandTopic              string                          `json:"power_command_topic"`   // "The MQTT topic to publish commands to change the power state. This is useful if your device has a separate power toggle in addition to mode."
 	PowerCommandFunc               func(mqtt.Message, mqtt.Client) `json:"-"`
-	Precision                      float64                         `json:"precision"`
-	PresetModeCommandTemplate      string                          `json:"preset_mode_command_template"`
-	PresetModeCommandTopic         string                          `json:"preset_mode_command_topic"`
+	Precision                      float64                         `json:"precision"`                    // "The desired precision for this device. Can be used to match your actual thermostat's precision. Supported values are `0.1`, `0.5` and `1.0`."
+	PresetModeCommandTemplate      string                          `json:"preset_mode_command_template"` // "Defines a [template](/docs/configuration/templating/#processing-incoming-data) to generate the payload to send to `preset_mode_command_topic`."
+	PresetModeCommandTopic         string                          `json:"preset_mode_command_topic"`    // "The MQTT topic to publish commands to change the preset mode."
 	PresetModeCommandFunc          func(mqtt.Message, mqtt.Client) `json:"-"`
-	PresetModeStateTopic           string                          `json:"preset_mode_state_topic"`
+	PresetModeStateTopic           string                          `json:"preset_mode_state_topic"` // "The MQTT topic subscribed to receive climate speed based on presets. When preset 'none' is received or `None` the `preset_mode` will be reset."
 	PresetModeStateFunc            func() string                   `json:"-"`
-	PresetModeValueTemplate        string                          `json:"preset_mode_value_template"`
-	PresetModes                    []string                        `json:"preset_modes"`
-	Qos                            int                             `json:"qos"`
-	Retain                         bool                            `json:"retain"`
-	SwingModeCommandTemplate       string                          `json:"swing_mode_command_template"`
-	SwingModeCommandTopic          string                          `json:"swing_mode_command_topic"`
+	PresetModeValueTemplate        string                          `json:"preset_mode_value_template"`  // "Defines a [template](/docs/configuration/templating/#processing-incoming-data) to extract the `preset_mode` value from the payload received on `preset_mode_state_topic`."
+	PresetModes                    []string                        `json:"preset_modes"`                // "List of preset modes this climate is supporting. Common examples include `eco`, `away`, `boost`, `comfort`, `home`, `sleep` and `activity`."
+	Qos                            int                             `json:"qos"`                         // "The maximum QoS level to be used when receiving and publishing messages."
+	Retain                         bool                            `json:"retain"`                      // "Defines if published messages should have the retain flag set."
+	SwingModeCommandTemplate       string                          `json:"swing_mode_command_template"` // "A template to render the value sent to the `swing_mode_command_topic` with."
+	SwingModeCommandTopic          string                          `json:"swing_mode_command_topic"`    // "The MQTT topic to publish commands to change the swing mode."
 	SwingModeCommandFunc           func(mqtt.Message, mqtt.Client) `json:"-"`
-	SwingModeStateTemplate         string                          `json:"swing_mode_state_template"`
-	SwingModeStateTopic            string                          `json:"swing_mode_state_topic"`
+	SwingModeStateTemplate         string                          `json:"swing_mode_state_template"` // "A template to render the value received on the `swing_mode_state_topic` with."
+	SwingModeStateTopic            string                          `json:"swing_mode_state_topic"`    // "The MQTT topic to subscribe for changes of the HVAC swing mode. If this is not set, the swing mode works in optimistic mode (see below)."
 	SwingModeStateFunc             func() string                   `json:"-"`
-	SwingModes                     []string                        `json:"swing_modes"`
-	TempStep                       float64                         `json:"temp_step"`
-	TemperatureCommandTemplate     string                          `json:"temperature_command_template"`
-	TemperatureCommandTopic        string                          `json:"temperature_command_topic"`
+	SwingModes                     []string                        `json:"swing_modes"`                  // "A list of supported swing modes."
+	TempStep                       float64                         `json:"temp_step"`                    // "Step size for temperature set point."
+	TemperatureCommandTemplate     string                          `json:"temperature_command_template"` // "A template to render the value sent to the `temperature_command_topic` with."
+	TemperatureCommandTopic        string                          `json:"temperature_command_topic"`    // "The MQTT topic to publish commands to change the target temperature."
 	TemperatureCommandFunc         func(mqtt.Message, mqtt.Client) `json:"-"`
-	TemperatureHighCommandTemplate string                          `json:"temperature_high_command_template"`
-	TemperatureHighCommandTopic    string                          `json:"temperature_high_command_topic"`
+	TemperatureHighCommandTemplate string                          `json:"temperature_high_command_template"` // "A template to render the value sent to the `temperature_high_command_topic` with."
+	TemperatureHighCommandTopic    string                          `json:"temperature_high_command_topic"`    // "The MQTT topic to publish commands to change the high target temperature."
 	TemperatureHighCommandFunc     func(mqtt.Message, mqtt.Client) `json:"-"`
-	TemperatureHighStateTemplate   string                          `json:"temperature_high_state_template"`
-	TemperatureHighStateTopic      string                          `json:"temperature_high_state_topic"`
+	TemperatureHighStateTemplate   string                          `json:"temperature_high_state_template"` // "A template to render the value received on the `temperature_high_state_topic` with."
+	TemperatureHighStateTopic      string                          `json:"temperature_high_state_topic"`    // "The MQTT topic to subscribe for changes in the target high temperature. If this is not set, the target high temperature works in optimistic mode (see below)."
 	TemperatureHighStateFunc       func() string                   `json:"-"`
-	TemperatureLowCommandTemplate  string                          `json:"temperature_low_command_template"`
-	TemperatureLowCommandTopic     string                          `json:"temperature_low_command_topic"`
+	TemperatureLowCommandTemplate  string                          `json:"temperature_low_command_template"` // "A template to render the value sent to the `temperature_low_command_topic` with."
+	TemperatureLowCommandTopic     string                          `json:"temperature_low_command_topic"`    // "The MQTT topic to publish commands to change the target low temperature."
 	TemperatureLowCommandFunc      func(mqtt.Message, mqtt.Client) `json:"-"`
-	TemperatureLowStateTemplate    string                          `json:"temperature_low_state_template"`
-	TemperatureLowStateTopic       string                          `json:"temperature_low_state_topic"`
+	TemperatureLowStateTemplate    string                          `json:"temperature_low_state_template"` // "A template to render the value received on the `temperature_low_state_topic` with."
+	TemperatureLowStateTopic       string                          `json:"temperature_low_state_topic"`    // "The MQTT topic to subscribe for changes in the target low temperature. If this is not set, the target low temperature works in optimistic mode (see below)."
 	TemperatureLowStateFunc        func() string                   `json:"-"`
-	TemperatureStateTemplate       string                          `json:"temperature_state_template"`
-	TemperatureStateTopic          string                          `json:"temperature_state_topic"`
+	TemperatureStateTemplate       string                          `json:"temperature_state_template"` // "A template to render the value received on the `temperature_state_topic` with."
+	TemperatureStateTopic          string                          `json:"temperature_state_topic"`    // "The MQTT topic to subscribe for changes in the target temperature. If this is not set, the target temperature works in optimistic mode (see below)."
 	TemperatureStateFunc           func() string                   `json:"-"`
-	TemperatureUnit                string                          `json:"temperature_unit"`
-	UniqueId                       string                          `json:"unique_id"`
-	ValueTemplate                  string                          `json:"value_template"`
+	TemperatureUnit                string                          `json:"temperature_unit"` // "Defines the temperature unit of the device, `C` or `F`. If this is not set, the temperature unit is set to the system temperature unit."
+	UniqueId                       string                          `json:"unique_id"`        // "An ID that uniquely identifies this HVAC device. If two HVAC devices have the same unique ID, Home Assistant will raise an exception."
+	ValueTemplate                  string                          `json:"value_template"`   // "Default template to render the payloads on *all* `*_state_topic`s with."
 	MQTT                           MQTTFields                      `json:"-"`
 }
 

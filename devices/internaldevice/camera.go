@@ -5,6 +5,7 @@ import externaldevice "github.com/W-Floyd/ha-mqtt-iot/devices/externaldevice"
 ////////////////////////////////////////////////////////////////////////////////
 // Do not modify this file, it is automatically generated
 ////////////////////////////////////////////////////////////////////////////////
+//
 func (iDevice Camera) Translate() externaldevice.Camera {
 	eDevice := externaldevice.Camera{}
 	eDevice.MQTT.ForceUpdate = iDevice.MQTT.ForceUpdate
@@ -21,13 +22,13 @@ func (iDevice Camera) Translate() externaldevice.Camera {
 }
 
 type Camera struct {
-	EnabledByDefault bool   `json:"enabled_by_default"`
-	EntityCategory   string `json:"entity_category"`
-	Icon             string `json:"icon"`
-	Name             string `json:"name"`
-	ObjectId         string `json:"object_id"`
-	Topic            string `json:"topic"`
-	UniqueId         string `json:"unique_id"`
+	EnabledByDefault bool   `json:"enabled_by_default"` // "Flag which defines if the entity should be enabled when first added."
+	EntityCategory   string `json:"entity_category"`    // "The [category](https://developers.home-assistant.io/docs/core/entity#generic-properties) of the entity."
+	Icon             string `json:"icon"`               // "[Icon](/docs/configuration/customizing-devices/#icon) for the entity."
+	Name             string `json:"name"`               // "The name of the camera."
+	ObjectId         string `json:"object_id"`          // "Used instead of `name` for automatic generation of `entity_id`"
+	Topic            string `json:"topic"`              // "The MQTT topic to subscribe to."
+	UniqueId         string `json:"unique_id"`          // "An ID that uniquely identifies this camera. If two cameras have the same unique ID Home Assistant will raise an exception."
 	MQTT             struct {
 		UpdateInterval float64 `json:"update_interval"`
 		ForceUpdate    bool    `json:"force_update"`

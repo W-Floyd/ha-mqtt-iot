@@ -29,45 +29,45 @@ func (d Vacuum) PopulateDevice() {
 }
 
 type Vacuum struct {
-	AvailabilityMode     string                          `json:"availability_mode"`
-	AvailabilityTemplate string                          `json:"availability_template"`
-	AvailabilityTopic    string                          `json:"availability_topic"`
-	CommandTopic         string                          `json:"command_topic"`
+	AvailabilityMode     string                          `json:"availability_mode"`     // "When `availability` is configured, this controls the conditions needed to set the entity to `available`. Valid entries are `all`, `any`, and `latest`. If set to `all`, `payload_available` must be received on all configured availability topics before the entity is marked as online. If set to `any`, `payload_available` must be received on at least one configured availability topic before the entity is marked as online. If set to `latest`, the last `payload_available` or `payload_not_available` received on any configured availability topic controls the availability."
+	AvailabilityTemplate string                          `json:"availability_template"` // "Defines a [template](/docs/configuration/templating/#processing-incoming-data) to extract device's availability from the `availability_topic`. To determine the devices's availability result of this template will be compared to `payload_available` and `payload_not_available`."
+	AvailabilityTopic    string                          `json:"availability_topic"`    // "The MQTT topic subscribed to receive availability (online/offline) updates. Must not be used together with `availability`."
+	CommandTopic         string                          `json:"command_topic"`         // "The MQTT topic to publish commands to control the vacuum."
 	CommandFunc          func(mqtt.Message, mqtt.Client) `json:"-"`
 	Device               struct {
-		ConfigurationUrl string   `json:"configuration_url"`
-		Connections      []string `json:"connections"`
-		Identifiers      []string `json:"identifiers"`
-		Manufacturer     string   `json:"manufacturer"`
-		Model            string   `json:"model"`
-		Name             string   `json:"name"`
-		SuggestedArea    string   `json:"suggested_area"`
-		SwVersion        string   `json:"sw_version"`
-		Viadevice        string   `json:"viadevice"`
+		ConfigurationUrl string `json:"configuration_url"` // "A link to the webpage that can manage the configuration of this device. Can be either an HTTP or HTTPS link."
+		Connections      string `json:"connections"`       // "A list of connections of the device to the outside world as a list of tuples `[connection_type, connection_identifier]`. For example the MAC address of a network interface: `\"connections\": [[\"mac\", \"02:5b:26:a8:dc:12\"]]`."
+		Identifiers      string `json:"identifiers"`       // "A list of IDs that uniquely identify the device. For example a serial number."
+		Manufacturer     string `json:"manufacturer"`      // "The manufacturer of the device."
+		Model            string `json:"model"`             // "The model of the device."
+		Name             string `json:"name"`              // "The name of the device."
+		SuggestedArea    string `json:"suggested_area"`    // "Suggest an area if the device isn’t in one yet."
+		SwVersion        string `json:"sw_version"`        // "The firmware version of the device."
+		Viadevice        string `json:"viadevice"`         // null
 	} `json:"device"`
-	Encoding            string                          `json:"encoding"`
-	FanSpeedList        []string                        `json:"fan_speed_list"`
-	Name                string                          `json:"name"`
-	ObjectId            string                          `json:"object_id"`
-	PayloadAvailable    string                          `json:"payload_available"`
-	PayloadCleanSpot    string                          `json:"payload_clean_spot"`
-	PayloadLocate       string                          `json:"payload_locate"`
-	PayloadNotAvailable string                          `json:"payload_not_available"`
-	PayloadPause        string                          `json:"payload_pause"`
-	PayloadReturnToBase string                          `json:"payload_return_to_base"`
-	PayloadStart        string                          `json:"payload_start"`
-	PayloadStop         string                          `json:"payload_stop"`
-	Qos                 int                             `json:"qos"`
-	Retain              bool                            `json:"retain"`
-	Schema              string                          `json:"schema"`
-	SendCommandTopic    string                          `json:"send_command_topic"`
+	Encoding            string                          `json:"encoding"`               // "The encoding of the payloads received and published messages. Set to `\"\"` to disable decoding of incoming payload."
+	FanSpeedList        []string                        `json:"fan_speed_list"`         // "List of possible fan speeds for the vacuum."
+	Name                string                          `json:"name"`                   // "The name of the vacuum."
+	ObjectId            string                          `json:"object_id"`              // "Used instead of `name` for automatic generation of `entity_id`"
+	PayloadAvailable    string                          `json:"payload_available"`      // "The payload that represents the available state."
+	PayloadCleanSpot    string                          `json:"payload_clean_spot"`     // "The payload to send to the `command_topic` to begin a spot cleaning cycle."
+	PayloadLocate       string                          `json:"payload_locate"`         // "The payload to send to the `command_topic` to locate the vacuum (typically plays a song)."
+	PayloadNotAvailable string                          `json:"payload_not_available"`  // "The payload that represents the unavailable state."
+	PayloadPause        string                          `json:"payload_pause"`          // "The payload to send to the `command_topic` to pause the vacuum."
+	PayloadReturnToBase string                          `json:"payload_return_to_base"` // "The payload to send to the `command_topic` to tell the vacuum to return to base."
+	PayloadStart        string                          `json:"payload_start"`          // "The payload to send to the `command_topic` to begin the cleaning cycle."
+	PayloadStop         string                          `json:"payload_stop"`           // "The payload to send to the `command_topic` to stop cleaning."
+	Qos                 int                             `json:"qos"`                    // "The maximum QoS level of the state topic."
+	Retain              bool                            `json:"retain"`                 // "If the published message should have the retain flag on or not."
+	Schema              string                          `json:"schema"`                 // "The schema to use. Must be `state` to select the state schema."
+	SendCommandTopic    string                          `json:"send_command_topic"`     // "The MQTT topic to publish custom commands to the vacuum."
 	SendCommandFunc     func(mqtt.Message, mqtt.Client) `json:"-"`
-	SetFanSpeedTopic    string                          `json:"set_fan_speed_topic"`
+	SetFanSpeedTopic    string                          `json:"set_fan_speed_topic"` // "The MQTT topic to publish commands to control the vacuum's fan speed."
 	SetFanSpeedFunc     func(mqtt.Message, mqtt.Client) `json:"-"`
-	StateTopic          string                          `json:"state_topic"`
+	StateTopic          string                          `json:"state_topic"` // "The MQTT topic subscribed to receive state messages from the vacuum. Messages received on the `state_topic` must be a valid JSON dictionary, with a mandatory `state` key and optionally `battery_level` and `fan_speed` keys as shown in the [example](#state-mqtt-protocol)."
 	StateFunc           func() string                   `json:"-"`
-	SupportedFeatures   []string                        `json:"supported_features"`
-	UniqueId            string                          `json:"unique_id"`
+	SupportedFeatures   []string                        `json:"supported_features"` // "List of features that the vacuum supports (possible values are `start`, `stop`, `pause`, `return_home`, `battery`, `status`, `locate`, `clean_spot`, `fan_speed`, `send_command`)."
+	UniqueId            string                          `json:"unique_id"`          // "An ID that uniquely identifies this vacuum. If two vacuums have the same unique ID, Home Assistant will raise an exception."
 	MQTT                MQTTFields                      `json:"-"`
 }
 

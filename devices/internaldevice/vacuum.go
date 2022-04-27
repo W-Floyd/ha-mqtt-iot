@@ -8,6 +8,7 @@ import (
 ////////////////////////////////////////////////////////////////////////////////
 // Do not modify this file, it is automatically generated
 ////////////////////////////////////////////////////////////////////////////////
+//
 func (iDevice Vacuum) Translate() externaldevice.Vacuum {
 	eDevice := externaldevice.Vacuum{}
 	eDevice.MQTT.ForceUpdate = iDevice.MQTT.ForceUpdate
@@ -39,26 +40,26 @@ func (iDevice Vacuum) Translate() externaldevice.Vacuum {
 
 type Vacuum struct {
 	Command             []string `json:"command"`
-	Encoding            string   `json:"encoding"`
-	FanSpeedList        []string `json:"fan_speed_list"`
-	Name                string   `json:"name"`
-	ObjectId            string   `json:"object_id"`
-	PayloadAvailable    string   `json:"payload_available"`
-	PayloadCleanSpot    string   `json:"payload_clean_spot"`
-	PayloadLocate       string   `json:"payload_locate"`
-	PayloadNotAvailable string   `json:"payload_not_available"`
-	PayloadPause        string   `json:"payload_pause"`
-	PayloadReturnToBase string   `json:"payload_return_to_base"`
-	PayloadStart        string   `json:"payload_start"`
-	PayloadStop         string   `json:"payload_stop"`
-	Qos                 int      `json:"qos"`
-	Retain              bool     `json:"retain"`
-	Schema              string   `json:"schema"`
+	Encoding            string   `json:"encoding"`               // "The encoding of the payloads received and published messages. Set to `\"\"` to disable decoding of incoming payload."
+	FanSpeedList        []string `json:"fan_speed_list"`         // "List of possible fan speeds for the vacuum."
+	Name                string   `json:"name"`                   // "The name of the vacuum."
+	ObjectId            string   `json:"object_id"`              // "Used instead of `name` for automatic generation of `entity_id`"
+	PayloadAvailable    string   `json:"payload_available"`      // "The payload that represents the available state."
+	PayloadCleanSpot    string   `json:"payload_clean_spot"`     // "The payload to send to the `command_topic` to begin a spot cleaning cycle."
+	PayloadLocate       string   `json:"payload_locate"`         // "The payload to send to the `command_topic` to locate the vacuum (typically plays a song)."
+	PayloadNotAvailable string   `json:"payload_not_available"`  // "The payload that represents the unavailable state."
+	PayloadPause        string   `json:"payload_pause"`          // "The payload to send to the `command_topic` to pause the vacuum."
+	PayloadReturnToBase string   `json:"payload_return_to_base"` // "The payload to send to the `command_topic` to tell the vacuum to return to base."
+	PayloadStart        string   `json:"payload_start"`          // "The payload to send to the `command_topic` to begin the cleaning cycle."
+	PayloadStop         string   `json:"payload_stop"`           // "The payload to send to the `command_topic` to stop cleaning."
+	Qos                 int      `json:"qos"`                    // "The maximum QoS level of the state topic."
+	Retain              bool     `json:"retain"`                 // "If the published message should have the retain flag on or not."
+	Schema              string   `json:"schema"`                 // "The schema to use. Must be `state` to select the state schema."
 	SendCommand         []string `json:"send_command"`
 	SetFanSpeed         []string `json:"set_fan_speed"`
 	State               []string `json:"state"`
-	SupportedFeatures   []string `json:"supported_features"`
-	UniqueId            string   `json:"unique_id"`
+	SupportedFeatures   []string `json:"supported_features"` // "List of features that the vacuum supports (possible values are `start`, `stop`, `pause`, `return_home`, `battery`, `status`, `locate`, `clean_spot`, `fan_speed`, `send_command`)."
+	UniqueId            string   `json:"unique_id"`          // "An ID that uniquely identifies this vacuum. If two vacuums have the same unique ID, Home Assistant will raise an exception."
 	MQTT                struct {
 		UpdateInterval float64 `json:"update_interval"`
 		ForceUpdate    bool    `json:"force_update"`

@@ -208,7 +208,7 @@ func (dev *Device) FieldAdder(key string) *jen.Statement {
 
 	t := Unquote(dat[key].ChildrenMap()["type"].String())
 
-	return TypeTranslator(t, jen.Id(strcase.ToCamel(key))).Tag(map[string]string{"json": key})
+	return TypeTranslator(t, jen.Id(strcase.ToCamel(key))).Tag(map[string]string{"json": key}).Comment(dev.JSONContainer.Path(key + ".description").String())
 }
 
 func (dev *Device) FunctionAdder(key string) *jen.Statement {

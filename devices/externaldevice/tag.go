@@ -28,18 +28,18 @@ func (d Tag) PopulateDevice() {
 
 type Tag struct {
 	Device struct {
-		ConfigurationUrl string   `json:"configuration_url"`
-		Connections      []string `json:"connections"`
-		Identifiers      []string `json:"identifiers"`
-		Manufacturer     string   `json:"manufacturer"`
-		Model            string   `json:"model"`
-		Name             string   `json:"name"`
-		SuggestedArea    string   `json:"suggested_area"`
-		SwVersion        string   `json:"sw_version"`
-		Viadevice        string   `json:"viadevice"`
+		ConfigurationUrl string `json:"configuration_url"` // "A link to the webpage that can manage the configuration of this device. Can be either an HTTP or HTTPS link."
+		Connections      string `json:"connections"`       // "A list of connections of the device to the outside world as a list of tuples `[connection_type, connection_identifier]`. For example the MAC address of a network interface: `'connections': ['mac', '02:5b:26:a8:dc:12']`."
+		Identifiers      string `json:"identifiers"`       // "A list of IDs that uniquely identify the device. For example a serial number."
+		Manufacturer     string `json:"manufacturer"`      // "The manufacturer of the device."
+		Model            string `json:"model"`             // "The model of the device."
+		Name             string `json:"name"`              // "The name of the device."
+		SuggestedArea    string `json:"suggested_area"`    // "Suggest an area if the device isn’t in one yet."
+		SwVersion        string `json:"sw_version"`        // "The firmware version of the device."
+		Viadevice        string `json:"viadevice"`         // null
 	} `json:"device"`
-	Topic         string     `json:"topic"`
-	ValueTemplate string     `json:"value_template"`
+	Topic         string     `json:"topic"`          // "The MQTT topic subscribed to receive tag scanned events."
+	ValueTemplate string     `json:"value_template"` // "Defines a [template](/docs/configuration/templating/#processing-incoming-data) that returns a tag ID."
 	MQTT          MQTTFields `json:"-"`
 }
 

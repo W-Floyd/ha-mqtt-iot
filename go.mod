@@ -1,6 +1,6 @@
 module github.com/W-Floyd/ha-mqtt-iot
 
-go 1.17
+go 1.18
 
 require (
 	github.com/Jeffail/gabs/v2 v2.6.1
@@ -14,6 +14,6 @@ require (
 
 require (
 	github.com/gorilla/websocket v1.5.0 // indirect
-	golang.org/x/net v0.0.0-20220225172249-27dd8689420f // indirect
+	golang.org/x/net v0.0.0-20220425223048-2871e0cb64e4 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 )

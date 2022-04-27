@@ -8,6 +8,7 @@ import (
 ////////////////////////////////////////////////////////////////////////////////
 // Do not modify this file, it is automatically generated
 ////////////////////////////////////////////////////////////////////////////////
+//
 func (iDevice Light) Translate() externaldevice.Light {
 	eDevice := externaldevice.Light{}
 	eDevice.MQTT.ForceUpdate = iDevice.MQTT.ForceUpdate
@@ -42,31 +43,31 @@ func (iDevice Light) Translate() externaldevice.Light {
 }
 
 type Light struct {
-	Brightness          bool     `json:"brightness"`
-	BrightnessScale     int      `json:"brightness_scale"`
-	ColorMode           bool     `json:"color_mode"`
+	Brightness          bool     `json:"brightness"`       // "Flag that defines if the light supports brightness."
+	BrightnessScale     int      `json:"brightness_scale"` // "Defines the maximum brightness value (i.e., 100%) of the MQTT device."
+	ColorMode           bool     `json:"color_mode"`       // "Flag that defines if the light supports color modes."
 	Command             []string `json:"command"`
-	Effect              bool     `json:"effect"`
-	EffectList          []string `json:"effect_list"`
-	EnabledByDefault    bool     `json:"enabled_by_default"`
-	Encoding            string   `json:"encoding"`
-	EntityCategory      string   `json:"entity_category"`
-	FlashTimeLong       int      `json:"flash_time_long"`
-	FlashTimeShort      int      `json:"flash_time_short"`
-	Icon                string   `json:"icon"`
-	MaxMireds           int      `json:"max_mireds"`
-	MinMireds           int      `json:"min_mireds"`
-	Name                string   `json:"name"`
-	ObjectId            string   `json:"object_id"`
-	Optimistic          bool     `json:"optimistic"`
-	PayloadAvailable    string   `json:"payload_available"`
-	PayloadNotAvailable string   `json:"payload_not_available"`
-	Qos                 int      `json:"qos"`
-	Retain              bool     `json:"retain"`
-	Schema              string   `json:"schema"`
+	Effect              bool     `json:"effect"`                // "Flag that defines if the light supports effects."
+	EffectList          []string `json:"effect_list"`           // "The list of effects the light supports."
+	EnabledByDefault    bool     `json:"enabled_by_default"`    // "Flag which defines if the entity should be enabled when first added."
+	Encoding            string   `json:"encoding"`              // "The encoding of the payloads received and published messages. Set to `\"\"` to disable decoding of incoming payload."
+	EntityCategory      string   `json:"entity_category"`       // "The [category](https://developers.home-assistant.io/docs/core/entity#generic-properties) of the entity."
+	FlashTimeLong       int      `json:"flash_time_long"`       // "The duration, in seconds, of a “long” flash."
+	FlashTimeShort      int      `json:"flash_time_short"`      // "The duration, in seconds, of a “short” flash."
+	Icon                string   `json:"icon"`                  // "[Icon](/docs/configuration/customizing-devices/#icon) for the entity."
+	MaxMireds           int      `json:"max_mireds"`            // "The maximum color temperature in mireds."
+	MinMireds           int      `json:"min_mireds"`            // "The minimum color temperature in mireds."
+	Name                string   `json:"name"`                  // "The name of the light."
+	ObjectId            string   `json:"object_id"`             // "Used instead of `name` for automatic generation of `entity_id`"
+	Optimistic          bool     `json:"optimistic"`            // "Flag that defines if the light works in optimistic mode."
+	PayloadAvailable    string   `json:"payload_available"`     // "The payload that represents the available state."
+	PayloadNotAvailable string   `json:"payload_not_available"` // "The payload that represents the unavailable state."
+	Qos                 int      `json:"qos"`                   // "The maximum QoS level of the state topic."
+	Retain              bool     `json:"retain"`                // "If the published message should have the retain flag on or not."
+	Schema              string   `json:"schema"`                // "The schema to use. Must be `json` to select the JSON schema."
 	State               []string `json:"state"`
-	SupportedColorModes []string `json:"supported_color_modes"`
-	UniqueId            string   `json:"unique_id"`
+	SupportedColorModes []string `json:"supported_color_modes"` // "A list of color modes supported by the list. This is required if `color_mode` is `True`. Possible color modes are `onoff`, `brightness`, `color_temp`, `hs`, `xy`, `rgb`, `rgbw`, `rgbww`."
+	UniqueId            string   `json:"unique_id"`             // "An ID that uniquely identifies this light. If two lights have the same unique ID, Home Assistant will raise an exception."
 	MQTT                struct {
 		UpdateInterval float64 `json:"update_interval"`
 		ForceUpdate    bool    `json:"force_update"`
