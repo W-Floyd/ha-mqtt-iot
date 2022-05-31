@@ -42,6 +42,7 @@ type Camera struct {
 		Viadevice        string `json:"viadevice"`         // null
 	} `json:"device"`
 	EnabledByDefault bool       `json:"enabled_by_default"` // "Flag which defines if the entity should be enabled when first added."
+	Encoding         string     `json:"encoding"`           // "The encoding of the image payloads received. Set to `\"b64\"` to enable base64 decoding of image payload. If not set, or if set to `null`, the image payload must be raw binary data."
 	EntityCategory   string     `json:"entity_category"`    // "The [category](https://developers.home-assistant.io/docs/core/entity#generic-properties) of the entity."
 	Icon             string     `json:"icon"`               // "[Icon](/docs/configuration/customizing-devices/#icon) for the entity."
 	Name             string     `json:"name"`               // "The name of the camera."
