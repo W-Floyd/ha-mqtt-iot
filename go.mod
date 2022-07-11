@@ -5,15 +5,16 @@ go 1.18
 require (
 	github.com/Jeffail/gabs/v2 v2.6.1
 	github.com/dave/jennifer v1.5.0
-	github.com/eclipse/paho.mqtt.golang v1.3.5
+	github.com/eclipse/paho.mqtt.golang v1.4.1
 	github.com/ghodss/yaml v1.0.0
 	github.com/iancoleman/strcase v0.2.0
-	github.com/imdario/mergo v0.3.12
+	github.com/imdario/mergo v0.3.13
 	github.com/superoo7/go-gecko v1.0.0
 )
 
 require (
 	github.com/gorilla/websocket v1.5.0 // indirect
-	golang.org/x/net v0.0.0-20220425223048-2871e0cb64e4 // indirect
+	golang.org/x/net v0.0.0-20220708220712-1185a9018129 // indirect
+	golang.org/x/sync v0.0.0-20220601150217-0de741cfad7f // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 )
