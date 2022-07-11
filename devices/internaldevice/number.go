@@ -15,6 +15,7 @@ func (iDevice Number) Translate() externaldevice.Number {
 	eDevice.MQTT.UpdateInterval = iDevice.MQTT.UpdateInterval
 	eDevice.CommandTemplate = iDevice.CommandTemplate
 	eDevice.CommandFunc = common.ConstructCommandFunc(iDevice.Command)
+	eDevice.DeviceClass = iDevice.DeviceClass
 	eDevice.EnabledByDefault = iDevice.EnabledByDefault
 	eDevice.Encoding = iDevice.Encoding
 	eDevice.EntityCategory = iDevice.EntityCategory
@@ -39,6 +40,7 @@ func (iDevice Number) Translate() externaldevice.Number {
 type Number struct {
 	CommandTemplate   string   `json:"command_template"` // "Defines a [template](/docs/configuration/templating/#processing-incoming-data) to generate the payload to send to `command_topic`."
 	Command           []string `json:"command"`
+	DeviceClass       string   `json:"device_class"`       // "The [type/class](/integrations/number/#device-class) of the number."
 	EnabledByDefault  bool     `json:"enabled_by_default"` // "Flag which defines if the entity should be enabled when first added."
 	Encoding          string   `json:"encoding"`           // "The encoding of the payloads received and published messages. Set to `\"\"` to disable decoding of incoming payload."
 	EntityCategory    string   `json:"entity_category"`    // "The [category](https://developers.home-assistant.io/docs/core/entity#generic-properties) of the entity."
