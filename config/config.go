@@ -21,6 +21,7 @@ type Config struct {
 		Debug    bool `json:"debug"`
 		Error    bool `json:"error"`
 		Warn     bool `json:"warn"`
+		Mqtt     bool `json:"mqtt"`
 	}
 	AlarmControlPanel []internaldevice.AlarmControlPanel `json:"alarm_control_panel"`
 	BinarySensor      []internaldevice.BinarySensor      `json:"binary_sensor"`

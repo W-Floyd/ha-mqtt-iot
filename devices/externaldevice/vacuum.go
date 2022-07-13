@@ -32,7 +32,8 @@ type Vacuum struct {
 	AvailabilityMode     string                          `json:"availability_mode"`     // "When `availability` is configured, this controls the conditions needed to set the entity to `available`. Valid entries are `all`, `any`, and `latest`. If set to `all`, `payload_available` must be received on all configured availability topics before the entity is marked as online. If set to `any`, `payload_available` must be received on at least one configured availability topic before the entity is marked as online. If set to `latest`, the last `payload_available` or `payload_not_available` received on any configured availability topic controls the availability."
 	AvailabilityTemplate string                          `json:"availability_template"` // "Defines a [template](/docs/configuration/templating/#processing-incoming-data) to extract device's availability from the `availability_topic`. To determine the devices's availability result of this template will be compared to `payload_available` and `payload_not_available`."
 	AvailabilityTopic    string                          `json:"availability_topic"`    // "The MQTT topic subscribed to receive availability (online/offline) updates. Must not be used together with `availability`."
-	CommandTopic         string                          `json:"command_topic"`         // "The MQTT topic to publish commands to control the vacuum."
+	AvailabilityFunc     func() string                   `json:"-"`
+	CommandTopic         string                          `json:"command_topic"` // "The MQTT topic to publish commands to control the vacuum."
 	CommandFunc          func(mqtt.Message, mqtt.Client) `json:"-"`
 	Device               struct {
 		ConfigurationUrl string `json:"configuration_url"` // "A link to the webpage that can manage the configuration of this device. Can be either an HTTP or HTTPS link."
@@ -72,6 +73,15 @@ type Vacuum struct {
 }
 
 func (d *Vacuum) UpdateState() {
+	if d.AvailabilityTopic != "" {
+		state := d.AvailabilityFunc()
+		if state != stateStore.Vacuum.Availability[d.UniqueId] || d.MQTT.ForceUpdate {
+			c := *d.MQTT.Client
+			token := c.Publish(d.AvailabilityTopic, common.QoS, common.Retain, state)
+			stateStore.Vacuum.Availability[d.UniqueId] = state
+			token.Wait()
+		}
+	}
 	if d.StateTopic != "" {
 		state := d.StateFunc()
 		if state != stateStore.Vacuum.State[d.UniqueId] || d.MQTT.ForceUpdate {
@@ -112,7 +122,7 @@ func (d *Vacuum) Subscribe() {
 	token := c.Publish(GetDiscoveryTopic(d), 0, true, message)
 	token.Wait()
 	time.Sleep(common.HADiscoveryDelay)
-	d.AnnounceAvailable()
+	d.AvailabilityFunc()
 	d.UpdateState()
 }
 func (d *Vacuum) UnSubscribe() {
@@ -149,10 +159,13 @@ func (d *Vacuum) AnnounceAvailable() {
 func (d *Vacuum) Initialize() {
 	d.Retain = false
 	d.PopulateDevice()
-	d.PopulateTopics()
 	d.AddMessageHandler()
+	d.PopulateTopics()
 }
 func (d *Vacuum) PopulateTopics() {
+	if d.AvailabilityFunc != nil {
+		d.AvailabilityTopic = GetTopic(d, "availability_topic")
+	}
 	if d.CommandFunc != nil {
 		d.CommandTopic = GetTopic(d, "command_topic")
 		store.TopicStore[d.CommandTopic] = &d.CommandFunc

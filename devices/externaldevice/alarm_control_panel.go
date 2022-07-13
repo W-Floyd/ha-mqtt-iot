@@ -32,6 +32,7 @@ type AlarmControlPanel struct {
 	AvailabilityMode     string                          `json:"availability_mode"`     // "When `availability` is configured, this controls the conditions needed to set the entity to `available`. Valid entries are `all`, `any`, and `latest`. If set to `all`, `payload_available` must be received on all configured availability topics before the entity is marked as online. If set to `any`, `payload_available` must be received on at least one configured availability topic before the entity is marked as online. If set to `latest`, the last `payload_available` or `payload_not_available` received on any configured availability topic controls the availability."
 	AvailabilityTemplate string                          `json:"availability_template"` // "Defines a [template](/docs/configuration/templating/#processing-incoming-data) to extract device's availability from the `availability_topic`. To determine the devices's availability result of this template will be compared to `payload_available` and `payload_not_available`."
 	AvailabilityTopic    string                          `json:"availability_topic"`    // "The MQTT topic subscribed to receive availability (online/offline) updates. Must not be used together with `availability`."
+	AvailabilityFunc     func() string                   `json:"-"`
 	Code                 string                          `json:"code"`                  // "If defined, specifies a code to enable or disable the alarm in the frontend. Note that the code is validated locally and blocks sending MQTT messages to the remote device. For remote code validation, the code can be configured to either of the special values `REMOTE_CODE` (numeric code) or `REMOTE_CODE_TEXT` (text code). In this case, local code validation is bypassed but the frontend will still show a numeric or text code dialog. Use `command_template` to send the code to the remote device. Example configurations for remote code validation [can be found here](./#configurations-with-remote-code-validation)."
 	CodeArmRequired      bool                            `json:"code_arm_required"`     // "If true the code is required to arm the alarm. If false the code is not validated."
 	CodeDisarmRequired   bool                            `json:"code_disarm_required"`  // "If true the code is required to disarm the alarm. If false the code is not validated."
@@ -75,6 +76,15 @@ type AlarmControlPanel struct {
 }
 
 func (d *AlarmControlPanel) UpdateState() {
+	if d.AvailabilityTopic != "" {
+		state := d.AvailabilityFunc()
+		if state != stateStore.AlarmControlPanel.Availability[d.UniqueId] || d.MQTT.ForceUpdate {
+			c := *d.MQTT.Client
+			token := c.Publish(d.AvailabilityTopic, common.QoS, common.Retain, state)
+			stateStore.AlarmControlPanel.Availability[d.UniqueId] = state
+			token.Wait()
+		}
+	}
 	if d.StateTopic != "" {
 		state := d.StateFunc()
 		if state != stateStore.AlarmControlPanel.State[d.UniqueId] || d.MQTT.ForceUpdate {
@@ -101,7 +111,7 @@ func (d *AlarmControlPanel) Subscribe() {
 	token := c.Publish(GetDiscoveryTopic(d), 0, true, message)
 	token.Wait()
 	time.Sleep(common.HADiscoveryDelay)
-	d.AnnounceAvailable()
+	d.AvailabilityFunc()
 	d.UpdateState()
 }
 func (d *AlarmControlPanel) UnSubscribe() {
@@ -124,10 +134,13 @@ func (d *AlarmControlPanel) AnnounceAvailable() {
 func (d *AlarmControlPanel) Initialize() {
 	d.Retain = false
 	d.PopulateDevice()
-	d.PopulateTopics()
 	d.AddMessageHandler()
+	d.PopulateTopics()
 }
 func (d *AlarmControlPanel) PopulateTopics() {
+	if d.AvailabilityFunc != nil {
+		d.AvailabilityTopic = GetTopic(d, "availability_topic")
+	}
 	if d.CommandFunc != nil {
 		d.CommandTopic = GetTopic(d, "command_topic")
 		store.TopicStore[d.CommandTopic] = &d.CommandFunc

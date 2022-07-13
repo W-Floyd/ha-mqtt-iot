@@ -32,10 +32,11 @@ type Siren struct {
 	AvailabilityMode     string                          `json:"availability_mode"`     // "When `availability` is configured, this controls the conditions needed to set the entity to `available`. Valid entries are `all`, `any`, and `latest`. If set to `all`, `payload_available` must be received on all configured availability topics before the entity is marked as online. If set to `any`, `payload_available` must be received on at least one configured availability topic before the entity is marked as online. If set to `latest`, the last `payload_available` or `payload_not_available` received on any configured availability topic controls the availability."
 	AvailabilityTemplate string                          `json:"availability_template"` // "Defines a [template](/docs/configuration/templating/#processing-incoming-data) to extract device's availability from the `availability_topic`. To determine the devices's availability result of this template will be compared to `payload_available` and `payload_not_available`."
 	AvailabilityTopic    string                          `json:"availability_topic"`    // "The MQTT topic subscribed to receive availability (online/offline) updates. Must not be used together with `availability`."
-	AvailableTones       []string                        `json:"available_tones"`       // "A list of available tones the siren supports. When configured, this enables the support for setting a `tone` and enables the `tone` state attribute."
-	CommandOffTemplate   string                          `json:"command_off_template"`  // "Defines a [template](/docs/configuration/templating/#processing-incoming-data) to generate a custom payload to send to `command_topic` when the siren turn off service is called. By default `command_template` will be used as template for service turn off. The variable `value` will be assigned with the configured `payload_off` setting."
-	CommandTemplate      string                          `json:"command_template"`      // "Defines a [template](/docs/configuration/templating/#processing-incoming-data) to generate a custom payload to send to `command_topic`. The variable `value` will be assigned with the configured `payload_on` or `payload_off` setting. The siren turn on service parameters `tone`, `volume_level` or `duration` can be used as variables in the template. When operation in optimistic mode the corresponding state attributes will be set. Turn on parameters will be filtered if a device misses the support."
-	CommandTopic         string                          `json:"command_topic"`         // "The MQTT topic to publish commands to change the siren state. Without command templates, a default JSON payload like `{\"state\":\"ON\", \"tone\": \"bell\", \"duration\": 10, \"volume_level\": 0.5 }` is published. When the siren turn on service is called, the startup parameters will be added to the JSON payload. The `state` value of the JSON payload will be set to the the `payload_on` or `payload_off` configured payload.\n"
+	AvailabilityFunc     func() string                   `json:"-"`
+	AvailableTones       []string                        `json:"available_tones"`      // "A list of available tones the siren supports. When configured, this enables the support for setting a `tone` and enables the `tone` state attribute."
+	CommandOffTemplate   string                          `json:"command_off_template"` // "Defines a [template](/docs/configuration/templating/#processing-incoming-data) to generate a custom payload to send to `command_topic` when the siren turn off service is called. By default `command_template` will be used as template for service turn off. The variable `value` will be assigned with the configured `payload_off` setting."
+	CommandTemplate      string                          `json:"command_template"`     // "Defines a [template](/docs/configuration/templating/#processing-incoming-data) to generate a custom payload to send to `command_topic`. The variable `value` will be assigned with the configured `payload_on` or `payload_off` setting. The siren turn on service parameters `tone`, `volume_level` or `duration` can be used as variables in the template. When operation in optimistic mode the corresponding state attributes will be set. Turn on parameters will be filtered if a device misses the support."
+	CommandTopic         string                          `json:"command_topic"`        // "The MQTT topic to publish commands to change the siren state. Without command templates, a default JSON payload like `{\"state\":\"ON\", \"tone\": \"bell\", \"duration\": 10, \"volume_level\": 0.5 }` is published. When the siren turn on service is called, the startup parameters will be added to the JSON payload. The `state` value of the JSON payload will be set to the the `payload_on` or `payload_off` configured payload.\n"
 	CommandFunc          func(mqtt.Message, mqtt.Client) `json:"-"`
 	Device               struct {
 		ConfigurationUrl string `json:"configuration_url"` // "A link to the webpage that can manage the configuration of this device. Can be either an HTTP or HTTPS link."
@@ -73,6 +74,15 @@ type Siren struct {
 }
 
 func (d *Siren) UpdateState() {
+	if d.AvailabilityTopic != "" {
+		state := d.AvailabilityFunc()
+		if state != stateStore.Siren.Availability[d.UniqueId] || d.MQTT.ForceUpdate {
+			c := *d.MQTT.Client
+			token := c.Publish(d.AvailabilityTopic, common.QoS, common.Retain, state)
+			stateStore.Siren.Availability[d.UniqueId] = state
+			token.Wait()
+		}
+	}
 	if d.StateTopic != "" {
 		state := d.StateFunc()
 		if state != stateStore.Siren.State[d.UniqueId] || d.MQTT.ForceUpdate {
@@ -99,7 +109,7 @@ func (d *Siren) Subscribe() {
 	token := c.Publish(GetDiscoveryTopic(d), 0, true, message)
 	token.Wait()
 	time.Sleep(common.HADiscoveryDelay)
-	d.AnnounceAvailable()
+	d.AvailabilityFunc()
 	d.UpdateState()
 }
 func (d *Siren) UnSubscribe() {
@@ -122,10 +132,13 @@ func (d *Siren) AnnounceAvailable() {
 func (d *Siren) Initialize() {
 	d.Retain = false
 	d.PopulateDevice()
-	d.PopulateTopics()
 	d.AddMessageHandler()
+	d.PopulateTopics()
 }
 func (d *Siren) PopulateTopics() {
+	if d.AvailabilityFunc != nil {
+		d.AvailabilityTopic = GetTopic(d, "availability_topic")
+	}
 	if d.CommandFunc != nil {
 		d.CommandTopic = GetTopic(d, "command_topic")
 		store.TopicStore[d.CommandTopic] = &d.CommandFunc

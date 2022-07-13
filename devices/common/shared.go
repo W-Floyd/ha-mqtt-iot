@@ -34,7 +34,6 @@ func ConstructStateFunc(command []string) (f func() string) {
 		if len(command) > 1 {
 			out, err = exec.Command(command[0], command[1:]...).Output()
 		} else {
-
 			out, err = exec.Command(command[0]).Output()
 		}
 		if err != nil {
@@ -42,4 +41,8 @@ func ConstructStateFunc(command []string) (f func() string) {
 		}
 		return string(out)
 	}
+}
+
+func AvailabilityFunc() string {
+	return "online"
 }

@@ -219,7 +219,7 @@ func main() {
 		).Id("UpdateState").Params().BlockFunc(
 			func(g *jen.Group) {
 				for _, key := range sortedKeys {
-					if strings.HasSuffix(key, "_topic") && !strings.HasPrefix(key, "availability") {
+					if strings.HasSuffix(key, "_topic") {
 						if !IsCommand(key, d) {
 							trimmed := strings.TrimSuffix(key, "_topic")
 							cam := strcase.ToCamel(key)
@@ -319,9 +319,15 @@ func main() {
 					jen.Qual("time", "Sleep").Params(jen.Qual("github.com/W-Floyd/ha-mqtt-iot/common", "HADiscoveryDelay")),
 				)
 
-				g.Add(
-					jen.Id("d").Dot("AnnounceAvailable").Params(),
-				)
+				for _, key := range keyNames {
+					if d.JSONContainer.Exists(key) {
+						if key == "availability_topic" {
+							g.Add(
+								jen.Id("d").Dot("AvailabilityFunc").Params(),
+							)
+						}
+					}
+				}
 
 				g.Add(
 					jen.Id("d").Dot("UpdateState").Params(),
@@ -413,8 +419,8 @@ func main() {
 				g.Add(jen.Id("d").Dot("Retain").Op("=").Lit(false))
 			}
 			g.Add(jen.Id("d").Dot("PopulateDevice").Params())
-			g.Add(jen.Id("d").Dot("PopulateTopics").Params())
 			g.Add(jen.Id("d").Dot("AddMessageHandler").Params())
+			g.Add(jen.Id("d").Dot("PopulateTopics").Params())
 		})
 
 		// d.PopulateTopics()
@@ -422,7 +428,7 @@ func main() {
 			jen.Id("d").Op("*").Id(strcase.ToCamel(d.Name)),
 		).Id("PopulateTopics").Params().BlockFunc(func(g *jen.Group) {
 			for _, name := range keyNames {
-				if strings.HasSuffix(name, "_topic") && d.JSONContainer.Exists(name) && !strings.HasPrefix(name, "availability") {
+				if strings.HasSuffix(name, "_topic") && d.JSONContainer.Exists(name) {
 					lName := strcase.ToCamel(strings.TrimSuffix(name, "_topic"))
 					g.Add(
 						jen.If(
@@ -480,7 +486,7 @@ func main() {
 				)
 
 				for _, key := range keyNames {
-					if d.JSONContainer.Exists(key) && !strings.HasPrefix(key, "availability") {
+					if d.JSONContainer.Exists(key) {
 						if !strings.HasSuffix(key, "_topic") {
 							cam := strcase.ToCamel(key)
 							g.Add(
@@ -501,6 +507,18 @@ func main() {
 					}
 				}
 
+				for _, key := range keyNames {
+					if d.JSONContainer.Exists(key) {
+						if key == "availability_topic" {
+							g.Add(
+								jen.If(jen.Id("len").Params(jen.Id("iDevice").Dot("Availability")).Op("==").Lit(0)).Block(
+									jen.Id("eDevice").Dot("AvailabilityFunc").Op("=").Qual("github.com/W-Floyd/ha-mqtt-iot/devices/common", "AvailabilityFunc"),
+								),
+							)
+						}
+					}
+				}
+
 				g.Add(
 					jen.Id("eDevice").Dot("Initialize").Params(),
 				)
@@ -516,7 +534,7 @@ func main() {
 		internal[d.Name].Type().Id(strcase.ToCamel(d.Name)).StructFunc(
 			func(g *jen.Group) {
 				for _, key := range keyNames {
-					if d.JSONContainer.Exists(key) && !strings.HasPrefix(key, "availability") {
+					if d.JSONContainer.Exists(key) {
 						if strings.HasSuffix(key, "_topic") {
 							lName := strcase.ToCamel(strings.TrimSuffix(key, "_topic"))
 							g.Add(
@@ -565,7 +583,7 @@ func main() {
 			g.Add(
 				jen.Id("Logging").StructFunc(
 					func(h *jen.Group) {
-						p := []string{"critical", "debug", "error", "warn"}
+						p := []string{"critical", "debug", "error", "warn", "mqtt"}
 						for _, n := range p {
 							h.Add(jen.Id(strcase.ToCamel(n)).Bool().Tag(map[string]string{"json": n}))
 						}

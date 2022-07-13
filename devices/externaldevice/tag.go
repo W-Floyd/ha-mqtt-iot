@@ -53,15 +53,14 @@ func (d *Tag) Subscribe() {
 	token := c.Publish(GetDiscoveryTopic(d), 0, true, message)
 	token.Wait()
 	time.Sleep(common.HADiscoveryDelay)
-	d.AnnounceAvailable()
 	d.UpdateState()
 }
 func (d *Tag) UnSubscribe()       {}
 func (d *Tag) AnnounceAvailable() {}
 func (d *Tag) Initialize() {
 	d.PopulateDevice()
-	d.PopulateTopics()
 	d.AddMessageHandler()
+	d.PopulateTopics()
 }
 func (d *Tag) PopulateTopics() {}
 func (d *Tag) SetMQTTFields(fields MQTTFields) {

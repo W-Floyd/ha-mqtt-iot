@@ -13,6 +13,9 @@ func (iDevice Humidifier) Translate() externaldevice.Humidifier {
 	eDevice := externaldevice.Humidifier{}
 	eDevice.MQTT.ForceUpdate = iDevice.MQTT.ForceUpdate
 	eDevice.MQTT.UpdateInterval = iDevice.MQTT.UpdateInterval
+	eDevice.AvailabilityMode = iDevice.AvailabilityMode
+	eDevice.AvailabilityTemplate = iDevice.AvailabilityTemplate
+	eDevice.AvailabilityFunc = common.ConstructStateFunc(iDevice.Availability)
 	eDevice.CommandTemplate = iDevice.CommandTemplate
 	eDevice.CommandFunc = common.ConstructCommandFunc(iDevice.Command)
 	eDevice.DeviceClass = iDevice.DeviceClass
@@ -45,11 +48,17 @@ func (iDevice Humidifier) Translate() externaldevice.Humidifier {
 	eDevice.TargetHumidityStateTemplate = iDevice.TargetHumidityStateTemplate
 	eDevice.TargetHumidityStateFunc = common.ConstructStateFunc(iDevice.TargetHumidityState)
 	eDevice.UniqueId = iDevice.UniqueId
+	if len(iDevice.Availability) == 0 {
+		eDevice.AvailabilityFunc = common.AvailabilityFunc
+	}
 	eDevice.Initialize()
 	return eDevice
 }
 
 type Humidifier struct {
+	AvailabilityMode              string   `json:"availability_mode"`     // "When `availability` is configured, this controls the conditions needed to set the entity to `available`. Valid entries are `all`, `any`, and `latest`. If set to `all`, `payload_available` must be received on all configured availability topics before the entity is marked as online. If set to `any`, `payload_available` must be received on at least one configured availability topic before the entity is marked as online. If set to `latest`, the last `payload_available` or `payload_not_available` received on any configured availability topic controls the availability."
+	AvailabilityTemplate          string   `json:"availability_template"` // "Defines a [template](/docs/configuration/templating/#processing-incoming-data) to extract device's availability from the `availability_topic`. To determine the devices's availability result of this template will be compared to `payload_available` and `payload_not_available`."
+	Availability                  []string `json:"availability"`
 	CommandTemplate               string   `json:"command_template"` // "Defines a [template](/docs/configuration/templating/#processing-incoming-data) to generate the payload to send to `command_topic`."
 	Command                       []string `json:"command"`
 	DeviceClass                   string   `json:"device_class"`          // "The device class of the MQTT device. Must be either `humidifier` or `dehumidifier`."

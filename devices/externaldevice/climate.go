@@ -37,9 +37,10 @@ type Climate struct {
 	AuxStateTemplate           string                          `json:"aux_state_template"` // "A template to render the value received on the `aux_state_topic` with."
 	AuxStateTopic              string                          `json:"aux_state_topic"`    // "The MQTT topic to subscribe for changes of the auxiliary heat mode. If this is not set, the auxiliary heat mode works in optimistic mode (see below)."
 	AuxStateFunc               func() string                   `json:"-"`
-	AvailabilityMode           string                          `json:"availability_mode"`            // "When `availability` is configured, this controls the conditions needed to set the entity to `available`. Valid entries are `all`, `any`, and `latest`. If set to `all`, `payload_available` must be received on all configured availability topics before the entity is marked as online. If set to `any`, `payload_available` must be received on at least one configured availability topic before the entity is marked as online. If set to `latest`, the last `payload_available` or `payload_not_available` received on any configured availability topic controls the availability."
-	AvailabilityTemplate       string                          `json:"availability_template"`        // "Defines a [template](/docs/configuration/templating/#processing-incoming-data) to extract device's availability from the `availability_topic`. To determine the devices's availability result of this template will be compared to `payload_available` and `payload_not_available`."
-	AvailabilityTopic          string                          `json:"availability_topic"`           // "The MQTT topic subscribed to receive availability (online/offline) updates. Must not be used together with `availability`."
+	AvailabilityMode           string                          `json:"availability_mode"`     // "When `availability` is configured, this controls the conditions needed to set the entity to `available`. Valid entries are `all`, `any`, and `latest`. If set to `all`, `payload_available` must be received on all configured availability topics before the entity is marked as online. If set to `any`, `payload_available` must be received on at least one configured availability topic before the entity is marked as online. If set to `latest`, the last `payload_available` or `payload_not_available` received on any configured availability topic controls the availability."
+	AvailabilityTemplate       string                          `json:"availability_template"` // "Defines a [template](/docs/configuration/templating/#processing-incoming-data) to extract device's availability from the `availability_topic`. To determine the devices's availability result of this template will be compared to `payload_available` and `payload_not_available`."
+	AvailabilityTopic          string                          `json:"availability_topic"`    // "The MQTT topic subscribed to receive availability (online/offline) updates. Must not be used together with `availability`."
+	AvailabilityFunc           func() string                   `json:"-"`
 	CurrentTemperatureTemplate string                          `json:"current_temperature_template"` // "A template with which the value received on `current_temperature_topic` will be rendered."
 	CurrentTemperatureTopic    string                          `json:"current_temperature_topic"`    // "The MQTT topic on which to listen for the current temperature."
 	CurrentTemperatureFunc     func() string                   `json:"-"`
@@ -132,6 +133,15 @@ func (d *Climate) UpdateState() {
 			c := *d.MQTT.Client
 			token := c.Publish(d.AuxStateTopic, common.QoS, common.Retain, state)
 			stateStore.Climate.AuxState[d.UniqueId] = state
+			token.Wait()
+		}
+	}
+	if d.AvailabilityTopic != "" {
+		state := d.AvailabilityFunc()
+		if state != stateStore.Climate.Availability[d.UniqueId] || d.MQTT.ForceUpdate {
+			c := *d.MQTT.Client
+			token := c.Publish(d.AvailabilityTopic, common.QoS, common.Retain, state)
+			stateStore.Climate.Availability[d.UniqueId] = state
 			token.Wait()
 		}
 	}
@@ -287,7 +297,7 @@ func (d *Climate) Subscribe() {
 	token := c.Publish(GetDiscoveryTopic(d), 0, true, message)
 	token.Wait()
 	time.Sleep(common.HADiscoveryDelay)
-	d.AnnounceAvailable()
+	d.AvailabilityFunc()
 	d.UpdateState()
 }
 func (d *Climate) UnSubscribe() {
@@ -373,8 +383,8 @@ func (d *Climate) AnnounceAvailable() {
 func (d *Climate) Initialize() {
 	d.Retain = false
 	d.PopulateDevice()
-	d.PopulateTopics()
 	d.AddMessageHandler()
+	d.PopulateTopics()
 }
 func (d *Climate) PopulateTopics() {
 	if d.ActionFunc != nil {
@@ -387,6 +397,9 @@ func (d *Climate) PopulateTopics() {
 	}
 	if d.AuxStateFunc != nil {
 		d.AuxStateTopic = GetTopic(d, "aux_state_topic")
+	}
+	if d.AvailabilityFunc != nil {
+		d.AvailabilityTopic = GetTopic(d, "availability_topic")
 	}
 	if d.CurrentTemperatureFunc != nil {
 		d.CurrentTemperatureTopic = GetTopic(d, "current_temperature_topic")

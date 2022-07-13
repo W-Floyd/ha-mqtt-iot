@@ -58,15 +58,14 @@ func (d *DeviceTrigger) Subscribe() {
 	token := c.Publish(GetDiscoveryTopic(d), 0, true, message)
 	token.Wait()
 	time.Sleep(common.HADiscoveryDelay)
-	d.AnnounceAvailable()
 	d.UpdateState()
 }
 func (d *DeviceTrigger) UnSubscribe()       {}
 func (d *DeviceTrigger) AnnounceAvailable() {}
 func (d *DeviceTrigger) Initialize() {
 	d.PopulateDevice()
-	d.PopulateTopics()
 	d.AddMessageHandler()
+	d.PopulateTopics()
 }
 func (d *DeviceTrigger) PopulateTopics() {}
 func (d *DeviceTrigger) SetMQTTFields(fields MQTTFields) {

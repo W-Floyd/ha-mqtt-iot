@@ -27,7 +27,8 @@ type Scene struct {
 	AvailabilityMode     string                          `json:"availability_mode"`     // "When `availability` is configured, this controls the conditions needed to set the entity to `available`. Valid entries are `all`, `any`, and `latest`. If set to `all`, `payload_available` must be received on all configured availability topics before the entity is marked as online. If set to `any`, `payload_available` must be received on at least one configured availability topic before the entity is marked as online. If set to `latest`, the last `payload_available` or `payload_not_available` received on any configured availability topic controls the availability."
 	AvailabilityTemplate string                          `json:"availability_template"` // "Defines a [template](/docs/configuration/templating/#processing-incoming-data) to extract device's availability from the `availability_topic`. To determine the devices's availability result of this template will be compared to `payload_available` and `payload_not_available`."
 	AvailabilityTopic    string                          `json:"availability_topic"`    // "The MQTT topic subscribed to receive availability (online/offline) updates. Must not be used together with `availability`."
-	CommandTopic         string                          `json:"command_topic"`         // "The MQTT topic to publish `payload_on` to activate the scene."
+	AvailabilityFunc     func() string                   `json:"-"`
+	CommandTopic         string                          `json:"command_topic"` // "The MQTT topic to publish `payload_on` to activate the scene."
 	CommandFunc          func(mqtt.Message, mqtt.Client) `json:"-"`
 	EnabledByDefault     bool                            `json:"enabled_by_default"`    // "Flag which defines if the entity should be enabled when first added."
 	EntityCategory       string                          `json:"entity_category"`       // "The [category](https://developers.home-assistant.io/docs/core/entity#generic-properties) of the entity."
@@ -43,7 +44,17 @@ type Scene struct {
 	MQTT                 MQTTFields                      `json:"-"`
 }
 
-func (d *Scene) UpdateState() {}
+func (d *Scene) UpdateState() {
+	if d.AvailabilityTopic != "" {
+		state := d.AvailabilityFunc()
+		if state != stateStore.Scene.Availability[d.UniqueId] || d.MQTT.ForceUpdate {
+			c := *d.MQTT.Client
+			token := c.Publish(d.AvailabilityTopic, common.QoS, common.Retain, state)
+			stateStore.Scene.Availability[d.UniqueId] = state
+			token.Wait()
+		}
+	}
+}
 func (d *Scene) Subscribe() {
 	c := *d.MQTT.Client
 	message, err := json.Marshal(d)
@@ -60,7 +71,7 @@ func (d *Scene) Subscribe() {
 	token := c.Publish(GetDiscoveryTopic(d), 0, true, message)
 	token.Wait()
 	time.Sleep(common.HADiscoveryDelay)
-	d.AnnounceAvailable()
+	d.AvailabilityFunc()
 	d.UpdateState()
 }
 func (d *Scene) UnSubscribe() {
@@ -83,10 +94,13 @@ func (d *Scene) AnnounceAvailable() {
 func (d *Scene) Initialize() {
 	d.Retain = false
 	d.PopulateDevice()
-	d.PopulateTopics()
 	d.AddMessageHandler()
+	d.PopulateTopics()
 }
 func (d *Scene) PopulateTopics() {
+	if d.AvailabilityFunc != nil {
+		d.AvailabilityTopic = GetTopic(d, "availability_topic")
+	}
 	if d.CommandFunc != nil {
 		d.CommandTopic = GetTopic(d, "command_topic")
 		store.TopicStore[d.CommandTopic] = &d.CommandFunc

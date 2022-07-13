@@ -59,7 +59,7 @@ func main() {
 
 	devices, opts := sconfig.Convert()
 
-	if sconfig.Logging.Debug {
+	if sconfig.Logging.Debug && sconfig.Logging.Mqtt {
 		mqtt.DEBUG = common.DebugLog
 	}
 	if sconfig.Logging.Warn {
@@ -72,21 +72,22 @@ func main() {
 		mqtt.CRITICAL = common.CriticalLog
 	}
 
-	sub := func(c mqtt.Client) {
-		fields := ExternalDevice.MQTTFields{
-			Client: &c,
-		}
-		for _, d := range devices {
-			d.SetMQTTFields(fields)
-			// spew.Dump(d.GetMQTTFields())
-			// spew.Dump(fields)
-			go d.Subscribe()
-		}
-	}
-
-	opts.SetOnConnectHandler(sub)
+	opts.SetOnConnectHandler(
+		func(c mqtt.Client) {
+			for _, d := range devices {
+				common.LogDebug("Connecting " + d.GetRawId() + "." + d.GetUniqueId())
+				go d.Subscribe()
+			}
+		},
+	)
 
 	client := mqtt.NewClient(opts)
+
+	for _, d := range devices {
+		f := d.GetMQTTFields()
+		f.Client = &client
+		d.SetMQTTFields(f)
+	}
 
 	if token := client.Connect(); token.Wait() && token.Error() != nil {
 		common.LogError(token.Error())
@@ -105,7 +106,9 @@ func main() {
 	tickerN := 0
 
 	for _, d := range devices {
+		common.LogDebug(d.GetMQTTFields().UpdateInterval)
 		if !almostEqual(d.GetMQTTFields().UpdateInterval, 0) {
+			common.LogDebug("Starting ticker for " + d.GetRawId())
 			tickers[tickerN] = time.NewTicker(time.Duration(d.GetMQTTFields().UpdateInterval) * time.Second)
 			go func(t *time.Ticker, device ExternalDevice.Device) {
 				for range t.C {
@@ -116,14 +119,14 @@ func main() {
 		}
 	}
 
-	availableTicker := time.NewTicker(60 * time.Second)
-	go func() {
-		for range availableTicker.C {
-			for _, d := range devices {
-				go d.Subscribe()
-			}
-		}
-	}()
+	// availableTicker := time.NewTicker(60 * time.Second)
+	// go func() {
+	// 	for range availableTicker.C {
+	// 		for _, d := range devices {
+	// 			go d.Subscribe()
+	// 		}
+	// 	}
+	// }()
 
 	done := make(chan os.Signal, 1)
 	signal.Notify(done, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
@@ -131,7 +134,7 @@ func main() {
 	common.LogDebug("Everything is set up")
 
 	<-done
-	availableTicker.Stop()
+	// availableTicker.Stop()
 	for _, t := range tickers {
 		t.Stop()
 	}
