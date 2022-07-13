@@ -8,6 +8,7 @@ import (
 	"math"
 	"os"
 	"os/signal"
+	"strings"
 	"syscall"
 	"time"
 
@@ -65,8 +66,11 @@ func main() {
 			logError("Error reading "+configFile, err)
 		}
 
+		d := json.NewDecoder(strings.NewReader(string(data)))
+		d.DisallowUnknownFields()
+
 		// unmarshall it
-		err = json.Unmarshal(data, &tConfig)
+		err = d.Decode(&tConfig)
 		if err != nil {
 			logError("Error parsing config", err)
 		}
