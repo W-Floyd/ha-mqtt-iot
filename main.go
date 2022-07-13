@@ -109,6 +109,7 @@ func main() {
 	client := mqtt.NewClient(opts)
 
 	if token := client.Connect(); token.Wait() && token.Error() != nil {
+		logError("Failed to connect to broker.")
 		logError(token.Error())
 	}
 
@@ -126,7 +127,7 @@ func main() {
 
 	for _, d := range devices {
 		if !almostEqual(d.GetMQTTFields().UpdateInterval, 0) {
-			tickers[tickerN] = time.NewTicker(time.Duration(d.GetMQTTFields().UpdateInterval*1000) * time.Millisecond)
+			tickers[tickerN] = time.NewTicker(time.Duration(d.GetMQTTFields().UpdateInterval) * time.Second)
 			go func(t *time.Ticker, device ExternalDevice.Device) {
 				for range t.C {
 					go device.UpdateState()
