@@ -121,14 +121,14 @@ func main() {
 
 		// d.GetRawID()
 		external[d.Name].Func().Params(
-			jen.Id("d").Id(strcase.ToCamel(d.Name)),
+			jen.Id("d").Op("*").Id(strcase.ToCamel(d.Name)),
 		).Id("GetRawId").Params().String().Block(
 			jen.Return(jen.Lit(d.Name)),
 		)
 
 		// d.AddMessageHandler()
 		external[d.Name].Func().Params(
-			jen.Id("d").Id(strcase.ToCamel(d.Name)),
+			jen.Id("d").Op("*").Id(strcase.ToCamel(d.Name)),
 		).Id("AddMessageHandler").Params().Block(
 			jen.Id("d").Dot("MQTT").Dot("MessageHandler").Op("=").Id("MakeMessageHandler").Params(jen.Id("d")),
 		)
@@ -136,7 +136,7 @@ func main() {
 		// d.GetUniqueID()
 		if d.JSONContainer.Exists("unique_id") {
 			external[d.Name].Func().Params(
-				jen.Id("d").Id(strcase.ToCamel(d.Name)),
+				jen.Id("d").Op("*").Id(strcase.ToCamel(d.Name)),
 			).Id("GetUniqueId").Params().String().Block(
 				jen.Return(jen.Id("d.UniqueId")),
 			)
@@ -182,7 +182,7 @@ func main() {
 		// d.PopulateDevice()
 		if d.JSONContainer.Exists("device") {
 			external[d.Name].Func().Params(
-				jen.Id("d").Id(strcase.ToCamel(d.Name)),
+				jen.Id("d").Op("*").Id(strcase.ToCamel(d.Name)),
 			).Id("PopulateDevice").Params().Block(
 				jen.Id("d.Device.Manufacturer").Op("=").Id("Manufacturer"),
 				jen.Id("d.Device.Model").Op("=").Id("SoftwareName"),
@@ -191,7 +191,7 @@ func main() {
 			)
 		} else {
 			external[d.Name].Func().Params(
-				jen.Id("d").Id(strcase.ToCamel(d.Name)),
+				jen.Id("d").Op("*").Id(strcase.ToCamel(d.Name)),
 			).Id("PopulateDevice").Params().Block()
 		}
 
@@ -215,7 +215,7 @@ func main() {
 		)
 
 		external[d.Name].Func().Params(
-			jen.Id("d").Id(strcase.ToCamel(d.Name)),
+			jen.Id("d").Op("*").Id(strcase.ToCamel(d.Name)),
 		).Id("UpdateState").Params().BlockFunc(
 			func(g *jen.Group) {
 				for _, key := range sortedKeys {
@@ -255,7 +255,7 @@ func main() {
 
 		// d.Subscribe()
 		external[d.Name].Func().Params(
-			jen.Id("d").Id(strcase.ToCamel(d.Name)),
+			jen.Id("d").Op("*").Id(strcase.ToCamel(d.Name)),
 		).Id("Subscribe").Params().BlockFunc(
 			func(g *jen.Group) {
 
@@ -332,7 +332,7 @@ func main() {
 
 		// d.UnSubscribe()
 		external[d.Name].Func().Params(
-			jen.Id("d").Id(strcase.ToCamel(d.Name)),
+			jen.Id("d").Op("*").Id(strcase.ToCamel(d.Name)),
 		).Id("UnSubscribe").Params().BlockFunc(
 			func(g *jen.Group) {
 				if d.JSONContainer.Exists("availability_topic") {
@@ -384,7 +384,7 @@ func main() {
 
 		// d.AnnounceAvailable()
 		external[d.Name].Func().Params(
-			jen.Id("d").Id(strcase.ToCamel(d.Name)),
+			jen.Id("d").Op("*").Id(strcase.ToCamel(d.Name)),
 		).Id("AnnounceAvailable").Params().BlockFunc(
 			func(g *jen.Group) {
 				if d.JSONContainer.Exists("availability_topic") {
@@ -406,7 +406,9 @@ func main() {
 			},
 		)
 
-		external[d.Name].Func().Params(jen.Id("d").Id(strcase.ToCamel(d.Name))).Id("Initialize").Params().BlockFunc(func(g *jen.Group) {
+		external[d.Name].Func().Params(
+			jen.Id("d").Op("*").Id(strcase.ToCamel(d.Name)),
+		).Id("Initialize").Params().BlockFunc(func(g *jen.Group) {
 			if d.JSONContainer.Exists("retain") {
 				g.Add(jen.Id("d").Dot("Retain").Op("=").Lit(false))
 			}
@@ -417,7 +419,7 @@ func main() {
 
 		// d.PopulateTopics()
 		external[d.Name].Func().Params(
-			jen.Id("d").Id(strcase.ToCamel(d.Name)),
+			jen.Id("d").Op("*").Id(strcase.ToCamel(d.Name)),
 		).Id("PopulateTopics").Params().BlockFunc(func(g *jen.Group) {
 			for _, name := range keyNames {
 				if strings.HasSuffix(name, "_topic") && d.JSONContainer.Exists(name) && !strings.HasPrefix(name, "availability") {
@@ -441,7 +443,7 @@ func main() {
 		})
 
 		external[d.Name].Func().Params(
-			jen.Id("d").Id(strcase.ToCamel(d.Name)),
+			jen.Id("d").Op("*").Id(strcase.ToCamel(d.Name)),
 		).Id("SetMQTTFields").Params(
 			jen.Id("fields").Id("MQTTFields"),
 		).BlockFunc(
@@ -453,7 +455,7 @@ func main() {
 		)
 
 		external[d.Name].Func().Params(
-			jen.Id("d").Id(strcase.ToCamel(d.Name)),
+			jen.Id("d").Op("*").Id(strcase.ToCamel(d.Name)),
 		).Id("GetMQTTFields").Params().Params(
 			jen.Id("fields").Id("MQTTFields"),
 		).BlockFunc(
@@ -595,7 +597,9 @@ func main() {
 							jen.Id("d"),
 						),
 					).Op(":=").Range().Id("c").Dot(strcase.ToCamel(d.Name)).Block(
-						jen.Id("output").Op("=").Append(jen.Id("output"), jen.Id("d").Dot("Translate").Params()),
+						jen.Id("new"+strcase.ToCamel(d.Name)).Op(":=").Id("d").Dot("Translate").Params(),
+						jen.Id("newDevice").Op(":=").Qual("github.com/W-Floyd/ha-mqtt-iot/devices/externaldevice", "Device").Params(jen.Op("&").Id("new"+strcase.ToCamel(d.Name))),
+						jen.Id("output").Op("=").Append(jen.Id("output"), jen.Id("newDevice")),
 					),
 					// jen.Id(strcase.ToCamel(d.Name)).Index().Qual("github.com/W-Floyd/ha-mqtt-iot/devices/internaldevice", strcase.ToCamel(d.Name)),
 				)

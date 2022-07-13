@@ -12,16 +12,16 @@ import (
 ////////////////////////////////////////////////////////////////////////////////
 // Do not modify this file, it is automatically generated
 ////////////////////////////////////////////////////////////////////////////////
-func (d Scene) GetRawId() string {
+func (d *Scene) GetRawId() string {
 	return "scene"
 }
-func (d Scene) AddMessageHandler() {
+func (d *Scene) AddMessageHandler() {
 	d.MQTT.MessageHandler = MakeMessageHandler(d)
 }
-func (d Scene) GetUniqueId() string {
+func (d *Scene) GetUniqueId() string {
 	return d.UniqueId
 }
-func (d Scene) PopulateDevice() {}
+func (d *Scene) PopulateDevice() {}
 
 type Scene struct {
 	AvailabilityMode     string                          `json:"availability_mode"`     // "When `availability` is configured, this controls the conditions needed to set the entity to `available`. Valid entries are `all`, `any`, and `latest`. If set to `all`, `payload_available` must be received on all configured availability topics before the entity is marked as online. If set to `any`, `payload_available` must be received on at least one configured availability topic before the entity is marked as online. If set to `latest`, the last `payload_available` or `payload_not_available` received on any configured availability topic controls the availability."
@@ -43,8 +43,8 @@ type Scene struct {
 	MQTT                 MQTTFields                      `json:"-"`
 }
 
-func (d Scene) UpdateState() {}
-func (d Scene) Subscribe() {
+func (d *Scene) UpdateState() {}
+func (d *Scene) Subscribe() {
 	c := *d.MQTT.Client
 	message, err := json.Marshal(d)
 	if err != nil {
@@ -63,7 +63,7 @@ func (d Scene) Subscribe() {
 	d.AnnounceAvailable()
 	d.UpdateState()
 }
-func (d Scene) UnSubscribe() {
+func (d *Scene) UnSubscribe() {
 	c := *d.MQTT.Client
 	token := c.Publish(d.AvailabilityTopic, common.QoS, common.Retain, "offline")
 	token.Wait()
@@ -75,26 +75,26 @@ func (d Scene) UnSubscribe() {
 		}
 	}
 }
-func (d Scene) AnnounceAvailable() {
+func (d *Scene) AnnounceAvailable() {
 	c := *d.MQTT.Client
 	token := c.Publish(d.AvailabilityTopic, common.QoS, common.Retain, "online")
 	token.Wait()
 }
-func (d Scene) Initialize() {
+func (d *Scene) Initialize() {
 	d.Retain = false
 	d.PopulateDevice()
 	d.PopulateTopics()
 	d.AddMessageHandler()
 }
-func (d Scene) PopulateTopics() {
+func (d *Scene) PopulateTopics() {
 	if d.CommandFunc != nil {
 		d.CommandTopic = GetTopic(d, "command_topic")
 		store.TopicStore[d.CommandTopic] = &d.CommandFunc
 	}
 }
-func (d Scene) SetMQTTFields(fields MQTTFields) {
+func (d *Scene) SetMQTTFields(fields MQTTFields) {
 	d.MQTT = fields
 }
-func (d Scene) GetMQTTFields() (fields MQTTFields) {
+func (d *Scene) GetMQTTFields() (fields MQTTFields) {
 	return d.MQTT
 }

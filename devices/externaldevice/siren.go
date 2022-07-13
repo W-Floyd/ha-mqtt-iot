@@ -12,16 +12,16 @@ import (
 ////////////////////////////////////////////////////////////////////////////////
 // Do not modify this file, it is automatically generated
 ////////////////////////////////////////////////////////////////////////////////
-func (d Siren) GetRawId() string {
+func (d *Siren) GetRawId() string {
 	return "siren"
 }
-func (d Siren) AddMessageHandler() {
+func (d *Siren) AddMessageHandler() {
 	d.MQTT.MessageHandler = MakeMessageHandler(d)
 }
-func (d Siren) GetUniqueId() string {
+func (d *Siren) GetUniqueId() string {
 	return d.UniqueId
 }
-func (d Siren) PopulateDevice() {
+func (d *Siren) PopulateDevice() {
 	d.Device.Manufacturer = Manufacturer
 	d.Device.Model = SoftwareName
 	d.Device.Name = InstanceName
@@ -72,7 +72,7 @@ type Siren struct {
 	MQTT                MQTTFields    `json:"-"`
 }
 
-func (d Siren) UpdateState() {
+func (d *Siren) UpdateState() {
 	if d.StateTopic != "" {
 		state := d.StateFunc()
 		if state != stateStore.Siren.State[d.UniqueId] || d.MQTT.ForceUpdate {
@@ -83,7 +83,7 @@ func (d Siren) UpdateState() {
 		}
 	}
 }
-func (d Siren) Subscribe() {
+func (d *Siren) Subscribe() {
 	c := *d.MQTT.Client
 	message, err := json.Marshal(d)
 	if err != nil {
@@ -102,7 +102,7 @@ func (d Siren) Subscribe() {
 	d.AnnounceAvailable()
 	d.UpdateState()
 }
-func (d Siren) UnSubscribe() {
+func (d *Siren) UnSubscribe() {
 	c := *d.MQTT.Client
 	token := c.Publish(d.AvailabilityTopic, common.QoS, common.Retain, "offline")
 	token.Wait()
@@ -114,18 +114,18 @@ func (d Siren) UnSubscribe() {
 		}
 	}
 }
-func (d Siren) AnnounceAvailable() {
+func (d *Siren) AnnounceAvailable() {
 	c := *d.MQTT.Client
 	token := c.Publish(d.AvailabilityTopic, common.QoS, common.Retain, "online")
 	token.Wait()
 }
-func (d Siren) Initialize() {
+func (d *Siren) Initialize() {
 	d.Retain = false
 	d.PopulateDevice()
 	d.PopulateTopics()
 	d.AddMessageHandler()
 }
-func (d Siren) PopulateTopics() {
+func (d *Siren) PopulateTopics() {
 	if d.CommandFunc != nil {
 		d.CommandTopic = GetTopic(d, "command_topic")
 		store.TopicStore[d.CommandTopic] = &d.CommandFunc
@@ -134,9 +134,9 @@ func (d Siren) PopulateTopics() {
 		d.StateTopic = GetTopic(d, "state_topic")
 	}
 }
-func (d Siren) SetMQTTFields(fields MQTTFields) {
+func (d *Siren) SetMQTTFields(fields MQTTFields) {
 	d.MQTT = fields
 }
-func (d Siren) GetMQTTFields() (fields MQTTFields) {
+func (d *Siren) GetMQTTFields() (fields MQTTFields) {
 	return d.MQTT
 }

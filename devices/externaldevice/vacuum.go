@@ -12,16 +12,16 @@ import (
 ////////////////////////////////////////////////////////////////////////////////
 // Do not modify this file, it is automatically generated
 ////////////////////////////////////////////////////////////////////////////////
-func (d Vacuum) GetRawId() string {
+func (d *Vacuum) GetRawId() string {
 	return "vacuum"
 }
-func (d Vacuum) AddMessageHandler() {
+func (d *Vacuum) AddMessageHandler() {
 	d.MQTT.MessageHandler = MakeMessageHandler(d)
 }
-func (d Vacuum) GetUniqueId() string {
+func (d *Vacuum) GetUniqueId() string {
 	return d.UniqueId
 }
-func (d Vacuum) PopulateDevice() {
+func (d *Vacuum) PopulateDevice() {
 	d.Device.Manufacturer = Manufacturer
 	d.Device.Model = SoftwareName
 	d.Device.Name = InstanceName
@@ -71,7 +71,7 @@ type Vacuum struct {
 	MQTT                MQTTFields                      `json:"-"`
 }
 
-func (d Vacuum) UpdateState() {
+func (d *Vacuum) UpdateState() {
 	if d.StateTopic != "" {
 		state := d.StateFunc()
 		if state != stateStore.Vacuum.State[d.UniqueId] || d.MQTT.ForceUpdate {
@@ -82,7 +82,7 @@ func (d Vacuum) UpdateState() {
 		}
 	}
 }
-func (d Vacuum) Subscribe() {
+func (d *Vacuum) Subscribe() {
 	c := *d.MQTT.Client
 	message, err := json.Marshal(d)
 	if err != nil {
@@ -115,7 +115,7 @@ func (d Vacuum) Subscribe() {
 	d.AnnounceAvailable()
 	d.UpdateState()
 }
-func (d Vacuum) UnSubscribe() {
+func (d *Vacuum) UnSubscribe() {
 	c := *d.MQTT.Client
 	token := c.Publish(d.AvailabilityTopic, common.QoS, common.Retain, "offline")
 	token.Wait()
@@ -141,18 +141,18 @@ func (d Vacuum) UnSubscribe() {
 		}
 	}
 }
-func (d Vacuum) AnnounceAvailable() {
+func (d *Vacuum) AnnounceAvailable() {
 	c := *d.MQTT.Client
 	token := c.Publish(d.AvailabilityTopic, common.QoS, common.Retain, "online")
 	token.Wait()
 }
-func (d Vacuum) Initialize() {
+func (d *Vacuum) Initialize() {
 	d.Retain = false
 	d.PopulateDevice()
 	d.PopulateTopics()
 	d.AddMessageHandler()
 }
-func (d Vacuum) PopulateTopics() {
+func (d *Vacuum) PopulateTopics() {
 	if d.CommandFunc != nil {
 		d.CommandTopic = GetTopic(d, "command_topic")
 		store.TopicStore[d.CommandTopic] = &d.CommandFunc
@@ -169,9 +169,9 @@ func (d Vacuum) PopulateTopics() {
 		d.StateTopic = GetTopic(d, "state_topic")
 	}
 }
-func (d Vacuum) SetMQTTFields(fields MQTTFields) {
+func (d *Vacuum) SetMQTTFields(fields MQTTFields) {
 	d.MQTT = fields
 }
-func (d Vacuum) GetMQTTFields() (fields MQTTFields) {
+func (d *Vacuum) GetMQTTFields() (fields MQTTFields) {
 	return d.MQTT
 }

@@ -12,16 +12,16 @@ import (
 ////////////////////////////////////////////////////////////////////////////////
 // Do not modify this file, it is automatically generated
 ////////////////////////////////////////////////////////////////////////////////
-func (d Lock) GetRawId() string {
+func (d *Lock) GetRawId() string {
 	return "lock"
 }
-func (d Lock) AddMessageHandler() {
+func (d *Lock) AddMessageHandler() {
 	d.MQTT.MessageHandler = MakeMessageHandler(d)
 }
-func (d Lock) GetUniqueId() string {
+func (d *Lock) GetUniqueId() string {
 	return d.UniqueId
 }
-func (d Lock) PopulateDevice() {
+func (d *Lock) PopulateDevice() {
 	d.Device.Manufacturer = Manufacturer
 	d.Device.Model = SoftwareName
 	d.Device.Name = InstanceName
@@ -68,7 +68,7 @@ type Lock struct {
 	MQTT                MQTTFields    `json:"-"`
 }
 
-func (d Lock) UpdateState() {
+func (d *Lock) UpdateState() {
 	if d.StateTopic != "" {
 		state := d.StateFunc()
 		if state != stateStore.Lock.State[d.UniqueId] || d.MQTT.ForceUpdate {
@@ -79,7 +79,7 @@ func (d Lock) UpdateState() {
 		}
 	}
 }
-func (d Lock) Subscribe() {
+func (d *Lock) Subscribe() {
 	c := *d.MQTT.Client
 	message, err := json.Marshal(d)
 	if err != nil {
@@ -98,7 +98,7 @@ func (d Lock) Subscribe() {
 	d.AnnounceAvailable()
 	d.UpdateState()
 }
-func (d Lock) UnSubscribe() {
+func (d *Lock) UnSubscribe() {
 	c := *d.MQTT.Client
 	token := c.Publish(d.AvailabilityTopic, common.QoS, common.Retain, "offline")
 	token.Wait()
@@ -110,18 +110,18 @@ func (d Lock) UnSubscribe() {
 		}
 	}
 }
-func (d Lock) AnnounceAvailable() {
+func (d *Lock) AnnounceAvailable() {
 	c := *d.MQTT.Client
 	token := c.Publish(d.AvailabilityTopic, common.QoS, common.Retain, "online")
 	token.Wait()
 }
-func (d Lock) Initialize() {
+func (d *Lock) Initialize() {
 	d.Retain = false
 	d.PopulateDevice()
 	d.PopulateTopics()
 	d.AddMessageHandler()
 }
-func (d Lock) PopulateTopics() {
+func (d *Lock) PopulateTopics() {
 	if d.CommandFunc != nil {
 		d.CommandTopic = GetTopic(d, "command_topic")
 		store.TopicStore[d.CommandTopic] = &d.CommandFunc
@@ -130,9 +130,9 @@ func (d Lock) PopulateTopics() {
 		d.StateTopic = GetTopic(d, "state_topic")
 	}
 }
-func (d Lock) SetMQTTFields(fields MQTTFields) {
+func (d *Lock) SetMQTTFields(fields MQTTFields) {
 	d.MQTT = fields
 }
-func (d Lock) GetMQTTFields() (fields MQTTFields) {
+func (d *Lock) GetMQTTFields() (fields MQTTFields) {
 	return d.MQTT
 }

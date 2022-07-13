@@ -10,16 +10,16 @@ import (
 ////////////////////////////////////////////////////////////////////////////////
 // Do not modify this file, it is automatically generated
 ////////////////////////////////////////////////////////////////////////////////
-func (d DeviceTrigger) GetRawId() string {
+func (d *DeviceTrigger) GetRawId() string {
 	return "device_trigger"
 }
-func (d DeviceTrigger) AddMessageHandler() {
+func (d *DeviceTrigger) AddMessageHandler() {
 	d.MQTT.MessageHandler = MakeMessageHandler(d)
 }
 func (d DeviceTrigger) GetUniqueId() string {
 	return ""
 }
-func (d DeviceTrigger) PopulateDevice() {
+func (d *DeviceTrigger) PopulateDevice() {
 	d.Device.Manufacturer = Manufacturer
 	d.Device.Model = SoftwareName
 	d.Device.Name = InstanceName
@@ -48,8 +48,8 @@ type DeviceTrigger struct {
 	MQTT          MQTTFields `json:"-"`
 }
 
-func (d DeviceTrigger) UpdateState() {}
-func (d DeviceTrigger) Subscribe() {
+func (d *DeviceTrigger) UpdateState() {}
+func (d *DeviceTrigger) Subscribe() {
 	c := *d.MQTT.Client
 	message, err := json.Marshal(d)
 	if err != nil {
@@ -61,17 +61,17 @@ func (d DeviceTrigger) Subscribe() {
 	d.AnnounceAvailable()
 	d.UpdateState()
 }
-func (d DeviceTrigger) UnSubscribe()       {}
-func (d DeviceTrigger) AnnounceAvailable() {}
-func (d DeviceTrigger) Initialize() {
+func (d *DeviceTrigger) UnSubscribe()       {}
+func (d *DeviceTrigger) AnnounceAvailable() {}
+func (d *DeviceTrigger) Initialize() {
 	d.PopulateDevice()
 	d.PopulateTopics()
 	d.AddMessageHandler()
 }
-func (d DeviceTrigger) PopulateTopics() {}
-func (d DeviceTrigger) SetMQTTFields(fields MQTTFields) {
+func (d *DeviceTrigger) PopulateTopics() {}
+func (d *DeviceTrigger) SetMQTTFields(fields MQTTFields) {
 	d.MQTT = fields
 }
-func (d DeviceTrigger) GetMQTTFields() (fields MQTTFields) {
+func (d *DeviceTrigger) GetMQTTFields() (fields MQTTFields) {
 	return d.MQTT
 }

@@ -12,16 +12,16 @@ import (
 ////////////////////////////////////////////////////////////////////////////////
 // Do not modify this file, it is automatically generated
 ////////////////////////////////////////////////////////////////////////////////
-func (d Select) GetRawId() string {
+func (d *Select) GetRawId() string {
 	return "select"
 }
-func (d Select) AddMessageHandler() {
+func (d *Select) AddMessageHandler() {
 	d.MQTT.MessageHandler = MakeMessageHandler(d)
 }
-func (d Select) GetUniqueId() string {
+func (d *Select) GetUniqueId() string {
 	return d.UniqueId
 }
-func (d Select) PopulateDevice() {
+func (d *Select) PopulateDevice() {
 	d.Device.Manufacturer = Manufacturer
 	d.Device.Model = SoftwareName
 	d.Device.Name = InstanceName
@@ -63,7 +63,7 @@ type Select struct {
 	MQTT             MQTTFields    `json:"-"`
 }
 
-func (d Select) UpdateState() {
+func (d *Select) UpdateState() {
 	if d.StateTopic != "" {
 		state := d.StateFunc()
 		if state != stateStore.Select.State[d.UniqueId] || d.MQTT.ForceUpdate {
@@ -74,7 +74,7 @@ func (d Select) UpdateState() {
 		}
 	}
 }
-func (d Select) Subscribe() {
+func (d *Select) Subscribe() {
 	c := *d.MQTT.Client
 	message, err := json.Marshal(d)
 	if err != nil {
@@ -93,7 +93,7 @@ func (d Select) Subscribe() {
 	d.AnnounceAvailable()
 	d.UpdateState()
 }
-func (d Select) UnSubscribe() {
+func (d *Select) UnSubscribe() {
 	c := *d.MQTT.Client
 	token := c.Publish(d.AvailabilityTopic, common.QoS, common.Retain, "offline")
 	token.Wait()
@@ -105,18 +105,18 @@ func (d Select) UnSubscribe() {
 		}
 	}
 }
-func (d Select) AnnounceAvailable() {
+func (d *Select) AnnounceAvailable() {
 	c := *d.MQTT.Client
 	token := c.Publish(d.AvailabilityTopic, common.QoS, common.Retain, "online")
 	token.Wait()
 }
-func (d Select) Initialize() {
+func (d *Select) Initialize() {
 	d.Retain = false
 	d.PopulateDevice()
 	d.PopulateTopics()
 	d.AddMessageHandler()
 }
-func (d Select) PopulateTopics() {
+func (d *Select) PopulateTopics() {
 	if d.CommandFunc != nil {
 		d.CommandTopic = GetTopic(d, "command_topic")
 		store.TopicStore[d.CommandTopic] = &d.CommandFunc
@@ -125,9 +125,9 @@ func (d Select) PopulateTopics() {
 		d.StateTopic = GetTopic(d, "state_topic")
 	}
 }
-func (d Select) SetMQTTFields(fields MQTTFields) {
+func (d *Select) SetMQTTFields(fields MQTTFields) {
 	d.MQTT = fields
 }
-func (d Select) GetMQTTFields() (fields MQTTFields) {
+func (d *Select) GetMQTTFields() (fields MQTTFields) {
 	return d.MQTT
 }

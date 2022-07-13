@@ -10,16 +10,16 @@ import (
 ////////////////////////////////////////////////////////////////////////////////
 // Do not modify this file, it is automatically generated
 ////////////////////////////////////////////////////////////////////////////////
-func (d BinarySensor) GetRawId() string {
+func (d *BinarySensor) GetRawId() string {
 	return "binary_sensor"
 }
-func (d BinarySensor) AddMessageHandler() {
+func (d *BinarySensor) AddMessageHandler() {
 	d.MQTT.MessageHandler = MakeMessageHandler(d)
 }
-func (d BinarySensor) GetUniqueId() string {
+func (d *BinarySensor) GetUniqueId() string {
 	return d.UniqueId
 }
-func (d BinarySensor) PopulateDevice() {
+func (d *BinarySensor) PopulateDevice() {
 	d.Device.Manufacturer = Manufacturer
 	d.Device.Model = SoftwareName
 	d.Device.Name = InstanceName
@@ -63,7 +63,7 @@ type BinarySensor struct {
 	MQTT                MQTTFields    `json:"-"`
 }
 
-func (d BinarySensor) UpdateState() {
+func (d *BinarySensor) UpdateState() {
 	if d.StateTopic != "" {
 		state := d.StateFunc()
 		if state != stateStore.BinarySensor.State[d.UniqueId] || d.MQTT.ForceUpdate {
@@ -74,7 +74,7 @@ func (d BinarySensor) UpdateState() {
 		}
 	}
 }
-func (d BinarySensor) Subscribe() {
+func (d *BinarySensor) Subscribe() {
 	c := *d.MQTT.Client
 	message, err := json.Marshal(d)
 	if err != nil {
@@ -86,29 +86,29 @@ func (d BinarySensor) Subscribe() {
 	d.AnnounceAvailable()
 	d.UpdateState()
 }
-func (d BinarySensor) UnSubscribe() {
+func (d *BinarySensor) UnSubscribe() {
 	c := *d.MQTT.Client
 	token := c.Publish(d.AvailabilityTopic, common.QoS, common.Retain, "offline")
 	token.Wait()
 }
-func (d BinarySensor) AnnounceAvailable() {
+func (d *BinarySensor) AnnounceAvailable() {
 	c := *d.MQTT.Client
 	token := c.Publish(d.AvailabilityTopic, common.QoS, common.Retain, "online")
 	token.Wait()
 }
-func (d BinarySensor) Initialize() {
+func (d *BinarySensor) Initialize() {
 	d.PopulateDevice()
 	d.PopulateTopics()
 	d.AddMessageHandler()
 }
-func (d BinarySensor) PopulateTopics() {
+func (d *BinarySensor) PopulateTopics() {
 	if d.StateFunc != nil {
 		d.StateTopic = GetTopic(d, "state_topic")
 	}
 }
-func (d BinarySensor) SetMQTTFields(fields MQTTFields) {
+func (d *BinarySensor) SetMQTTFields(fields MQTTFields) {
 	d.MQTT = fields
 }
-func (d BinarySensor) GetMQTTFields() (fields MQTTFields) {
+func (d *BinarySensor) GetMQTTFields() (fields MQTTFields) {
 	return d.MQTT
 }

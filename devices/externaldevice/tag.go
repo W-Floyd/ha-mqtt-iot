@@ -10,16 +10,16 @@ import (
 ////////////////////////////////////////////////////////////////////////////////
 // Do not modify this file, it is automatically generated
 ////////////////////////////////////////////////////////////////////////////////
-func (d Tag) GetRawId() string {
+func (d *Tag) GetRawId() string {
 	return "tag"
 }
-func (d Tag) AddMessageHandler() {
+func (d *Tag) AddMessageHandler() {
 	d.MQTT.MessageHandler = MakeMessageHandler(d)
 }
 func (d Tag) GetUniqueId() string {
 	return ""
 }
-func (d Tag) PopulateDevice() {
+func (d *Tag) PopulateDevice() {
 	d.Device.Manufacturer = Manufacturer
 	d.Device.Model = SoftwareName
 	d.Device.Name = InstanceName
@@ -43,8 +43,8 @@ type Tag struct {
 	MQTT          MQTTFields `json:"-"`
 }
 
-func (d Tag) UpdateState() {}
-func (d Tag) Subscribe() {
+func (d *Tag) UpdateState() {}
+func (d *Tag) Subscribe() {
 	c := *d.MQTT.Client
 	message, err := json.Marshal(d)
 	if err != nil {
@@ -56,17 +56,17 @@ func (d Tag) Subscribe() {
 	d.AnnounceAvailable()
 	d.UpdateState()
 }
-func (d Tag) UnSubscribe()       {}
-func (d Tag) AnnounceAvailable() {}
-func (d Tag) Initialize() {
+func (d *Tag) UnSubscribe()       {}
+func (d *Tag) AnnounceAvailable() {}
+func (d *Tag) Initialize() {
 	d.PopulateDevice()
 	d.PopulateTopics()
 	d.AddMessageHandler()
 }
-func (d Tag) PopulateTopics() {}
-func (d Tag) SetMQTTFields(fields MQTTFields) {
+func (d *Tag) PopulateTopics() {}
+func (d *Tag) SetMQTTFields(fields MQTTFields) {
 	d.MQTT = fields
 }
-func (d Tag) GetMQTTFields() (fields MQTTFields) {
+func (d *Tag) GetMQTTFields() (fields MQTTFields) {
 	return d.MQTT
 }

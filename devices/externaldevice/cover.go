@@ -12,16 +12,16 @@ import (
 ////////////////////////////////////////////////////////////////////////////////
 // Do not modify this file, it is automatically generated
 ////////////////////////////////////////////////////////////////////////////////
-func (d Cover) GetRawId() string {
+func (d *Cover) GetRawId() string {
 	return "cover"
 }
-func (d Cover) AddMessageHandler() {
+func (d *Cover) AddMessageHandler() {
 	d.MQTT.MessageHandler = MakeMessageHandler(d)
 }
-func (d Cover) GetUniqueId() string {
+func (d *Cover) GetUniqueId() string {
 	return d.UniqueId
 }
-func (d Cover) PopulateDevice() {
+func (d *Cover) PopulateDevice() {
 	d.Device.Manufacturer = Manufacturer
 	d.Device.Model = SoftwareName
 	d.Device.Name = InstanceName
@@ -91,7 +91,7 @@ type Cover struct {
 	MQTT                MQTTFields                      `json:"-"`
 }
 
-func (d Cover) UpdateState() {
+func (d *Cover) UpdateState() {
 	if d.PositionTopic != "" {
 		state := d.PositionFunc()
 		if state != stateStore.Cover.Position[d.UniqueId] || d.MQTT.ForceUpdate {
@@ -120,7 +120,7 @@ func (d Cover) UpdateState() {
 		}
 	}
 }
-func (d Cover) Subscribe() {
+func (d *Cover) Subscribe() {
 	c := *d.MQTT.Client
 	message, err := json.Marshal(d)
 	if err != nil {
@@ -153,7 +153,7 @@ func (d Cover) Subscribe() {
 	d.AnnounceAvailable()
 	d.UpdateState()
 }
-func (d Cover) UnSubscribe() {
+func (d *Cover) UnSubscribe() {
 	c := *d.MQTT.Client
 	token := c.Publish(d.AvailabilityTopic, common.QoS, common.Retain, "offline")
 	token.Wait()
@@ -179,18 +179,18 @@ func (d Cover) UnSubscribe() {
 		}
 	}
 }
-func (d Cover) AnnounceAvailable() {
+func (d *Cover) AnnounceAvailable() {
 	c := *d.MQTT.Client
 	token := c.Publish(d.AvailabilityTopic, common.QoS, common.Retain, "online")
 	token.Wait()
 }
-func (d Cover) Initialize() {
+func (d *Cover) Initialize() {
 	d.Retain = false
 	d.PopulateDevice()
 	d.PopulateTopics()
 	d.AddMessageHandler()
 }
-func (d Cover) PopulateTopics() {
+func (d *Cover) PopulateTopics() {
 	if d.CommandFunc != nil {
 		d.CommandTopic = GetTopic(d, "command_topic")
 		store.TopicStore[d.CommandTopic] = &d.CommandFunc
@@ -213,9 +213,9 @@ func (d Cover) PopulateTopics() {
 		d.TiltStatusTopic = GetTopic(d, "tilt_status_topic")
 	}
 }
-func (d Cover) SetMQTTFields(fields MQTTFields) {
+func (d *Cover) SetMQTTFields(fields MQTTFields) {
 	d.MQTT = fields
 }
-func (d Cover) GetMQTTFields() (fields MQTTFields) {
+func (d *Cover) GetMQTTFields() (fields MQTTFields) {
 	return d.MQTT
 }

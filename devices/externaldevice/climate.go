@@ -12,16 +12,16 @@ import (
 ////////////////////////////////////////////////////////////////////////////////
 // Do not modify this file, it is automatically generated
 ////////////////////////////////////////////////////////////////////////////////
-func (d Climate) GetRawId() string {
+func (d *Climate) GetRawId() string {
 	return "climate"
 }
-func (d Climate) AddMessageHandler() {
+func (d *Climate) AddMessageHandler() {
 	d.MQTT.MessageHandler = MakeMessageHandler(d)
 }
-func (d Climate) GetUniqueId() string {
+func (d *Climate) GetUniqueId() string {
 	return d.UniqueId
 }
-func (d Climate) PopulateDevice() {
+func (d *Climate) PopulateDevice() {
 	d.Device.Manufacturer = Manufacturer
 	d.Device.Model = SoftwareName
 	d.Device.Name = InstanceName
@@ -125,7 +125,7 @@ type Climate struct {
 	MQTT                           MQTTFields                      `json:"-"`
 }
 
-func (d Climate) UpdateState() {
+func (d *Climate) UpdateState() {
 	if d.AuxStateTopic != "" {
 		state := d.AuxStateFunc()
 		if state != stateStore.Climate.AuxState[d.UniqueId] || d.MQTT.ForceUpdate {
@@ -208,7 +208,7 @@ func (d Climate) UpdateState() {
 		}
 	}
 }
-func (d Climate) Subscribe() {
+func (d *Climate) Subscribe() {
 	c := *d.MQTT.Client
 	message, err := json.Marshal(d)
 	if err != nil {
@@ -290,7 +290,7 @@ func (d Climate) Subscribe() {
 	d.AnnounceAvailable()
 	d.UpdateState()
 }
-func (d Climate) UnSubscribe() {
+func (d *Climate) UnSubscribe() {
 	c := *d.MQTT.Client
 	token := c.Publish(d.AvailabilityTopic, common.QoS, common.Retain, "offline")
 	token.Wait()
@@ -365,18 +365,18 @@ func (d Climate) UnSubscribe() {
 		}
 	}
 }
-func (d Climate) AnnounceAvailable() {
+func (d *Climate) AnnounceAvailable() {
 	c := *d.MQTT.Client
 	token := c.Publish(d.AvailabilityTopic, common.QoS, common.Retain, "online")
 	token.Wait()
 }
-func (d Climate) Initialize() {
+func (d *Climate) Initialize() {
 	d.Retain = false
 	d.PopulateDevice()
 	d.PopulateTopics()
 	d.AddMessageHandler()
 }
-func (d Climate) PopulateTopics() {
+func (d *Climate) PopulateTopics() {
 	if d.ActionFunc != nil {
 		d.ActionTopic = GetTopic(d, "action_topic")
 		store.TopicStore[d.ActionTopic] = &d.ActionFunc
@@ -445,9 +445,9 @@ func (d Climate) PopulateTopics() {
 		d.TemperatureStateTopic = GetTopic(d, "temperature_state_topic")
 	}
 }
-func (d Climate) SetMQTTFields(fields MQTTFields) {
+func (d *Climate) SetMQTTFields(fields MQTTFields) {
 	d.MQTT = fields
 }
-func (d Climate) GetMQTTFields() (fields MQTTFields) {
+func (d *Climate) GetMQTTFields() (fields MQTTFields) {
 	return d.MQTT
 }

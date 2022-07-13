@@ -78,6 +78,8 @@ func main() {
 		}
 		for _, d := range devices {
 			d.SetMQTTFields(fields)
+			// spew.Dump(d.GetMQTTFields())
+			// spew.Dump(fields)
 			go d.Subscribe()
 		}
 	}
@@ -87,7 +89,6 @@ func main() {
 	client := mqtt.NewClient(opts)
 
 	if token := client.Connect(); token.Wait() && token.Error() != nil {
-		common.LogError("Failed to connect to broker.")
 		common.LogError(token.Error())
 	}
 

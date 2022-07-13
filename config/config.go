@@ -46,64 +46,104 @@ type Config struct {
 
 func (c Config) Translate() (output []ExternalDevice.Device) {
 	for _, d := range c.AlarmControlPanel {
-		output = append(output, d.Translate())
+		newAlarmControlPanel := d.Translate()
+		newDevice := ExternalDevice.Device(&newAlarmControlPanel)
+		output = append(output, newDevice)
 	}
 	for _, d := range c.BinarySensor {
-		output = append(output, d.Translate())
+		newBinarySensor := d.Translate()
+		newDevice := ExternalDevice.Device(&newBinarySensor)
+		output = append(output, newDevice)
 	}
 	for _, d := range c.Button {
-		output = append(output, d.Translate())
+		newButton := d.Translate()
+		newDevice := ExternalDevice.Device(&newButton)
+		output = append(output, newDevice)
 	}
 	for _, d := range c.Camera {
-		output = append(output, d.Translate())
+		newCamera := d.Translate()
+		newDevice := ExternalDevice.Device(&newCamera)
+		output = append(output, newDevice)
 	}
 	for _, d := range c.Cover {
-		output = append(output, d.Translate())
+		newCover := d.Translate()
+		newDevice := ExternalDevice.Device(&newCover)
+		output = append(output, newDevice)
 	}
 	for _, d := range c.DeviceTracker {
-		output = append(output, d.Translate())
+		newDeviceTracker := d.Translate()
+		newDevice := ExternalDevice.Device(&newDeviceTracker)
+		output = append(output, newDevice)
 	}
 	for _, d := range c.DeviceTrigger {
-		output = append(output, d.Translate())
+		newDeviceTrigger := d.Translate()
+		newDevice := ExternalDevice.Device(&newDeviceTrigger)
+		output = append(output, newDevice)
 	}
 	for _, d := range c.Fan {
-		output = append(output, d.Translate())
+		newFan := d.Translate()
+		newDevice := ExternalDevice.Device(&newFan)
+		output = append(output, newDevice)
 	}
 	for _, d := range c.Humidifier {
-		output = append(output, d.Translate())
+		newHumidifier := d.Translate()
+		newDevice := ExternalDevice.Device(&newHumidifier)
+		output = append(output, newDevice)
 	}
 	for _, d := range c.Climate {
-		output = append(output, d.Translate())
+		newClimate := d.Translate()
+		newDevice := ExternalDevice.Device(&newClimate)
+		output = append(output, newDevice)
 	}
 	for _, d := range c.Light {
-		output = append(output, d.Translate())
+		newLight := d.Translate()
+		newDevice := ExternalDevice.Device(&newLight)
+		output = append(output, newDevice)
 	}
 	for _, d := range c.Lock {
-		output = append(output, d.Translate())
+		newLock := d.Translate()
+		newDevice := ExternalDevice.Device(&newLock)
+		output = append(output, newDevice)
 	}
 	for _, d := range c.Number {
-		output = append(output, d.Translate())
+		newNumber := d.Translate()
+		newDevice := ExternalDevice.Device(&newNumber)
+		output = append(output, newDevice)
 	}
 	for _, d := range c.Scene {
-		output = append(output, d.Translate())
+		newScene := d.Translate()
+		newDevice := ExternalDevice.Device(&newScene)
+		output = append(output, newDevice)
 	}
 	for _, d := range c.Select {
-		output = append(output, d.Translate())
+		newSelect := d.Translate()
+		newDevice := ExternalDevice.Device(&newSelect)
+		output = append(output, newDevice)
 	}
 	for _, d := range c.Sensor {
-		output = append(output, d.Translate())
+		newSensor := d.Translate()
+		newDevice := ExternalDevice.Device(&newSensor)
+		output = append(output, newDevice)
 	}
 	for _, d := range c.Siren {
-		output = append(output, d.Translate())
+		newSiren := d.Translate()
+		newDevice := ExternalDevice.Device(&newSiren)
+		output = append(output, newDevice)
 	}
 	for _, d := range c.Switch {
-		output = append(output, d.Translate())
+		newSwitch := d.Translate()
+		newDevice := ExternalDevice.Device(&newSwitch)
+		output = append(output, newDevice)
 	}
 	for _, d := range c.Tag {
-		output = append(output, d.Translate())
+		newTag := d.Translate()
+		newDevice := ExternalDevice.Device(&newTag)
+		output = append(output, newDevice)
 	}
 	for _, d := range c.Vacuum {
-		output = append(output, d.Translate())
+		newVacuum := d.Translate()
+		newDevice := ExternalDevice.Device(&newVacuum)
+		output = append(output, newDevice)
 	}
 	return
 }

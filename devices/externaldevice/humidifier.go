@@ -12,16 +12,16 @@ import (
 ////////////////////////////////////////////////////////////////////////////////
 // Do not modify this file, it is automatically generated
 ////////////////////////////////////////////////////////////////////////////////
-func (d Humidifier) GetRawId() string {
+func (d *Humidifier) GetRawId() string {
 	return "humidifier"
 }
-func (d Humidifier) AddMessageHandler() {
+func (d *Humidifier) AddMessageHandler() {
 	d.MQTT.MessageHandler = MakeMessageHandler(d)
 }
-func (d Humidifier) GetUniqueId() string {
+func (d *Humidifier) GetUniqueId() string {
 	return d.UniqueId
 }
-func (d Humidifier) PopulateDevice() {
+func (d *Humidifier) PopulateDevice() {
 	d.Device.Manufacturer = Manufacturer
 	d.Device.Model = SoftwareName
 	d.Device.Name = InstanceName
@@ -84,7 +84,7 @@ type Humidifier struct {
 	MQTT                          MQTTFields                      `json:"-"`
 }
 
-func (d Humidifier) UpdateState() {
+func (d *Humidifier) UpdateState() {
 	if d.ModeStateTopic != "" {
 		state := d.ModeStateFunc()
 		if state != stateStore.Humidifier.ModeState[d.UniqueId] || d.MQTT.ForceUpdate {
@@ -113,7 +113,7 @@ func (d Humidifier) UpdateState() {
 		}
 	}
 }
-func (d Humidifier) Subscribe() {
+func (d *Humidifier) Subscribe() {
 	c := *d.MQTT.Client
 	message, err := json.Marshal(d)
 	if err != nil {
@@ -146,7 +146,7 @@ func (d Humidifier) Subscribe() {
 	d.AnnounceAvailable()
 	d.UpdateState()
 }
-func (d Humidifier) UnSubscribe() {
+func (d *Humidifier) UnSubscribe() {
 	c := *d.MQTT.Client
 	token := c.Publish(d.AvailabilityTopic, common.QoS, common.Retain, "offline")
 	token.Wait()
@@ -172,18 +172,18 @@ func (d Humidifier) UnSubscribe() {
 		}
 	}
 }
-func (d Humidifier) AnnounceAvailable() {
+func (d *Humidifier) AnnounceAvailable() {
 	c := *d.MQTT.Client
 	token := c.Publish(d.AvailabilityTopic, common.QoS, common.Retain, "online")
 	token.Wait()
 }
-func (d Humidifier) Initialize() {
+func (d *Humidifier) Initialize() {
 	d.Retain = false
 	d.PopulateDevice()
 	d.PopulateTopics()
 	d.AddMessageHandler()
 }
-func (d Humidifier) PopulateTopics() {
+func (d *Humidifier) PopulateTopics() {
 	if d.CommandFunc != nil {
 		d.CommandTopic = GetTopic(d, "command_topic")
 		store.TopicStore[d.CommandTopic] = &d.CommandFunc
@@ -206,9 +206,9 @@ func (d Humidifier) PopulateTopics() {
 		d.TargetHumidityStateTopic = GetTopic(d, "target_humidity_state_topic")
 	}
 }
-func (d Humidifier) SetMQTTFields(fields MQTTFields) {
+func (d *Humidifier) SetMQTTFields(fields MQTTFields) {
 	d.MQTT = fields
 }
-func (d Humidifier) GetMQTTFields() (fields MQTTFields) {
+func (d *Humidifier) GetMQTTFields() (fields MQTTFields) {
 	return d.MQTT
 }

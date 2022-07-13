@@ -10,16 +10,16 @@ import (
 ////////////////////////////////////////////////////////////////////////////////
 // Do not modify this file, it is automatically generated
 ////////////////////////////////////////////////////////////////////////////////
-func (d Camera) GetRawId() string {
+func (d *Camera) GetRawId() string {
 	return "camera"
 }
-func (d Camera) AddMessageHandler() {
+func (d *Camera) AddMessageHandler() {
 	d.MQTT.MessageHandler = MakeMessageHandler(d)
 }
-func (d Camera) GetUniqueId() string {
+func (d *Camera) GetUniqueId() string {
 	return d.UniqueId
 }
-func (d Camera) PopulateDevice() {
+func (d *Camera) PopulateDevice() {
 	d.Device.Manufacturer = Manufacturer
 	d.Device.Model = SoftwareName
 	d.Device.Name = InstanceName
@@ -52,8 +52,8 @@ type Camera struct {
 	MQTT             MQTTFields `json:"-"`
 }
 
-func (d Camera) UpdateState() {}
-func (d Camera) Subscribe() {
+func (d *Camera) UpdateState() {}
+func (d *Camera) Subscribe() {
 	c := *d.MQTT.Client
 	message, err := json.Marshal(d)
 	if err != nil {
@@ -65,25 +65,25 @@ func (d Camera) Subscribe() {
 	d.AnnounceAvailable()
 	d.UpdateState()
 }
-func (d Camera) UnSubscribe() {
+func (d *Camera) UnSubscribe() {
 	c := *d.MQTT.Client
 	token := c.Publish(d.AvailabilityTopic, common.QoS, common.Retain, "offline")
 	token.Wait()
 }
-func (d Camera) AnnounceAvailable() {
+func (d *Camera) AnnounceAvailable() {
 	c := *d.MQTT.Client
 	token := c.Publish(d.AvailabilityTopic, common.QoS, common.Retain, "online")
 	token.Wait()
 }
-func (d Camera) Initialize() {
+func (d *Camera) Initialize() {
 	d.PopulateDevice()
 	d.PopulateTopics()
 	d.AddMessageHandler()
 }
-func (d Camera) PopulateTopics() {}
-func (d Camera) SetMQTTFields(fields MQTTFields) {
+func (d *Camera) PopulateTopics() {}
+func (d *Camera) SetMQTTFields(fields MQTTFields) {
 	d.MQTT = fields
 }
-func (d Camera) GetMQTTFields() (fields MQTTFields) {
+func (d *Camera) GetMQTTFields() (fields MQTTFields) {
 	return d.MQTT
 }

@@ -12,16 +12,16 @@ import (
 ////////////////////////////////////////////////////////////////////////////////
 // Do not modify this file, it is automatically generated
 ////////////////////////////////////////////////////////////////////////////////
-func (d AlarmControlPanel) GetRawId() string {
+func (d *AlarmControlPanel) GetRawId() string {
 	return "alarm_control_panel"
 }
-func (d AlarmControlPanel) AddMessageHandler() {
+func (d *AlarmControlPanel) AddMessageHandler() {
 	d.MQTT.MessageHandler = MakeMessageHandler(d)
 }
-func (d AlarmControlPanel) GetUniqueId() string {
+func (d *AlarmControlPanel) GetUniqueId() string {
 	return d.UniqueId
 }
-func (d AlarmControlPanel) PopulateDevice() {
+func (d *AlarmControlPanel) PopulateDevice() {
 	d.Device.Manufacturer = Manufacturer
 	d.Device.Model = SoftwareName
 	d.Device.Name = InstanceName
@@ -74,7 +74,7 @@ type AlarmControlPanel struct {
 	MQTT                   MQTTFields    `json:"-"`
 }
 
-func (d AlarmControlPanel) UpdateState() {
+func (d *AlarmControlPanel) UpdateState() {
 	if d.StateTopic != "" {
 		state := d.StateFunc()
 		if state != stateStore.AlarmControlPanel.State[d.UniqueId] || d.MQTT.ForceUpdate {
@@ -85,7 +85,7 @@ func (d AlarmControlPanel) UpdateState() {
 		}
 	}
 }
-func (d AlarmControlPanel) Subscribe() {
+func (d *AlarmControlPanel) Subscribe() {
 	c := *d.MQTT.Client
 	message, err := json.Marshal(d)
 	if err != nil {
@@ -104,7 +104,7 @@ func (d AlarmControlPanel) Subscribe() {
 	d.AnnounceAvailable()
 	d.UpdateState()
 }
-func (d AlarmControlPanel) UnSubscribe() {
+func (d *AlarmControlPanel) UnSubscribe() {
 	c := *d.MQTT.Client
 	token := c.Publish(d.AvailabilityTopic, common.QoS, common.Retain, "offline")
 	token.Wait()
@@ -116,18 +116,18 @@ func (d AlarmControlPanel) UnSubscribe() {
 		}
 	}
 }
-func (d AlarmControlPanel) AnnounceAvailable() {
+func (d *AlarmControlPanel) AnnounceAvailable() {
 	c := *d.MQTT.Client
 	token := c.Publish(d.AvailabilityTopic, common.QoS, common.Retain, "online")
 	token.Wait()
 }
-func (d AlarmControlPanel) Initialize() {
+func (d *AlarmControlPanel) Initialize() {
 	d.Retain = false
 	d.PopulateDevice()
 	d.PopulateTopics()
 	d.AddMessageHandler()
 }
-func (d AlarmControlPanel) PopulateTopics() {
+func (d *AlarmControlPanel) PopulateTopics() {
 	if d.CommandFunc != nil {
 		d.CommandTopic = GetTopic(d, "command_topic")
 		store.TopicStore[d.CommandTopic] = &d.CommandFunc
@@ -136,9 +136,9 @@ func (d AlarmControlPanel) PopulateTopics() {
 		d.StateTopic = GetTopic(d, "state_topic")
 	}
 }
-func (d AlarmControlPanel) SetMQTTFields(fields MQTTFields) {
+func (d *AlarmControlPanel) SetMQTTFields(fields MQTTFields) {
 	d.MQTT = fields
 }
-func (d AlarmControlPanel) GetMQTTFields() (fields MQTTFields) {
+func (d *AlarmControlPanel) GetMQTTFields() (fields MQTTFields) {
 	return d.MQTT
 }

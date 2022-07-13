@@ -12,16 +12,16 @@ import (
 ////////////////////////////////////////////////////////////////////////////////
 // Do not modify this file, it is automatically generated
 ////////////////////////////////////////////////////////////////////////////////
-func (d Button) GetRawId() string {
+func (d *Button) GetRawId() string {
 	return "button"
 }
-func (d Button) AddMessageHandler() {
+func (d *Button) AddMessageHandler() {
 	d.MQTT.MessageHandler = MakeMessageHandler(d)
 }
-func (d Button) GetUniqueId() string {
+func (d *Button) GetUniqueId() string {
 	return d.UniqueId
 }
-func (d Button) PopulateDevice() {
+func (d *Button) PopulateDevice() {
 	d.Device.Manufacturer = Manufacturer
 	d.Device.Model = SoftwareName
 	d.Device.Name = InstanceName
@@ -62,8 +62,8 @@ type Button struct {
 	MQTT                MQTTFields `json:"-"`
 }
 
-func (d Button) UpdateState() {}
-func (d Button) Subscribe() {
+func (d *Button) UpdateState() {}
+func (d *Button) Subscribe() {
 	c := *d.MQTT.Client
 	message, err := json.Marshal(d)
 	if err != nil {
@@ -82,7 +82,7 @@ func (d Button) Subscribe() {
 	d.AnnounceAvailable()
 	d.UpdateState()
 }
-func (d Button) UnSubscribe() {
+func (d *Button) UnSubscribe() {
 	c := *d.MQTT.Client
 	token := c.Publish(d.AvailabilityTopic, common.QoS, common.Retain, "offline")
 	token.Wait()
@@ -94,26 +94,26 @@ func (d Button) UnSubscribe() {
 		}
 	}
 }
-func (d Button) AnnounceAvailable() {
+func (d *Button) AnnounceAvailable() {
 	c := *d.MQTT.Client
 	token := c.Publish(d.AvailabilityTopic, common.QoS, common.Retain, "online")
 	token.Wait()
 }
-func (d Button) Initialize() {
+func (d *Button) Initialize() {
 	d.Retain = false
 	d.PopulateDevice()
 	d.PopulateTopics()
 	d.AddMessageHandler()
 }
-func (d Button) PopulateTopics() {
+func (d *Button) PopulateTopics() {
 	if d.CommandFunc != nil {
 		d.CommandTopic = GetTopic(d, "command_topic")
 		store.TopicStore[d.CommandTopic] = &d.CommandFunc
 	}
 }
-func (d Button) SetMQTTFields(fields MQTTFields) {
+func (d *Button) SetMQTTFields(fields MQTTFields) {
 	d.MQTT = fields
 }
-func (d Button) GetMQTTFields() (fields MQTTFields) {
+func (d *Button) GetMQTTFields() (fields MQTTFields) {
 	return d.MQTT
 }

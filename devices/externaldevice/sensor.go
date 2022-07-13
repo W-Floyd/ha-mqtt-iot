@@ -10,16 +10,16 @@ import (
 ////////////////////////////////////////////////////////////////////////////////
 // Do not modify this file, it is automatically generated
 ////////////////////////////////////////////////////////////////////////////////
-func (d Sensor) GetRawId() string {
+func (d *Sensor) GetRawId() string {
 	return "sensor"
 }
-func (d Sensor) AddMessageHandler() {
+func (d *Sensor) AddMessageHandler() {
 	d.MQTT.MessageHandler = MakeMessageHandler(d)
 }
-func (d Sensor) GetUniqueId() string {
+func (d *Sensor) GetUniqueId() string {
 	return d.UniqueId
 }
-func (d Sensor) PopulateDevice() {
+func (d *Sensor) PopulateDevice() {
 	d.Device.Manufacturer = Manufacturer
 	d.Device.Model = SoftwareName
 	d.Device.Name = InstanceName
@@ -63,7 +63,7 @@ type Sensor struct {
 	MQTT                   MQTTFields    `json:"-"`
 }
 
-func (d Sensor) UpdateState() {
+func (d *Sensor) UpdateState() {
 	if d.StateTopic != "" {
 		state := d.StateFunc()
 		if state != stateStore.Sensor.State[d.UniqueId] || d.MQTT.ForceUpdate {
@@ -74,7 +74,7 @@ func (d Sensor) UpdateState() {
 		}
 	}
 }
-func (d Sensor) Subscribe() {
+func (d *Sensor) Subscribe() {
 	c := *d.MQTT.Client
 	message, err := json.Marshal(d)
 	if err != nil {
@@ -86,29 +86,29 @@ func (d Sensor) Subscribe() {
 	d.AnnounceAvailable()
 	d.UpdateState()
 }
-func (d Sensor) UnSubscribe() {
+func (d *Sensor) UnSubscribe() {
 	c := *d.MQTT.Client
 	token := c.Publish(d.AvailabilityTopic, common.QoS, common.Retain, "offline")
 	token.Wait()
 }
-func (d Sensor) AnnounceAvailable() {
+func (d *Sensor) AnnounceAvailable() {
 	c := *d.MQTT.Client
 	token := c.Publish(d.AvailabilityTopic, common.QoS, common.Retain, "online")
 	token.Wait()
 }
-func (d Sensor) Initialize() {
+func (d *Sensor) Initialize() {
 	d.PopulateDevice()
 	d.PopulateTopics()
 	d.AddMessageHandler()
 }
-func (d Sensor) PopulateTopics() {
+func (d *Sensor) PopulateTopics() {
 	if d.StateFunc != nil {
 		d.StateTopic = GetTopic(d, "state_topic")
 	}
 }
-func (d Sensor) SetMQTTFields(fields MQTTFields) {
+func (d *Sensor) SetMQTTFields(fields MQTTFields) {
 	d.MQTT = fields
 }
-func (d Sensor) GetMQTTFields() (fields MQTTFields) {
+func (d *Sensor) GetMQTTFields() (fields MQTTFields) {
 	return d.MQTT
 }

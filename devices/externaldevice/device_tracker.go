@@ -10,16 +10,16 @@ import (
 ////////////////////////////////////////////////////////////////////////////////
 // Do not modify this file, it is automatically generated
 ////////////////////////////////////////////////////////////////////////////////
-func (d DeviceTracker) GetRawId() string {
+func (d *DeviceTracker) GetRawId() string {
 	return "device_tracker"
 }
-func (d DeviceTracker) AddMessageHandler() {
+func (d *DeviceTracker) AddMessageHandler() {
 	d.MQTT.MessageHandler = MakeMessageHandler(d)
 }
 func (d DeviceTracker) GetUniqueId() string {
 	return ""
 }
-func (d DeviceTracker) PopulateDevice() {}
+func (d *DeviceTracker) PopulateDevice() {}
 
 type DeviceTracker struct {
 	Devices        []string   `json:"devices"`          // "List of devices with their topic."
@@ -30,8 +30,8 @@ type DeviceTracker struct {
 	MQTT           MQTTFields `json:"-"`
 }
 
-func (d DeviceTracker) UpdateState() {}
-func (d DeviceTracker) Subscribe() {
+func (d *DeviceTracker) UpdateState() {}
+func (d *DeviceTracker) Subscribe() {
 	c := *d.MQTT.Client
 	message, err := json.Marshal(d)
 	if err != nil {
@@ -43,17 +43,17 @@ func (d DeviceTracker) Subscribe() {
 	d.AnnounceAvailable()
 	d.UpdateState()
 }
-func (d DeviceTracker) UnSubscribe()       {}
-func (d DeviceTracker) AnnounceAvailable() {}
-func (d DeviceTracker) Initialize() {
+func (d *DeviceTracker) UnSubscribe()       {}
+func (d *DeviceTracker) AnnounceAvailable() {}
+func (d *DeviceTracker) Initialize() {
 	d.PopulateDevice()
 	d.PopulateTopics()
 	d.AddMessageHandler()
 }
-func (d DeviceTracker) PopulateTopics() {}
-func (d DeviceTracker) SetMQTTFields(fields MQTTFields) {
+func (d *DeviceTracker) PopulateTopics() {}
+func (d *DeviceTracker) SetMQTTFields(fields MQTTFields) {
 	d.MQTT = fields
 }
-func (d DeviceTracker) GetMQTTFields() (fields MQTTFields) {
+func (d *DeviceTracker) GetMQTTFields() (fields MQTTFields) {
 	return d.MQTT
 }
