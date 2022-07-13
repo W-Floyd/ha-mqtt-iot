@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"flag"
 	"io/ioutil"
-	"log"
 	"math"
 	"os"
 	"os/signal"
@@ -12,6 +11,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/W-Floyd/ha-mqtt-iot/common"
 	"github.com/W-Floyd/ha-mqtt-iot/config"
 	ExternalDevice "github.com/W-Floyd/ha-mqtt-iot/devices/externaldevice"
 	mqtt "github.com/eclipse/paho.mqtt.golang"
@@ -20,32 +20,10 @@ import (
 
 //go:generate go run ./helpers/
 
-var debugLog = log.New(os.Stdout, "DEBUG   ", 0)
-var errorLog = log.New(os.Stdout, "ERROR   ", 0)
-var warnLog = log.New(os.Stdout, "WARN    ", 0)
-var criticalLog = log.New(os.Stdout, "CRITICAL", 0)
-
 const float64EqualityThreshold = 1e-9
 
 func almostEqual(a, b float64) bool {
 	return math.Abs(a-b) <= float64EqualityThreshold
-}
-
-const logPrefix = "[ha-mqtt]  "
-
-func logError(message ...interface{}) {
-	if len(message) > 1 {
-		for _, mes := range message[:len(message)-2] {
-			errorLog.Printf("%v%v\n", logPrefix, mes)
-		}
-	}
-	errorLog.Fatalf("%v%v\n", logPrefix, message[len(message)-1])
-}
-
-func logDebug(message ...interface{}) {
-	for _, mes := range message {
-		debugLog.Printf("%v%v\n", logPrefix, mes)
-	}
 }
 
 func main() {
@@ -63,7 +41,7 @@ func main() {
 		// read file
 		data, err := ioutil.ReadFile(configFile)
 		if err != nil {
-			logError("Error reading "+configFile, err)
+			common.LogError("Error reading "+configFile, err)
 		}
 
 		d := json.NewDecoder(strings.NewReader(string(data)))
@@ -72,7 +50,7 @@ func main() {
 		// unmarshall it
 		err = d.Decode(&tConfig)
 		if err != nil {
-			logError("Error parsing config", err)
+			common.LogError("Error parsing config", err)
 		}
 
 		mergo.Merge(&sconfig, tConfig)
@@ -82,16 +60,16 @@ func main() {
 	devices, opts := sconfig.Convert()
 
 	if sconfig.Logging.Debug {
-		mqtt.DEBUG = debugLog
+		mqtt.DEBUG = common.DebugLog
 	}
 	if sconfig.Logging.Warn {
-		mqtt.WARN = warnLog
+		mqtt.WARN = common.WarnLog
 	}
 	if sconfig.Logging.Error {
-		mqtt.ERROR = errorLog
+		mqtt.ERROR = common.ErrorLog
 	}
 	if sconfig.Logging.Critical {
-		mqtt.CRITICAL = criticalLog
+		mqtt.CRITICAL = common.CriticalLog
 	}
 
 	sub := func(c mqtt.Client) {
@@ -109,8 +87,8 @@ func main() {
 	client := mqtt.NewClient(opts)
 
 	if token := client.Connect(); token.Wait() && token.Error() != nil {
-		logError("Failed to connect to broker.")
-		logError(token.Error())
+		common.LogError("Failed to connect to broker.")
+		common.LogError(token.Error())
 	}
 
 	updatingDevices := 0
@@ -149,16 +127,20 @@ func main() {
 	done := make(chan os.Signal, 1)
 	signal.Notify(done, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
 
+	common.LogDebug("Everything is set up")
+
 	<-done
 	availableTicker.Stop()
 	for _, t := range tickers {
 		t.Stop()
 	}
-	logDebug("Server Stopped")
+	common.LogDebug("Server Stopped")
 
 	for _, d := range devices {
 		d.UnSubscribe()
+		common.LogDebug(d.GetRawId() + " Unsubscribed")
 	}
+	common.LogDebug("All Devices Unsubscribed")
 
 	client.Disconnect(250)
 

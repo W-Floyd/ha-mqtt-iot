@@ -10,38 +10,38 @@ import (
 ////////////////////////////////////////////////////////////////////////////////
 type Config struct {
 	MQTT struct {
-		Broker       string
-		Username     string
-		Password     string
-		NodeID       string
-		InstanceName string
+		Broker       string `json:"broker"`
+		Username     string `json:"username"`
+		Password     string `json:"password"`
+		NodeId       string `json:"node_id"`
+		InstanceName string `json:"instance_name"`
 	}
 	Logging struct {
-		Critical bool
-		Debug    bool
-		Error    bool
-		Warn     bool
+		Critical bool `json:"critical"`
+		Debug    bool `json:"debug"`
+		Error    bool `json:"error"`
+		Warn     bool `json:"warn"`
 	}
-	AlarmControlPanel []internaldevice.AlarmControlPanel
-	BinarySensor      []internaldevice.BinarySensor
-	Button            []internaldevice.Button
-	Camera            []internaldevice.Camera
-	Cover             []internaldevice.Cover
-	DeviceTracker     []internaldevice.DeviceTracker
-	DeviceTrigger     []internaldevice.DeviceTrigger
-	Fan               []internaldevice.Fan
-	Humidifier        []internaldevice.Humidifier
-	Climate           []internaldevice.Climate
-	Light             []internaldevice.Light
-	Lock              []internaldevice.Lock
-	Number            []internaldevice.Number
-	Scene             []internaldevice.Scene
-	Select            []internaldevice.Select
-	Sensor            []internaldevice.Sensor
-	Siren             []internaldevice.Siren
-	Switch            []internaldevice.Switch
-	Tag               []internaldevice.Tag
-	Vacuum            []internaldevice.Vacuum
+	AlarmControlPanel []internaldevice.AlarmControlPanel `json:"alarm_control_panel"`
+	BinarySensor      []internaldevice.BinarySensor      `json:"binary_sensor"`
+	Button            []internaldevice.Button            `json:"button"`
+	Camera            []internaldevice.Camera            `json:"camera"`
+	Cover             []internaldevice.Cover             `json:"cover"`
+	DeviceTracker     []internaldevice.DeviceTracker     `json:"device_tracker"`
+	DeviceTrigger     []internaldevice.DeviceTrigger     `json:"device_trigger"`
+	Fan               []internaldevice.Fan               `json:"fan"`
+	Humidifier        []internaldevice.Humidifier        `json:"humidifier"`
+	Climate           []internaldevice.Climate           `json:"climate"`
+	Light             []internaldevice.Light             `json:"light"`
+	Lock              []internaldevice.Lock              `json:"lock"`
+	Number            []internaldevice.Number            `json:"number"`
+	Scene             []internaldevice.Scene             `json:"scene"`
+	Select            []internaldevice.Select            `json:"select"`
+	Sensor            []internaldevice.Sensor            `json:"sensor"`
+	Siren             []internaldevice.Siren             `json:"siren"`
+	Switch            []internaldevice.Switch            `json:"switch"`
+	Tag               []internaldevice.Tag               `json:"tag"`
+	Vacuum            []internaldevice.Vacuum            `json:"vacuum"`
 }
 
 func (c Config) Translate() (output []ExternalDevice.Device) {

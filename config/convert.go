@@ -21,8 +21,8 @@ func (c Config) Convert() ([]ExternalDevice.Device, *mqtt.ClientOptions) {
 	})
 	opts.SetPingTimeout(1 * time.Second)
 	opts.SetAutoReconnect(true)
-	if c.MQTT.NodeID != "" {
-		ExternalDevice.NodeID = c.MQTT.NodeID
+	if c.MQTT.NodeId != "" {
+		ExternalDevice.NodeID = c.MQTT.NodeId
 	}
 	opts.SetClientID(ExternalDevice.NodeID)
 	if c.MQTT.InstanceName != "" {

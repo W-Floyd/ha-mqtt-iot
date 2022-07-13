@@ -553,9 +553,9 @@ func main() {
 			g.Add(
 				jen.Id("MQTT").StructFunc(
 					func(h *jen.Group) {
-						p := []string{"Broker", "Username", "Password", "NodeID", "InstanceName"}
+						p := []string{"broker", "username", "password", "node_id", "instance_name"}
 						for _, n := range p {
-							h.Add(jen.Id(n).String())
+							h.Add(jen.Id(strcase.ToCamel(n)).String().Tag(map[string]string{"json": n}))
 						}
 					},
 				),
@@ -563,16 +563,16 @@ func main() {
 			g.Add(
 				jen.Id("Logging").StructFunc(
 					func(h *jen.Group) {
-						p := []string{"Critical", "Debug", "Error", "Warn"}
+						p := []string{"critical", "debug", "error", "warn"}
 						for _, n := range p {
-							h.Add(jen.Id(n).Bool())
+							h.Add(jen.Id(strcase.ToCamel(n)).Bool().Tag(map[string]string{"json": n}))
 						}
 					},
 				),
 			)
 			for _, d := range devices {
 				g.Add(
-					jen.Id(strcase.ToCamel(d.Name)).Index().Qual("github.com/W-Floyd/ha-mqtt-iot/devices/internaldevice", strcase.ToCamel(d.Name)),
+					jen.Id(strcase.ToCamel(d.Name)).Index().Qual("github.com/W-Floyd/ha-mqtt-iot/devices/internaldevice", strcase.ToCamel(d.Name)).Tag(map[string]string{"json": d.Name}),
 				)
 			}
 		},
