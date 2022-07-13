@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"github.com/W-Floyd/ha-mqtt-iot/config"
+	ExternalDevice "github.com/W-Floyd/ha-mqtt-iot/devices/externaldevice"
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/imdario/mergo"
 )
@@ -74,7 +75,7 @@ func main() {
 
 	}
 
-	opts, lights := sconfig.Convert()
+	devices, opts := sconfig.Convert()
 
 	if sconfig.Logging.Debug {
 		mqtt.DEBUG = debugLog
@@ -90,9 +91,12 @@ func main() {
 	}
 
 	sub := func(c mqtt.Client) {
-		for _, li := range lights {
-			li.MQTT.Client = &c
-			go li.Subscribe()
+		fields := ExternalDevice.MQTTFields{
+			Client: &c,
+		}
+		for _, d := range devices {
+			d.SetMQTTFields(fields)
+			go d.Subscribe()
 		}
 	}
 
@@ -104,26 +108,26 @@ func main() {
 		logError(token.Error())
 	}
 
-	updatingLights := 0
+	updatingDevices := 0
 
-	for _, li := range lights {
-		if !almostEqual(li.MQTT.UpdateInterval, 0) {
-			updatingLights++
+	for _, d := range devices {
+		if !almostEqual(d.GetMQTTFields().UpdateInterval, 0) {
+			updatingDevices++
 		}
 	}
 
-	tickers := make([]*time.Ticker, updatingLights)
+	tickers := make([]*time.Ticker, updatingDevices)
 
 	tickerN := 0
 
-	for _, li := range lights {
-		if !almostEqual(li.MQTT.UpdateInterval, 0) {
-			tickers[tickerN] = time.NewTicker(time.Duration(li.MQTT.UpdateInterval*1000) * time.Millisecond)
-			go func(t *time.Ticker, lig hadiscovery.Light) {
+	for _, d := range devices {
+		if !almostEqual(d.GetMQTTFields().UpdateInterval, 0) {
+			tickers[tickerN] = time.NewTicker(time.Duration(d.GetMQTTFields().UpdateInterval*1000) * time.Millisecond)
+			go func(t *time.Ticker, device ExternalDevice.Device) {
 				for range t.C {
-					go lig.UpdateState()
+					go device.UpdateState()
 				}
-			}(tickers[tickerN], li)
+			}(tickers[tickerN], d)
 			tickerN++
 		}
 	}
@@ -131,8 +135,8 @@ func main() {
 	availableTicker := time.NewTicker(60 * time.Second)
 	go func() {
 		for range availableTicker.C {
-			for _, li := range lights {
-				go li.AnnounceAvailable()
+			for _, d := range devices {
+				go d.Subscribe()
 			}
 		}
 	}()
@@ -147,8 +151,8 @@ func main() {
 	}
 	logDebug("Server Stopped")
 
-	for _, li := range lights {
-		li.UnSubscribe()
+	for _, d := range devices {
+		d.UnSubscribe()
 	}
 
 	client.Disconnect(250)

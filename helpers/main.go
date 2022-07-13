@@ -61,7 +61,12 @@ func main() {
 		jen.Id("PopulateTopics").Params(),
 		jen.Id("UpdateState").Params(),
 		jen.Id("Subscribe").Params(),
+		jen.Id("UnSubscribe").Params(),
 		jen.Id("AddMessageHandler").Params(),
+		jen.Id("SetMQTTFields").Params(
+			jen.Id("MQTTFields"),
+		),
+		jen.Id("GetMQTTFields").Params().Id("MQTTFields"),
 	)
 
 	external["store"].Type().Id("StateStore").StructFunc(
@@ -435,6 +440,30 @@ func main() {
 			}
 		})
 
+		external[d.Name].Func().Params(
+			jen.Id("d").Id(strcase.ToCamel(d.Name)),
+		).Id("SetMQTTFields").Params(
+			jen.Id("fields").Id("MQTTFields"),
+		).BlockFunc(
+			func(g *jen.Group) {
+				g.Add(
+					jen.Id("d").Dot("MQTT").Op("=").Id("fields"),
+				)
+			},
+		)
+
+		external[d.Name].Func().Params(
+			jen.Id("d").Id(strcase.ToCamel(d.Name)),
+		).Id("GetMQTTFields").Params().Params(
+			jen.Id("fields").Id("MQTTFields"),
+		).BlockFunc(
+			func(g *jen.Group) {
+				g.Add(
+					jen.Return(jen.Id("d").Dot("MQTT")),
+				)
+			},
+		)
+
 		// d.Translate() ExternalDevice.Light
 		internal[d.Name].Func().Params(jen.Id("iDevice").Id(strcase.ToCamel(d.Name))).Id("Translate").Params().Qual("github.com/W-Floyd/ha-mqtt-iot/devices/externaldevice", strcase.ToCamel(d.Name)).BlockFunc(
 			func(g *jen.Group) {
@@ -519,7 +548,7 @@ func main() {
 	config.Comment("Do not modify this file, it is automatically generated")
 	config.Comment("////////////////////////////////////////////////////////////////////////////////")
 
-	config.Add(jen.Type().Id("Config").StructFunc(
+	config.Type().Id("Config").StructFunc(
 		func(g *jen.Group) {
 			g.Add(
 				jen.Id("MQTT").StructFunc(
@@ -547,7 +576,35 @@ func main() {
 				)
 			}
 		},
-	))
+	)
+
+	config.Func().Params(
+		jen.Id("c").Id("Config"),
+	).Id("Translate").Params().Params(
+		jen.Id("output").Index().Qual("github.com/W-Floyd/ha-mqtt-iot/devices/externaldevice", "Device"),
+	).BlockFunc(
+		func(g *jen.Group) {
+			// g.Add(
+			// 	jen.Id("output").Op(":=").Index().Qual("github.com/W-Floyd/ha-mqtt-iot/devices/externaldevice", "Device").Values(),
+			// )
+			for _, d := range devices {
+				g.Add(
+					jen.For(
+						jen.List(
+							jen.Id("_"),
+							jen.Id("d"),
+						),
+					).Op(":=").Range().Id("c").Dot(strcase.ToCamel(d.Name)).Block(
+						jen.Id("output").Op("=").Append(jen.Id("output"), jen.Id("d").Dot("Translate").Params()),
+					),
+					// jen.Id(strcase.ToCamel(d.Name)).Index().Qual("github.com/W-Floyd/ha-mqtt-iot/devices/internaldevice", strcase.ToCamel(d.Name)),
+				)
+			}
+			g.Add(
+				jen.Return(),
+			)
+		},
+	)
 
 	////////////////////////////////////////////////////////////////////////////////
 

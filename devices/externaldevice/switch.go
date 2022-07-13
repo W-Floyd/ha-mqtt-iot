@@ -130,3 +130,9 @@ func (d Switch) PopulateTopics() {
 		d.StateTopic = GetTopic(d, "state_topic")
 	}
 }
+func (d Switch) SetMQTTFields(fields MQTTFields) {
+	d.MQTT = fields
+}
+func (d Switch) GetMQTTFields() (fields MQTTFields) {
+	return d.MQTT
+}

@@ -106,3 +106,9 @@ func (d BinarySensor) PopulateTopics() {
 		d.StateTopic = GetTopic(d, "state_topic")
 	}
 }
+func (d BinarySensor) SetMQTTFields(fields MQTTFields) {
+	d.MQTT = fields
+}
+func (d BinarySensor) GetMQTTFields() (fields MQTTFields) {
+	return d.MQTT
+}

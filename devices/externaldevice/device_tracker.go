@@ -51,3 +51,9 @@ func (d DeviceTracker) Initialize() {
 	d.AddMessageHandler()
 }
 func (d DeviceTracker) PopulateTopics() {}
+func (d DeviceTracker) SetMQTTFields(fields MQTTFields) {
+	d.MQTT = fields
+}
+func (d DeviceTracker) GetMQTTFields() (fields MQTTFields) {
+	return d.MQTT
+}

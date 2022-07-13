@@ -213,3 +213,9 @@ func (d Cover) PopulateTopics() {
 		d.TiltStatusTopic = GetTopic(d, "tilt_status_topic")
 	}
 }
+func (d Cover) SetMQTTFields(fields MQTTFields) {
+	d.MQTT = fields
+}
+func (d Cover) GetMQTTFields() (fields MQTTFields) {
+	return d.MQTT
+}

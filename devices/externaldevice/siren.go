@@ -134,3 +134,9 @@ func (d Siren) PopulateTopics() {
 		d.StateTopic = GetTopic(d, "state_topic")
 	}
 }
+func (d Siren) SetMQTTFields(fields MQTTFields) {
+	d.MQTT = fields
+}
+func (d Siren) GetMQTTFields() (fields MQTTFields) {
+	return d.MQTT
+}

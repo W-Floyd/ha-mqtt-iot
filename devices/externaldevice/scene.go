@@ -92,3 +92,9 @@ func (d Scene) PopulateTopics() {
 		store.TopicStore[d.CommandTopic] = &d.CommandFunc
 	}
 }
+func (d Scene) SetMQTTFields(fields MQTTFields) {
+	d.MQTT = fields
+}
+func (d Scene) GetMQTTFields() (fields MQTTFields) {
+	return d.MQTT
+}

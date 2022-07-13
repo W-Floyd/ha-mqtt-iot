@@ -445,3 +445,9 @@ func (d Climate) PopulateTopics() {
 		d.TemperatureStateTopic = GetTopic(d, "temperature_state_topic")
 	}
 }
+func (d Climate) SetMQTTFields(fields MQTTFields) {
+	d.MQTT = fields
+}
+func (d Climate) GetMQTTFields() (fields MQTTFields) {
+	return d.MQTT
+}

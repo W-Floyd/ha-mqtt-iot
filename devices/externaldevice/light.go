@@ -135,3 +135,9 @@ func (d Light) PopulateTopics() {
 		d.StateTopic = GetTopic(d, "state_topic")
 	}
 }
+func (d Light) SetMQTTFields(fields MQTTFields) {
+	d.MQTT = fields
+}
+func (d Light) GetMQTTFields() (fields MQTTFields) {
+	return d.MQTT
+}

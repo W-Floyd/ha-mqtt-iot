@@ -243,3 +243,9 @@ func (d Fan) PopulateTopics() {
 		d.StateTopic = GetTopic(d, "state_topic")
 	}
 }
+func (d Fan) SetMQTTFields(fields MQTTFields) {
+	d.MQTT = fields
+}
+func (d Fan) GetMQTTFields() (fields MQTTFields) {
+	return d.MQTT
+}

@@ -64,3 +64,9 @@ func (d Tag) Initialize() {
 	d.AddMessageHandler()
 }
 func (d Tag) PopulateTopics() {}
+func (d Tag) SetMQTTFields(fields MQTTFields) {
+	d.MQTT = fields
+}
+func (d Tag) GetMQTTFields() (fields MQTTFields) {
+	return d.MQTT
+}

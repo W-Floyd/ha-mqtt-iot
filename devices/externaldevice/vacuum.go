@@ -169,3 +169,9 @@ func (d Vacuum) PopulateTopics() {
 		d.StateTopic = GetTopic(d, "state_topic")
 	}
 }
+func (d Vacuum) SetMQTTFields(fields MQTTFields) {
+	d.MQTT = fields
+}
+func (d Vacuum) GetMQTTFields() (fields MQTTFields) {
+	return d.MQTT
+}

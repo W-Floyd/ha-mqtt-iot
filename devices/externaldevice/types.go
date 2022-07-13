@@ -10,5 +10,8 @@ type Device interface {
 	PopulateTopics()
 	UpdateState()
 	Subscribe()
+	UnSubscribe()
 	AddMessageHandler()
+	SetMQTTFields(MQTTFields)
+	GetMQTTFields() MQTTFields
 }

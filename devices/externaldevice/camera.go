@@ -81,3 +81,9 @@ func (d Camera) Initialize() {
 	d.AddMessageHandler()
 }
 func (d Camera) PopulateTopics() {}
+func (d Camera) SetMQTTFields(fields MQTTFields) {
+	d.MQTT = fields
+}
+func (d Camera) GetMQTTFields() (fields MQTTFields) {
+	return d.MQTT
+}

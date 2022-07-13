@@ -69,3 +69,9 @@ func (d DeviceTrigger) Initialize() {
 	d.AddMessageHandler()
 }
 func (d DeviceTrigger) PopulateTopics() {}
+func (d DeviceTrigger) SetMQTTFields(fields MQTTFields) {
+	d.MQTT = fields
+}
+func (d DeviceTrigger) GetMQTTFields() (fields MQTTFields) {
+	return d.MQTT
+}

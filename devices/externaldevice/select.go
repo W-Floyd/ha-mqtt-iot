@@ -125,3 +125,9 @@ func (d Select) PopulateTopics() {
 		d.StateTopic = GetTopic(d, "state_topic")
 	}
 }
+func (d Select) SetMQTTFields(fields MQTTFields) {
+	d.MQTT = fields
+}
+func (d Select) GetMQTTFields() (fields MQTTFields) {
+	return d.MQTT
+}

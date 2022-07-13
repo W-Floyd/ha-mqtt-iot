@@ -136,3 +136,9 @@ func (d AlarmControlPanel) PopulateTopics() {
 		d.StateTopic = GetTopic(d, "state_topic")
 	}
 }
+func (d AlarmControlPanel) SetMQTTFields(fields MQTTFields) {
+	d.MQTT = fields
+}
+func (d AlarmControlPanel) GetMQTTFields() (fields MQTTFields) {
+	return d.MQTT
+}

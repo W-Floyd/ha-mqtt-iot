@@ -206,3 +206,9 @@ func (d Humidifier) PopulateTopics() {
 		d.TargetHumidityStateTopic = GetTopic(d, "target_humidity_state_topic")
 	}
 }
+func (d Humidifier) SetMQTTFields(fields MQTTFields) {
+	d.MQTT = fields
+}
+func (d Humidifier) GetMQTTFields() (fields MQTTFields) {
+	return d.MQTT
+}

@@ -111,3 +111,9 @@ func (d Button) PopulateTopics() {
 		store.TopicStore[d.CommandTopic] = &d.CommandFunc
 	}
 }
+func (d Button) SetMQTTFields(fields MQTTFields) {
+	d.MQTT = fields
+}
+func (d Button) GetMQTTFields() (fields MQTTFields) {
+	return d.MQTT
+}

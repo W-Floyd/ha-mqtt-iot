@@ -130,3 +130,9 @@ func (d Lock) PopulateTopics() {
 		d.StateTopic = GetTopic(d, "state_topic")
 	}
 }
+func (d Lock) SetMQTTFields(fields MQTTFields) {
+	d.MQTT = fields
+}
+func (d Lock) GetMQTTFields() (fields MQTTFields) {
+	return d.MQTT
+}
