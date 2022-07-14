@@ -10,6 +10,7 @@ var (
 	Retain           bool          = true
 	QoS              byte          = 0
 	HADiscoveryDelay time.Duration = 500 * time.Millisecond
+	MachineID        string
 )
 
 var DebugLog = log.New(os.Stdout, "DEBUG   ", 0)

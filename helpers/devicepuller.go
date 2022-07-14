@@ -186,17 +186,17 @@ func TypeTranslator(t string, s *jen.Statement) *jen.Statement {
 	v := Unquote(t)
 	switch v {
 	case "string", "template", "icon", "device_class":
-		return s.String()
+		return s.Op("*").String()
 	case "integer":
-		return s.Int()
+		return s.Op("*").Int()
 	case "boolean":
-		return s.Bool()
+		return s.Op("*").Bool()
 	case "list", "[\"list\"]", "[\"string\",\"list\"]":
-		return s.Index().String()
+		return s.Op("*").Params(jen.Index().String())
 	case "map":
-		return s.Map(jen.String()).String()
+		return s.Op("*").Params(jen.Map(jen.String()).String())
 	case "float":
-		return s.Float64()
+		return s.Op("*").Float64()
 	default:
 		log.Fatalln("Unknown type " + t)
 		return nil
@@ -208,7 +208,7 @@ func (dev *Device) FieldAdder(key string) *jen.Statement {
 
 	t := Unquote(dat[key].ChildrenMap()["type"].String())
 
-	return TypeTranslator(t, jen.Id(strcase.ToCamel(key))).Tag(map[string]string{"json": key}).Comment(dev.JSONContainer.Path(key + ".description").String())
+	return TypeTranslator(t, jen.Id(strcase.ToCamel(key))).Tag(map[string]string{"json": key + ",omitempty"}).Comment(dev.JSONContainer.Path(key + ".description").String())
 }
 
 func (dev *Device) FunctionAdder(key string) *jen.Statement {

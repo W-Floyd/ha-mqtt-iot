@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"flag"
 	"io/ioutil"
+	"log"
 	"math"
 	"os"
 	"os/signal"
@@ -14,6 +15,7 @@ import (
 	"github.com/W-Floyd/ha-mqtt-iot/common"
 	"github.com/W-Floyd/ha-mqtt-iot/config"
 	ExternalDevice "github.com/W-Floyd/ha-mqtt-iot/devices/externaldevice"
+	"github.com/denisbrodbeck/machineid"
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/imdario/mergo"
 )
@@ -30,6 +32,13 @@ func main() {
 	configFile := flag.String("config", "./config.json", "path to config file")
 	secretsFile := flag.String("secrets", "./secrets.json", "path to secrets file")
 	flag.Parse()
+
+	id, err := machineid.ID()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	common.MachineID = id
 
 	configFiles := [...]string{*configFile, *secretsFile}
 
@@ -96,7 +105,7 @@ func main() {
 	updatingDevices := 0
 
 	for _, d := range devices {
-		if !almostEqual(d.GetMQTTFields().UpdateInterval, 0) {
+		if !almostEqual(*d.GetMQTTFields().UpdateInterval, 0) {
 			updatingDevices++
 		}
 	}
@@ -107,9 +116,9 @@ func main() {
 
 	for _, d := range devices {
 		common.LogDebug(d.GetMQTTFields().UpdateInterval)
-		if !almostEqual(d.GetMQTTFields().UpdateInterval, 0) {
+		if !almostEqual(*d.GetMQTTFields().UpdateInterval, 0) {
 			common.LogDebug("Starting ticker for " + d.GetRawId())
-			tickers[tickerN] = time.NewTicker(time.Duration(d.GetMQTTFields().UpdateInterval) * time.Second)
+			tickers[tickerN] = time.NewTicker(time.Duration(*d.GetMQTTFields().UpdateInterval) * time.Second)
 			go func(t *time.Ticker, device ExternalDevice.Device) {
 				for range t.C {
 					go device.UpdateState()

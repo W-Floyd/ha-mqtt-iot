@@ -22,12 +22,12 @@ func (d DeviceTracker) GetUniqueId() string {
 func (d *DeviceTracker) PopulateDevice() {}
 
 type DeviceTracker struct {
-	Devices        []string   `json:"devices"`          // "List of devices with their topic."
-	PayloadHome    string     `json:"payload_home"`     // "The payload value that represents the 'home' state for the device."
-	PayloadNotHome string     `json:"payload_not_home"` // "The payload value that represents the 'not_home' state for the device."
-	Qos            int        `json:"qos"`              // "The QoS level of the topic."
-	SourceType     string     `json:"source_type"`      // "Attribute of a device tracker that affects state when being used to track a [person](/integrations/person/). Valid options are `gps`, `router`, `bluetooth`, or `bluetooth_le`."
-	MQTT           MQTTFields `json:"-"`
+	Devices        *([]string) `json:"devices,omitempty"`          // "List of devices with their topic."
+	PayloadHome    *string     `json:"payload_home,omitempty"`     // "The payload value that represents the 'home' state for the device."
+	PayloadNotHome *string     `json:"payload_not_home,omitempty"` // "The payload value that represents the 'not_home' state for the device."
+	Qos            *int        `json:"qos,omitempty"`              // "The QoS level of the topic."
+	SourceType     *string     `json:"source_type,omitempty"`      // "Attribute of a device tracker that affects state when being used to track a [person](/integrations/person/). Valid options are `gps`, `router`, `bluetooth`, or `bluetooth_le`."
+	MQTT           *MQTTFields `json:"-"`
 }
 
 func (d *DeviceTracker) UpdateState() {}
@@ -51,8 +51,8 @@ func (d *DeviceTracker) Initialize() {
 }
 func (d *DeviceTracker) PopulateTopics() {}
 func (d *DeviceTracker) SetMQTTFields(fields MQTTFields) {
-	d.MQTT = fields
+	d.MQTT = &fields
 }
 func (d *DeviceTracker) GetMQTTFields() (fields MQTTFields) {
-	return d.MQTT
+	return *d.MQTT
 }

@@ -10,39 +10,39 @@ import (
 ////////////////////////////////////////////////////////////////////////////////
 type Config struct {
 	MQTT struct {
-		Broker       string `json:"broker"`
-		Username     string `json:"username"`
-		Password     string `json:"password"`
-		NodeId       string `json:"node_id"`
-		InstanceName string `json:"instance_name"`
+		Broker       string `json:"broker,omitempty"`
+		Username     string `json:"username,omitempty"`
+		Password     string `json:"password,omitempty"`
+		NodeId       string `json:"node_id,omitempty"`
+		InstanceName string `json:"instance_name,omitempty"`
 	}
 	Logging struct {
-		Critical bool `json:"critical"`
-		Debug    bool `json:"debug"`
-		Error    bool `json:"error"`
-		Warn     bool `json:"warn"`
-		Mqtt     bool `json:"mqtt"`
+		Critical bool `json:"critical,omitempty"`
+		Debug    bool `json:"debug,omitempty"`
+		Error    bool `json:"error,omitempty"`
+		Warn     bool `json:"warn,omitempty"`
+		Mqtt     bool `json:"mqtt,omitempty"`
 	}
-	AlarmControlPanel []internaldevice.AlarmControlPanel `json:"alarm_control_panel"`
-	BinarySensor      []internaldevice.BinarySensor      `json:"binary_sensor"`
-	Button            []internaldevice.Button            `json:"button"`
-	Camera            []internaldevice.Camera            `json:"camera"`
-	Cover             []internaldevice.Cover             `json:"cover"`
-	DeviceTracker     []internaldevice.DeviceTracker     `json:"device_tracker"`
-	DeviceTrigger     []internaldevice.DeviceTrigger     `json:"device_trigger"`
-	Fan               []internaldevice.Fan               `json:"fan"`
-	Humidifier        []internaldevice.Humidifier        `json:"humidifier"`
-	Climate           []internaldevice.Climate           `json:"climate"`
-	Light             []internaldevice.Light             `json:"light"`
-	Lock              []internaldevice.Lock              `json:"lock"`
-	Number            []internaldevice.Number            `json:"number"`
-	Scene             []internaldevice.Scene             `json:"scene"`
-	Select            []internaldevice.Select            `json:"select"`
-	Sensor            []internaldevice.Sensor            `json:"sensor"`
-	Siren             []internaldevice.Siren             `json:"siren"`
-	Switch            []internaldevice.Switch            `json:"switch"`
-	Tag               []internaldevice.Tag               `json:"tag"`
-	Vacuum            []internaldevice.Vacuum            `json:"vacuum"`
+	AlarmControlPanel []internaldevice.AlarmControlPanel `json:"alarm_control_panel,omitempty"`
+	BinarySensor      []internaldevice.BinarySensor      `json:"binary_sensor,omitempty"`
+	Button            []internaldevice.Button            `json:"button,omitempty"`
+	Camera            []internaldevice.Camera            `json:"camera,omitempty"`
+	Cover             []internaldevice.Cover             `json:"cover,omitempty"`
+	DeviceTracker     []internaldevice.DeviceTracker     `json:"device_tracker,omitempty"`
+	DeviceTrigger     []internaldevice.DeviceTrigger     `json:"device_trigger,omitempty"`
+	Fan               []internaldevice.Fan               `json:"fan,omitempty"`
+	Humidifier        []internaldevice.Humidifier        `json:"humidifier,omitempty"`
+	Climate           []internaldevice.Climate           `json:"climate,omitempty"`
+	Light             []internaldevice.Light             `json:"light,omitempty"`
+	Lock              []internaldevice.Lock              `json:"lock,omitempty"`
+	Number            []internaldevice.Number            `json:"number,omitempty"`
+	Scene             []internaldevice.Scene             `json:"scene,omitempty"`
+	Select            []internaldevice.Select            `json:"select,omitempty"`
+	Sensor            []internaldevice.Sensor            `json:"sensor,omitempty"`
+	Siren             []internaldevice.Siren             `json:"siren,omitempty"`
+	Switch            []internaldevice.Switch            `json:"switch,omitempty"`
+	Tag               []internaldevice.Tag               `json:"tag,omitempty"`
+	Vacuum            []internaldevice.Vacuum            `json:"vacuum,omitempty"`
 }
 
 func (c Config) Translate() (output []ExternalDevice.Device) {

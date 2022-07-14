@@ -138,7 +138,7 @@ func main() {
 			external[d.Name].Func().Params(
 				jen.Id("d").Op("*").Id(strcase.ToCamel(d.Name)),
 			).Id("GetUniqueId").Params().String().Block(
-				jen.Return(jen.Id("d.UniqueId")),
+				jen.Return(jen.Op("*").Id("d").Dot("UniqueId")),
 			)
 		} else {
 			external[d.Name].Func().Params(
@@ -172,11 +172,11 @@ func main() {
 						"viadevice",
 					} {
 						g.Add(
-							jen.Id(strcase.ToCamel(v)).String().Tag(map[string]string{"json": v}).Comment(d.JSONContainer.Path("device.keys." + v + ".description").String()),
+							jen.Id(strcase.ToCamel(v)).Op("*").String().Tag(map[string]string{"json": v + ",omitempty"}).Comment(d.JSONContainer.Path("device.keys." + v + ".description").String()),
 						)
 					}
 				},
-			).Tag(map[string]string{"json": "device"}))
+			).Tag(map[string]string{"json": "device,omitempty"}))
 		}
 
 		// d.PopulateDevice()
@@ -184,10 +184,11 @@ func main() {
 			external[d.Name].Func().Params(
 				jen.Id("d").Op("*").Id(strcase.ToCamel(d.Name)),
 			).Id("PopulateDevice").Params().Block(
-				jen.Id("d.Device.Manufacturer").Op("=").Id("Manufacturer"),
-				jen.Id("d.Device.Model").Op("=").Id("SoftwareName"),
-				jen.Id("d.Device.Name").Op("=").Id("InstanceName"),
-				jen.Id("d.Device.SwVersion").Op("=").Id("SWVersion"),
+				jen.Id("d.Device.Manufacturer").Op("=&").Id("Manufacturer"),
+				jen.Id("d.Device.Model").Op("=&").Id("SoftwareName"),
+				jen.Id("d.Device.Name").Op("=&").Id("InstanceName"),
+				jen.Id("d.Device.SwVersion").Op("=&").Id("SWVersion"),
+				jen.Id("d.Device.Identifiers").Op("=&").Id("common").Dot("MachineID"),
 			)
 		} else {
 			external[d.Name].Func().Params(
@@ -210,7 +211,7 @@ func main() {
 						g.Add(val)
 					}
 				}
-				g.Id("MQTT").Id("MQTTFields").Tag(map[string]string{"json": "-"})
+				g.Id("MQTT").Op("*").Id("MQTTFields").Tag(map[string]string{"json": "-"})
 			},
 		)
 
@@ -226,23 +227,23 @@ func main() {
 							camTrimmed := strcase.ToCamel(trimmed)
 							g.Add(
 								jen.If(
-									jen.Id("d").Dot(cam).Op("!=").Lit(""),
+									jen.Id("d").Dot(cam).Op("!=").Nil(),
 								).Block(
 									jen.Id("state").Op(":=").Id("d").Dot(strcase.ToCamel(trimmed+"_func")).Params(),
 									jen.If(
-										jen.Id("state").Op("!=").Id("stateStore").Dot(strcase.ToCamel(d.Name)).Dot(camTrimmed).Index(jen.Id("d").Dot("UniqueId")).
+										jen.Id("state").Op("!=").Id("stateStore").Dot(strcase.ToCamel(d.Name)).Dot(camTrimmed).Index(jen.Op("*").Id("d").Dot("UniqueId")).
 											Op("||").
-											Id("d").Dot("MQTT").Dot("ForceUpdate"),
+											Params(jen.Id("d").Dot("MQTT").Dot("ForceUpdate").Op("!=").Nil().Op("&&").Op("*").Id("d").Dot("MQTT").Dot("ForceUpdate")),
 										// state != stateStore.Light.BrightnessState[device.UniqueID] || device.ForceUpdateMQTT {
 									).Block(
 										jen.Id("c").Op(":=").Op("*").Id("d").Dot("MQTT").Dot("Client"),
 										jen.Id("token").Op(":=").Id("c").Dot("Publish").Params(
-											jen.Id("d").Dot(cam),
+											jen.Op("*").Id("d").Dot(cam),
 											jen.Qual("github.com/W-Floyd/ha-mqtt-iot/common", "QoS"),
 											jen.Qual("github.com/W-Floyd/ha-mqtt-iot/common", "Retain"),
 											jen.Id("state"),
 										),
-										jen.Id("stateStore").Dot(camName).Dot(camTrimmed).Index(jen.Id("d").Dot("UniqueId")).Op("=").Id("state"),
+										jen.Id("stateStore").Dot(camName).Dot(camTrimmed).Index(jen.Op("*").Id("d").Dot("UniqueId")).Op("=").Id("state"),
 										jen.Id("token").Dot("Wait").Params(),
 									),
 								),
@@ -283,10 +284,10 @@ func main() {
 
 							g.Add(
 								jen.If(
-									jen.Id("d").Dot(cam).Op("!=").Lit(""),
+									jen.Op("*").Id("d").Dot(cam).Op("!=").Lit(""),
 								).Block(
 									jen.Id("t").Op(":=").Id("c").Dot("Subscribe").Params(
-										jen.Id("d").Dot(cam),
+										jen.Op("*").Id("d").Dot(cam),
 										jen.Lit(0),
 										jen.Id("d").Dot("MQTT").Dot("MessageHandler"),
 									),
@@ -348,7 +349,7 @@ func main() {
 
 					g.Add(
 						jen.Id("token").Op(":=").Id("c").Dot("Publish").Params(
-							jen.Id("d").Dot("AvailabilityTopic"),
+							jen.Op("*").Id("d").Dot("AvailabilityTopic"),
 							jen.Qual("github.com/W-Floyd/ha-mqtt-iot/common", "QoS"),
 							jen.Qual("github.com/W-Floyd/ha-mqtt-iot/common", "Retain"),
 							jen.Lit("offline"),
@@ -368,10 +369,10 @@ func main() {
 
 								g.Add(
 									jen.If(
-										jen.Id("d").Dot(cam).Op("!=").Lit(""),
+										jen.Op("*").Id("d").Dot(cam).Op("!=").Lit(""),
 									).Block(
 										jen.Id("t").Op(":=").Id("c").Dot("Unsubscribe").Params(
-											jen.Id("d").Dot(cam),
+											jen.Op("*").Id("d").Dot(cam),
 										),
 										jen.Id("t").Dot("Wait").Params(),
 										jen.If(
@@ -399,7 +400,7 @@ func main() {
 					)
 					g.Add(
 						jen.Id("token").Op(":=").Id("c").Dot("Publish").Params(
-							jen.Id("d").Dot("AvailabilityTopic"),
+							jen.Op("*").Id("d").Dot("AvailabilityTopic"),
 							jen.Qual("github.com/W-Floyd/ha-mqtt-iot/common", "QoS"),
 							jen.Qual("github.com/W-Floyd/ha-mqtt-iot/common", "Retain"),
 							jen.Lit("online"),
@@ -416,7 +417,7 @@ func main() {
 			jen.Id("d").Op("*").Id(strcase.ToCamel(d.Name)),
 		).Id("Initialize").Params().BlockFunc(func(g *jen.Group) {
 			if d.JSONContainer.Exists("retain") {
-				g.Add(jen.Id("d").Dot("Retain").Op("=").Lit(false))
+				g.Add(jen.Op("*").Id("d").Dot("Retain").Op("=").Lit(false))
 			}
 			g.Add(jen.Id("d").Dot("PopulateDevice").Params())
 			g.Add(jen.Id("d").Dot("AddMessageHandler").Params())
@@ -435,10 +436,11 @@ func main() {
 							jen.Id("d").Dot(lName + "Func").Op("!=").Nil(),
 						).BlockFunc(
 							func(g *jen.Group) {
-								g.Add(jen.Id("d").Dot(strcase.ToCamel(name)).Op("=").Id("GetTopic").Params(jen.Id("d"), jen.Lit(name)))
+								g.Add(jen.Id("d").Dot(strcase.ToCamel(name)).Op("=").New(jen.String()))
+								g.Add(jen.Op("*").Id("d").Dot(strcase.ToCamel(name)).Op("=").Id("GetTopic").Params(jen.Id("d"), jen.Lit(name)))
 								if IsCommand(name, d) {
 									g.Add(jen.Qual("github.com/W-Floyd/ha-mqtt-iot/store", "TopicStore").Index(
-										jen.Id("d").Dot(strcase.ToCamel(name)),
+										jen.Op("*").Id("d").Dot(strcase.ToCamel(name)),
 									).Op("=").Id("&d").Dot(lName + "Func"))
 								}
 							},
@@ -455,7 +457,7 @@ func main() {
 		).BlockFunc(
 			func(g *jen.Group) {
 				g.Add(
-					jen.Id("d").Dot("MQTT").Op("=").Id("fields"),
+					jen.Id("d").Dot("MQTT").Op("=").Op("&").Id("fields"),
 				)
 			},
 		)
@@ -467,7 +469,7 @@ func main() {
 		).BlockFunc(
 			func(g *jen.Group) {
 				g.Add(
-					jen.Return(jen.Id("d").Dot("MQTT")),
+					jen.Return(jen.Op("*").Id("d").Dot("MQTT")),
 				)
 			},
 		)
@@ -478,11 +480,20 @@ func main() {
 				g.Add(
 					jen.Id("eDevice").Op(":=").Qual("github.com/W-Floyd/ha-mqtt-iot/devices/externaldevice", strcase.ToCamel(d.Name)).Block(),
 				)
+
 				g.Add(
-					jen.Id("eDevice").Dot("MQTT").Dot("ForceUpdate").Op("=").Id("iDevice").Dot("MQTT").Dot("ForceUpdate"),
+					jen.Id("eDevice").Dot("MQTT").Op("=").New(jen.Qual("github.com/W-Floyd/ha-mqtt-iot/devices/externaldevice", "MQTTFields")),
+				)
+
+				g.Add(
+					jen.If(jen.Id("iDevice").Dot("MQTT").Dot("ForceUpdate").Op("!=").Nil()).Block(
+						jen.Id("eDevice").Dot("MQTT").Dot("ForceUpdate").Op("=").Id("iDevice").Dot("MQTT").Dot("ForceUpdate"),
+					),
 				)
 				g.Add(
-					jen.Id("eDevice").Dot("MQTT").Dot("UpdateInterval").Op("=").Id("iDevice").Dot("MQTT").Dot("UpdateInterval"),
+					jen.If(jen.Id("iDevice").Dot("MQTT").Dot("UpdateInterval").Op("!=").Nil()).Block(
+						jen.Id("eDevice").Dot("MQTT").Dot("UpdateInterval").Op("=").Id("iDevice").Dot("MQTT").Dot("UpdateInterval"),
+					),
 				)
 
 				for _, key := range keyNames {
@@ -490,18 +501,22 @@ func main() {
 						if !strings.HasSuffix(key, "_topic") {
 							cam := strcase.ToCamel(key)
 							g.Add(
-								jen.Id("eDevice").Dot(cam).Op("=").Id("iDevice").Dot(cam),
+								jen.If(jen.Id("iDevice").Dot(cam).Op("!=").Nil()).Block(
+									jen.Id("eDevice").Dot(cam).Op("=").Id("iDevice").Dot(cam),
+								),
 							)
 						} else {
 							lName := strcase.ToCamel(strings.TrimSuffix(key, "_topic") + "_func")
 							g.Add(
-								jen.Id("eDevice").Dot(lName).Op("=").Qual("github.com/W-Floyd/ha-mqtt-iot/devices/common", "Construct"+func() string {
-									if IsCommand(key, d) {
-										return "Command"
-									} else {
-										return "State"
-									}
-								}()+"Func").Params(jen.Id("iDevice").Dot(strcase.ToCamel(strings.TrimSuffix(key, "_topic")))),
+								jen.If(jen.Id("iDevice").Dot(strcase.ToCamel(strings.TrimSuffix(key, "_topic"))).Op("!=").Nil()).Block(
+									jen.Id("eDevice").Dot(lName).Op("=").Qual("github.com/W-Floyd/ha-mqtt-iot/devices/common", "Construct"+func() string {
+										if IsCommand(key, d) {
+											return "Command"
+										} else {
+											return "State"
+										}
+									}()+"Func").Params(jen.Op("*").Id("iDevice").Dot(strcase.ToCamel(strings.TrimSuffix(key, "_topic")))),
+								),
 							)
 						}
 					}
@@ -511,7 +526,9 @@ func main() {
 					if d.JSONContainer.Exists(key) {
 						if key == "availability_topic" {
 							g.Add(
-								jen.If(jen.Id("len").Params(jen.Id("iDevice").Dot("Availability")).Op("==").Lit(0)).Block(
+								jen.If(
+									jen.Id("iDevice").Dot("Availability").Op("==").Nil(),
+								).Block(
 									jen.Id("eDevice").Dot("AvailabilityFunc").Op("=").Qual("github.com/W-Floyd/ha-mqtt-iot/devices/common", "AvailabilityFunc"),
 								),
 							)
@@ -538,7 +555,7 @@ func main() {
 						if strings.HasSuffix(key, "_topic") {
 							lName := strcase.ToCamel(strings.TrimSuffix(key, "_topic"))
 							g.Add(
-								jen.Id(lName).Index().String().Tag(map[string]string{"json": strings.TrimSuffix(key, "_topic")}),
+								jen.Id(lName).Op("*").Params(jen.Index().String()).Tag(map[string]string{"json": strings.TrimSuffix(key, "_topic") + ",omitempty"}),
 							)
 						} else {
 							g.Add(
@@ -550,8 +567,8 @@ func main() {
 
 				g.Add(
 					jen.Id("MQTT").Struct(
-						jen.Id("UpdateInterval").Float64().Tag(map[string]string{"json": "update_interval"}),
-						jen.Id("ForceUpdate").Bool().Tag(map[string]string{"json": "force_update"}),
+						jen.Id("UpdateInterval").Op("*").Float64().Tag(map[string]string{"json": "update_interval,omitempty"}),
+						jen.Id("ForceUpdate").Op("*").Bool().Tag(map[string]string{"json": "force_update,omitempty"}),
 					).Tag(map[string]string{"json": "mqtt"}),
 				)
 			},
@@ -575,7 +592,7 @@ func main() {
 					func(h *jen.Group) {
 						p := []string{"broker", "username", "password", "node_id", "instance_name"}
 						for _, n := range p {
-							h.Add(jen.Id(strcase.ToCamel(n)).String().Tag(map[string]string{"json": n}))
+							h.Add(jen.Id(strcase.ToCamel(n)).String().Tag(map[string]string{"json": n + ",omitempty"}))
 						}
 					},
 				),
@@ -585,14 +602,14 @@ func main() {
 					func(h *jen.Group) {
 						p := []string{"critical", "debug", "error", "warn", "mqtt"}
 						for _, n := range p {
-							h.Add(jen.Id(strcase.ToCamel(n)).Bool().Tag(map[string]string{"json": n}))
+							h.Add(jen.Id(strcase.ToCamel(n)).Bool().Tag(map[string]string{"json": n + ",omitempty"}))
 						}
 					},
 				),
 			)
 			for _, d := range devices {
 				g.Add(
-					jen.Id(strcase.ToCamel(d.Name)).Index().Qual("github.com/W-Floyd/ha-mqtt-iot/devices/internaldevice", strcase.ToCamel(d.Name)).Tag(map[string]string{"json": d.Name}),
+					jen.Id(strcase.ToCamel(d.Name)).Index().Qual("github.com/W-Floyd/ha-mqtt-iot/devices/internaldevice", strcase.ToCamel(d.Name)).Tag(map[string]string{"json": d.Name + ",omitempty"}),
 				)
 			}
 		},

@@ -21,7 +21,7 @@ func GetDiscoveryTopic(d Device) string {
 	if uID != "" {
 		uID = uID + "/"
 	}
-	return DiscoveryPrefix + "/" + d.GetRawId() + "/" + NodeID + "/" + uID
+	return DiscoveryPrefix + "/" + d.GetRawId() + "/" + NodeID + "/" + uID + "config"
 }
 
 func GetTopic(d Device, rawTopicString string) string {
@@ -52,7 +52,7 @@ func MakeMessageHandler(d Device) func(client mqtt.Client, msg mqtt.Message) {
 
 type MQTTFields struct {
 	Client         *mqtt.Client
-	ForceUpdate    bool
+	ForceUpdate    *bool
 	MessageHandler mqtt.MessageHandler
-	UpdateInterval float64
+	UpdateInterval *float64
 }
