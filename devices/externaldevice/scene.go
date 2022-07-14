@@ -60,7 +60,7 @@ func (d *Scene) Subscribe() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	if *d.CommandTopic != "" {
+	if d.CommandTopic != nil {
 		t := c.Subscribe(*d.CommandTopic, 0, d.MQTT.MessageHandler)
 		t.Wait()
 		if t.Error() != nil {
@@ -77,7 +77,7 @@ func (d *Scene) UnSubscribe() {
 	c := *d.MQTT.Client
 	token := c.Publish(*d.AvailabilityTopic, common.QoS, common.Retain, "offline")
 	token.Wait()
-	if *d.CommandTopic != "" {
+	if d.CommandTopic != nil {
 		t := c.Unsubscribe(*d.CommandTopic)
 		t.Wait()
 		if t.Error() != nil {

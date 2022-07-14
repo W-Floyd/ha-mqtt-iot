@@ -111,7 +111,7 @@ func splitDocument(devicename string) (string, error) {
 	if devicename == "vacuum" {
 		dat = dat[strings.Index(dat, "## State Configuration"):]
 	} else if devicename == "light" {
-		dat = between(dat, "## JSON schema - Configuration", "## JSON schema - Examples")
+		dat = between(dat, "## Default schema - Configuration", "## Default schema - Examples")
 	}
 
 	match := between(dat, "{% configuration %}", "{% endconfiguration %}")

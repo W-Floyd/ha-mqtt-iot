@@ -133,21 +133,21 @@ func (d *Cover) Subscribe() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	if *d.CommandTopic != "" {
+	if d.CommandTopic != nil {
 		t := c.Subscribe(*d.CommandTopic, 0, d.MQTT.MessageHandler)
 		t.Wait()
 		if t.Error() != nil {
 			log.Fatal(t.Error())
 		}
 	}
-	if *d.SetPositionTopic != "" {
+	if d.SetPositionTopic != nil {
 		t := c.Subscribe(*d.SetPositionTopic, 0, d.MQTT.MessageHandler)
 		t.Wait()
 		if t.Error() != nil {
 			log.Fatal(t.Error())
 		}
 	}
-	if *d.TiltCommandTopic != "" {
+	if d.TiltCommandTopic != nil {
 		t := c.Subscribe(*d.TiltCommandTopic, 0, d.MQTT.MessageHandler)
 		t.Wait()
 		if t.Error() != nil {
@@ -164,21 +164,21 @@ func (d *Cover) UnSubscribe() {
 	c := *d.MQTT.Client
 	token := c.Publish(*d.AvailabilityTopic, common.QoS, common.Retain, "offline")
 	token.Wait()
-	if *d.CommandTopic != "" {
+	if d.CommandTopic != nil {
 		t := c.Unsubscribe(*d.CommandTopic)
 		t.Wait()
 		if t.Error() != nil {
 			log.Fatal(t.Error())
 		}
 	}
-	if *d.SetPositionTopic != "" {
+	if d.SetPositionTopic != nil {
 		t := c.Unsubscribe(*d.SetPositionTopic)
 		t.Wait()
 		if t.Error() != nil {
 			log.Fatal(t.Error())
 		}
 	}
-	if *d.TiltCommandTopic != "" {
+	if d.TiltCommandTopic != nil {
 		t := c.Unsubscribe(*d.TiltCommandTopic)
 		t.Wait()
 		if t.Error() != nil {

@@ -296,7 +296,7 @@ func main() {
 
 							g.Add(
 								jen.If(
-									jen.Op("*").Id("d").Dot(cam).Op("!=").Lit(""),
+									jen.Id("d").Dot(cam).Op("!=").Nil(),
 								).Block(
 									jen.Id("t").Op(":=").Id("c").Dot("Subscribe").Params(
 										jen.Op("*").Id("d").Dot(cam),
@@ -381,7 +381,7 @@ func main() {
 
 								g.Add(
 									jen.If(
-										jen.Op("*").Id("d").Dot(cam).Op("!=").Lit(""),
+										jen.Id("d").Dot(cam).Op("!=").Nil(),
 									).Block(
 										jen.Id("t").Op(":=").Id("c").Dot("Unsubscribe").Params(
 											jen.Op("*").Id("d").Dot(cam),

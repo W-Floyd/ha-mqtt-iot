@@ -14,14 +14,19 @@ func ConstructCommandFunc(command []string) (f func(message mqtt.Message, connec
 		localcom := command
 		localcom = append(localcom, string(message.Payload()))
 		if len(command) > 0 {
-
+			var out []byte
 			if len(command) > 1 {
-				_, err = exec.Command(localcom[0], localcom[1:]...).Output()
+				out, err = exec.Command(localcom[0], localcom[1:]...).Output()
 			} else {
-				_, err = exec.Command(localcom[0]).Output()
+				out, err = exec.Command(localcom[0]).Output()
 			}
 			if err != nil {
+				log.Println("Error running command", localcom)
+				log.Println(string(out))
 				log.Printf("%s", err)
+			} else {
+				log.Println("Ran", localcom)
+				log.Println(string(out))
 			}
 
 		}
@@ -38,7 +43,12 @@ func ConstructStateFunc(command []string) (f func() string) {
 			out, err = exec.Command(command[0]).Output()
 		}
 		if err != nil {
+			log.Println("Error running state command", command)
+			log.Println(string(out))
 			log.Printf("%s", err)
+		} else {
+			log.Println("Ran", command)
+			log.Println(string(out))
 		}
 
 		return string(strings.TrimRight(string(out), "\n"))

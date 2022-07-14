@@ -105,7 +105,7 @@ func main() {
 	updatingDevices := 0
 
 	for _, d := range devices {
-		if !almostEqual(*d.GetMQTTFields().UpdateInterval, 0) {
+		if d.GetMQTTFields().UpdateInterval != nil && !almostEqual(*d.GetMQTTFields().UpdateInterval, 0) {
 			updatingDevices++
 		}
 	}
@@ -115,7 +115,7 @@ func main() {
 	tickerN := 0
 
 	for _, d := range devices {
-		if !almostEqual(*d.GetMQTTFields().UpdateInterval, 0) {
+		if d.GetMQTTFields().UpdateInterval != nil && !almostEqual(*d.GetMQTTFields().UpdateInterval, 0) {
 			common.LogDebug("Starting ticker for " + d.GetRawId())
 			tickers[tickerN] = time.NewTicker(time.Duration(*d.GetMQTTFields().UpdateInterval) * time.Second)
 			go func(t *time.Ticker, device ExternalDevice.Device) {

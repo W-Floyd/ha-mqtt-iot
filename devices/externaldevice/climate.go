@@ -215,70 +215,70 @@ func (d *Climate) Subscribe() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	if *d.ActionTopic != "" {
+	if d.ActionTopic != nil {
 		t := c.Subscribe(*d.ActionTopic, 0, d.MQTT.MessageHandler)
 		t.Wait()
 		if t.Error() != nil {
 			log.Fatal(t.Error())
 		}
 	}
-	if *d.AuxCommandTopic != "" {
+	if d.AuxCommandTopic != nil {
 		t := c.Subscribe(*d.AuxCommandTopic, 0, d.MQTT.MessageHandler)
 		t.Wait()
 		if t.Error() != nil {
 			log.Fatal(t.Error())
 		}
 	}
-	if *d.FanModeCommandTopic != "" {
+	if d.FanModeCommandTopic != nil {
 		t := c.Subscribe(*d.FanModeCommandTopic, 0, d.MQTT.MessageHandler)
 		t.Wait()
 		if t.Error() != nil {
 			log.Fatal(t.Error())
 		}
 	}
-	if *d.ModeCommandTopic != "" {
+	if d.ModeCommandTopic != nil {
 		t := c.Subscribe(*d.ModeCommandTopic, 0, d.MQTT.MessageHandler)
 		t.Wait()
 		if t.Error() != nil {
 			log.Fatal(t.Error())
 		}
 	}
-	if *d.PowerCommandTopic != "" {
+	if d.PowerCommandTopic != nil {
 		t := c.Subscribe(*d.PowerCommandTopic, 0, d.MQTT.MessageHandler)
 		t.Wait()
 		if t.Error() != nil {
 			log.Fatal(t.Error())
 		}
 	}
-	if *d.PresetModeCommandTopic != "" {
+	if d.PresetModeCommandTopic != nil {
 		t := c.Subscribe(*d.PresetModeCommandTopic, 0, d.MQTT.MessageHandler)
 		t.Wait()
 		if t.Error() != nil {
 			log.Fatal(t.Error())
 		}
 	}
-	if *d.SwingModeCommandTopic != "" {
+	if d.SwingModeCommandTopic != nil {
 		t := c.Subscribe(*d.SwingModeCommandTopic, 0, d.MQTT.MessageHandler)
 		t.Wait()
 		if t.Error() != nil {
 			log.Fatal(t.Error())
 		}
 	}
-	if *d.TemperatureCommandTopic != "" {
+	if d.TemperatureCommandTopic != nil {
 		t := c.Subscribe(*d.TemperatureCommandTopic, 0, d.MQTT.MessageHandler)
 		t.Wait()
 		if t.Error() != nil {
 			log.Fatal(t.Error())
 		}
 	}
-	if *d.TemperatureHighCommandTopic != "" {
+	if d.TemperatureHighCommandTopic != nil {
 		t := c.Subscribe(*d.TemperatureHighCommandTopic, 0, d.MQTT.MessageHandler)
 		t.Wait()
 		if t.Error() != nil {
 			log.Fatal(t.Error())
 		}
 	}
-	if *d.TemperatureLowCommandTopic != "" {
+	if d.TemperatureLowCommandTopic != nil {
 		t := c.Subscribe(*d.TemperatureLowCommandTopic, 0, d.MQTT.MessageHandler)
 		t.Wait()
 		if t.Error() != nil {
@@ -295,70 +295,70 @@ func (d *Climate) UnSubscribe() {
 	c := *d.MQTT.Client
 	token := c.Publish(*d.AvailabilityTopic, common.QoS, common.Retain, "offline")
 	token.Wait()
-	if *d.ActionTopic != "" {
+	if d.ActionTopic != nil {
 		t := c.Unsubscribe(*d.ActionTopic)
 		t.Wait()
 		if t.Error() != nil {
 			log.Fatal(t.Error())
 		}
 	}
-	if *d.AuxCommandTopic != "" {
+	if d.AuxCommandTopic != nil {
 		t := c.Unsubscribe(*d.AuxCommandTopic)
 		t.Wait()
 		if t.Error() != nil {
 			log.Fatal(t.Error())
 		}
 	}
-	if *d.FanModeCommandTopic != "" {
+	if d.FanModeCommandTopic != nil {
 		t := c.Unsubscribe(*d.FanModeCommandTopic)
 		t.Wait()
 		if t.Error() != nil {
 			log.Fatal(t.Error())
 		}
 	}
-	if *d.ModeCommandTopic != "" {
+	if d.ModeCommandTopic != nil {
 		t := c.Unsubscribe(*d.ModeCommandTopic)
 		t.Wait()
 		if t.Error() != nil {
 			log.Fatal(t.Error())
 		}
 	}
-	if *d.PowerCommandTopic != "" {
+	if d.PowerCommandTopic != nil {
 		t := c.Unsubscribe(*d.PowerCommandTopic)
 		t.Wait()
 		if t.Error() != nil {
 			log.Fatal(t.Error())
 		}
 	}
-	if *d.PresetModeCommandTopic != "" {
+	if d.PresetModeCommandTopic != nil {
 		t := c.Unsubscribe(*d.PresetModeCommandTopic)
 		t.Wait()
 		if t.Error() != nil {
 			log.Fatal(t.Error())
 		}
 	}
-	if *d.SwingModeCommandTopic != "" {
+	if d.SwingModeCommandTopic != nil {
 		t := c.Unsubscribe(*d.SwingModeCommandTopic)
 		t.Wait()
 		if t.Error() != nil {
 			log.Fatal(t.Error())
 		}
 	}
-	if *d.TemperatureCommandTopic != "" {
+	if d.TemperatureCommandTopic != nil {
 		t := c.Unsubscribe(*d.TemperatureCommandTopic)
 		t.Wait()
 		if t.Error() != nil {
 			log.Fatal(t.Error())
 		}
 	}
-	if *d.TemperatureHighCommandTopic != "" {
+	if d.TemperatureHighCommandTopic != nil {
 		t := c.Unsubscribe(*d.TemperatureHighCommandTopic)
 		t.Wait()
 		if t.Error() != nil {
 			log.Fatal(t.Error())
 		}
 	}
-	if *d.TemperatureLowCommandTopic != "" {
+	if d.TemperatureLowCommandTopic != nil {
 		t := c.Unsubscribe(*d.TemperatureLowCommandTopic)
 		t.Wait()
 		if t.Error() != nil {

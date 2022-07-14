@@ -7,7 +7,7 @@ import (
 )
 
 var (
-	Retain           bool          = true
+	Retain           bool          = false
 	QoS              byte          = 0
 	HADiscoveryDelay time.Duration = 500 * time.Millisecond
 	MachineID        string

@@ -141,28 +141,28 @@ func (d *Fan) Subscribe() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	if *d.CommandTopic != "" {
+	if d.CommandTopic != nil {
 		t := c.Subscribe(*d.CommandTopic, 0, d.MQTT.MessageHandler)
 		t.Wait()
 		if t.Error() != nil {
 			log.Fatal(t.Error())
 		}
 	}
-	if *d.OscillationCommandTopic != "" {
+	if d.OscillationCommandTopic != nil {
 		t := c.Subscribe(*d.OscillationCommandTopic, 0, d.MQTT.MessageHandler)
 		t.Wait()
 		if t.Error() != nil {
 			log.Fatal(t.Error())
 		}
 	}
-	if *d.PercentageCommandTopic != "" {
+	if d.PercentageCommandTopic != nil {
 		t := c.Subscribe(*d.PercentageCommandTopic, 0, d.MQTT.MessageHandler)
 		t.Wait()
 		if t.Error() != nil {
 			log.Fatal(t.Error())
 		}
 	}
-	if *d.PresetModeCommandTopic != "" {
+	if d.PresetModeCommandTopic != nil {
 		t := c.Subscribe(*d.PresetModeCommandTopic, 0, d.MQTT.MessageHandler)
 		t.Wait()
 		if t.Error() != nil {
@@ -179,28 +179,28 @@ func (d *Fan) UnSubscribe() {
 	c := *d.MQTT.Client
 	token := c.Publish(*d.AvailabilityTopic, common.QoS, common.Retain, "offline")
 	token.Wait()
-	if *d.CommandTopic != "" {
+	if d.CommandTopic != nil {
 		t := c.Unsubscribe(*d.CommandTopic)
 		t.Wait()
 		if t.Error() != nil {
 			log.Fatal(t.Error())
 		}
 	}
-	if *d.OscillationCommandTopic != "" {
+	if d.OscillationCommandTopic != nil {
 		t := c.Unsubscribe(*d.OscillationCommandTopic)
 		t.Wait()
 		if t.Error() != nil {
 			log.Fatal(t.Error())
 		}
 	}
-	if *d.PercentageCommandTopic != "" {
+	if d.PercentageCommandTopic != nil {
 		t := c.Unsubscribe(*d.PercentageCommandTopic)
 		t.Wait()
 		if t.Error() != nil {
 			log.Fatal(t.Error())
 		}
 	}
-	if *d.PresetModeCommandTopic != "" {
+	if d.PresetModeCommandTopic != nil {
 		t := c.Unsubscribe(*d.PresetModeCommandTopic)
 		t.Wait()
 		if t.Error() != nil {
