@@ -90,8 +90,7 @@ func (d *Humidifier) UpdateState() {
 	if d.AvailabilityTopic != nil {
 		state := d.AvailabilityFunc()
 		if state != stateStore.Humidifier.Availability[*d.UniqueId] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
-			c := *d.MQTT.Client
-			token := c.Publish(*d.AvailabilityTopic, common.QoS, common.Retain, state)
+			token := (*d.MQTT.Client).Publish(*d.AvailabilityTopic, byte(*d.Qos), *d.Retain, state)
 			stateStore.Humidifier.Availability[*d.UniqueId] = state
 			token.Wait()
 		}
@@ -99,8 +98,7 @@ func (d *Humidifier) UpdateState() {
 	if d.ModeStateTopic != nil {
 		state := d.ModeStateFunc()
 		if state != stateStore.Humidifier.ModeState[*d.UniqueId] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
-			c := *d.MQTT.Client
-			token := c.Publish(*d.ModeStateTopic, common.QoS, common.Retain, state)
+			token := (*d.MQTT.Client).Publish(*d.ModeStateTopic, byte(*d.Qos), *d.Retain, state)
 			stateStore.Humidifier.ModeState[*d.UniqueId] = state
 			token.Wait()
 		}
@@ -108,8 +106,7 @@ func (d *Humidifier) UpdateState() {
 	if d.StateTopic != nil {
 		state := d.StateFunc()
 		if state != stateStore.Humidifier.State[*d.UniqueId] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
-			c := *d.MQTT.Client
-			token := c.Publish(*d.StateTopic, common.QoS, common.Retain, state)
+			token := (*d.MQTT.Client).Publish(*d.StateTopic, byte(*d.Qos), *d.Retain, state)
 			stateStore.Humidifier.State[*d.UniqueId] = state
 			token.Wait()
 		}
@@ -117,8 +114,7 @@ func (d *Humidifier) UpdateState() {
 	if d.TargetHumidityStateTopic != nil {
 		state := d.TargetHumidityStateFunc()
 		if state != stateStore.Humidifier.TargetHumidityState[*d.UniqueId] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
-			c := *d.MQTT.Client
-			token := c.Publish(*d.TargetHumidityStateTopic, common.QoS, common.Retain, state)
+			token := (*d.MQTT.Client).Publish(*d.TargetHumidityStateTopic, byte(*d.Qos), *d.Retain, state)
 			stateStore.Humidifier.TargetHumidityState[*d.UniqueId] = state
 			token.Wait()
 		}
@@ -189,7 +185,14 @@ func (d *Humidifier) AnnounceAvailable() {
 	token.Wait()
 }
 func (d *Humidifier) Initialize() {
-	*d.Retain = false
+	if d.Qos == nil {
+		d.Qos = new(int)
+		*d.Qos = int(common.QoS)
+	}
+	if d.Retain == nil {
+		d.Retain = new(bool)
+		*d.Retain = common.Retain
+	}
 	d.PopulateDevice()
 	d.AddMessageHandler()
 	d.PopulateTopics()
@@ -228,7 +231,7 @@ func (d *Humidifier) PopulateTopics() {
 	}
 }
 func (d *Humidifier) SetMQTTFields(fields MQTTFields) {
-	d.MQTT = &fields
+	*d.MQTT = fields
 }
 func (d *Humidifier) GetMQTTFields() (fields MQTTFields) {
 	return *d.MQTT

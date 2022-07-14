@@ -3,6 +3,7 @@ package CommonDevices
 import (
 	"log"
 	"os/exec"
+	"strings"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 )
@@ -39,7 +40,8 @@ func ConstructStateFunc(command []string) (f func() string) {
 		if err != nil {
 			log.Printf("%s", err)
 		}
-		return string(out)
+
+		return string(strings.TrimRight(string(out), "\n"))
 	}
 }
 

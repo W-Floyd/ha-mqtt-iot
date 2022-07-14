@@ -65,7 +65,7 @@ func (d *Tag) Initialize() {
 }
 func (d *Tag) PopulateTopics() {}
 func (d *Tag) SetMQTTFields(fields MQTTFields) {
-	d.MQTT = &fields
+	*d.MQTT = fields
 }
 func (d *Tag) GetMQTTFields() (fields MQTTFields) {
 	return *d.MQTT

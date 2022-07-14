@@ -58,8 +58,7 @@ func (d *Camera) UpdateState() {
 	if d.AvailabilityTopic != nil {
 		state := d.AvailabilityFunc()
 		if state != stateStore.Camera.Availability[*d.UniqueId] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
-			c := *d.MQTT.Client
-			token := c.Publish(*d.AvailabilityTopic, common.QoS, common.Retain, state)
+			token := (*d.MQTT.Client).Publish(*d.AvailabilityTopic, common.QoS, common.Retain, state)
 			stateStore.Camera.Availability[*d.UniqueId] = state
 			token.Wait()
 		}
@@ -99,7 +98,7 @@ func (d *Camera) PopulateTopics() {
 	}
 }
 func (d *Camera) SetMQTTFields(fields MQTTFields) {
-	d.MQTT = &fields
+	*d.MQTT = fields
 }
 func (d *Camera) GetMQTTFields() (fields MQTTFields) {
 	return *d.MQTT

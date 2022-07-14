@@ -64,13 +64,17 @@ func (d *DeviceTrigger) Subscribe() {
 func (d *DeviceTrigger) UnSubscribe()       {}
 func (d *DeviceTrigger) AnnounceAvailable() {}
 func (d *DeviceTrigger) Initialize() {
+	if d.Qos == nil {
+		d.Qos = new(int)
+		*d.Qos = int(common.QoS)
+	}
 	d.PopulateDevice()
 	d.AddMessageHandler()
 	d.PopulateTopics()
 }
 func (d *DeviceTrigger) PopulateTopics() {}
 func (d *DeviceTrigger) SetMQTTFields(fields MQTTFields) {
-	d.MQTT = &fields
+	*d.MQTT = fields
 }
 func (d *DeviceTrigger) GetMQTTFields() (fields MQTTFields) {
 	return *d.MQTT

@@ -69,8 +69,7 @@ func (d *BinarySensor) UpdateState() {
 	if d.AvailabilityTopic != nil {
 		state := d.AvailabilityFunc()
 		if state != stateStore.BinarySensor.Availability[*d.UniqueId] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
-			c := *d.MQTT.Client
-			token := c.Publish(*d.AvailabilityTopic, common.QoS, common.Retain, state)
+			token := (*d.MQTT.Client).Publish(*d.AvailabilityTopic, byte(*d.Qos), common.Retain, state)
 			stateStore.BinarySensor.Availability[*d.UniqueId] = state
 			token.Wait()
 		}
@@ -78,8 +77,7 @@ func (d *BinarySensor) UpdateState() {
 	if d.StateTopic != nil {
 		state := d.StateFunc()
 		if state != stateStore.BinarySensor.State[*d.UniqueId] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
-			c := *d.MQTT.Client
-			token := c.Publish(*d.StateTopic, common.QoS, common.Retain, state)
+			token := (*d.MQTT.Client).Publish(*d.StateTopic, byte(*d.Qos), common.Retain, state)
 			stateStore.BinarySensor.State[*d.UniqueId] = state
 			token.Wait()
 		}
@@ -108,6 +106,10 @@ func (d *BinarySensor) AnnounceAvailable() {
 	token.Wait()
 }
 func (d *BinarySensor) Initialize() {
+	if d.Qos == nil {
+		d.Qos = new(int)
+		*d.Qos = int(common.QoS)
+	}
 	d.PopulateDevice()
 	d.AddMessageHandler()
 	d.PopulateTopics()
@@ -123,7 +125,7 @@ func (d *BinarySensor) PopulateTopics() {
 	}
 }
 func (d *BinarySensor) SetMQTTFields(fields MQTTFields) {
-	d.MQTT = &fields
+	*d.MQTT = fields
 }
 func (d *BinarySensor) GetMQTTFields() (fields MQTTFields) {
 	return *d.MQTT

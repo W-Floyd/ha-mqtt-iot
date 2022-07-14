@@ -69,8 +69,7 @@ func (d *Sensor) UpdateState() {
 	if d.AvailabilityTopic != nil {
 		state := d.AvailabilityFunc()
 		if state != stateStore.Sensor.Availability[*d.UniqueId] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
-			c := *d.MQTT.Client
-			token := c.Publish(*d.AvailabilityTopic, common.QoS, common.Retain, state)
+			token := (*d.MQTT.Client).Publish(*d.AvailabilityTopic, byte(*d.Qos), common.Retain, state)
 			stateStore.Sensor.Availability[*d.UniqueId] = state
 			token.Wait()
 		}
@@ -78,8 +77,7 @@ func (d *Sensor) UpdateState() {
 	if d.StateTopic != nil {
 		state := d.StateFunc()
 		if state != stateStore.Sensor.State[*d.UniqueId] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
-			c := *d.MQTT.Client
-			token := c.Publish(*d.StateTopic, common.QoS, common.Retain, state)
+			token := (*d.MQTT.Client).Publish(*d.StateTopic, byte(*d.Qos), common.Retain, state)
 			stateStore.Sensor.State[*d.UniqueId] = state
 			token.Wait()
 		}
@@ -108,6 +106,10 @@ func (d *Sensor) AnnounceAvailable() {
 	token.Wait()
 }
 func (d *Sensor) Initialize() {
+	if d.Qos == nil {
+		d.Qos = new(int)
+		*d.Qos = int(common.QoS)
+	}
 	d.PopulateDevice()
 	d.AddMessageHandler()
 	d.PopulateTopics()
@@ -123,7 +125,7 @@ func (d *Sensor) PopulateTopics() {
 	}
 }
 func (d *Sensor) SetMQTTFields(fields MQTTFields) {
-	d.MQTT = &fields
+	*d.MQTT = fields
 }
 func (d *Sensor) GetMQTTFields() (fields MQTTFields) {
 	return *d.MQTT

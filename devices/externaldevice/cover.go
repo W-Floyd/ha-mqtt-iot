@@ -97,8 +97,7 @@ func (d *Cover) UpdateState() {
 	if d.AvailabilityTopic != nil {
 		state := d.AvailabilityFunc()
 		if state != stateStore.Cover.Availability[*d.UniqueId] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
-			c := *d.MQTT.Client
-			token := c.Publish(*d.AvailabilityTopic, common.QoS, common.Retain, state)
+			token := (*d.MQTT.Client).Publish(*d.AvailabilityTopic, byte(*d.Qos), *d.Retain, state)
 			stateStore.Cover.Availability[*d.UniqueId] = state
 			token.Wait()
 		}
@@ -106,8 +105,7 @@ func (d *Cover) UpdateState() {
 	if d.PositionTopic != nil {
 		state := d.PositionFunc()
 		if state != stateStore.Cover.Position[*d.UniqueId] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
-			c := *d.MQTT.Client
-			token := c.Publish(*d.PositionTopic, common.QoS, common.Retain, state)
+			token := (*d.MQTT.Client).Publish(*d.PositionTopic, byte(*d.Qos), *d.Retain, state)
 			stateStore.Cover.Position[*d.UniqueId] = state
 			token.Wait()
 		}
@@ -115,8 +113,7 @@ func (d *Cover) UpdateState() {
 	if d.StateTopic != nil {
 		state := d.StateFunc()
 		if state != stateStore.Cover.State[*d.UniqueId] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
-			c := *d.MQTT.Client
-			token := c.Publish(*d.StateTopic, common.QoS, common.Retain, state)
+			token := (*d.MQTT.Client).Publish(*d.StateTopic, byte(*d.Qos), *d.Retain, state)
 			stateStore.Cover.State[*d.UniqueId] = state
 			token.Wait()
 		}
@@ -124,8 +121,7 @@ func (d *Cover) UpdateState() {
 	if d.TiltStatusTopic != nil {
 		state := d.TiltStatusFunc()
 		if state != stateStore.Cover.TiltStatus[*d.UniqueId] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
-			c := *d.MQTT.Client
-			token := c.Publish(*d.TiltStatusTopic, common.QoS, common.Retain, state)
+			token := (*d.MQTT.Client).Publish(*d.TiltStatusTopic, byte(*d.Qos), *d.Retain, state)
 			stateStore.Cover.TiltStatus[*d.UniqueId] = state
 			token.Wait()
 		}
@@ -196,7 +192,14 @@ func (d *Cover) AnnounceAvailable() {
 	token.Wait()
 }
 func (d *Cover) Initialize() {
-	*d.Retain = false
+	if d.Qos == nil {
+		d.Qos = new(int)
+		*d.Qos = int(common.QoS)
+	}
+	if d.Retain == nil {
+		d.Retain = new(bool)
+		*d.Retain = common.Retain
+	}
 	d.PopulateDevice()
 	d.AddMessageHandler()
 	d.PopulateTopics()
@@ -235,7 +238,7 @@ func (d *Cover) PopulateTopics() {
 	}
 }
 func (d *Cover) SetMQTTFields(fields MQTTFields) {
-	d.MQTT = &fields
+	*d.MQTT = fields
 }
 func (d *Cover) GetMQTTFields() (fields MQTTFields) {
 	return *d.MQTT

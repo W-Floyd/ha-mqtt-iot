@@ -73,8 +73,7 @@ func (d *Number) UpdateState() {
 	if d.AvailabilityTopic != nil {
 		state := d.AvailabilityFunc()
 		if state != stateStore.Number.Availability[*d.UniqueId] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
-			c := *d.MQTT.Client
-			token := c.Publish(*d.AvailabilityTopic, common.QoS, common.Retain, state)
+			token := (*d.MQTT.Client).Publish(*d.AvailabilityTopic, byte(*d.Qos), *d.Retain, state)
 			stateStore.Number.Availability[*d.UniqueId] = state
 			token.Wait()
 		}
@@ -82,8 +81,7 @@ func (d *Number) UpdateState() {
 	if d.StateTopic != nil {
 		state := d.StateFunc()
 		if state != stateStore.Number.State[*d.UniqueId] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
-			c := *d.MQTT.Client
-			token := c.Publish(*d.StateTopic, common.QoS, common.Retain, state)
+			token := (*d.MQTT.Client).Publish(*d.StateTopic, byte(*d.Qos), *d.Retain, state)
 			stateStore.Number.State[*d.UniqueId] = state
 			token.Wait()
 		}
@@ -126,7 +124,14 @@ func (d *Number) AnnounceAvailable() {
 	token.Wait()
 }
 func (d *Number) Initialize() {
-	*d.Retain = false
+	if d.Qos == nil {
+		d.Qos = new(int)
+		*d.Qos = int(common.QoS)
+	}
+	if d.Retain == nil {
+		d.Retain = new(bool)
+		*d.Retain = common.Retain
+	}
 	d.PopulateDevice()
 	d.AddMessageHandler()
 	d.PopulateTopics()
@@ -147,7 +152,7 @@ func (d *Number) PopulateTopics() {
 	}
 }
 func (d *Number) SetMQTTFields(fields MQTTFields) {
-	d.MQTT = &fields
+	*d.MQTT = fields
 }
 func (d *Number) GetMQTTFields() (fields MQTTFields) {
 	return *d.MQTT

@@ -68,8 +68,7 @@ func (d *Button) UpdateState() {
 	if d.AvailabilityTopic != nil {
 		state := d.AvailabilityFunc()
 		if state != stateStore.Button.Availability[*d.UniqueId] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
-			c := *d.MQTT.Client
-			token := c.Publish(*d.AvailabilityTopic, common.QoS, common.Retain, state)
+			token := (*d.MQTT.Client).Publish(*d.AvailabilityTopic, byte(*d.Qos), *d.Retain, state)
 			stateStore.Button.Availability[*d.UniqueId] = state
 			token.Wait()
 		}
@@ -112,7 +111,14 @@ func (d *Button) AnnounceAvailable() {
 	token.Wait()
 }
 func (d *Button) Initialize() {
-	*d.Retain = false
+	if d.Qos == nil {
+		d.Qos = new(int)
+		*d.Qos = int(common.QoS)
+	}
+	if d.Retain == nil {
+		d.Retain = new(bool)
+		*d.Retain = common.Retain
+	}
 	d.PopulateDevice()
 	d.AddMessageHandler()
 	d.PopulateTopics()
@@ -129,7 +135,7 @@ func (d *Button) PopulateTopics() {
 	}
 }
 func (d *Button) SetMQTTFields(fields MQTTFields) {
-	d.MQTT = &fields
+	*d.MQTT = fields
 }
 func (d *Button) GetMQTTFields() (fields MQTTFields) {
 	return *d.MQTT

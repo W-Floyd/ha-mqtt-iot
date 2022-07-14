@@ -45,13 +45,17 @@ func (d *DeviceTracker) Subscribe() {
 func (d *DeviceTracker) UnSubscribe()       {}
 func (d *DeviceTracker) AnnounceAvailable() {}
 func (d *DeviceTracker) Initialize() {
+	if d.Qos == nil {
+		d.Qos = new(int)
+		*d.Qos = int(common.QoS)
+	}
 	d.PopulateDevice()
 	d.AddMessageHandler()
 	d.PopulateTopics()
 }
 func (d *DeviceTracker) PopulateTopics() {}
 func (d *DeviceTracker) SetMQTTFields(fields MQTTFields) {
-	d.MQTT = &fields
+	*d.MQTT = fields
 }
 func (d *DeviceTracker) GetMQTTFields() (fields MQTTFields) {
 	return *d.MQTT

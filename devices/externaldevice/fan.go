@@ -97,8 +97,7 @@ func (d *Fan) UpdateState() {
 	if d.AvailabilityTopic != nil {
 		state := d.AvailabilityFunc()
 		if state != stateStore.Fan.Availability[*d.UniqueId] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
-			c := *d.MQTT.Client
-			token := c.Publish(*d.AvailabilityTopic, common.QoS, common.Retain, state)
+			token := (*d.MQTT.Client).Publish(*d.AvailabilityTopic, byte(*d.Qos), *d.Retain, state)
 			stateStore.Fan.Availability[*d.UniqueId] = state
 			token.Wait()
 		}
@@ -106,8 +105,7 @@ func (d *Fan) UpdateState() {
 	if d.OscillationStateTopic != nil {
 		state := d.OscillationStateFunc()
 		if state != stateStore.Fan.OscillationState[*d.UniqueId] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
-			c := *d.MQTT.Client
-			token := c.Publish(*d.OscillationStateTopic, common.QoS, common.Retain, state)
+			token := (*d.MQTT.Client).Publish(*d.OscillationStateTopic, byte(*d.Qos), *d.Retain, state)
 			stateStore.Fan.OscillationState[*d.UniqueId] = state
 			token.Wait()
 		}
@@ -115,8 +113,7 @@ func (d *Fan) UpdateState() {
 	if d.PercentageStateTopic != nil {
 		state := d.PercentageStateFunc()
 		if state != stateStore.Fan.PercentageState[*d.UniqueId] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
-			c := *d.MQTT.Client
-			token := c.Publish(*d.PercentageStateTopic, common.QoS, common.Retain, state)
+			token := (*d.MQTT.Client).Publish(*d.PercentageStateTopic, byte(*d.Qos), *d.Retain, state)
 			stateStore.Fan.PercentageState[*d.UniqueId] = state
 			token.Wait()
 		}
@@ -124,8 +121,7 @@ func (d *Fan) UpdateState() {
 	if d.PresetModeStateTopic != nil {
 		state := d.PresetModeStateFunc()
 		if state != stateStore.Fan.PresetModeState[*d.UniqueId] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
-			c := *d.MQTT.Client
-			token := c.Publish(*d.PresetModeStateTopic, common.QoS, common.Retain, state)
+			token := (*d.MQTT.Client).Publish(*d.PresetModeStateTopic, byte(*d.Qos), *d.Retain, state)
 			stateStore.Fan.PresetModeState[*d.UniqueId] = state
 			token.Wait()
 		}
@@ -133,8 +129,7 @@ func (d *Fan) UpdateState() {
 	if d.StateTopic != nil {
 		state := d.StateFunc()
 		if state != stateStore.Fan.State[*d.UniqueId] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
-			c := *d.MQTT.Client
-			token := c.Publish(*d.StateTopic, common.QoS, common.Retain, state)
+			token := (*d.MQTT.Client).Publish(*d.StateTopic, byte(*d.Qos), *d.Retain, state)
 			stateStore.Fan.State[*d.UniqueId] = state
 			token.Wait()
 		}
@@ -219,7 +214,14 @@ func (d *Fan) AnnounceAvailable() {
 	token.Wait()
 }
 func (d *Fan) Initialize() {
-	*d.Retain = false
+	if d.Qos == nil {
+		d.Qos = new(int)
+		*d.Qos = int(common.QoS)
+	}
+	if d.Retain == nil {
+		d.Retain = new(bool)
+		*d.Retain = common.Retain
+	}
 	d.PopulateDevice()
 	d.AddMessageHandler()
 	d.PopulateTopics()
@@ -267,7 +269,7 @@ func (d *Fan) PopulateTopics() {
 	}
 }
 func (d *Fan) SetMQTTFields(fields MQTTFields) {
-	d.MQTT = &fields
+	*d.MQTT = fields
 }
 func (d *Fan) GetMQTTFields() (fields MQTTFields) {
 	return *d.MQTT

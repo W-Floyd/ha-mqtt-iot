@@ -115,7 +115,6 @@ func main() {
 	tickerN := 0
 
 	for _, d := range devices {
-		common.LogDebug(d.GetMQTTFields().UpdateInterval)
 		if !almostEqual(*d.GetMQTTFields().UpdateInterval, 0) {
 			common.LogDebug("Starting ticker for " + d.GetRawId())
 			tickers[tickerN] = time.NewTicker(time.Duration(*d.GetMQTTFields().UpdateInterval) * time.Second)
