@@ -47,9 +47,9 @@ type Scene struct {
 func (d *Scene) UpdateState() {
 	if d.AvailabilityTopic != nil {
 		state := d.AvailabilityFunc()
-		if state != stateStore.Scene.Availability[*d.UniqueId] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
+		if state != stateStore.Scene.Availability[d.GetUniqueId()] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
 			token := (*d.MQTT.Client).Publish(*d.AvailabilityTopic, byte(*d.Qos), *d.Retain, state)
-			stateStore.Scene.Availability[*d.UniqueId] = state
+			stateStore.Scene.Availability[d.GetUniqueId()] = state
 			token.Wait()
 		}
 	}

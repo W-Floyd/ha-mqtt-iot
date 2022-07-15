@@ -73,17 +73,17 @@ type Switch struct {
 func (d *Switch) UpdateState() {
 	if d.AvailabilityTopic != nil {
 		state := d.AvailabilityFunc()
-		if state != stateStore.Switch.Availability[*d.UniqueId] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
+		if state != stateStore.Switch.Availability[d.GetUniqueId()] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
 			token := (*d.MQTT.Client).Publish(*d.AvailabilityTopic, byte(*d.Qos), *d.Retain, state)
-			stateStore.Switch.Availability[*d.UniqueId] = state
+			stateStore.Switch.Availability[d.GetUniqueId()] = state
 			token.Wait()
 		}
 	}
 	if d.StateTopic != nil {
 		state := d.StateFunc()
-		if state != stateStore.Switch.State[*d.UniqueId] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
+		if state != stateStore.Switch.State[d.GetUniqueId()] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
 			token := (*d.MQTT.Client).Publish(*d.StateTopic, byte(*d.Qos), *d.Retain, state)
-			stateStore.Switch.State[*d.UniqueId] = state
+			stateStore.Switch.State[d.GetUniqueId()] = state
 			token.Wait()
 		}
 	}

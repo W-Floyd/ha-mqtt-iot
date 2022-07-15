@@ -40,16 +40,26 @@ type DeviceTrigger struct {
 		SwVersion        *string `json:"sw_version,omitempty"`        // "The firmware version of the device."
 		Viadevice        *string `json:"viadevice,omitempty"`         // null
 	} `json:"device,omitempty"`
-	Payload       *string     `json:"payload,omitempty"`        // "Optional payload to match the payload being sent over the topic."
-	Qos           *int        `json:"qos,omitempty"`            // "The maximum QoS level to be used when receiving messages."
-	Subtype       *string     `json:"subtype,omitempty"`        // "The subtype of the trigger, e.g. `button_1`. Entries supported by the frontend: `turn_on`, `turn_off`, `button_1`, `button_2`, `button_3`, `button_4`, `button_5`, `button_6`. If set to an unsupported value, will render as `subtype type`, e.g. `left_button pressed` with `type` set to `button_short_press` and `subtype` set to `left_button`"
-	Topic         *string     `json:"topic,omitempty"`          // "The MQTT topic subscribed to receive trigger events."
-	Type          *string     `json:"type,omitempty"`           // "The type of the trigger, e.g. `button_short_press`. Entries supported by the frontend: `button_short_press`, `button_short_release`, `button_long_press`, `button_long_release`, `button_double_press`, `button_triple_press`, `button_quadruple_press`, `button_quintuple_press`. If set to an unsupported value, will render as `subtype type`, e.g. `button_1 spammed` with `type` set to `spammed` and `subtype` set to `button_1`"
-	ValueTemplate *string     `json:"value_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#processing-incoming-data) to extract the value."
-	MQTT          *MQTTFields `json:"-"`
+	Payload       *string       `json:"payload,omitempty"` // "Optional payload to match the payload being sent over the topic."
+	Qos           *int          `json:"qos,omitempty"`     // "The maximum QoS level to be used when receiving messages."
+	Subtype       *string       `json:"subtype,omitempty"` // "The subtype of the trigger, e.g. `button_1`. Entries supported by the frontend: `turn_on`, `turn_off`, `button_1`, `button_2`, `button_3`, `button_4`, `button_5`, `button_6`. If set to an unsupported value, will render as `subtype type`, e.g. `left_button pressed` with `type` set to `button_short_press` and `subtype` set to `left_button`"
+	StateTopic    *string       `json:"topic,omitempty"`   // "The MQTT topic subscribed to receive trigger events."
+	StateFunc     func() string `json:"-"`
+	Type          *string       `json:"type,omitempty"`           // "The type of the trigger, e.g. `button_short_press`. Entries supported by the frontend: `button_short_press`, `button_short_release`, `button_long_press`, `button_long_release`, `button_double_press`, `button_triple_press`, `button_quadruple_press`, `button_quintuple_press`. If set to an unsupported value, will render as `subtype type`, e.g. `button_1 spammed` with `type` set to `spammed` and `subtype` set to `button_1`"
+	ValueTemplate *string       `json:"value_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#processing-incoming-data) to extract the value."
+	MQTT          *MQTTFields   `json:"-"`
 }
 
-func (d *DeviceTrigger) UpdateState() {}
+func (d *DeviceTrigger) UpdateState() {
+	if d.StateTopic != nil {
+		state := d.StateFunc()
+		if state != stateStore.DeviceTrigger.State[d.GetUniqueId()] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
+			token := (*d.MQTT.Client).Publish(*d.StateTopic, byte(*d.Qos), common.Retain, state)
+			stateStore.DeviceTrigger.State[d.GetUniqueId()] = state
+			token.Wait()
+		}
+	}
+}
 func (d *DeviceTrigger) Subscribe() {
 	c := *d.MQTT.Client
 	message, err := json.Marshal(d)
@@ -72,7 +82,12 @@ func (d *DeviceTrigger) Initialize() {
 	d.AddMessageHandler()
 	d.PopulateTopics()
 }
-func (d *DeviceTrigger) PopulateTopics() {}
+func (d *DeviceTrigger) PopulateTopics() {
+	if d.StateFunc != nil {
+		d.StateTopic = new(string)
+		*d.StateTopic = GetTopic(d, "state_topic")
+	}
+}
 func (d *DeviceTrigger) SetMQTTFields(fields MQTTFields) {
 	*d.MQTT = fields
 }

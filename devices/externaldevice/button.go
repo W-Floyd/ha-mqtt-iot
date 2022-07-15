@@ -67,9 +67,9 @@ type Button struct {
 func (d *Button) UpdateState() {
 	if d.AvailabilityTopic != nil {
 		state := d.AvailabilityFunc()
-		if state != stateStore.Button.Availability[*d.UniqueId] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
+		if state != stateStore.Button.Availability[d.GetUniqueId()] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
 			token := (*d.MQTT.Client).Publish(*d.AvailabilityTopic, byte(*d.Qos), *d.Retain, state)
-			stateStore.Button.Availability[*d.UniqueId] = state
+			stateStore.Button.Availability[d.GetUniqueId()] = state
 			token.Wait()
 		}
 	}

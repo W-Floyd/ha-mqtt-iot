@@ -68,17 +68,17 @@ type BinarySensor struct {
 func (d *BinarySensor) UpdateState() {
 	if d.AvailabilityTopic != nil {
 		state := d.AvailabilityFunc()
-		if state != stateStore.BinarySensor.Availability[*d.UniqueId] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
+		if state != stateStore.BinarySensor.Availability[d.GetUniqueId()] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
 			token := (*d.MQTT.Client).Publish(*d.AvailabilityTopic, byte(*d.Qos), common.Retain, state)
-			stateStore.BinarySensor.Availability[*d.UniqueId] = state
+			stateStore.BinarySensor.Availability[d.GetUniqueId()] = state
 			token.Wait()
 		}
 	}
 	if d.StateTopic != nil {
 		state := d.StateFunc()
-		if state != stateStore.BinarySensor.State[*d.UniqueId] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
+		if state != stateStore.BinarySensor.State[d.GetUniqueId()] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
 			token := (*d.MQTT.Client).Publish(*d.StateTopic, byte(*d.Qos), common.Retain, state)
-			stateStore.BinarySensor.State[*d.UniqueId] = state
+			stateStore.BinarySensor.State[d.GetUniqueId()] = state
 			token.Wait()
 		}
 	}

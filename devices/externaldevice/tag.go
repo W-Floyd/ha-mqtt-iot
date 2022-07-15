@@ -39,12 +39,22 @@ type Tag struct {
 		SwVersion        *string `json:"sw_version,omitempty"`        // "The firmware version of the device."
 		Viadevice        *string `json:"viadevice,omitempty"`         // null
 	} `json:"device,omitempty"`
-	Topic         *string     `json:"topic,omitempty"`          // "The MQTT topic subscribed to receive tag scanned events."
-	ValueTemplate *string     `json:"value_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#processing-incoming-data) that returns a tag ID."
-	MQTT          *MQTTFields `json:"-"`
+	StateTopic    *string       `json:"topic,omitempty"` // "The MQTT topic subscribed to receive tag scanned events."
+	StateFunc     func() string `json:"-"`
+	ValueTemplate *string       `json:"value_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#processing-incoming-data) that returns a tag ID."
+	MQTT          *MQTTFields   `json:"-"`
 }
 
-func (d *Tag) UpdateState() {}
+func (d *Tag) UpdateState() {
+	if d.StateTopic != nil {
+		state := d.StateFunc()
+		if state != stateStore.Tag.State[d.GetUniqueId()] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
+			token := (*d.MQTT.Client).Publish(*d.StateTopic, common.QoS, common.Retain, state)
+			stateStore.Tag.State[d.GetUniqueId()] = state
+			token.Wait()
+		}
+	}
+}
 func (d *Tag) Subscribe() {
 	c := *d.MQTT.Client
 	message, err := json.Marshal(d)
@@ -63,7 +73,12 @@ func (d *Tag) Initialize() {
 	d.AddMessageHandler()
 	d.PopulateTopics()
 }
-func (d *Tag) PopulateTopics() {}
+func (d *Tag) PopulateTopics() {
+	if d.StateFunc != nil {
+		d.StateTopic = new(string)
+		*d.StateTopic = GetTopic(d, "state_topic")
+	}
+}
 func (d *Tag) SetMQTTFields(fields MQTTFields) {
 	*d.MQTT = fields
 }

@@ -130,81 +130,81 @@ type Climate struct {
 func (d *Climate) UpdateState() {
 	if d.AuxStateTopic != nil {
 		state := d.AuxStateFunc()
-		if state != stateStore.Climate.AuxState[*d.UniqueId] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
+		if state != stateStore.Climate.AuxState[d.GetUniqueId()] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
 			token := (*d.MQTT.Client).Publish(*d.AuxStateTopic, byte(*d.Qos), *d.Retain, state)
-			stateStore.Climate.AuxState[*d.UniqueId] = state
+			stateStore.Climate.AuxState[d.GetUniqueId()] = state
 			token.Wait()
 		}
 	}
 	if d.AvailabilityTopic != nil {
 		state := d.AvailabilityFunc()
-		if state != stateStore.Climate.Availability[*d.UniqueId] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
+		if state != stateStore.Climate.Availability[d.GetUniqueId()] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
 			token := (*d.MQTT.Client).Publish(*d.AvailabilityTopic, byte(*d.Qos), *d.Retain, state)
-			stateStore.Climate.Availability[*d.UniqueId] = state
+			stateStore.Climate.Availability[d.GetUniqueId()] = state
 			token.Wait()
 		}
 	}
 	if d.CurrentTemperatureTopic != nil {
 		state := d.CurrentTemperatureFunc()
-		if state != stateStore.Climate.CurrentTemperature[*d.UniqueId] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
+		if state != stateStore.Climate.CurrentTemperature[d.GetUniqueId()] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
 			token := (*d.MQTT.Client).Publish(*d.CurrentTemperatureTopic, byte(*d.Qos), *d.Retain, state)
-			stateStore.Climate.CurrentTemperature[*d.UniqueId] = state
+			stateStore.Climate.CurrentTemperature[d.GetUniqueId()] = state
 			token.Wait()
 		}
 	}
 	if d.FanModeStateTopic != nil {
 		state := d.FanModeStateFunc()
-		if state != stateStore.Climate.FanModeState[*d.UniqueId] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
+		if state != stateStore.Climate.FanModeState[d.GetUniqueId()] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
 			token := (*d.MQTT.Client).Publish(*d.FanModeStateTopic, byte(*d.Qos), *d.Retain, state)
-			stateStore.Climate.FanModeState[*d.UniqueId] = state
+			stateStore.Climate.FanModeState[d.GetUniqueId()] = state
 			token.Wait()
 		}
 	}
 	if d.ModeStateTopic != nil {
 		state := d.ModeStateFunc()
-		if state != stateStore.Climate.ModeState[*d.UniqueId] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
+		if state != stateStore.Climate.ModeState[d.GetUniqueId()] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
 			token := (*d.MQTT.Client).Publish(*d.ModeStateTopic, byte(*d.Qos), *d.Retain, state)
-			stateStore.Climate.ModeState[*d.UniqueId] = state
+			stateStore.Climate.ModeState[d.GetUniqueId()] = state
 			token.Wait()
 		}
 	}
 	if d.PresetModeStateTopic != nil {
 		state := d.PresetModeStateFunc()
-		if state != stateStore.Climate.PresetModeState[*d.UniqueId] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
+		if state != stateStore.Climate.PresetModeState[d.GetUniqueId()] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
 			token := (*d.MQTT.Client).Publish(*d.PresetModeStateTopic, byte(*d.Qos), *d.Retain, state)
-			stateStore.Climate.PresetModeState[*d.UniqueId] = state
+			stateStore.Climate.PresetModeState[d.GetUniqueId()] = state
 			token.Wait()
 		}
 	}
 	if d.SwingModeStateTopic != nil {
 		state := d.SwingModeStateFunc()
-		if state != stateStore.Climate.SwingModeState[*d.UniqueId] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
+		if state != stateStore.Climate.SwingModeState[d.GetUniqueId()] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
 			token := (*d.MQTT.Client).Publish(*d.SwingModeStateTopic, byte(*d.Qos), *d.Retain, state)
-			stateStore.Climate.SwingModeState[*d.UniqueId] = state
+			stateStore.Climate.SwingModeState[d.GetUniqueId()] = state
 			token.Wait()
 		}
 	}
 	if d.TemperatureHighStateTopic != nil {
 		state := d.TemperatureHighStateFunc()
-		if state != stateStore.Climate.TemperatureHighState[*d.UniqueId] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
+		if state != stateStore.Climate.TemperatureHighState[d.GetUniqueId()] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
 			token := (*d.MQTT.Client).Publish(*d.TemperatureHighStateTopic, byte(*d.Qos), *d.Retain, state)
-			stateStore.Climate.TemperatureHighState[*d.UniqueId] = state
+			stateStore.Climate.TemperatureHighState[d.GetUniqueId()] = state
 			token.Wait()
 		}
 	}
 	if d.TemperatureLowStateTopic != nil {
 		state := d.TemperatureLowStateFunc()
-		if state != stateStore.Climate.TemperatureLowState[*d.UniqueId] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
+		if state != stateStore.Climate.TemperatureLowState[d.GetUniqueId()] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
 			token := (*d.MQTT.Client).Publish(*d.TemperatureLowStateTopic, byte(*d.Qos), *d.Retain, state)
-			stateStore.Climate.TemperatureLowState[*d.UniqueId] = state
+			stateStore.Climate.TemperatureLowState[d.GetUniqueId()] = state
 			token.Wait()
 		}
 	}
 	if d.TemperatureStateTopic != nil {
 		state := d.TemperatureStateFunc()
-		if state != stateStore.Climate.TemperatureState[*d.UniqueId] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
+		if state != stateStore.Climate.TemperatureState[d.GetUniqueId()] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
 			token := (*d.MQTT.Client).Publish(*d.TemperatureStateTopic, byte(*d.Qos), *d.Retain, state)
-			stateStore.Climate.TemperatureState[*d.UniqueId] = state
+			stateStore.Climate.TemperatureState[d.GetUniqueId()] = state
 			token.Wait()
 		}
 	}

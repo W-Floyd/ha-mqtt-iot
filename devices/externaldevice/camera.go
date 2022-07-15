@@ -43,23 +43,32 @@ type Camera struct {
 		SwVersion        *string `json:"sw_version,omitempty"`        // "The firmware version of the device."
 		Viadevice        *string `json:"viadevice,omitempty"`         // null
 	} `json:"device,omitempty"`
-	EnabledByDefault *bool       `json:"enabled_by_default,omitempty"` // "Flag which defines if the entity should be enabled when first added."
-	Encoding         *string     `json:"encoding,omitempty"`           // "The encoding of the image payloads received. Set to `\"b64\"` to enable base64 decoding of image payload. If not set, or if set to `null`, the image payload must be raw binary data."
-	EntityCategory   *string     `json:"entity_category,omitempty"`    // "The [category](https://developers.home-assistant.io/docs/core/entity#generic-properties) of the entity."
-	Icon             *string     `json:"icon,omitempty"`               // "[Icon](/docs/configuration/customizing-devices/#icon) for the entity."
-	Name             *string     `json:"name,omitempty"`               // "The name of the camera."
-	ObjectId         *string     `json:"object_id,omitempty"`          // "Used instead of `name` for automatic generation of `entity_id`"
-	Topic            *string     `json:"topic,omitempty"`              // "The MQTT topic to subscribe to."
-	UniqueId         *string     `json:"unique_id,omitempty"`          // "An ID that uniquely identifies this camera. If two cameras have the same unique ID Home Assistant will raise an exception."
-	MQTT             *MQTTFields `json:"-"`
+	EnabledByDefault *bool         `json:"enabled_by_default,omitempty"` // "Flag which defines if the entity should be enabled when first added."
+	Encoding         *string       `json:"encoding,omitempty"`           // "The encoding of the image payloads received. Set to `\"b64\"` to enable base64 decoding of image payload. If not set, or if set to `null`, the image payload must be raw binary data."
+	EntityCategory   *string       `json:"entity_category,omitempty"`    // "The [category](https://developers.home-assistant.io/docs/core/entity#generic-properties) of the entity."
+	Icon             *string       `json:"icon,omitempty"`               // "[Icon](/docs/configuration/customizing-devices/#icon) for the entity."
+	Name             *string       `json:"name,omitempty"`               // "The name of the camera."
+	ObjectId         *string       `json:"object_id,omitempty"`          // "Used instead of `name` for automatic generation of `entity_id`"
+	StateTopic       *string       `json:"topic,omitempty"`              // "The MQTT topic to subscribe to."
+	StateFunc        func() string `json:"-"`
+	UniqueId         *string       `json:"unique_id,omitempty"` // "An ID that uniquely identifies this camera. If two cameras have the same unique ID Home Assistant will raise an exception."
+	MQTT             *MQTTFields   `json:"-"`
 }
 
 func (d *Camera) UpdateState() {
 	if d.AvailabilityTopic != nil {
 		state := d.AvailabilityFunc()
-		if state != stateStore.Camera.Availability[*d.UniqueId] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
+		if state != stateStore.Camera.Availability[d.GetUniqueId()] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
 			token := (*d.MQTT.Client).Publish(*d.AvailabilityTopic, common.QoS, common.Retain, state)
-			stateStore.Camera.Availability[*d.UniqueId] = state
+			stateStore.Camera.Availability[d.GetUniqueId()] = state
+			token.Wait()
+		}
+	}
+	if d.StateTopic != nil {
+		state := d.StateFunc()
+		if state != stateStore.Camera.State[d.GetUniqueId()] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
+			token := (*d.MQTT.Client).Publish(*d.StateTopic, common.QoS, common.Retain, state)
+			stateStore.Camera.State[d.GetUniqueId()] = state
 			token.Wait()
 		}
 	}
@@ -95,6 +104,10 @@ func (d *Camera) PopulateTopics() {
 	if d.AvailabilityFunc != nil {
 		d.AvailabilityTopic = new(string)
 		*d.AvailabilityTopic = GetTopic(d, "availability_topic")
+	}
+	if d.StateFunc != nil {
+		d.StateTopic = new(string)
+		*d.StateTopic = GetTopic(d, "state_topic")
 	}
 }
 func (d *Camera) SetMQTTFields(fields MQTTFields) {

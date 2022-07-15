@@ -17,6 +17,7 @@ type StateStore struct {
 	}
 	Camera struct {
 		Availability map[string]string
+		State        map[string]string
 	}
 	Cover struct {
 		Availability map[string]string
@@ -25,8 +26,10 @@ type StateStore struct {
 		TiltStatus   map[string]string
 	}
 	DeviceTracker struct{}
-	DeviceTrigger struct{}
-	Fan           struct {
+	DeviceTrigger struct {
+		State map[string]string
+	}
+	Fan struct {
 		Availability     map[string]string
 		OscillationState map[string]string
 		PercentageState  map[string]string
@@ -91,7 +94,9 @@ type StateStore struct {
 		Availability map[string]string
 		State        map[string]string
 	}
-	Tag    struct{}
+	Tag struct {
+		State map[string]string
+	}
 	Vacuum struct {
 		Availability map[string]string
 		State        map[string]string
@@ -106,10 +111,12 @@ func initStore() StateStore {
 	s.BinarySensor.State = make(map[string]string)
 	s.Button.Availability = make(map[string]string)
 	s.Camera.Availability = make(map[string]string)
+	s.Camera.State = make(map[string]string)
 	s.Cover.Availability = make(map[string]string)
 	s.Cover.Position = make(map[string]string)
 	s.Cover.State = make(map[string]string)
 	s.Cover.TiltStatus = make(map[string]string)
+	s.DeviceTrigger.State = make(map[string]string)
 	s.Fan.Availability = make(map[string]string)
 	s.Fan.OscillationState = make(map[string]string)
 	s.Fan.PercentageState = make(map[string]string)
@@ -153,6 +160,7 @@ func initStore() StateStore {
 	s.Siren.State = make(map[string]string)
 	s.Switch.Availability = make(map[string]string)
 	s.Switch.State = make(map[string]string)
+	s.Tag.State = make(map[string]string)
 	s.Vacuum.Availability = make(map[string]string)
 	s.Vacuum.State = make(map[string]string)
 	return s

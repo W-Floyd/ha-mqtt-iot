@@ -79,17 +79,17 @@ type AlarmControlPanel struct {
 func (d *AlarmControlPanel) UpdateState() {
 	if d.AvailabilityTopic != nil {
 		state := d.AvailabilityFunc()
-		if state != stateStore.AlarmControlPanel.Availability[*d.UniqueId] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
+		if state != stateStore.AlarmControlPanel.Availability[d.GetUniqueId()] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
 			token := (*d.MQTT.Client).Publish(*d.AvailabilityTopic, byte(*d.Qos), *d.Retain, state)
-			stateStore.AlarmControlPanel.Availability[*d.UniqueId] = state
+			stateStore.AlarmControlPanel.Availability[d.GetUniqueId()] = state
 			token.Wait()
 		}
 	}
 	if d.StateTopic != nil {
 		state := d.StateFunc()
-		if state != stateStore.AlarmControlPanel.State[*d.UniqueId] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
+		if state != stateStore.AlarmControlPanel.State[d.GetUniqueId()] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
 			token := (*d.MQTT.Client).Publish(*d.StateTopic, byte(*d.Qos), *d.Retain, state)
-			stateStore.AlarmControlPanel.State[*d.UniqueId] = state
+			stateStore.AlarmControlPanel.State[d.GetUniqueId()] = state
 			token.Wait()
 		}
 	}

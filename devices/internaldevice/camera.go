@@ -19,8 +19,8 @@ type Camera struct {
 	Icon                 *string     `json:"icon,omitempty"`               // "[Icon](/docs/configuration/customizing-devices/#icon) for the entity."
 	Name                 *string     `json:"name,omitempty"`               // "The name of the camera."
 	ObjectId             *string     `json:"object_id,omitempty"`          // "Used instead of `name` for automatic generation of `entity_id`"
-	Topic                *string     `json:"topic,omitempty"`              // "The MQTT topic to subscribe to."
-	UniqueId             *string     `json:"unique_id,omitempty"`          // "An ID that uniquely identifies this camera. If two cameras have the same unique ID Home Assistant will raise an exception."
+	State                *([]string) `json:"state,omitempty"`
+	UniqueId             *string     `json:"unique_id,omitempty"` // "An ID that uniquely identifies this camera. If two cameras have the same unique ID Home Assistant will raise an exception."
 	MQTT                 struct {
 		UpdateInterval *float64 `json:"update_interval,omitempty"`
 		ForceUpdate    *bool    `json:"force_update,omitempty"`
@@ -63,8 +63,8 @@ func (iDevice Camera) Translate() externaldevice.Camera {
 	if iDevice.ObjectId != nil {
 		eDevice.ObjectId = iDevice.ObjectId
 	}
-	if iDevice.Topic != nil {
-		eDevice.Topic = iDevice.Topic
+	if iDevice.State != nil {
+		eDevice.StateFunc = common.ConstructStateFunc(*iDevice.State)
 	}
 	if iDevice.UniqueId != nil {
 		eDevice.UniqueId = iDevice.UniqueId

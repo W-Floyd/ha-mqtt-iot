@@ -96,33 +96,33 @@ type Cover struct {
 func (d *Cover) UpdateState() {
 	if d.AvailabilityTopic != nil {
 		state := d.AvailabilityFunc()
-		if state != stateStore.Cover.Availability[*d.UniqueId] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
+		if state != stateStore.Cover.Availability[d.GetUniqueId()] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
 			token := (*d.MQTT.Client).Publish(*d.AvailabilityTopic, byte(*d.Qos), *d.Retain, state)
-			stateStore.Cover.Availability[*d.UniqueId] = state
+			stateStore.Cover.Availability[d.GetUniqueId()] = state
 			token.Wait()
 		}
 	}
 	if d.PositionTopic != nil {
 		state := d.PositionFunc()
-		if state != stateStore.Cover.Position[*d.UniqueId] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
+		if state != stateStore.Cover.Position[d.GetUniqueId()] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
 			token := (*d.MQTT.Client).Publish(*d.PositionTopic, byte(*d.Qos), *d.Retain, state)
-			stateStore.Cover.Position[*d.UniqueId] = state
+			stateStore.Cover.Position[d.GetUniqueId()] = state
 			token.Wait()
 		}
 	}
 	if d.StateTopic != nil {
 		state := d.StateFunc()
-		if state != stateStore.Cover.State[*d.UniqueId] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
+		if state != stateStore.Cover.State[d.GetUniqueId()] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
 			token := (*d.MQTT.Client).Publish(*d.StateTopic, byte(*d.Qos), *d.Retain, state)
-			stateStore.Cover.State[*d.UniqueId] = state
+			stateStore.Cover.State[d.GetUniqueId()] = state
 			token.Wait()
 		}
 	}
 	if d.TiltStatusTopic != nil {
 		state := d.TiltStatusFunc()
-		if state != stateStore.Cover.TiltStatus[*d.UniqueId] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
+		if state != stateStore.Cover.TiltStatus[d.GetUniqueId()] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
 			token := (*d.MQTT.Client).Publish(*d.TiltStatusTopic, byte(*d.Qos), *d.Retain, state)
-			stateStore.Cover.TiltStatus[*d.UniqueId] = state
+			stateStore.Cover.TiltStatus[d.GetUniqueId()] = state
 			token.Wait()
 		}
 	}

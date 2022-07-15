@@ -68,17 +68,17 @@ type Select struct {
 func (d *Select) UpdateState() {
 	if d.AvailabilityTopic != nil {
 		state := d.AvailabilityFunc()
-		if state != stateStore.Select.Availability[*d.UniqueId] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
+		if state != stateStore.Select.Availability[d.GetUniqueId()] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
 			token := (*d.MQTT.Client).Publish(*d.AvailabilityTopic, byte(*d.Qos), *d.Retain, state)
-			stateStore.Select.Availability[*d.UniqueId] = state
+			stateStore.Select.Availability[d.GetUniqueId()] = state
 			token.Wait()
 		}
 	}
 	if d.StateTopic != nil {
 		state := d.StateFunc()
-		if state != stateStore.Select.State[*d.UniqueId] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
+		if state != stateStore.Select.State[d.GetUniqueId()] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
 			token := (*d.MQTT.Client).Publish(*d.StateTopic, byte(*d.Qos), *d.Retain, state)
-			stateStore.Select.State[*d.UniqueId] = state
+			stateStore.Select.State[d.GetUniqueId()] = state
 			token.Wait()
 		}
 	}

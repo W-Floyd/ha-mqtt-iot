@@ -5,9 +5,13 @@ import (
 )
 
 func IsCommand(name string, d Device) bool {
-	return (!strings.Contains(name, "state")) &&
+
+	retval := (!strings.Contains(name, "state")) &&
 		(!strings.Contains(name, "availability")) &&
 		(!d.JSONContainer.Exists("set_" + name)) &&
 		(!strings.Contains(name, "status")) &&
-		(!strings.Contains(name, "current"))
+		(!strings.Contains(name, "current")) &&
+		(name != "topic")
+
+	return retval
 }

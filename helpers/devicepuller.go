@@ -208,16 +208,31 @@ func (dev *Device) FieldAdder(key string) *jen.Statement {
 
 	t := Unquote(dat[key].ChildrenMap()["type"].String())
 
-	return TypeTranslator(t, jen.Id(strcase.ToCamel(key))).Tag(map[string]string{"json": key + ",omitempty"}).Comment(dev.JSONContainer.Path(key + ".description").String())
+	return TypeTranslator(t, jen.Id(strcase.ToCamel(
+		func(key string) string {
+			var s string
+			if key == "topic" {
+				s = "state_topic"
+			} else {
+				s = key
+			}
+			return s
+		}(key),
+	))).Tag(map[string]string{"json": key + ",omitempty"}).Comment(dev.JSONContainer.Path(key + ".description").String())
 }
 
 func (dev *Device) FunctionAdder(key string) *jen.Statement {
 
 	retval := jen.Statement{}
 
-	if strings.HasSuffix(key, "_topic") && (key != "availability") {
+	if strings.HasSuffix(key, "topic") && (key != "availability") {
 
-		nk := strings.TrimSuffix(key, "_topic")
+		if key == "topic" {
+			key = "state_topic"
+		}
+
+		nk := strings.TrimSuffix(key, "topic")
+		nk = strings.TrimSuffix(nk, "_")
 
 		retval.Id(strcase.ToCamel(nk) + "Func").Func()
 

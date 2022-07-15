@@ -96,41 +96,41 @@ type Fan struct {
 func (d *Fan) UpdateState() {
 	if d.AvailabilityTopic != nil {
 		state := d.AvailabilityFunc()
-		if state != stateStore.Fan.Availability[*d.UniqueId] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
+		if state != stateStore.Fan.Availability[d.GetUniqueId()] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
 			token := (*d.MQTT.Client).Publish(*d.AvailabilityTopic, byte(*d.Qos), *d.Retain, state)
-			stateStore.Fan.Availability[*d.UniqueId] = state
+			stateStore.Fan.Availability[d.GetUniqueId()] = state
 			token.Wait()
 		}
 	}
 	if d.OscillationStateTopic != nil {
 		state := d.OscillationStateFunc()
-		if state != stateStore.Fan.OscillationState[*d.UniqueId] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
+		if state != stateStore.Fan.OscillationState[d.GetUniqueId()] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
 			token := (*d.MQTT.Client).Publish(*d.OscillationStateTopic, byte(*d.Qos), *d.Retain, state)
-			stateStore.Fan.OscillationState[*d.UniqueId] = state
+			stateStore.Fan.OscillationState[d.GetUniqueId()] = state
 			token.Wait()
 		}
 	}
 	if d.PercentageStateTopic != nil {
 		state := d.PercentageStateFunc()
-		if state != stateStore.Fan.PercentageState[*d.UniqueId] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
+		if state != stateStore.Fan.PercentageState[d.GetUniqueId()] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
 			token := (*d.MQTT.Client).Publish(*d.PercentageStateTopic, byte(*d.Qos), *d.Retain, state)
-			stateStore.Fan.PercentageState[*d.UniqueId] = state
+			stateStore.Fan.PercentageState[d.GetUniqueId()] = state
 			token.Wait()
 		}
 	}
 	if d.PresetModeStateTopic != nil {
 		state := d.PresetModeStateFunc()
-		if state != stateStore.Fan.PresetModeState[*d.UniqueId] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
+		if state != stateStore.Fan.PresetModeState[d.GetUniqueId()] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
 			token := (*d.MQTT.Client).Publish(*d.PresetModeStateTopic, byte(*d.Qos), *d.Retain, state)
-			stateStore.Fan.PresetModeState[*d.UniqueId] = state
+			stateStore.Fan.PresetModeState[d.GetUniqueId()] = state
 			token.Wait()
 		}
 	}
 	if d.StateTopic != nil {
 		state := d.StateFunc()
-		if state != stateStore.Fan.State[*d.UniqueId] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
+		if state != stateStore.Fan.State[d.GetUniqueId()] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
 			token := (*d.MQTT.Client).Publish(*d.StateTopic, byte(*d.Qos), *d.Retain, state)
-			stateStore.Fan.State[*d.UniqueId] = state
+			stateStore.Fan.State[d.GetUniqueId()] = state
 			token.Wait()
 		}
 	}

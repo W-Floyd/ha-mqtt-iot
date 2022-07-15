@@ -89,33 +89,33 @@ type Humidifier struct {
 func (d *Humidifier) UpdateState() {
 	if d.AvailabilityTopic != nil {
 		state := d.AvailabilityFunc()
-		if state != stateStore.Humidifier.Availability[*d.UniqueId] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
+		if state != stateStore.Humidifier.Availability[d.GetUniqueId()] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
 			token := (*d.MQTT.Client).Publish(*d.AvailabilityTopic, byte(*d.Qos), *d.Retain, state)
-			stateStore.Humidifier.Availability[*d.UniqueId] = state
+			stateStore.Humidifier.Availability[d.GetUniqueId()] = state
 			token.Wait()
 		}
 	}
 	if d.ModeStateTopic != nil {
 		state := d.ModeStateFunc()
-		if state != stateStore.Humidifier.ModeState[*d.UniqueId] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
+		if state != stateStore.Humidifier.ModeState[d.GetUniqueId()] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
 			token := (*d.MQTT.Client).Publish(*d.ModeStateTopic, byte(*d.Qos), *d.Retain, state)
-			stateStore.Humidifier.ModeState[*d.UniqueId] = state
+			stateStore.Humidifier.ModeState[d.GetUniqueId()] = state
 			token.Wait()
 		}
 	}
 	if d.StateTopic != nil {
 		state := d.StateFunc()
-		if state != stateStore.Humidifier.State[*d.UniqueId] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
+		if state != stateStore.Humidifier.State[d.GetUniqueId()] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
 			token := (*d.MQTT.Client).Publish(*d.StateTopic, byte(*d.Qos), *d.Retain, state)
-			stateStore.Humidifier.State[*d.UniqueId] = state
+			stateStore.Humidifier.State[d.GetUniqueId()] = state
 			token.Wait()
 		}
 	}
 	if d.TargetHumidityStateTopic != nil {
 		state := d.TargetHumidityStateFunc()
-		if state != stateStore.Humidifier.TargetHumidityState[*d.UniqueId] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
+		if state != stateStore.Humidifier.TargetHumidityState[d.GetUniqueId()] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
 			token := (*d.MQTT.Client).Publish(*d.TargetHumidityStateTopic, byte(*d.Qos), *d.Retain, state)
-			stateStore.Humidifier.TargetHumidityState[*d.UniqueId] = state
+			stateStore.Humidifier.TargetHumidityState[d.GetUniqueId()] = state
 			token.Wait()
 		}
 	}

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"sort"
 	"strings"
 
@@ -76,10 +77,20 @@ func main() {
 					jen.Id(strcase.ToCamel(d.Name)).StructFunc(
 						func(h *jen.Group) {
 							for _, key := range keyNames {
-								if d.JSONContainer.Exists(key) && strings.HasSuffix(key, "_topic") {
+								if d.JSONContainer.Exists(key) && strings.HasSuffix(key, "topic") {
 									if !IsCommand(key, d) {
 										h.Add(
-											jen.Id(strcase.ToCamel(strings.TrimSuffix(key, "_topic"))).Map(jen.String()).String(),
+											jen.Id(strcase.ToCamel(
+												func(key string) string {
+													var s string
+													if key == "topic" {
+														s = "State"
+													} else {
+														s = strings.TrimSuffix(strings.TrimSuffix(key, "topic"), "_")
+													}
+													return s
+												}(key),
+											)).Map(jen.String()).String(),
 										)
 									}
 								}
@@ -98,10 +109,20 @@ func main() {
 			)
 			for _, d := range devices {
 				for _, key := range keyNames {
-					if d.JSONContainer.Exists(key) && strings.HasSuffix(key, "_topic") {
+					if d.JSONContainer.Exists(key) && strings.HasSuffix(key, "topic") {
 						if !IsCommand(key, d) {
 							g.Add(
-								jen.Id("s").Dot(strcase.ToCamel(d.Name)).Dot(strcase.ToCamel(strings.TrimSuffix(key, "_topic"))).
+								jen.Id("s").Dot(strcase.ToCamel(d.Name)).Dot(strcase.ToCamel(
+									func(key string) string {
+										var s string
+										if key == "topic" {
+											s = "State"
+										} else {
+											s = strings.TrimSuffix(strings.TrimSuffix(key, "topic"), "_")
+										}
+										return s
+									}(key),
+								)).
 									Op("=").
 									Make(jen.Map(jen.String()).String()),
 							)
@@ -220,10 +241,14 @@ func main() {
 		).Id("UpdateState").Params().BlockFunc(
 			func(g *jen.Group) {
 				for _, key := range sortedKeys {
-					if strings.HasSuffix(key, "_topic") {
+					if strings.HasSuffix(key, "topic") {
 						if !IsCommand(key, d) {
-							trimmed := strings.TrimSuffix(key, "_topic")
+							if key == "topic" {
+								key = "state_topic"
+							}
+							trimmed := strings.TrimSuffix(strings.TrimSuffix(key, "topic"), "_")
 							cam := strcase.ToCamel(key)
+							fmt.Println(trimmed, cam)
 							camTrimmed := strcase.ToCamel(trimmed)
 							g.Add(
 								jen.If(
@@ -231,10 +256,9 @@ func main() {
 								).Block(
 									jen.Id("state").Op(":=").Id("d").Dot(strcase.ToCamel(trimmed+"_func")).Params(),
 									jen.If(
-										jen.Id("state").Op("!=").Id("stateStore").Dot(strcase.ToCamel(d.Name)).Dot(camTrimmed).Index(jen.Op("*").Id("d").Dot("UniqueId")).
+										jen.Id("state").Op("!=").Id("stateStore").Dot(strcase.ToCamel(d.Name)).Dot(camTrimmed).Index(jen.Id("d").Dot("GetUniqueId").Params()).
 											Op("||").
 											Params(jen.Id("d").Dot("MQTT").Dot("ForceUpdate").Op("!=").Nil().Op("&&").Op("*").Id("d").Dot("MQTT").Dot("ForceUpdate")),
-										// state != stateStore.Light.BrightnessState[device.UniqueID] || device.ForceUpdateMQTT {
 									).Block(
 										jen.Id("token").Op(":=").Params(jen.Op("*").Id("d").Dot("MQTT").Dot("Client")).Dot("Publish").ParamsFunc(
 											func(g *jen.Group) {
@@ -255,7 +279,7 @@ func main() {
 												g.Add(jen.Id("state"))
 											},
 										),
-										jen.Id("stateStore").Dot(camName).Dot(camTrimmed).Index(jen.Op("*").Id("d").Dot("UniqueId")).Op("=").Id("state"),
+										jen.Id("stateStore").Dot(camName).Dot(camTrimmed).Index(jen.Id("d").Dot("GetUniqueId").Params()).Op("=").Id("state"),
 										jen.Id("token").Dot("Wait").Params(),
 									),
 								),
@@ -288,11 +312,9 @@ func main() {
 				)
 
 				for _, key := range sortedKeys {
-					if strings.HasSuffix(key, "_topic") {
+					if strings.HasSuffix(key, "topic") {
 						if IsCommand(key, d) {
-							// trimmed := strings.TrimSuffix(key, "_topic")
 							cam := strcase.ToCamel(key)
-							// camTrimmed := strcase.ToCamel(trimmed)
 
 							g.Add(
 								jen.If(
@@ -373,11 +395,9 @@ func main() {
 					)
 
 					for _, key := range sortedKeys {
-						if strings.HasSuffix(key, "_topic") {
+						if strings.HasSuffix(key, "topic") {
 							if IsCommand(key, d) {
-								// trimmed := strings.TrimSuffix(key, "_topic")
 								cam := strcase.ToCamel(key)
-								// camTrimmed := strcase.ToCamel(trimmed)
 
 								g.Add(
 									jen.If(
@@ -458,15 +478,38 @@ func main() {
 			jen.Id("d").Op("*").Id(strcase.ToCamel(d.Name)),
 		).Id("PopulateTopics").Params().BlockFunc(func(g *jen.Group) {
 			for _, name := range keyNames {
-				if strings.HasSuffix(name, "_topic") && d.JSONContainer.Exists(name) {
-					lName := strcase.ToCamel(strings.TrimSuffix(name, "_topic"))
+				if strings.HasSuffix(name, "topic") && d.JSONContainer.Exists(name) {
+					if name == "topic" {
+						name = "state_topic"
+					}
+					lName := strcase.ToCamel(strings.TrimSuffix(strings.TrimSuffix(name, "topic"), "_"))
 					g.Add(
 						jen.If(
 							jen.Id("d").Dot(lName + "Func").Op("!=").Nil(),
 						).BlockFunc(
 							func(g *jen.Group) {
-								g.Add(jen.Id("d").Dot(strcase.ToCamel(name)).Op("=").New(jen.String()))
-								g.Add(jen.Op("*").Id("d").Dot(strcase.ToCamel(name)).Op("=").Id("GetTopic").Params(jen.Id("d"), jen.Lit(name)))
+								g.Add(jen.Id("d").Dot(strcase.ToCamel(
+									func(key string) string {
+										var s string
+										if key == "topic" {
+											s = "state_topic"
+										} else {
+											s = key
+										}
+										return s
+									}(name),
+								)).Op("=").New(jen.String()))
+								g.Add(jen.Op("*").Id("d").Dot(strcase.ToCamel(
+									func(key string) string {
+										var s string
+										if key == "topic" {
+											s = "state_topic"
+										} else {
+											s = key
+										}
+										return s
+									}(name),
+								)).Op("=").Id("GetTopic").Params(jen.Id("d"), jen.Lit(name)))
 								if IsCommand(name, d) {
 									g.Add(jen.Qual("github.com/W-Floyd/ha-mqtt-iot/store", "TopicStore").Index(
 										jen.Op("*").Id("d").Dot(strcase.ToCamel(name)),
@@ -507,10 +550,13 @@ func main() {
 			func(g *jen.Group) {
 				for _, key := range keyNames {
 					if d.JSONContainer.Exists(key) {
-						if strings.HasSuffix(key, "_topic") {
-							lName := strcase.ToCamel(strings.TrimSuffix(key, "_topic"))
+						if strings.HasSuffix(key, "topic") {
+							if key == "topic" {
+								key = "state_topic"
+							}
+							lName := strcase.ToCamel(strings.TrimSuffix(strings.TrimSuffix(key, "topic"), "_"))
 							g.Add(
-								jen.Id(lName).Op("*").Params(jen.Index().String()).Tag(map[string]string{"json": strings.TrimSuffix(key, "_topic") + ",omitempty"}),
+								jen.Id(lName).Op("*").Params(jen.Index().String()).Tag(map[string]string{"json": strings.TrimSuffix(strings.TrimSuffix(key, "topic"), "_") + ",omitempty"}),
 							)
 						} else {
 							g.Add(
@@ -553,7 +599,7 @@ func main() {
 
 				for _, key := range keyNames {
 					if d.JSONContainer.Exists(key) {
-						if !strings.HasSuffix(key, "_topic") {
+						if !strings.HasSuffix(key, "topic") {
 							cam := strcase.ToCamel(key)
 							g.Add(
 								jen.If(jen.Id("iDevice").Dot(cam).Op("!=").Nil()).Block(
@@ -561,16 +607,29 @@ func main() {
 								),
 							)
 						} else {
-							lName := strcase.ToCamel(strings.TrimSuffix(key, "_topic") + "_func")
+							if key == "topic" {
+								key = "state_topic"
+							}
+							lName := strcase.ToCamel(strings.TrimSuffix(strings.TrimSuffix(key, "topic"), "_") + "_func")
 							g.Add(
-								jen.If(jen.Id("iDevice").Dot(strcase.ToCamel(strings.TrimSuffix(key, "_topic"))).Op("!=").Nil()).Block(
+								jen.If(jen.Id("iDevice").Dot(strcase.ToCamel(strings.TrimSuffix(strings.TrimSuffix(key, "topic"), "_"))).Op("!=").Nil()).Block(
 									jen.Id("eDevice").Dot(lName).Op("=").Qual("github.com/W-Floyd/ha-mqtt-iot/devices/common", "Construct"+func() string {
 										if IsCommand(key, d) {
 											return "Command"
 										} else {
 											return "State"
 										}
-									}()+"Func").Params(jen.Op("*").Id("iDevice").Dot(strcase.ToCamel(strings.TrimSuffix(key, "_topic")))),
+									}()+"Func").Params(jen.Op("*").Id("iDevice").Dot(
+										func(key string) string {
+											var s string
+											if key == "topic" {
+												s = "State"
+											} else {
+												s = strcase.ToCamel(strings.TrimSuffix(strings.TrimSuffix(key, "topic"), "_"))
+											}
+											return s
+										}(key),
+									)),
 								),
 							)
 						}

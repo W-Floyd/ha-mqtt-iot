@@ -128,89 +128,89 @@ type Light struct {
 func (d *Light) UpdateState() {
 	if d.AvailabilityTopic != nil {
 		state := d.AvailabilityFunc()
-		if state != stateStore.Light.Availability[*d.UniqueId] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
+		if state != stateStore.Light.Availability[d.GetUniqueId()] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
 			token := (*d.MQTT.Client).Publish(*d.AvailabilityTopic, byte(*d.Qos), *d.Retain, state)
-			stateStore.Light.Availability[*d.UniqueId] = state
+			stateStore.Light.Availability[d.GetUniqueId()] = state
 			token.Wait()
 		}
 	}
 	if d.BrightnessStateTopic != nil {
 		state := d.BrightnessStateFunc()
-		if state != stateStore.Light.BrightnessState[*d.UniqueId] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
+		if state != stateStore.Light.BrightnessState[d.GetUniqueId()] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
 			token := (*d.MQTT.Client).Publish(*d.BrightnessStateTopic, byte(*d.Qos), *d.Retain, state)
-			stateStore.Light.BrightnessState[*d.UniqueId] = state
+			stateStore.Light.BrightnessState[d.GetUniqueId()] = state
 			token.Wait()
 		}
 	}
 	if d.ColorModeStateTopic != nil {
 		state := d.ColorModeStateFunc()
-		if state != stateStore.Light.ColorModeState[*d.UniqueId] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
+		if state != stateStore.Light.ColorModeState[d.GetUniqueId()] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
 			token := (*d.MQTT.Client).Publish(*d.ColorModeStateTopic, byte(*d.Qos), *d.Retain, state)
-			stateStore.Light.ColorModeState[*d.UniqueId] = state
+			stateStore.Light.ColorModeState[d.GetUniqueId()] = state
 			token.Wait()
 		}
 	}
 	if d.ColorTempStateTopic != nil {
 		state := d.ColorTempStateFunc()
-		if state != stateStore.Light.ColorTempState[*d.UniqueId] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
+		if state != stateStore.Light.ColorTempState[d.GetUniqueId()] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
 			token := (*d.MQTT.Client).Publish(*d.ColorTempStateTopic, byte(*d.Qos), *d.Retain, state)
-			stateStore.Light.ColorTempState[*d.UniqueId] = state
+			stateStore.Light.ColorTempState[d.GetUniqueId()] = state
 			token.Wait()
 		}
 	}
 	if d.EffectStateTopic != nil {
 		state := d.EffectStateFunc()
-		if state != stateStore.Light.EffectState[*d.UniqueId] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
+		if state != stateStore.Light.EffectState[d.GetUniqueId()] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
 			token := (*d.MQTT.Client).Publish(*d.EffectStateTopic, byte(*d.Qos), *d.Retain, state)
-			stateStore.Light.EffectState[*d.UniqueId] = state
+			stateStore.Light.EffectState[d.GetUniqueId()] = state
 			token.Wait()
 		}
 	}
 	if d.HsStateTopic != nil {
 		state := d.HsStateFunc()
-		if state != stateStore.Light.HsState[*d.UniqueId] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
+		if state != stateStore.Light.HsState[d.GetUniqueId()] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
 			token := (*d.MQTT.Client).Publish(*d.HsStateTopic, byte(*d.Qos), *d.Retain, state)
-			stateStore.Light.HsState[*d.UniqueId] = state
+			stateStore.Light.HsState[d.GetUniqueId()] = state
 			token.Wait()
 		}
 	}
 	if d.RgbStateTopic != nil {
 		state := d.RgbStateFunc()
-		if state != stateStore.Light.RgbState[*d.UniqueId] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
+		if state != stateStore.Light.RgbState[d.GetUniqueId()] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
 			token := (*d.MQTT.Client).Publish(*d.RgbStateTopic, byte(*d.Qos), *d.Retain, state)
-			stateStore.Light.RgbState[*d.UniqueId] = state
+			stateStore.Light.RgbState[d.GetUniqueId()] = state
 			token.Wait()
 		}
 	}
 	if d.RgbwStateTopic != nil {
 		state := d.RgbwStateFunc()
-		if state != stateStore.Light.RgbwState[*d.UniqueId] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
+		if state != stateStore.Light.RgbwState[d.GetUniqueId()] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
 			token := (*d.MQTT.Client).Publish(*d.RgbwStateTopic, byte(*d.Qos), *d.Retain, state)
-			stateStore.Light.RgbwState[*d.UniqueId] = state
+			stateStore.Light.RgbwState[d.GetUniqueId()] = state
 			token.Wait()
 		}
 	}
 	if d.RgbwwStateTopic != nil {
 		state := d.RgbwwStateFunc()
-		if state != stateStore.Light.RgbwwState[*d.UniqueId] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
+		if state != stateStore.Light.RgbwwState[d.GetUniqueId()] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
 			token := (*d.MQTT.Client).Publish(*d.RgbwwStateTopic, byte(*d.Qos), *d.Retain, state)
-			stateStore.Light.RgbwwState[*d.UniqueId] = state
+			stateStore.Light.RgbwwState[d.GetUniqueId()] = state
 			token.Wait()
 		}
 	}
 	if d.StateTopic != nil {
 		state := d.StateFunc()
-		if state != stateStore.Light.State[*d.UniqueId] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
+		if state != stateStore.Light.State[d.GetUniqueId()] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
 			token := (*d.MQTT.Client).Publish(*d.StateTopic, byte(*d.Qos), *d.Retain, state)
-			stateStore.Light.State[*d.UniqueId] = state
+			stateStore.Light.State[d.GetUniqueId()] = state
 			token.Wait()
 		}
 	}
 	if d.XyStateTopic != nil {
 		state := d.XyStateFunc()
-		if state != stateStore.Light.XyState[*d.UniqueId] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
+		if state != stateStore.Light.XyState[d.GetUniqueId()] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
 			token := (*d.MQTT.Client).Publish(*d.XyStateTopic, byte(*d.Qos), *d.Retain, state)
-			stateStore.Light.XyState[*d.UniqueId] = state
+			stateStore.Light.XyState[d.GetUniqueId()] = state
 			token.Wait()
 		}
 	}
