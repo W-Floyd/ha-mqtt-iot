@@ -6,6 +6,20 @@
         "warn": true,
         "mqtt": false
     },
+    "camera": [
+        {
+            "name": "XPS Arch Camera",
+            "object_id": "xps-arch-camera",
+            "unique_id": "xps-arch-camera",
+            "state": [
+                "./scripts/camera.sh"
+            ],
+            "encoding": "b64",
+            "mqtt": {
+                "update_interval": 10
+            }
+        }
+    ],
     "light": [
         {
             "name": "XPS Arch Display",
