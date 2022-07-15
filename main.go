@@ -8,20 +8,19 @@ import (
 	"math"
 	"os"
 	"os/signal"
+	"strings"
 	"syscall"
 	"time"
 
+	"github.com/W-Floyd/ha-mqtt-iot/common"
+	"github.com/W-Floyd/ha-mqtt-iot/config"
+	ExternalDevice "github.com/W-Floyd/ha-mqtt-iot/devices/externaldevice"
+	"github.com/denisbrodbeck/machineid"
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/imdario/mergo"
-
-	"github.com/W-Floyd/ha-mqtt-iot/hadiscovery"
-	"github.com/W-Floyd/ha-mqtt-iot/iotconfig"
 )
 
-var debugLog = log.New(os.Stdout, "DEBUG   ", 0)
-var errorLog = log.New(os.Stdout, "ERROR   ", 0)
-var warnLog = log.New(os.Stdout, "WARN    ", 0)
-var criticalLog = log.New(os.Stdout, "CRITICAL", 0)
+//go:generate go run ./helpers/
 
 const float64EqualityThreshold = 1e-9
 
@@ -29,189 +28,131 @@ func almostEqual(a, b float64) bool {
 	return math.Abs(a-b) <= float64EqualityThreshold
 }
 
-const logPrefix = "[ha-mqtt]  "
-
-func logError(message ...interface{}) {
-	if len(message) > 1 {
-		for _, mes := range message[:len(message)-2] {
-			errorLog.Printf("%v%v\n", logPrefix, mes)
-		}
-	}
-	errorLog.Fatalf("%v%v\n", logPrefix, message[len(message)-1])
-}
-
-func logDebug(message ...interface{}) {
-	for _, mes := range message {
-		debugLog.Printf("%v%v\n", logPrefix, mes)
-	}
-}
-
 func main() {
 	configFile := flag.String("config", "./config.json", "path to config file")
 	secretsFile := flag.String("secrets", "./secrets.json", "path to secrets file")
 	flag.Parse()
 
+	id, err := machineid.ID()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	common.MachineID = id
+
 	configFiles := [...]string{*configFile, *secretsFile}
 
-	var sconfig iotconfig.Config
+	var sconfig config.Config
 
 	for _, configFile := range configFiles {
-		var tConfig iotconfig.Config
+		var tConfig config.Config
 
 		// read file
 		data, err := ioutil.ReadFile(configFile)
 		if err != nil {
-			logError("Error reading "+configFile, err)
+			common.LogError("Error reading "+configFile, err)
 		}
 
+		d := json.NewDecoder(strings.NewReader(string(data)))
+		d.DisallowUnknownFields()
+
 		// unmarshall it
-		err = json.Unmarshal(data, &tConfig)
+		err = d.Decode(&tConfig)
 		if err != nil {
-			logError("Error parsing config", err)
+			common.LogError("Error parsing config", err)
 		}
 
 		mergo.Merge(&sconfig, tConfig)
 
 	}
 
-	opts, switches, sensors, binarySensors, lights := sconfig.Convert()
+	devices, opts := sconfig.Convert()
 
-	if sconfig.Logging.Debug {
-		mqtt.DEBUG = debugLog
+	if sconfig.Logging.Debug && sconfig.Logging.Mqtt {
+		mqtt.DEBUG = common.DebugLog
 	}
 	if sconfig.Logging.Warn {
-		mqtt.WARN = warnLog
+		mqtt.WARN = common.WarnLog
 	}
 	if sconfig.Logging.Error {
-		mqtt.ERROR = errorLog
+		mqtt.ERROR = common.ErrorLog
 	}
 	if sconfig.Logging.Critical {
-		mqtt.CRITICAL = criticalLog
+		mqtt.CRITICAL = common.CriticalLog
 	}
 
-	sub := func(client mqtt.Client) {
-		for _, sw := range switches {
-			go sw.Subscribe(client)
-		}
-		for _, se := range sensors {
-			go se.Subscribe(client)
-		}
-		for _, bse := range binarySensors {
-			go bse.Subscribe(client)
-		}
-		for _, li := range lights {
-			go li.Subscribe(client)
-		}
-	}
-
-	opts.SetOnConnectHandler(sub)
+	opts.SetOnConnectHandler(
+		func(c mqtt.Client) {
+			for _, d := range devices {
+				common.LogDebug("Connecting " + d.GetRawId() + "." + d.GetUniqueId())
+				go d.Subscribe()
+			}
+		},
+	)
 
 	client := mqtt.NewClient(opts)
 
+	for _, d := range devices {
+		f := d.GetMQTTFields()
+		f.Client = &client
+		d.SetMQTTFields(f)
+	}
+
 	if token := client.Connect(); token.Wait() && token.Error() != nil {
-		logError(token.Error())
+		common.LogError(token.Error())
 	}
 
-	updatingSwitches := 0
+	updatingDevices := 0
 
-	for _, sw := range switches {
-		if !almostEqual(sw.UpdateInterval, 0) {
-			updatingSwitches++
+	for _, d := range devices {
+		if d.GetMQTTFields().UpdateInterval != nil && !almostEqual(*d.GetMQTTFields().UpdateInterval, 0) {
+			updatingDevices++
 		}
 	}
 
-	updatingLights := 0
-
-	for _, li := range lights {
-		if !almostEqual(li.UpdateInterval, 0) {
-			updatingLights++
-		}
-	}
-
-	tickers := make([]*time.Ticker, len(sensors)+len(binarySensors)+updatingSwitches+updatingLights)
+	tickers := make([]*time.Ticker, updatingDevices)
 
 	tickerN := 0
-	for _, se := range sensors {
-		tickers[tickerN] = time.NewTicker(time.Duration(se.UpdateInterval*1000) * time.Millisecond)
-		go func(t *time.Ticker, sen hadiscovery.Sensor) {
-			for range t.C {
-				go sen.UpdateState(client)
-			}
-		}(tickers[tickerN], se)
-		tickerN++
-	}
-	for _, bse := range binarySensors {
-		tickers[tickerN] = time.NewTicker(time.Duration(bse.UpdateInterval*1000) * time.Millisecond)
-		go func(t *time.Ticker, bsen hadiscovery.BinarySensor) {
-			for range t.C {
-				go bsen.UpdateState(client)
-			}
-		}(tickers[tickerN], bse)
-		tickerN++
-	}
-	for _, sw := range switches {
-		if !almostEqual(sw.UpdateInterval, 0) {
-			tickers[tickerN] = time.NewTicker(time.Duration(sw.UpdateInterval*1000) * time.Millisecond)
-			go func(t *time.Ticker, swi hadiscovery.Switch) {
+
+	for _, d := range devices {
+		if d.GetMQTTFields().UpdateInterval != nil && !almostEqual(*d.GetMQTTFields().UpdateInterval, 0) {
+			common.LogDebug("Starting ticker for " + d.GetRawId())
+			tickers[tickerN] = time.NewTicker(time.Duration(*d.GetMQTTFields().UpdateInterval) * time.Second)
+			go func(t *time.Ticker, device ExternalDevice.Device) {
 				for range t.C {
-					go swi.UpdateState(client)
+					go device.UpdateState()
 				}
-			}(tickers[tickerN], sw)
-			tickerN++
-		}
-	}
-	for _, li := range lights {
-		if !almostEqual(li.UpdateInterval, 0) {
-			tickers[tickerN] = time.NewTicker(time.Duration(li.UpdateInterval*1000) * time.Millisecond)
-			go func(t *time.Ticker, lig hadiscovery.Light) {
-				for range t.C {
-					go lig.UpdateState(client)
-				}
-			}(tickers[tickerN], li)
+			}(tickers[tickerN], d)
 			tickerN++
 		}
 	}
 
-	availableTicker := time.NewTicker(60 * time.Second)
-	go func() {
-		for range availableTicker.C {
-			for _, sw := range switches {
-				go sw.AnnounceAvailable(client)
-			}
-			for _, se := range sensors {
-				go se.AnnounceAvailable(client)
-			}
-			for _, bse := range binarySensors {
-				go bse.AnnounceAvailable(client)
-			}
-			for _, li := range lights {
-				go li.AnnounceAvailable(client)
-			}
-		}
-	}()
+	// availableTicker := time.NewTicker(60 * time.Second)
+	// go func() {
+	// 	for range availableTicker.C {
+	// 		for _, d := range devices {
+	// 			go d.Subscribe()
+	// 		}
+	// 	}
+	// }()
 
 	done := make(chan os.Signal, 1)
 	signal.Notify(done, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
 
+	common.LogDebug("Everything is set up")
+
 	<-done
-	availableTicker.Stop()
+	// availableTicker.Stop()
 	for _, t := range tickers {
 		t.Stop()
 	}
-	logDebug("Server Stopped")
+	common.LogDebug("Server Stopped")
 
-	for _, sw := range switches {
-		sw.UnSubscribe(client)
+	for _, d := range devices {
+		d.UnSubscribe()
+		common.LogDebug(d.GetRawId() + " Unsubscribed")
 	}
-	for _, se := range sensors {
-		se.UnSubscribe(client)
-	}
-	for _, bse := range binarySensors {
-		bse.UnSubscribe(client)
-	}
-	for _, li := range lights {
-		li.UnSubscribe(client)
-	}
+	common.LogDebug("All Devices Unsubscribed")
 
 	client.Disconnect(250)
 

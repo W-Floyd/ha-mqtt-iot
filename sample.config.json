@@ -1,161 +1,75 @@
 {
-    "builtin": {
-        "prefix": "Name Prefix ",
-        "backlight": {
-            "enable": true,
-            "temperature": false,
-            "range": {
-                "minimum": 0.025,
-                "maximum": 0.95
-            }
-        },
-        "battery": {
-            "enable": true
-        },
-        "crypto": [
-            {
-                "coin_name": "dogecoin",
-                "currency_name": "usd",
-                "update_interval": 1,
-                "icon": "mdi:currency-usd"
-            }
-        ]
-    },
     "logging": {
-        "warn": true,
-        "error": true,
         "critical": true,
-        "debug": true
+        "debug": true,
+        "error": true,
+        "warn": true,
+        "mqtt": false
     },
-    "lights": [
+    "light": [
         {
-            "info": {
-                "name": "Desktop Monitor",
-                "id": "monitor"
-            },
+            "name": "XPS Arch Display",
+            "object_id": "xps-arch-display",
+            "unique_id": "xps-arch-display",
+            "brightness_command": [
+                "./scripts/laptop-backlight.sh",
+                "set-brightness"
+            ],
+            "brightness_state": [
+                "./scripts/laptop-backlight.sh",
+                "get-brightness"
+            ],
             "command": [
-                "./scripts/monitor.sh",
-                "command"
+                "./scripts/laptop-backlight.sh",
+                "set-state"
             ],
-            "command_state": [
-                "./scripts/monitor.sh",
-                "command-state"
+            "state": [
+                "./scripts/laptop-backlight.sh",
+                "get-state"
             ],
-            "command_color_temp": [
-                "./scripts/monitor.sh",
-                "color-temp"
-            ],
-            "command_color_temp_state": [
-                "./scripts/monitor.sh",
-                "color-temp-state"
-            ],
-            "command_brightness": [
-                "./scripts/monitor.sh",
-                "brightness"
-            ],
-            "brightness_scale": 100,
-            "command_brightness_state": [
-                "./scripts/monitor.sh",
-                "brightness-state"
-            ]
+            "payload_off": "OFF",
+            "payload_on": "ON",
+            "brightness_scale": 120000,
+            "mqtt": {
+                "update_interval": 1
+            }
         }
     ],
-    "switches": [
+    "sensor": [
         {
-            "info": {
-                "name": "Dark Mode",
-                "id": "dark-mode",
-                "icon": "mdi:theme-light-dark"
-            },
-            "command_on": [
-                "./scripts/run-in-user-session.sh",
-                "./scripts/theme.sh",
-                "set",
-                "dark"
-            ],
-            "command_off": [
-                "./scripts/run-in-user-session.sh",
-                "./scripts/theme.sh",
-                "set",
-                "light"
-            ],
-            "command_state": [
-                "./scripts/run-in-user-session.sh",
-                "./scripts/theme.sh",
-                "get"
-            ],
-            "update_interval": 1
-        }
-    ],
-    "sensors": [
-        {
-            "info": {
-                "name": "Work Duration",
-                "id": "work-duration"
-            },
-            "command_state": [
-                "./scripts/run-in-user-session.sh",
-                "gsettings",
-                "get",
-                "org.gnome.pomodoro.state",
-                "timer-state-duration"
-            ],
-            "unit_of_measurement": "seconds",
-            "update_interval": 1
-        },
-        {
-            "info": {
-                "name": "Work Started",
-                "id": "work-started"
-            },
-            "command_state": [
-                "./scripts/run-in-user-session.sh",
-                "/bin/bash",
-                "-c",
-                "gsettings get org.gnome.pomodoro.state timer-state-date | sed \"s/'//g\""
-            ],
-            "update_interval": 1
-        },
-        {
-            "info": {
-                "name": "IP Address",
-                "id": "ip-address",
-                "icon": "mdi:ip-network"
-            },
-            "command_state": [
+            "name": "XPS Arch IP Address",
+            "object_id": "xps-arch-ip-address",
+            "unique_id": "xps-arch-ip-address",
+            "icon": "mdi:ip-network",
+            "state": [
                 "/bin/bash",
                 "-c",
                 "ip -j address show wlp2s0 | jq -r '.[0].addr_info[0].local'"
             ],
-            "update_interval": 10
+            "mqtt": {
+                "update_interval": 10
+            }
         }
     ],
-    "binary_sensors": [
+    "switch": [
         {
-            "info": {
-                "name": "Work Mode",
-                "id": "work-mode-desktop"
-            },
-            "command_state": [
-                "./scripts/run-in-user-session.sh",
-                "/bin/bash",
-                "-c",
-                "if [[ $(gsettings get org.gnome.pomodoro.state timer-state) == \"'pomodoro'\" ]]; then echo -n 'ON'; else echo -n 'OFF'; fi"
+            "name": "XPS Arch Dark Mode",
+            "object_id": "xps-arch-dark-mode",
+            "unique_id": "xps-arch-dark-mode",
+            "icon": "mdi:theme-light-dark",
+            "payload_on": "'night'",
+            "payload_off": "'day'",
+            "command": [
+                "./scripts/theme-nightthemeswitcher.sh",
+                "set"
             ],
-            "update_interval": 1
-        },
-        {
-            "info": {
-                "name": "Work Mode Paused",
-                "id": "work-mode-paused-desktop"
-            },
-            "command_state": [
-                "./scripts/run-in-user-session.sh",
-                "/bin/bash",
-                "-c",
-                "if [[ $(gsettings get org.gnome.pomodoro.state timer-state) == \"'pomodoro'\" ]] && [[ $(gsettings get org.gnome.pomodoro.state timer-paused) == 'true' ]]; then echo -n 'ON'; else echo -n 'OFF'; fi"
+            "state": [
+                "./scripts/theme-nightthemeswitcher.sh",
+                "get"
             ],
-            "update_interval": 1
+            "mqtt": {
+                "update_interval": 1
+            }
         }
     ]
 }
