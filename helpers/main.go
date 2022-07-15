@@ -503,6 +503,32 @@ func main() {
 			},
 		)
 
+		internal[d.Name].Type().Id(strcase.ToCamel(d.Name)).StructFunc(
+			func(g *jen.Group) {
+				for _, key := range keyNames {
+					if d.JSONContainer.Exists(key) {
+						if strings.HasSuffix(key, "_topic") {
+							lName := strcase.ToCamel(strings.TrimSuffix(key, "_topic"))
+							g.Add(
+								jen.Id(lName).Op("*").Params(jen.Index().String()).Tag(map[string]string{"json": strings.TrimSuffix(key, "_topic") + ",omitempty"}),
+							)
+						} else {
+							g.Add(
+								d.FieldAdder(key),
+							)
+						}
+					}
+				}
+
+				g.Add(
+					jen.Id("MQTT").Struct(
+						jen.Id("UpdateInterval").Op("*").Float64().Tag(map[string]string{"json": "update_interval,omitempty"}),
+						jen.Id("ForceUpdate").Op("*").Bool().Tag(map[string]string{"json": "force_update,omitempty"}),
+					).Tag(map[string]string{"json": "mqtt"}),
+				)
+			},
+		)
+
 		// d.Translate() ExternalDevice.Light
 		internal[d.Name].Func().Params(jen.Id("iDevice").Id(strcase.ToCamel(d.Name))).Id("Translate").Params().Qual("github.com/W-Floyd/ha-mqtt-iot/devices/externaldevice", strcase.ToCamel(d.Name)).BlockFunc(
 			func(g *jen.Group) {
@@ -573,32 +599,6 @@ func main() {
 					jen.Return(
 						jen.Id("eDevice"),
 					),
-				)
-			},
-		)
-
-		internal[d.Name].Type().Id(strcase.ToCamel(d.Name)).StructFunc(
-			func(g *jen.Group) {
-				for _, key := range keyNames {
-					if d.JSONContainer.Exists(key) {
-						if strings.HasSuffix(key, "_topic") {
-							lName := strcase.ToCamel(strings.TrimSuffix(key, "_topic"))
-							g.Add(
-								jen.Id(lName).Op("*").Params(jen.Index().String()).Tag(map[string]string{"json": strings.TrimSuffix(key, "_topic") + ",omitempty"}),
-							)
-						} else {
-							g.Add(
-								d.FieldAdder(key),
-							)
-						}
-					}
-				}
-
-				g.Add(
-					jen.Id("MQTT").Struct(
-						jen.Id("UpdateInterval").Op("*").Float64().Tag(map[string]string{"json": "update_interval,omitempty"}),
-						jen.Id("ForceUpdate").Op("*").Bool().Tag(map[string]string{"json": "force_update,omitempty"}),
-					).Tag(map[string]string{"json": "mqtt"}),
 				)
 			},
 		)

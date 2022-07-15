@@ -9,6 +9,76 @@ import (
 // Do not modify this file, it is automatically generated
 ////////////////////////////////////////////////////////////////////////////////
 //
+type Climate struct {
+	ActionTemplate                 *string     `json:"action_template,omitempty"` // "A template to render the value received on the `action_topic` with."
+	Action                         *([]string) `json:"action,omitempty"`
+	AuxCommand                     *([]string) `json:"aux_command,omitempty"`
+	AuxStateTemplate               *string     `json:"aux_state_template,omitempty"` // "A template to render the value received on the `aux_state_topic` with."
+	AuxState                       *([]string) `json:"aux_state,omitempty"`
+	AvailabilityMode               *string     `json:"availability_mode,omitempty"`     // "When `availability` is configured, this controls the conditions needed to set the entity to `available`. Valid entries are `all`, `any`, and `latest`. If set to `all`, `payload_available` must be received on all configured availability topics before the entity is marked as online. If set to `any`, `payload_available` must be received on at least one configured availability topic before the entity is marked as online. If set to `latest`, the last `payload_available` or `payload_not_available` received on any configured availability topic controls the availability."
+	AvailabilityTemplate           *string     `json:"availability_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#processing-incoming-data) to extract device's availability from the `availability_topic`. To determine the devices's availability result of this template will be compared to `payload_available` and `payload_not_available`."
+	Availability                   *([]string) `json:"availability,omitempty"`
+	CurrentTemperatureTemplate     *string     `json:"current_temperature_template,omitempty"` // "A template with which the value received on `current_temperature_topic` will be rendered."
+	CurrentTemperature             *([]string) `json:"current_temperature,omitempty"`
+	EnabledByDefault               *bool       `json:"enabled_by_default,omitempty"`        // "Flag which defines if the entity should be enabled when first added."
+	Encoding                       *string     `json:"encoding,omitempty"`                  // "The encoding of the payloads received and published messages. Set to `\"\"` to disable decoding of incoming payload."
+	EntityCategory                 *string     `json:"entity_category,omitempty"`           // "The [category](https://developers.home-assistant.io/docs/core/entity#generic-properties) of the entity."
+	FanModeCommandTemplate         *string     `json:"fan_mode_command_template,omitempty"` // "A template to render the value sent to the `fan_mode_command_topic` with."
+	FanModeCommand                 *([]string) `json:"fan_mode_command,omitempty"`
+	FanModeStateTemplate           *string     `json:"fan_mode_state_template,omitempty"` // "A template to render the value received on the `fan_mode_state_topic` with."
+	FanModeState                   *([]string) `json:"fan_mode_state,omitempty"`
+	FanModes                       *([]string) `json:"fan_modes,omitempty"`             // "A list of supported fan modes."
+	Icon                           *string     `json:"icon,omitempty"`                  // "[Icon](/docs/configuration/customizing-devices/#icon) for the entity."
+	Initial                        *int        `json:"initial,omitempty"`               // "Set the initial target temperature."
+	MaxTemp                        *float64    `json:"max_temp,omitempty"`              // "Maximum set point available."
+	MinTemp                        *float64    `json:"min_temp,omitempty"`              // "Minimum set point available."
+	ModeCommandTemplate            *string     `json:"mode_command_template,omitempty"` // "A template to render the value sent to the `mode_command_topic` with."
+	ModeCommand                    *([]string) `json:"mode_command,omitempty"`
+	ModeStateTemplate              *string     `json:"mode_state_template,omitempty"` // "A template to render the value received on the `mode_state_topic` with."
+	ModeState                      *([]string) `json:"mode_state,omitempty"`
+	Modes                          *([]string) `json:"modes,omitempty"`                 // "A list of supported modes. Needs to be a subset of the default values."
+	Name                           *string     `json:"name,omitempty"`                  // "The name of the HVAC."
+	ObjectId                       *string     `json:"object_id,omitempty"`             // "Used instead of `name` for automatic generation of `entity_id`"
+	PayloadAvailable               *string     `json:"payload_available,omitempty"`     // "The payload that represents the available state."
+	PayloadNotAvailable            *string     `json:"payload_not_available,omitempty"` // "The payload that represents the unavailable state."
+	PayloadOff                     *string     `json:"payload_off,omitempty"`           // "The payload that represents disabled state."
+	PayloadOn                      *string     `json:"payload_on,omitempty"`            // "The payload that represents enabled state."
+	PowerCommand                   *([]string) `json:"power_command,omitempty"`
+	Precision                      *float64    `json:"precision,omitempty"`                    // "The desired precision for this device. Can be used to match your actual thermostat's precision. Supported values are `0.1`, `0.5` and `1.0`."
+	PresetModeCommandTemplate      *string     `json:"preset_mode_command_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#processing-incoming-data) to generate the payload to send to `preset_mode_command_topic`."
+	PresetModeCommand              *([]string) `json:"preset_mode_command,omitempty"`
+	PresetModeState                *([]string) `json:"preset_mode_state,omitempty"`
+	PresetModeValueTemplate        *string     `json:"preset_mode_value_template,omitempty"`  // "Defines a [template](/docs/configuration/templating/#processing-incoming-data) to extract the `preset_mode` value from the payload received on `preset_mode_state_topic`."
+	PresetModes                    *([]string) `json:"preset_modes,omitempty"`                // "List of preset modes this climate is supporting. Common examples include `eco`, `away`, `boost`, `comfort`, `home`, `sleep` and `activity`."
+	Qos                            *int        `json:"qos,omitempty"`                         // "The maximum QoS level to be used when receiving and publishing messages."
+	Retain                         *bool       `json:"retain,omitempty"`                      // "Defines if published messages should have the retain flag set."
+	SwingModeCommandTemplate       *string     `json:"swing_mode_command_template,omitempty"` // "A template to render the value sent to the `swing_mode_command_topic` with."
+	SwingModeCommand               *([]string) `json:"swing_mode_command,omitempty"`
+	SwingModeStateTemplate         *string     `json:"swing_mode_state_template,omitempty"` // "A template to render the value received on the `swing_mode_state_topic` with."
+	SwingModeState                 *([]string) `json:"swing_mode_state,omitempty"`
+	SwingModes                     *([]string) `json:"swing_modes,omitempty"`                  // "A list of supported swing modes."
+	TempStep                       *float64    `json:"temp_step,omitempty"`                    // "Step size for temperature set point."
+	TemperatureCommandTemplate     *string     `json:"temperature_command_template,omitempty"` // "A template to render the value sent to the `temperature_command_topic` with."
+	TemperatureCommand             *([]string) `json:"temperature_command,omitempty"`
+	TemperatureHighCommandTemplate *string     `json:"temperature_high_command_template,omitempty"` // "A template to render the value sent to the `temperature_high_command_topic` with."
+	TemperatureHighCommand         *([]string) `json:"temperature_high_command,omitempty"`
+	TemperatureHighStateTemplate   *string     `json:"temperature_high_state_template,omitempty"` // "A template to render the value received on the `temperature_high_state_topic` with."
+	TemperatureHighState           *([]string) `json:"temperature_high_state,omitempty"`
+	TemperatureLowCommandTemplate  *string     `json:"temperature_low_command_template,omitempty"` // "A template to render the value sent to the `temperature_low_command_topic` with."
+	TemperatureLowCommand          *([]string) `json:"temperature_low_command,omitempty"`
+	TemperatureLowStateTemplate    *string     `json:"temperature_low_state_template,omitempty"` // "A template to render the value received on the `temperature_low_state_topic` with."
+	TemperatureLowState            *([]string) `json:"temperature_low_state,omitempty"`
+	TemperatureStateTemplate       *string     `json:"temperature_state_template,omitempty"` // "A template to render the value received on the `temperature_state_topic` with."
+	TemperatureState               *([]string) `json:"temperature_state,omitempty"`
+	TemperatureUnit                *string     `json:"temperature_unit,omitempty"` // "Defines the temperature unit of the device, `C` or `F`. If this is not set, the temperature unit is set to the system temperature unit."
+	UniqueId                       *string     `json:"unique_id,omitempty"`        // "An ID that uniquely identifies this HVAC device. If two HVAC devices have the same unique ID, Home Assistant will raise an exception."
+	ValueTemplate                  *string     `json:"value_template,omitempty"`   // "Default template to render the payloads on *all* `*_state_topic`s with."
+	MQTT                           struct {
+		UpdateInterval *float64 `json:"update_interval,omitempty"`
+		ForceUpdate    *bool    `json:"force_update,omitempty"`
+	} `json:"mqtt"`
+}
+
 func (iDevice Climate) Translate() externaldevice.Climate {
 	eDevice := externaldevice.Climate{}
 	eDevice.MQTT = new(externaldevice.MQTTFields)
@@ -212,74 +282,4 @@ func (iDevice Climate) Translate() externaldevice.Climate {
 	}
 	eDevice.Initialize()
 	return eDevice
-}
-
-type Climate struct {
-	ActionTemplate                 *string     `json:"action_template,omitempty"` // "A template to render the value received on the `action_topic` with."
-	Action                         *([]string) `json:"action,omitempty"`
-	AuxCommand                     *([]string) `json:"aux_command,omitempty"`
-	AuxStateTemplate               *string     `json:"aux_state_template,omitempty"` // "A template to render the value received on the `aux_state_topic` with."
-	AuxState                       *([]string) `json:"aux_state,omitempty"`
-	AvailabilityMode               *string     `json:"availability_mode,omitempty"`     // "When `availability` is configured, this controls the conditions needed to set the entity to `available`. Valid entries are `all`, `any`, and `latest`. If set to `all`, `payload_available` must be received on all configured availability topics before the entity is marked as online. If set to `any`, `payload_available` must be received on at least one configured availability topic before the entity is marked as online. If set to `latest`, the last `payload_available` or `payload_not_available` received on any configured availability topic controls the availability."
-	AvailabilityTemplate           *string     `json:"availability_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#processing-incoming-data) to extract device's availability from the `availability_topic`. To determine the devices's availability result of this template will be compared to `payload_available` and `payload_not_available`."
-	Availability                   *([]string) `json:"availability,omitempty"`
-	CurrentTemperatureTemplate     *string     `json:"current_temperature_template,omitempty"` // "A template with which the value received on `current_temperature_topic` will be rendered."
-	CurrentTemperature             *([]string) `json:"current_temperature,omitempty"`
-	EnabledByDefault               *bool       `json:"enabled_by_default,omitempty"`        // "Flag which defines if the entity should be enabled when first added."
-	Encoding                       *string     `json:"encoding,omitempty"`                  // "The encoding of the payloads received and published messages. Set to `\"\"` to disable decoding of incoming payload."
-	EntityCategory                 *string     `json:"entity_category,omitempty"`           // "The [category](https://developers.home-assistant.io/docs/core/entity#generic-properties) of the entity."
-	FanModeCommandTemplate         *string     `json:"fan_mode_command_template,omitempty"` // "A template to render the value sent to the `fan_mode_command_topic` with."
-	FanModeCommand                 *([]string) `json:"fan_mode_command,omitempty"`
-	FanModeStateTemplate           *string     `json:"fan_mode_state_template,omitempty"` // "A template to render the value received on the `fan_mode_state_topic` with."
-	FanModeState                   *([]string) `json:"fan_mode_state,omitempty"`
-	FanModes                       *([]string) `json:"fan_modes,omitempty"`             // "A list of supported fan modes."
-	Icon                           *string     `json:"icon,omitempty"`                  // "[Icon](/docs/configuration/customizing-devices/#icon) for the entity."
-	Initial                        *int        `json:"initial,omitempty"`               // "Set the initial target temperature."
-	MaxTemp                        *float64    `json:"max_temp,omitempty"`              // "Maximum set point available."
-	MinTemp                        *float64    `json:"min_temp,omitempty"`              // "Minimum set point available."
-	ModeCommandTemplate            *string     `json:"mode_command_template,omitempty"` // "A template to render the value sent to the `mode_command_topic` with."
-	ModeCommand                    *([]string) `json:"mode_command,omitempty"`
-	ModeStateTemplate              *string     `json:"mode_state_template,omitempty"` // "A template to render the value received on the `mode_state_topic` with."
-	ModeState                      *([]string) `json:"mode_state,omitempty"`
-	Modes                          *([]string) `json:"modes,omitempty"`                 // "A list of supported modes. Needs to be a subset of the default values."
-	Name                           *string     `json:"name,omitempty"`                  // "The name of the HVAC."
-	ObjectId                       *string     `json:"object_id,omitempty"`             // "Used instead of `name` for automatic generation of `entity_id`"
-	PayloadAvailable               *string     `json:"payload_available,omitempty"`     // "The payload that represents the available state."
-	PayloadNotAvailable            *string     `json:"payload_not_available,omitempty"` // "The payload that represents the unavailable state."
-	PayloadOff                     *string     `json:"payload_off,omitempty"`           // "The payload that represents disabled state."
-	PayloadOn                      *string     `json:"payload_on,omitempty"`            // "The payload that represents enabled state."
-	PowerCommand                   *([]string) `json:"power_command,omitempty"`
-	Precision                      *float64    `json:"precision,omitempty"`                    // "The desired precision for this device. Can be used to match your actual thermostat's precision. Supported values are `0.1`, `0.5` and `1.0`."
-	PresetModeCommandTemplate      *string     `json:"preset_mode_command_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#processing-incoming-data) to generate the payload to send to `preset_mode_command_topic`."
-	PresetModeCommand              *([]string) `json:"preset_mode_command,omitempty"`
-	PresetModeState                *([]string) `json:"preset_mode_state,omitempty"`
-	PresetModeValueTemplate        *string     `json:"preset_mode_value_template,omitempty"`  // "Defines a [template](/docs/configuration/templating/#processing-incoming-data) to extract the `preset_mode` value from the payload received on `preset_mode_state_topic`."
-	PresetModes                    *([]string) `json:"preset_modes,omitempty"`                // "List of preset modes this climate is supporting. Common examples include `eco`, `away`, `boost`, `comfort`, `home`, `sleep` and `activity`."
-	Qos                            *int        `json:"qos,omitempty"`                         // "The maximum QoS level to be used when receiving and publishing messages."
-	Retain                         *bool       `json:"retain,omitempty"`                      // "Defines if published messages should have the retain flag set."
-	SwingModeCommandTemplate       *string     `json:"swing_mode_command_template,omitempty"` // "A template to render the value sent to the `swing_mode_command_topic` with."
-	SwingModeCommand               *([]string) `json:"swing_mode_command,omitempty"`
-	SwingModeStateTemplate         *string     `json:"swing_mode_state_template,omitempty"` // "A template to render the value received on the `swing_mode_state_topic` with."
-	SwingModeState                 *([]string) `json:"swing_mode_state,omitempty"`
-	SwingModes                     *([]string) `json:"swing_modes,omitempty"`                  // "A list of supported swing modes."
-	TempStep                       *float64    `json:"temp_step,omitempty"`                    // "Step size for temperature set point."
-	TemperatureCommandTemplate     *string     `json:"temperature_command_template,omitempty"` // "A template to render the value sent to the `temperature_command_topic` with."
-	TemperatureCommand             *([]string) `json:"temperature_command,omitempty"`
-	TemperatureHighCommandTemplate *string     `json:"temperature_high_command_template,omitempty"` // "A template to render the value sent to the `temperature_high_command_topic` with."
-	TemperatureHighCommand         *([]string) `json:"temperature_high_command,omitempty"`
-	TemperatureHighStateTemplate   *string     `json:"temperature_high_state_template,omitempty"` // "A template to render the value received on the `temperature_high_state_topic` with."
-	TemperatureHighState           *([]string) `json:"temperature_high_state,omitempty"`
-	TemperatureLowCommandTemplate  *string     `json:"temperature_low_command_template,omitempty"` // "A template to render the value sent to the `temperature_low_command_topic` with."
-	TemperatureLowCommand          *([]string) `json:"temperature_low_command,omitempty"`
-	TemperatureLowStateTemplate    *string     `json:"temperature_low_state_template,omitempty"` // "A template to render the value received on the `temperature_low_state_topic` with."
-	TemperatureLowState            *([]string) `json:"temperature_low_state,omitempty"`
-	TemperatureStateTemplate       *string     `json:"temperature_state_template,omitempty"` // "A template to render the value received on the `temperature_state_topic` with."
-	TemperatureState               *([]string) `json:"temperature_state,omitempty"`
-	TemperatureUnit                *string     `json:"temperature_unit,omitempty"` // "Defines the temperature unit of the device, `C` or `F`. If this is not set, the temperature unit is set to the system temperature unit."
-	UniqueId                       *string     `json:"unique_id,omitempty"`        // "An ID that uniquely identifies this HVAC device. If two HVAC devices have the same unique ID, Home Assistant will raise an exception."
-	ValueTemplate                  *string     `json:"value_template,omitempty"`   // "Default template to render the payloads on *all* `*_state_topic`s with."
-	MQTT                           struct {
-		UpdateInterval *float64 `json:"update_interval,omitempty"`
-		ForceUpdate    *bool    `json:"force_update,omitempty"`
-	} `json:"mqtt"`
 }

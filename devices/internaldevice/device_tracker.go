@@ -6,6 +6,18 @@ import externaldevice "github.com/W-Floyd/ha-mqtt-iot/devices/externaldevice"
 // Do not modify this file, it is automatically generated
 ////////////////////////////////////////////////////////////////////////////////
 //
+type DeviceTracker struct {
+	Devices        *([]string) `json:"devices,omitempty"`          // "List of devices with their topic."
+	PayloadHome    *string     `json:"payload_home,omitempty"`     // "The payload value that represents the 'home' state for the device."
+	PayloadNotHome *string     `json:"payload_not_home,omitempty"` // "The payload value that represents the 'not_home' state for the device."
+	Qos            *int        `json:"qos,omitempty"`              // "The QoS level of the topic."
+	SourceType     *string     `json:"source_type,omitempty"`      // "Attribute of a device tracker that affects state when being used to track a [person](/integrations/person/). Valid options are `gps`, `router`, `bluetooth`, or `bluetooth_le`."
+	MQTT           struct {
+		UpdateInterval *float64 `json:"update_interval,omitempty"`
+		ForceUpdate    *bool    `json:"force_update,omitempty"`
+	} `json:"mqtt"`
+}
+
 func (iDevice DeviceTracker) Translate() externaldevice.DeviceTracker {
 	eDevice := externaldevice.DeviceTracker{}
 	eDevice.MQTT = new(externaldevice.MQTTFields)
@@ -32,16 +44,4 @@ func (iDevice DeviceTracker) Translate() externaldevice.DeviceTracker {
 	}
 	eDevice.Initialize()
 	return eDevice
-}
-
-type DeviceTracker struct {
-	Devices        *([]string) `json:"devices,omitempty"`          // "List of devices with their topic."
-	PayloadHome    *string     `json:"payload_home,omitempty"`     // "The payload value that represents the 'home' state for the device."
-	PayloadNotHome *string     `json:"payload_not_home,omitempty"` // "The payload value that represents the 'not_home' state for the device."
-	Qos            *int        `json:"qos,omitempty"`              // "The QoS level of the topic."
-	SourceType     *string     `json:"source_type,omitempty"`      // "Attribute of a device tracker that affects state when being used to track a [person](/integrations/person/). Valid options are `gps`, `router`, `bluetooth`, or `bluetooth_le`."
-	MQTT           struct {
-		UpdateInterval *float64 `json:"update_interval,omitempty"`
-		ForceUpdate    *bool    `json:"force_update,omitempty"`
-	} `json:"mqtt"`
 }
