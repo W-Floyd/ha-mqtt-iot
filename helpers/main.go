@@ -468,6 +468,21 @@ func main() {
 					),
 				)
 			}
+			if d.JSONContainer.Exists("unique_id") {
+				g.Add(
+					jen.If(jen.Id("d").Dot("UniqueId").Op("==").Nil()).BlockFunc(
+						func(g *jen.Group) {
+							g.Add(
+								jen.Id("d").Dot("UniqueId").Op("=").New(jen.String()))
+							g.Add(
+								jen.Op("*").Id("d").Dot("UniqueId").Op("=").Qual("github.com/iancoleman/strcase", "ToDelimited").Params(
+									jen.Op("*").Id("d").Dot("Name"),
+									jen.Lit(uint8('-')),
+								))
+						},
+					),
+				)
+			}
 			g.Add(jen.Id("d").Dot("PopulateDevice").Params())
 			g.Add(jen.Id("d").Dot("AddMessageHandler").Params())
 			g.Add(jen.Id("d").Dot("PopulateTopics").Params())

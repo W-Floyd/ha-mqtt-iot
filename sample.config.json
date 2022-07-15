@@ -49,6 +49,27 @@
             }
         }
     ],
+    "select": [
+        {
+            "name": "Power Mode",
+            "options": [
+                "performance",
+                "balanced",
+                "power-saver"
+            ],
+            "state": [
+                "powerprofilesctl",
+                "get"
+            ],
+            "command": [
+                "powerprofilesctl",
+                "set"
+            ],
+            "mqtt": {
+                "update_interval": 1
+            }
+        }
+    ],
     "sensor": [
         {
             "name": "XPS Arch IP Address",

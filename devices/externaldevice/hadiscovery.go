@@ -6,7 +6,7 @@ const DiscoveryPrefix = "homeassistant"
 
 // SWVersion is the software version.
 // TODO - Move this elsewhere maybe?
-var SWVersion = "0.5.0"
+var SWVersion = "0.5.2"
 
 var SoftwareName = "Homeassistant MQTT IOT"
 

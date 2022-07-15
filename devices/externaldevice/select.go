@@ -5,6 +5,7 @@ import (
 	common "github.com/W-Floyd/ha-mqtt-iot/common"
 	store "github.com/W-Floyd/ha-mqtt-iot/store"
 	mqtt "github.com/eclipse/paho.mqtt.golang"
+	strcase "github.com/iancoleman/strcase"
 	"log"
 	"time"
 )
@@ -127,6 +128,10 @@ func (d *Select) Initialize() {
 	if d.Retain == nil {
 		d.Retain = new(bool)
 		*d.Retain = common.Retain
+	}
+	if d.UniqueId == nil {
+		d.UniqueId = new(string)
+		*d.UniqueId = strcase.ToDelimited(*d.Name, uint8(0x2d))
 	}
 	d.PopulateDevice()
 	d.AddMessageHandler()

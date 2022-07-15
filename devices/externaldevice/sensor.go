@@ -3,6 +3,7 @@ package ExternalDevice
 import (
 	"encoding/json"
 	common "github.com/W-Floyd/ha-mqtt-iot/common"
+	strcase "github.com/iancoleman/strcase"
 	"log"
 	"time"
 )
@@ -109,6 +110,10 @@ func (d *Sensor) Initialize() {
 	if d.Qos == nil {
 		d.Qos = new(int)
 		*d.Qos = int(common.QoS)
+	}
+	if d.UniqueId == nil {
+		d.UniqueId = new(string)
+		*d.UniqueId = strcase.ToDelimited(*d.Name, uint8(0x2d))
 	}
 	d.PopulateDevice()
 	d.AddMessageHandler()
