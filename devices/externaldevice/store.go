@@ -25,7 +25,10 @@ type StateStore struct {
 		State        map[string]string
 		TiltStatus   map[string]string
 	}
-	DeviceTracker struct{}
+	DeviceTracker struct {
+		Availability map[string]string
+		State        map[string]string
+	}
 	DeviceTrigger struct {
 		State map[string]string
 	}
@@ -116,6 +119,8 @@ func initStore() StateStore {
 	s.Cover.Position = make(map[string]string)
 	s.Cover.State = make(map[string]string)
 	s.Cover.TiltStatus = make(map[string]string)
+	s.DeviceTracker.Availability = make(map[string]string)
+	s.DeviceTracker.State = make(map[string]string)
 	s.DeviceTrigger.State = make(map[string]string)
 	s.Fan.Availability = make(map[string]string)
 	s.Fan.OscillationState = make(map[string]string)

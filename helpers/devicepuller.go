@@ -112,6 +112,8 @@ func splitDocument(devicename string) (string, error) {
 		dat = dat[strings.Index(dat, "## State Configuration"):]
 	} else if devicename == "light" {
 		dat = between(dat, "## Default schema - Configuration", "## Default schema - Examples")
+	} else if devicename == "device_tracker" {
+		dat = between(dat, "{% enddetails %}", "## Examples")
 	}
 
 	match := between(dat, "{% configuration %}", "{% endconfiguration %}")
