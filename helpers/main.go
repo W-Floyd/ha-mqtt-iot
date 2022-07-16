@@ -139,35 +139,6 @@ func main() {
 
 		camName := strcase.ToCamel(d.Name)
 
-		// d.GetRawID()
-		external[d.Name].Func().Params(
-			jen.Id("d").Op("*").Id(strcase.ToCamel(d.Name)),
-		).Id("GetRawId").Params().String().Block(
-			jen.Return(jen.Lit(d.Name)),
-		)
-
-		// d.AddMessageHandler()
-		external[d.Name].Func().Params(
-			jen.Id("d").Op("*").Id(strcase.ToCamel(d.Name)),
-		).Id("AddMessageHandler").Params().Block(
-			jen.Id("d").Dot("MQTT").Dot("MessageHandler").Op("=").Id("MakeMessageHandler").Params(jen.Id("d")),
-		)
-
-		// d.GetUniqueID()
-		if d.JSONContainer.Exists("unique_id") {
-			external[d.Name].Func().Params(
-				jen.Id("d").Op("*").Id(strcase.ToCamel(d.Name)),
-			).Id("GetUniqueId").Params().String().Block(
-				jen.Return(jen.Op("*").Id("d").Dot("UniqueId")),
-			)
-		} else {
-			external[d.Name].Func().Params(
-				jen.Id("d").Id(strcase.ToCamel(d.Name)),
-			).Id("GetUniqueId").Params().String().Block(
-				jen.Return(jen.Lit("")),
-			)
-		}
-
 		st := make(map[string][]*jen.Statement)
 
 		// Add standalone base level fields
@@ -199,23 +170,6 @@ func main() {
 			).Tag(map[string]string{"json": "device,omitempty"}))
 		}
 
-		// d.PopulateDevice()
-		if d.JSONContainer.Exists("device") {
-			external[d.Name].Func().Params(
-				jen.Id("d").Op("*").Id(strcase.ToCamel(d.Name)),
-			).Id("PopulateDevice").Params().Block(
-				jen.Id("d.Device.Manufacturer").Op("=&").Id("Manufacturer"),
-				jen.Id("d.Device.Model").Op("=&").Id("SoftwareName"),
-				jen.Id("d.Device.Name").Op("=&").Id("InstanceName"),
-				jen.Id("d.Device.SwVersion").Op("=&").Id("SWVersion"),
-				jen.Id("d.Device.Identifiers").Op("=&").Id("common").Dot("MachineID"),
-			)
-		} else {
-			external[d.Name].Func().Params(
-				jen.Id("d").Op("*").Id(strcase.ToCamel(d.Name)),
-			).Id("PopulateDevice").Params().Block()
-		}
-
 		sortedKeys := []string{}
 		for key := range st {
 			sortedKeys = append(sortedKeys, key)
@@ -234,6 +188,52 @@ func main() {
 				g.Id("MQTT").Op("*").Id("MQTTFields").Tag(map[string]string{"json": "-"})
 			},
 		)
+
+		// d.GetRawID()
+		external[d.Name].Func().Params(
+			jen.Id("d").Op("*").Id(strcase.ToCamel(d.Name)),
+		).Id("GetRawId").Params().String().Block(
+			jen.Return(jen.Lit(d.Name)),
+		)
+
+		// d.AddMessageHandler()
+		external[d.Name].Func().Params(
+			jen.Id("d").Op("*").Id(strcase.ToCamel(d.Name)),
+		).Id("AddMessageHandler").Params().Block(
+			jen.Id("d").Dot("MQTT").Dot("MessageHandler").Op("=").Id("MakeMessageHandler").Params(jen.Id("d")),
+		)
+
+		// d.GetUniqueID()
+		if d.JSONContainer.Exists("unique_id") {
+			external[d.Name].Func().Params(
+				jen.Id("d").Op("*").Id(strcase.ToCamel(d.Name)),
+			).Id("GetUniqueId").Params().String().Block(
+				jen.Return(jen.Op("*").Id("d").Dot("UniqueId")),
+			)
+		} else {
+			external[d.Name].Func().Params(
+				jen.Id("d").Id(strcase.ToCamel(d.Name)),
+			).Id("GetUniqueId").Params().String().Block(
+				jen.Return(jen.Lit("")),
+			)
+		}
+
+		// d.PopulateDevice()
+		if d.JSONContainer.Exists("device") {
+			external[d.Name].Func().Params(
+				jen.Id("d").Op("*").Id(strcase.ToCamel(d.Name)),
+			).Id("PopulateDevice").Params().Block(
+				jen.Id("d.Device.Manufacturer").Op("=&").Id("Manufacturer"),
+				jen.Id("d.Device.Model").Op("=&").Id("SoftwareName"),
+				jen.Id("d.Device.Name").Op("=&").Id("InstanceName"),
+				jen.Id("d.Device.SwVersion").Op("=&").Id("SWVersion"),
+				jen.Id("d.Device.Identifiers").Op("=&").Id("common").Dot("MachineID"),
+			)
+		} else {
+			external[d.Name].Func().Params(
+				jen.Id("d").Op("*").Id(strcase.ToCamel(d.Name)),
+			).Id("PopulateDevice").Params().Block()
+		}
 
 		external[d.Name].Func().Params(
 			jen.Id("d").Op("*").Id(strcase.ToCamel(d.Name)),

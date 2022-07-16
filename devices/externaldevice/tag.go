@@ -10,23 +10,6 @@ import (
 ////////////////////////////////////////////////////////////////////////////////
 // Do not modify this file, it is automatically generated
 ////////////////////////////////////////////////////////////////////////////////
-func (d *Tag) GetRawId() string {
-	return "tag"
-}
-func (d *Tag) AddMessageHandler() {
-	d.MQTT.MessageHandler = MakeMessageHandler(d)
-}
-func (d Tag) GetUniqueId() string {
-	return ""
-}
-func (d *Tag) PopulateDevice() {
-	d.Device.Manufacturer = &Manufacturer
-	d.Device.Model = &SoftwareName
-	d.Device.Name = &InstanceName
-	d.Device.SwVersion = &SWVersion
-	d.Device.Identifiers = &common.MachineID
-}
-
 type Tag struct {
 	Device struct {
 		ConfigurationUrl *string `json:"configuration_url,omitempty"` // "A link to the webpage that can manage the configuration of this device. Can be either an HTTP or HTTPS link."
@@ -45,6 +28,22 @@ type Tag struct {
 	MQTT          *MQTTFields   `json:"-"`
 }
 
+func (d *Tag) GetRawId() string {
+	return "tag"
+}
+func (d *Tag) AddMessageHandler() {
+	d.MQTT.MessageHandler = MakeMessageHandler(d)
+}
+func (d Tag) GetUniqueId() string {
+	return ""
+}
+func (d *Tag) PopulateDevice() {
+	d.Device.Manufacturer = &Manufacturer
+	d.Device.Model = &SoftwareName
+	d.Device.Name = &InstanceName
+	d.Device.SwVersion = &SWVersion
+	d.Device.Identifiers = &common.MachineID
+}
 func (d *Tag) UpdateState() {
 	if d.StateTopic != nil {
 		state := d.StateFunc()

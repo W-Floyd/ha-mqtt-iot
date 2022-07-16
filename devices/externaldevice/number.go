@@ -13,23 +13,6 @@ import (
 ////////////////////////////////////////////////////////////////////////////////
 // Do not modify this file, it is automatically generated
 ////////////////////////////////////////////////////////////////////////////////
-func (d *Number) GetRawId() string {
-	return "number"
-}
-func (d *Number) AddMessageHandler() {
-	d.MQTT.MessageHandler = MakeMessageHandler(d)
-}
-func (d *Number) GetUniqueId() string {
-	return *d.UniqueId
-}
-func (d *Number) PopulateDevice() {
-	d.Device.Manufacturer = &Manufacturer
-	d.Device.Model = &SoftwareName
-	d.Device.Name = &InstanceName
-	d.Device.SwVersion = &SWVersion
-	d.Device.Identifiers = &common.MachineID
-}
-
 type Number struct {
 	AvailabilityMode  *string                         `json:"availability_mode,omitempty"`  // "When `availability` is configured, this controls the conditions needed to set the entity to `available`. Valid entries are `all`, `any`, and `latest`. If set to `all`, `payload_available` must be received on all configured availability topics before the entity is marked as online. If set to `any`, `payload_available` must be received on at least one configured availability topic before the entity is marked as online. If set to `latest`, the last `payload_available` or `payload_not_available` received on any configured availability topic controls the availability."
 	AvailabilityTopic *string                         `json:"availability_topic,omitempty"` // "The MQTT topic subscribed to receive availability (online/offline) updates. Must not be used together with `availability`."
@@ -73,6 +56,22 @@ type Number struct {
 	MQTT                   *MQTTFields                     `json:"-"`
 }
 
+func (d *Number) GetRawId() string {
+	return "number"
+}
+func (d *Number) AddMessageHandler() {
+	d.MQTT.MessageHandler = MakeMessageHandler(d)
+}
+func (d *Number) GetUniqueId() string {
+	return *d.UniqueId
+}
+func (d *Number) PopulateDevice() {
+	d.Device.Manufacturer = &Manufacturer
+	d.Device.Model = &SoftwareName
+	d.Device.Name = &InstanceName
+	d.Device.SwVersion = &SWVersion
+	d.Device.Identifiers = &common.MachineID
+}
 func (d *Number) UpdateState() {
 	if d.AvailabilityTopic != nil {
 		state := d.AvailabilityFunc()

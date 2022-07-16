@@ -13,23 +13,6 @@ import (
 ////////////////////////////////////////////////////////////////////////////////
 // Do not modify this file, it is automatically generated
 ////////////////////////////////////////////////////////////////////////////////
-func (d *Camera) GetRawId() string {
-	return "camera"
-}
-func (d *Camera) AddMessageHandler() {
-	d.MQTT.MessageHandler = MakeMessageHandler(d)
-}
-func (d *Camera) GetUniqueId() string {
-	return *d.UniqueId
-}
-func (d *Camera) PopulateDevice() {
-	d.Device.Manufacturer = &Manufacturer
-	d.Device.Model = &SoftwareName
-	d.Device.Name = &InstanceName
-	d.Device.SwVersion = &SWVersion
-	d.Device.Identifiers = &common.MachineID
-}
-
 type Camera struct {
 	AvailabilityMode     *string       `json:"availability_mode,omitempty"`     // "When `availability` is configured, this controls the conditions needed to set the entity to `available`. Valid entries are `all`, `any`, and `latest`. If set to `all`, `payload_available` must be received on all configured availability topics before the entity is marked as online. If set to `any`, `payload_available` must be received on at least one configured availability topic before the entity is marked as online. If set to `latest`, the last `payload_available` or `payload_not_available` received on any configured availability topic controls the availability."
 	AvailabilityTemplate *string       `json:"availability_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#processing-incoming-data) to extract device's availability from the `availability_topic`. To determine the devices's availability result of this template will be compared to `payload_available` and `payload_not_available`."
@@ -61,6 +44,22 @@ type Camera struct {
 	MQTT                   *MQTTFields                     `json:"-"`
 }
 
+func (d *Camera) GetRawId() string {
+	return "camera"
+}
+func (d *Camera) AddMessageHandler() {
+	d.MQTT.MessageHandler = MakeMessageHandler(d)
+}
+func (d *Camera) GetUniqueId() string {
+	return *d.UniqueId
+}
+func (d *Camera) PopulateDevice() {
+	d.Device.Manufacturer = &Manufacturer
+	d.Device.Model = &SoftwareName
+	d.Device.Name = &InstanceName
+	d.Device.SwVersion = &SWVersion
+	d.Device.Identifiers = &common.MachineID
+}
 func (d *Camera) UpdateState() {
 	if d.AvailabilityTopic != nil {
 		state := d.AvailabilityFunc()

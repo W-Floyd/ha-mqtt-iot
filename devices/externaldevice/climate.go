@@ -13,23 +13,6 @@ import (
 ////////////////////////////////////////////////////////////////////////////////
 // Do not modify this file, it is automatically generated
 ////////////////////////////////////////////////////////////////////////////////
-func (d *Climate) GetRawId() string {
-	return "climate"
-}
-func (d *Climate) AddMessageHandler() {
-	d.MQTT.MessageHandler = MakeMessageHandler(d)
-}
-func (d *Climate) GetUniqueId() string {
-	return *d.UniqueId
-}
-func (d *Climate) PopulateDevice() {
-	d.Device.Manufacturer = &Manufacturer
-	d.Device.Model = &SoftwareName
-	d.Device.Name = &InstanceName
-	d.Device.SwVersion = &SWVersion
-	d.Device.Identifiers = &common.MachineID
-}
-
 type Climate struct {
 	ActionTemplate             *string                         `json:"action_template,omitempty"` // "A template to render the value received on the `action_topic` with."
 	ActionTopic                *string                         `json:"action_topic,omitempty"`    // "The MQTT topic to subscribe for changes of the current action. If this is set, the climate graph uses the value received as data source. Valid values: `off`, `heating`, `cooling`, `drying`, `idle`, `fan`."
@@ -131,6 +114,22 @@ type Climate struct {
 	MQTT                           *MQTTFields                     `json:"-"`
 }
 
+func (d *Climate) GetRawId() string {
+	return "climate"
+}
+func (d *Climate) AddMessageHandler() {
+	d.MQTT.MessageHandler = MakeMessageHandler(d)
+}
+func (d *Climate) GetUniqueId() string {
+	return *d.UniqueId
+}
+func (d *Climate) PopulateDevice() {
+	d.Device.Manufacturer = &Manufacturer
+	d.Device.Model = &SoftwareName
+	d.Device.Name = &InstanceName
+	d.Device.SwVersion = &SWVersion
+	d.Device.Identifiers = &common.MachineID
+}
 func (d *Climate) UpdateState() {
 	if d.AuxStateTopic != nil {
 		state := d.AuxStateFunc()

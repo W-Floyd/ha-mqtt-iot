@@ -10,6 +10,15 @@ import (
 ////////////////////////////////////////////////////////////////////////////////
 // Do not modify this file, it is automatically generated
 ////////////////////////////////////////////////////////////////////////////////
+type DeviceTracker struct {
+	Devices        *([]string) `json:"devices,omitempty"`          // "List of devices with their topic."
+	PayloadHome    *string     `json:"payload_home,omitempty"`     // "The payload value that represents the 'home' state for the device."
+	PayloadNotHome *string     `json:"payload_not_home,omitempty"` // "The payload value that represents the 'not_home' state for the device."
+	Qos            *int        `json:"qos,omitempty"`              // "The QoS level of the topic."
+	SourceType     *string     `json:"source_type,omitempty"`      // "Attribute of a device tracker that affects state when being used to track a [person](/integrations/person/). Valid options are `gps`, `router`, `bluetooth`, or `bluetooth_le`."
+	MQTT           *MQTTFields `json:"-"`
+}
+
 func (d *DeviceTracker) GetRawId() string {
 	return "device_tracker"
 }
@@ -20,17 +29,7 @@ func (d DeviceTracker) GetUniqueId() string {
 	return ""
 }
 func (d *DeviceTracker) PopulateDevice() {}
-
-type DeviceTracker struct {
-	Devices        *([]string) `json:"devices,omitempty"`          // "List of devices with their topic."
-	PayloadHome    *string     `json:"payload_home,omitempty"`     // "The payload value that represents the 'home' state for the device."
-	PayloadNotHome *string     `json:"payload_not_home,omitempty"` // "The payload value that represents the 'not_home' state for the device."
-	Qos            *int        `json:"qos,omitempty"`              // "The QoS level of the topic."
-	SourceType     *string     `json:"source_type,omitempty"`      // "Attribute of a device tracker that affects state when being used to track a [person](/integrations/person/). Valid options are `gps`, `router`, `bluetooth`, or `bluetooth_le`."
-	MQTT           *MQTTFields `json:"-"`
-}
-
-func (d *DeviceTracker) UpdateState() {}
+func (d *DeviceTracker) UpdateState()    {}
 func (d *DeviceTracker) Subscribe() {
 	c := *d.MQTT.Client
 	message, err := json.Marshal(d)
