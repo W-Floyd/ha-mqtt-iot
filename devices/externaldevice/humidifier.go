@@ -49,11 +49,14 @@ type Humidifier struct {
 		SwVersion        *string `json:"sw_version,omitempty"`        // "The firmware version of the device."
 		Viadevice        *string `json:"viadevice,omitempty"`         // null
 	} `json:"device,omitempty"`
-	DeviceClass                   *string                         `json:"device_class,omitempty"`          // "The device class of the MQTT device. Must be either `humidifier` or `dehumidifier`."
-	EnabledByDefault              *bool                           `json:"enabled_by_default,omitempty"`    // "Flag which defines if the entity should be enabled when first added."
-	Encoding                      *string                         `json:"encoding,omitempty"`              // "The encoding of the payloads received and published messages. Set to `\"\"` to disable decoding of incoming payload."
-	EntityCategory                *string                         `json:"entity_category,omitempty"`       // "The [category](https://developers.home-assistant.io/docs/core/entity#generic-properties) of the entity."
-	Icon                          *string                         `json:"icon,omitempty"`                  // "[Icon](/docs/configuration/customizing-devices/#icon) for the entity."
+	DeviceClass                   *string                         `json:"device_class,omitempty"`             // "The device class of the MQTT device. Must be either `humidifier` or `dehumidifier`."
+	EnabledByDefault              *bool                           `json:"enabled_by_default,omitempty"`       // "Flag which defines if the entity should be enabled when first added."
+	Encoding                      *string                         `json:"encoding,omitempty"`                 // "The encoding of the payloads received and published messages. Set to `\"\"` to disable decoding of incoming payload."
+	EntityCategory                *string                         `json:"entity_category,omitempty"`          // "The [category](https://developers.home-assistant.io/docs/core/entity#generic-properties) of the entity."
+	Icon                          *string                         `json:"icon,omitempty"`                     // "[Icon](/docs/configuration/customizing-devices/#icon) for the entity."
+	JsonAttributesTemplate        *string                         `json:"json_attributes_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#processing-incoming-data) to extract the JSON dictionary from messages received on the `json_attributes_topic`. Usage example can be found in [MQTT sensor](/integrations/sensor.mqtt/#json-attributes-template-configuration) documentation."
+	JsonAttributesTopic           *string                         `json:"json_attributes_topic,omitempty"`    // "The MQTT topic subscribed to receive a JSON dictionary payload and then set as sensor attributes. Usage example can be found in [MQTT sensor](/integrations/sensor.mqtt/#json-attributes-topic-configuration) documentation."
+	JsonAttributesFunc            func(mqtt.Message, mqtt.Client) `json:"-"`
 	MaxHumidity                   *int                            `json:"max_humidity,omitempty"`          // "The minimum target humidity percentage that can be set."
 	MinHumidity                   *int                            `json:"min_humidity,omitempty"`          // "The maximum target humidity percentage that can be set."
 	ModeCommandTemplate           *string                         `json:"mode_command_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#processing-incoming-data) to generate the payload to send to `mode_command_topic`."
@@ -134,6 +137,13 @@ func (d *Humidifier) Subscribe() {
 			log.Fatal(t.Error())
 		}
 	}
+	if d.JsonAttributesTopic != nil {
+		t := c.Subscribe(*d.JsonAttributesTopic, 0, d.MQTT.MessageHandler)
+		t.Wait()
+		if t.Error() != nil {
+			log.Fatal(t.Error())
+		}
+	}
 	if d.ModeCommandTopic != nil {
 		t := c.Subscribe(*d.ModeCommandTopic, 0, d.MQTT.MessageHandler)
 		t.Wait()
@@ -160,6 +170,13 @@ func (d *Humidifier) UnSubscribe() {
 	token.Wait()
 	if d.CommandTopic != nil {
 		t := c.Unsubscribe(*d.CommandTopic)
+		t.Wait()
+		if t.Error() != nil {
+			log.Fatal(t.Error())
+		}
+	}
+	if d.JsonAttributesTopic != nil {
+		t := c.Unsubscribe(*d.JsonAttributesTopic)
 		t.Wait()
 		if t.Error() != nil {
 			log.Fatal(t.Error())
@@ -211,6 +228,11 @@ func (d *Humidifier) PopulateTopics() {
 		d.CommandTopic = new(string)
 		*d.CommandTopic = GetTopic(d, "command_topic")
 		store.TopicStore[*d.CommandTopic] = &d.CommandFunc
+	}
+	if d.JsonAttributesFunc != nil {
+		d.JsonAttributesTopic = new(string)
+		*d.JsonAttributesTopic = GetTopic(d, "json_attributes_topic")
+		store.TopicStore[*d.JsonAttributesTopic] = &d.JsonAttributesFunc
 	}
 	if d.ModeCommandFunc != nil {
 		d.ModeCommandTopic = new(string)

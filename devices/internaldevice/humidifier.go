@@ -15,11 +15,13 @@ type Humidifier struct {
 	Availability                  *([]string) `json:"availability,omitempty"`
 	CommandTemplate               *string     `json:"command_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#processing-incoming-data) to generate the payload to send to `command_topic`."
 	Command                       *([]string) `json:"command,omitempty"`
-	DeviceClass                   *string     `json:"device_class,omitempty"`          // "The device class of the MQTT device. Must be either `humidifier` or `dehumidifier`."
-	EnabledByDefault              *bool       `json:"enabled_by_default,omitempty"`    // "Flag which defines if the entity should be enabled when first added."
-	Encoding                      *string     `json:"encoding,omitempty"`              // "The encoding of the payloads received and published messages. Set to `\"\"` to disable decoding of incoming payload."
-	EntityCategory                *string     `json:"entity_category,omitempty"`       // "The [category](https://developers.home-assistant.io/docs/core/entity#generic-properties) of the entity."
-	Icon                          *string     `json:"icon,omitempty"`                  // "[Icon](/docs/configuration/customizing-devices/#icon) for the entity."
+	DeviceClass                   *string     `json:"device_class,omitempty"`             // "The device class of the MQTT device. Must be either `humidifier` or `dehumidifier`."
+	EnabledByDefault              *bool       `json:"enabled_by_default,omitempty"`       // "Flag which defines if the entity should be enabled when first added."
+	Encoding                      *string     `json:"encoding,omitempty"`                 // "The encoding of the payloads received and published messages. Set to `\"\"` to disable decoding of incoming payload."
+	EntityCategory                *string     `json:"entity_category,omitempty"`          // "The [category](https://developers.home-assistant.io/docs/core/entity#generic-properties) of the entity."
+	Icon                          *string     `json:"icon,omitempty"`                     // "[Icon](/docs/configuration/customizing-devices/#icon) for the entity."
+	JsonAttributesTemplate        *string     `json:"json_attributes_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#processing-incoming-data) to extract the JSON dictionary from messages received on the `json_attributes_topic`. Usage example can be found in [MQTT sensor](/integrations/sensor.mqtt/#json-attributes-template-configuration) documentation."
+	JsonAttributes                *([]string) `json:"json_attributes,omitempty"`
 	MaxHumidity                   *int        `json:"max_humidity,omitempty"`          // "The minimum target humidity percentage that can be set."
 	MinHumidity                   *int        `json:"min_humidity,omitempty"`          // "The maximum target humidity percentage that can be set."
 	ModeCommandTemplate           *string     `json:"mode_command_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#processing-incoming-data) to generate the payload to send to `mode_command_topic`."
@@ -89,6 +91,12 @@ func (iDevice Humidifier) Translate() externaldevice.Humidifier {
 	}
 	if iDevice.Icon != nil {
 		eDevice.Icon = iDevice.Icon
+	}
+	if iDevice.JsonAttributesTemplate != nil {
+		eDevice.JsonAttributesTemplate = iDevice.JsonAttributesTemplate
+	}
+	if iDevice.JsonAttributes != nil {
+		eDevice.JsonAttributesFunc = common.ConstructCommandFunc(*iDevice.JsonAttributes)
 	}
 	if iDevice.MaxHumidity != nil {
 		eDevice.MaxHumidity = iDevice.MaxHumidity

@@ -19,10 +19,12 @@ type AlarmControlPanel struct {
 	CodeTriggerRequired    *bool       `json:"code_trigger_required,omitempty"` // "If true the code is required to trigger the alarm. If false the code is not validated."
 	CommandTemplate        *string     `json:"command_template,omitempty"`      // "The [template](/docs/configuration/templating/#processing-incoming-data) used for the command payload. Available variables: `action` and `code`."
 	Command                *([]string) `json:"command,omitempty"`
-	EnabledByDefault       *bool       `json:"enabled_by_default,omitempty"`        // "Flag which defines if the entity should be enabled when first added."
-	Encoding               *string     `json:"encoding,omitempty"`                  // "The encoding of the payloads received and published messages. Set to `\"\"` to disable decoding of incoming payload."
-	EntityCategory         *string     `json:"entity_category,omitempty"`           // "The [category](https://developers.home-assistant.io/docs/core/entity#generic-properties) of the entity."
-	Icon                   *string     `json:"icon,omitempty"`                      // "[Icon](/docs/configuration/customizing-devices/#icon) for the entity."
+	EnabledByDefault       *bool       `json:"enabled_by_default,omitempty"`       // "Flag which defines if the entity should be enabled when first added."
+	Encoding               *string     `json:"encoding,omitempty"`                 // "The encoding of the payloads received and published messages. Set to `\"\"` to disable decoding of incoming payload."
+	EntityCategory         *string     `json:"entity_category,omitempty"`          // "The [category](https://developers.home-assistant.io/docs/core/entity#generic-properties) of the entity."
+	Icon                   *string     `json:"icon,omitempty"`                     // "[Icon](/docs/configuration/customizing-devices/#icon) for the entity."
+	JsonAttributesTemplate *string     `json:"json_attributes_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#processing-incoming-data) to extract the JSON dictionary from messages received on the `json_attributes_topic`. Usage example can be found in [MQTT sensor](/integrations/sensor.mqtt/#json-attributes-template-configuration) documentation."
+	JsonAttributes         *([]string) `json:"json_attributes,omitempty"`
 	Name                   *string     `json:"name,omitempty"`                      // "The name of the alarm."
 	ObjectId               *string     `json:"object_id,omitempty"`                 // "Used instead of `name` for automatic generation of `entity_id`"
 	PayloadArmAway         *string     `json:"payload_arm_away,omitempty"`          // "The payload to set armed-away mode on your Alarm Panel."
@@ -92,6 +94,12 @@ func (iDevice AlarmControlPanel) Translate() externaldevice.AlarmControlPanel {
 	}
 	if iDevice.Icon != nil {
 		eDevice.Icon = iDevice.Icon
+	}
+	if iDevice.JsonAttributesTemplate != nil {
+		eDevice.JsonAttributesTemplate = iDevice.JsonAttributesTemplate
+	}
+	if iDevice.JsonAttributes != nil {
+		eDevice.JsonAttributesFunc = common.ConstructCommandFunc(*iDevice.JsonAttributes)
 	}
 	if iDevice.Name != nil {
 		eDevice.Name = iDevice.Name

@@ -7,8 +7,6 @@ import (
 var keyNames = []string{}
 
 var blacklistKeys = []string{
-	"json_attributes_template",
-	"json_attributes_topic",
 	"device",
 	"availability",
 }

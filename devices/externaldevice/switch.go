@@ -48,27 +48,30 @@ type Switch struct {
 		SwVersion        *string `json:"sw_version,omitempty"`        // "The firmware version of the device."
 		Viadevice        *string `json:"viadevice,omitempty"`         // null
 	} `json:"device,omitempty"`
-	DeviceClass         *string       `json:"device_class,omitempty"`          // "The [type/class](/integrations/switch/#device-class) of the switch to set the icon in the frontend."
-	EnabledByDefault    *bool         `json:"enabled_by_default,omitempty"`    // "Flag which defines if the entity should be enabled when first added."
-	Encoding            *string       `json:"encoding,omitempty"`              // "The encoding of the payloads received and published messages. Set to `\"\"` to disable decoding of incoming payload."
-	EntityCategory      *string       `json:"entity_category,omitempty"`       // "The [category](https://developers.home-assistant.io/docs/core/entity#generic-properties) of the entity."
-	Icon                *string       `json:"icon,omitempty"`                  // "[Icon](/docs/configuration/customizing-devices/#icon) for the entity."
-	Name                *string       `json:"name,omitempty"`                  // "The name to use when displaying this switch."
-	ObjectId            *string       `json:"object_id,omitempty"`             // "Used instead of `name` for automatic generation of `entity_id`"
-	Optimistic          *bool         `json:"optimistic,omitempty"`            // "Flag that defines if switch works in optimistic mode."
-	PayloadAvailable    *string       `json:"payload_available,omitempty"`     // "The payload that represents the available state."
-	PayloadNotAvailable *string       `json:"payload_not_available,omitempty"` // "The payload that represents the unavailable state."
-	PayloadOff          *string       `json:"payload_off,omitempty"`           // "The payload that represents `off` state. If specified, will be used for both comparing to the value in the `state_topic` (see `value_template` and `state_off` for details) and sending as `off` command to the `command_topic`."
-	PayloadOn           *string       `json:"payload_on,omitempty"`            // "The payload that represents `on` state. If specified, will be used for both comparing to the value in the `state_topic` (see `value_template` and `state_on`  for details) and sending as `on` command to the `command_topic`."
-	Qos                 *int          `json:"qos,omitempty"`                   // "The maximum QoS level of the state topic. Default is 0 and will also be used to publishing messages."
-	Retain              *bool         `json:"retain,omitempty"`                // "If the published message should have the retain flag on or not."
-	StateOff            *string       `json:"state_off,omitempty"`             // "The payload that represents the `off` state. Used when value that represents `off` state in the `state_topic` is different from value that should be sent to the `command_topic` to turn the device `off`."
-	StateOn             *string       `json:"state_on,omitempty"`              // "The payload that represents the `on` state. Used when value that represents `on` state in the `state_topic` is different from value that should be sent to the `command_topic` to turn the device `on`."
-	StateTopic          *string       `json:"state_topic,omitempty"`           // "The MQTT topic subscribed to receive state updates."
-	StateFunc           func() string `json:"-"`
-	UniqueId            *string       `json:"unique_id,omitempty"`      // "An ID that uniquely identifies this switch device. If two switches have the same unique ID, Home Assistant will raise an exception."
-	ValueTemplate       *string       `json:"value_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#processing-incoming-data) to extract device's state from the `state_topic`. To determine the switches's state result of this template will be compared to `state_on` and `state_off`."
-	MQTT                *MQTTFields   `json:"-"`
+	DeviceClass            *string                         `json:"device_class,omitempty"`             // "The [type/class](/integrations/switch/#device-class) of the switch to set the icon in the frontend."
+	EnabledByDefault       *bool                           `json:"enabled_by_default,omitempty"`       // "Flag which defines if the entity should be enabled when first added."
+	Encoding               *string                         `json:"encoding,omitempty"`                 // "The encoding of the payloads received and published messages. Set to `\"\"` to disable decoding of incoming payload."
+	EntityCategory         *string                         `json:"entity_category,omitempty"`          // "The [category](https://developers.home-assistant.io/docs/core/entity#generic-properties) of the entity."
+	Icon                   *string                         `json:"icon,omitempty"`                     // "[Icon](/docs/configuration/customizing-devices/#icon) for the entity."
+	JsonAttributesTemplate *string                         `json:"json_attributes_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#processing-incoming-data) to extract the JSON dictionary from messages received on the `json_attributes_topic`. Usage example can be found in [MQTT sensor](/integrations/sensor.mqtt/#json-attributes-template-configuration) documentation."
+	JsonAttributesTopic    *string                         `json:"json_attributes_topic,omitempty"`    // "The MQTT topic subscribed to receive a JSON dictionary payload and then set as sensor attributes. Usage example can be found in [MQTT sensor](/integrations/sensor.mqtt/#json-attributes-topic-configuration) documentation."
+	JsonAttributesFunc     func(mqtt.Message, mqtt.Client) `json:"-"`
+	Name                   *string                         `json:"name,omitempty"`                  // "The name to use when displaying this switch."
+	ObjectId               *string                         `json:"object_id,omitempty"`             // "Used instead of `name` for automatic generation of `entity_id`"
+	Optimistic             *bool                           `json:"optimistic,omitempty"`            // "Flag that defines if switch works in optimistic mode."
+	PayloadAvailable       *string                         `json:"payload_available,omitempty"`     // "The payload that represents the available state."
+	PayloadNotAvailable    *string                         `json:"payload_not_available,omitempty"` // "The payload that represents the unavailable state."
+	PayloadOff             *string                         `json:"payload_off,omitempty"`           // "The payload that represents `off` state. If specified, will be used for both comparing to the value in the `state_topic` (see `value_template` and `state_off` for details) and sending as `off` command to the `command_topic`."
+	PayloadOn              *string                         `json:"payload_on,omitempty"`            // "The payload that represents `on` state. If specified, will be used for both comparing to the value in the `state_topic` (see `value_template` and `state_on`  for details) and sending as `on` command to the `command_topic`."
+	Qos                    *int                            `json:"qos,omitempty"`                   // "The maximum QoS level of the state topic. Default is 0 and will also be used to publishing messages."
+	Retain                 *bool                           `json:"retain,omitempty"`                // "If the published message should have the retain flag on or not."
+	StateOff               *string                         `json:"state_off,omitempty"`             // "The payload that represents the `off` state. Used when value that represents `off` state in the `state_topic` is different from value that should be sent to the `command_topic` to turn the device `off`."
+	StateOn                *string                         `json:"state_on,omitempty"`              // "The payload that represents the `on` state. Used when value that represents `on` state in the `state_topic` is different from value that should be sent to the `command_topic` to turn the device `on`."
+	StateTopic             *string                         `json:"state_topic,omitempty"`           // "The MQTT topic subscribed to receive state updates."
+	StateFunc              func() string                   `json:"-"`
+	UniqueId               *string                         `json:"unique_id,omitempty"`      // "An ID that uniquely identifies this switch device. If two switches have the same unique ID, Home Assistant will raise an exception."
+	ValueTemplate          *string                         `json:"value_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#processing-incoming-data) to extract device's state from the `state_topic`. To determine the switches's state result of this template will be compared to `state_on` and `state_off`."
+	MQTT                   *MQTTFields                     `json:"-"`
 }
 
 func (d *Switch) UpdateState() {
@@ -102,6 +105,13 @@ func (d *Switch) Subscribe() {
 			log.Fatal(t.Error())
 		}
 	}
+	if d.JsonAttributesTopic != nil {
+		t := c.Subscribe(*d.JsonAttributesTopic, 0, d.MQTT.MessageHandler)
+		t.Wait()
+		if t.Error() != nil {
+			log.Fatal(t.Error())
+		}
+	}
 	token := c.Publish(GetDiscoveryTopic(d), 0, true, message)
 	token.Wait()
 	time.Sleep(common.HADiscoveryDelay)
@@ -114,6 +124,13 @@ func (d *Switch) UnSubscribe() {
 	token.Wait()
 	if d.CommandTopic != nil {
 		t := c.Unsubscribe(*d.CommandTopic)
+		t.Wait()
+		if t.Error() != nil {
+			log.Fatal(t.Error())
+		}
+	}
+	if d.JsonAttributesTopic != nil {
+		t := c.Unsubscribe(*d.JsonAttributesTopic)
 		t.Wait()
 		if t.Error() != nil {
 			log.Fatal(t.Error())
@@ -151,6 +168,11 @@ func (d *Switch) PopulateTopics() {
 		d.CommandTopic = new(string)
 		*d.CommandTopic = GetTopic(d, "command_topic")
 		store.TopicStore[*d.CommandTopic] = &d.CommandFunc
+	}
+	if d.JsonAttributesFunc != nil {
+		d.JsonAttributesTopic = new(string)
+		*d.JsonAttributesTopic = GetTopic(d, "json_attributes_topic")
+		store.TopicStore[*d.JsonAttributesTopic] = &d.JsonAttributesFunc
 	}
 	if d.StateFunc != nil {
 		d.StateTopic = new(string)

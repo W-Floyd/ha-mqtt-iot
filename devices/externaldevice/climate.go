@@ -66,9 +66,12 @@ type Climate struct {
 	FanModeStateTemplate           *string                         `json:"fan_mode_state_template,omitempty"` // "A template to render the value received on the `fan_mode_state_topic` with."
 	FanModeStateTopic              *string                         `json:"fan_mode_state_topic,omitempty"`    // "The MQTT topic to subscribe for changes of the HVAC fan mode. If this is not set, the fan mode works in optimistic mode (see below)."
 	FanModeStateFunc               func() string                   `json:"-"`
-	FanModes                       *([]string)                     `json:"fan_modes,omitempty"`             // "A list of supported fan modes."
-	Icon                           *string                         `json:"icon,omitempty"`                  // "[Icon](/docs/configuration/customizing-devices/#icon) for the entity."
-	Initial                        *int                            `json:"initial,omitempty"`               // "Set the initial target temperature."
+	FanModes                       *([]string)                     `json:"fan_modes,omitempty"`                // "A list of supported fan modes."
+	Icon                           *string                         `json:"icon,omitempty"`                     // "[Icon](/docs/configuration/customizing-devices/#icon) for the entity."
+	Initial                        *int                            `json:"initial,omitempty"`                  // "Set the initial target temperature."
+	JsonAttributesTemplate         *string                         `json:"json_attributes_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#processing-incoming-data) to extract the JSON dictionary from messages received on the `json_attributes_topic`. Usage example can be found in [MQTT sensor](/integrations/sensor.mqtt/#json-attributes-template-configuration) documentation."
+	JsonAttributesTopic            *string                         `json:"json_attributes_topic,omitempty"`    // "The MQTT topic subscribed to receive a JSON dictionary payload and then set as sensor attributes. Usage example can be found in [MQTT sensor](/integrations/sensor.mqtt/#json-attributes-topic-configuration) documentation."
+	JsonAttributesFunc             func(mqtt.Message, mqtt.Client) `json:"-"`
 	MaxTemp                        *float64                        `json:"max_temp,omitempty"`              // "Maximum set point available."
 	MinTemp                        *float64                        `json:"min_temp,omitempty"`              // "Minimum set point available."
 	ModeCommandTemplate            *string                         `json:"mode_command_template,omitempty"` // "A template to render the value sent to the `mode_command_topic` with."
@@ -237,6 +240,13 @@ func (d *Climate) Subscribe() {
 			log.Fatal(t.Error())
 		}
 	}
+	if d.JsonAttributesTopic != nil {
+		t := c.Subscribe(*d.JsonAttributesTopic, 0, d.MQTT.MessageHandler)
+		t.Wait()
+		if t.Error() != nil {
+			log.Fatal(t.Error())
+		}
+	}
 	if d.ModeCommandTopic != nil {
 		t := c.Subscribe(*d.ModeCommandTopic, 0, d.MQTT.MessageHandler)
 		t.Wait()
@@ -312,6 +322,13 @@ func (d *Climate) UnSubscribe() {
 	}
 	if d.FanModeCommandTopic != nil {
 		t := c.Unsubscribe(*d.FanModeCommandTopic)
+		t.Wait()
+		if t.Error() != nil {
+			log.Fatal(t.Error())
+		}
+	}
+	if d.JsonAttributesTopic != nil {
+		t := c.Unsubscribe(*d.JsonAttributesTopic)
 		t.Wait()
 		if t.Error() != nil {
 			log.Fatal(t.Error())
@@ -420,6 +437,11 @@ func (d *Climate) PopulateTopics() {
 	if d.FanModeStateFunc != nil {
 		d.FanModeStateTopic = new(string)
 		*d.FanModeStateTopic = GetTopic(d, "fan_mode_state_topic")
+	}
+	if d.JsonAttributesFunc != nil {
+		d.JsonAttributesTopic = new(string)
+		*d.JsonAttributesTopic = GetTopic(d, "json_attributes_topic")
+		store.TopicStore[*d.JsonAttributesTopic] = &d.JsonAttributesFunc
 	}
 	if d.ModeCommandFunc != nil {
 		d.ModeCommandTopic = new(string)

@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"sort"
 	"strings"
 
@@ -248,7 +247,6 @@ func main() {
 							}
 							trimmed := strings.TrimSuffix(strings.TrimSuffix(key, "topic"), "_")
 							cam := strcase.ToCamel(key)
-							fmt.Println(trimmed, cam)
 							camTrimmed := strcase.ToCamel(trimmed)
 							g.Add(
 								jen.If(

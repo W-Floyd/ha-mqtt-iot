@@ -13,13 +13,15 @@ type Sensor struct {
 	AvailabilityMode       *string     `json:"availability_mode,omitempty"`     // "When `availability` is configured, this controls the conditions needed to set the entity to `available`. Valid entries are `all`, `any`, and `latest`. If set to `all`, `payload_available` must be received on all configured availability topics before the entity is marked as online. If set to `any`, `payload_available` must be received on at least one configured availability topic before the entity is marked as online. If set to `latest`, the last `payload_available` or `payload_not_available` received on any configured availability topic controls the availability."
 	AvailabilityTemplate   *string     `json:"availability_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#processing-incoming-data) to extract device's availability from the `availability_topic`. To determine the devices's availability result of this template will be compared to `payload_available` and `payload_not_available`."
 	Availability           *([]string) `json:"availability,omitempty"`
-	DeviceClass            *string     `json:"device_class,omitempty"`              // "The [type/class](/integrations/sensor/#device-class) of the sensor to set the icon in the frontend."
-	EnabledByDefault       *bool       `json:"enabled_by_default,omitempty"`        // "Flag which defines if the entity should be enabled when first added."
-	Encoding               *string     `json:"encoding,omitempty"`                  // "The encoding of the payloads received. Set to `\"\"` to disable decoding of incoming payload."
-	EntityCategory         *string     `json:"entity_category,omitempty"`           // "The [category](https://developers.home-assistant.io/docs/core/entity#generic-properties) of the entity."
-	ExpireAfter            *int        `json:"expire_after,omitempty"`              // "Defines the number of seconds after the sensor's state expires, if it's not updated. After expiry, the sensor's state becomes `unavailable`."
-	ForceUpdate            *bool       `json:"force_update,omitempty"`              // "Sends update events even if the value hasn't changed. Useful if you want to have meaningful value graphs in history."
-	Icon                   *string     `json:"icon,omitempty"`                      // "[Icon](/docs/configuration/customizing-devices/#icon) for the entity."
+	DeviceClass            *string     `json:"device_class,omitempty"`             // "The [type/class](/integrations/sensor/#device-class) of the sensor to set the icon in the frontend."
+	EnabledByDefault       *bool       `json:"enabled_by_default,omitempty"`       // "Flag which defines if the entity should be enabled when first added."
+	Encoding               *string     `json:"encoding,omitempty"`                 // "The encoding of the payloads received. Set to `\"\"` to disable decoding of incoming payload."
+	EntityCategory         *string     `json:"entity_category,omitempty"`          // "The [category](https://developers.home-assistant.io/docs/core/entity#generic-properties) of the entity."
+	ExpireAfter            *int        `json:"expire_after,omitempty"`             // "Defines the number of seconds after the sensor's state expires, if it's not updated. After expiry, the sensor's state becomes `unavailable`."
+	ForceUpdate            *bool       `json:"force_update,omitempty"`             // "Sends update events even if the value hasn't changed. Useful if you want to have meaningful value graphs in history."
+	Icon                   *string     `json:"icon,omitempty"`                     // "[Icon](/docs/configuration/customizing-devices/#icon) for the entity."
+	JsonAttributesTemplate *string     `json:"json_attributes_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#processing-incoming-data) to extract the JSON dictionary from messages received on the `json_attributes_topic`."
+	JsonAttributes         *([]string) `json:"json_attributes,omitempty"`
 	LastResetValueTemplate *string     `json:"last_reset_value_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#processing-incoming-data) to extract the last_reset. Available variables: `entity_id`. The `entity_id` can be used to reference the entity's attributes."
 	Name                   *string     `json:"name,omitempty"`                      // "The name of the MQTT sensor."
 	ObjectId               *string     `json:"object_id,omitempty"`                 // "Used instead of `name` for automatic generation of `entity_id`"
@@ -75,6 +77,12 @@ func (iDevice Sensor) Translate() externaldevice.Sensor {
 	}
 	if iDevice.Icon != nil {
 		eDevice.Icon = iDevice.Icon
+	}
+	if iDevice.JsonAttributesTemplate != nil {
+		eDevice.JsonAttributesTemplate = iDevice.JsonAttributesTemplate
+	}
+	if iDevice.JsonAttributes != nil {
+		eDevice.JsonAttributesFunc = common.ConstructCommandFunc(*iDevice.JsonAttributes)
 	}
 	if iDevice.LastResetValueTemplate != nil {
 		eDevice.LastResetValueTemplate = iDevice.LastResetValueTemplate

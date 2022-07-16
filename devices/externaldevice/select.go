@@ -49,21 +49,24 @@ type Select struct {
 		SwVersion        *string `json:"sw_version,omitempty"`        // "The firmware version of the device."
 		Viadevice        *string `json:"viadevice,omitempty"`         // null
 	} `json:"device,omitempty"`
-	EnabledByDefault *bool         `json:"enabled_by_default,omitempty"` // "Flag which defines if the entity should be enabled when first added."
-	Encoding         *string       `json:"encoding,omitempty"`           // "The encoding of the payloads received and published messages. Set to `\"\"` to disable decoding of incoming payload."
-	EntityCategory   *string       `json:"entity_category,omitempty"`    // "The [category](https://developers.home-assistant.io/docs/core/entity#generic-properties) of the entity."
-	Icon             *string       `json:"icon,omitempty"`               // "[Icon](/docs/configuration/customizing-devices/#icon) for the entity."
-	Name             *string       `json:"name,omitempty"`               // "The name of the Select."
-	ObjectId         *string       `json:"object_id,omitempty"`          // "Used instead of `name` for automatic generation of `entity_id`"
-	Optimistic       *bool         `json:"optimistic,omitempty"`         // "Flag that defines if the select works in optimistic mode."
-	Options          *([]string)   `json:"options,omitempty"`            // "List of options that can be selected. An empty list or a list with a single item is allowed."
-	Qos              *int          `json:"qos,omitempty"`                // "The maximum QoS level of the state topic. Default is 0 and will also be used to publishing messages."
-	Retain           *bool         `json:"retain,omitempty"`             // "If the published message should have the retain flag on or not."
-	StateTopic       *string       `json:"state_topic,omitempty"`        // "The MQTT topic subscribed to receive update of the selected option."
-	StateFunc        func() string `json:"-"`
-	UniqueId         *string       `json:"unique_id,omitempty"`      // "An ID that uniquely identifies this Select. If two Selects have the same unique ID Home Assistant will raise an exception."
-	ValueTemplate    *string       `json:"value_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#processing-incoming-data) to extract the value."
-	MQTT             *MQTTFields   `json:"-"`
+	EnabledByDefault       *bool                           `json:"enabled_by_default,omitempty"`       // "Flag which defines if the entity should be enabled when first added."
+	Encoding               *string                         `json:"encoding,omitempty"`                 // "The encoding of the payloads received and published messages. Set to `\"\"` to disable decoding of incoming payload."
+	EntityCategory         *string                         `json:"entity_category,omitempty"`          // "The [category](https://developers.home-assistant.io/docs/core/entity#generic-properties) of the entity."
+	Icon                   *string                         `json:"icon,omitempty"`                     // "[Icon](/docs/configuration/customizing-devices/#icon) for the entity."
+	JsonAttributesTemplate *string                         `json:"json_attributes_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#processing-incoming-data) to extract the JSON dictionary from messages received on the `json_attributes_topic`."
+	JsonAttributesTopic    *string                         `json:"json_attributes_topic,omitempty"`    // "The MQTT topic subscribed to receive a JSON dictionary payload and then set as entity attributes. Implies `force_update` of the current select state when a message is received on this topic."
+	JsonAttributesFunc     func(mqtt.Message, mqtt.Client) `json:"-"`
+	Name                   *string                         `json:"name,omitempty"`        // "The name of the Select."
+	ObjectId               *string                         `json:"object_id,omitempty"`   // "Used instead of `name` for automatic generation of `entity_id`"
+	Optimistic             *bool                           `json:"optimistic,omitempty"`  // "Flag that defines if the select works in optimistic mode."
+	Options                *([]string)                     `json:"options,omitempty"`     // "List of options that can be selected. An empty list or a list with a single item is allowed."
+	Qos                    *int                            `json:"qos,omitempty"`         // "The maximum QoS level of the state topic. Default is 0 and will also be used to publishing messages."
+	Retain                 *bool                           `json:"retain,omitempty"`      // "If the published message should have the retain flag on or not."
+	StateTopic             *string                         `json:"state_topic,omitempty"` // "The MQTT topic subscribed to receive update of the selected option."
+	StateFunc              func() string                   `json:"-"`
+	UniqueId               *string                         `json:"unique_id,omitempty"`      // "An ID that uniquely identifies this Select. If two Selects have the same unique ID Home Assistant will raise an exception."
+	ValueTemplate          *string                         `json:"value_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#processing-incoming-data) to extract the value."
+	MQTT                   *MQTTFields                     `json:"-"`
 }
 
 func (d *Select) UpdateState() {
@@ -97,6 +100,13 @@ func (d *Select) Subscribe() {
 			log.Fatal(t.Error())
 		}
 	}
+	if d.JsonAttributesTopic != nil {
+		t := c.Subscribe(*d.JsonAttributesTopic, 0, d.MQTT.MessageHandler)
+		t.Wait()
+		if t.Error() != nil {
+			log.Fatal(t.Error())
+		}
+	}
 	token := c.Publish(GetDiscoveryTopic(d), 0, true, message)
 	token.Wait()
 	time.Sleep(common.HADiscoveryDelay)
@@ -109,6 +119,13 @@ func (d *Select) UnSubscribe() {
 	token.Wait()
 	if d.CommandTopic != nil {
 		t := c.Unsubscribe(*d.CommandTopic)
+		t.Wait()
+		if t.Error() != nil {
+			log.Fatal(t.Error())
+		}
+	}
+	if d.JsonAttributesTopic != nil {
+		t := c.Unsubscribe(*d.JsonAttributesTopic)
 		t.Wait()
 		if t.Error() != nil {
 			log.Fatal(t.Error())
@@ -146,6 +163,11 @@ func (d *Select) PopulateTopics() {
 		d.CommandTopic = new(string)
 		*d.CommandTopic = GetTopic(d, "command_topic")
 		store.TopicStore[*d.CommandTopic] = &d.CommandFunc
+	}
+	if d.JsonAttributesFunc != nil {
+		d.JsonAttributesTopic = new(string)
+		*d.JsonAttributesTopic = GetTopic(d, "json_attributes_topic")
+		store.TopicStore[*d.JsonAttributesTopic] = &d.JsonAttributesFunc
 	}
 	if d.StateFunc != nil {
 		d.StateTopic = new(string)

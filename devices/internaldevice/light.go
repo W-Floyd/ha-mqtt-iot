@@ -35,8 +35,10 @@ type Light struct {
 	EntityCategory            *string     `json:"entity_category,omitempty"`       // "The [category](https://developers.home-assistant.io/docs/core/entity#generic-properties) of the entity."
 	HsCommand                 *([]string) `json:"hs_command,omitempty"`
 	HsState                   *([]string) `json:"hs_state,omitempty"`
-	HsValueTemplate           *string     `json:"hs_value_template,omitempty"`     // "Defines a [template](/docs/configuration/templating/#processing-incoming-data) to extract the HS value."
-	Icon                      *string     `json:"icon,omitempty"`                  // "[Icon](/docs/configuration/customizing-devices/#icon) for the entity."
+	HsValueTemplate           *string     `json:"hs_value_template,omitempty"`        // "Defines a [template](/docs/configuration/templating/#processing-incoming-data) to extract the HS value."
+	Icon                      *string     `json:"icon,omitempty"`                     // "[Icon](/docs/configuration/customizing-devices/#icon) for the entity."
+	JsonAttributesTemplate    *string     `json:"json_attributes_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#processing-incoming-data) to extract the JSON dictionary from messages received on the `json_attributes_topic`. Usage example can be found in [MQTT sensor](/integrations/sensor.mqtt/#json-attributes-template-configuration) documentation."
+	JsonAttributes            *([]string) `json:"json_attributes,omitempty"`
 	MaxMireds                 *int        `json:"max_mireds,omitempty"`            // "The maximum color temperature in mireds."
 	MinMireds                 *int        `json:"min_mireds,omitempty"`            // "The minimum color temperature in mireds."
 	Name                      *string     `json:"name,omitempty"`                  // "The name of the light."
@@ -165,6 +167,12 @@ func (iDevice Light) Translate() externaldevice.Light {
 	}
 	if iDevice.Icon != nil {
 		eDevice.Icon = iDevice.Icon
+	}
+	if iDevice.JsonAttributesTemplate != nil {
+		eDevice.JsonAttributesTemplate = iDevice.JsonAttributesTemplate
+	}
+	if iDevice.JsonAttributes != nil {
+		eDevice.JsonAttributesFunc = common.ConstructCommandFunc(*iDevice.JsonAttributes)
 	}
 	if iDevice.MaxMireds != nil {
 		eDevice.MaxMireds = iDevice.MaxMireds

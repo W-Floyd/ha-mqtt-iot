@@ -3,6 +3,8 @@ package ExternalDevice
 import (
 	"encoding/json"
 	common "github.com/W-Floyd/ha-mqtt-iot/common"
+	store "github.com/W-Floyd/ha-mqtt-iot/store"
+	mqtt "github.com/eclipse/paho.mqtt.golang"
 	strcase "github.com/iancoleman/strcase"
 	"log"
 	"time"
@@ -44,26 +46,29 @@ type Sensor struct {
 		SwVersion        *string `json:"sw_version,omitempty"`        // "The firmware version of the device."
 		Viadevice        *string `json:"viadevice,omitempty"`         // null
 	} `json:"device,omitempty"`
-	DeviceClass            *string       `json:"device_class,omitempty"`              // "The [type/class](/integrations/sensor/#device-class) of the sensor to set the icon in the frontend."
-	EnabledByDefault       *bool         `json:"enabled_by_default,omitempty"`        // "Flag which defines if the entity should be enabled when first added."
-	Encoding               *string       `json:"encoding,omitempty"`                  // "The encoding of the payloads received. Set to `\"\"` to disable decoding of incoming payload."
-	EntityCategory         *string       `json:"entity_category,omitempty"`           // "The [category](https://developers.home-assistant.io/docs/core/entity#generic-properties) of the entity."
-	ExpireAfter            *int          `json:"expire_after,omitempty"`              // "Defines the number of seconds after the sensor's state expires, if it's not updated. After expiry, the sensor's state becomes `unavailable`."
-	ForceUpdate            *bool         `json:"force_update,omitempty"`              // "Sends update events even if the value hasn't changed. Useful if you want to have meaningful value graphs in history."
-	Icon                   *string       `json:"icon,omitempty"`                      // "[Icon](/docs/configuration/customizing-devices/#icon) for the entity."
-	LastResetValueTemplate *string       `json:"last_reset_value_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#processing-incoming-data) to extract the last_reset. Available variables: `entity_id`. The `entity_id` can be used to reference the entity's attributes."
-	Name                   *string       `json:"name,omitempty"`                      // "The name of the MQTT sensor."
-	ObjectId               *string       `json:"object_id,omitempty"`                 // "Used instead of `name` for automatic generation of `entity_id`"
-	PayloadAvailable       *string       `json:"payload_available,omitempty"`         // "The payload that represents the available state."
-	PayloadNotAvailable    *string       `json:"payload_not_available,omitempty"`     // "The payload that represents the unavailable state."
-	Qos                    *int          `json:"qos,omitempty"`                       // "The maximum QoS level of the state topic."
-	StateClass             *string       `json:"state_class,omitempty"`               // "The [state_class](https://developers.home-assistant.io/docs/core/entity/sensor#available-state-classes) of the sensor."
-	StateTopic             *string       `json:"state_topic,omitempty"`               // "The MQTT topic subscribed to receive sensor values."
-	StateFunc              func() string `json:"-"`
-	UniqueId               *string       `json:"unique_id,omitempty"`           // "An ID that uniquely identifies this sensor. If two sensors have the same unique ID, Home Assistant will raise an exception."
-	UnitOfMeasurement      *string       `json:"unit_of_measurement,omitempty"` // "Defines the units of measurement of the sensor, if any."
-	ValueTemplate          *string       `json:"value_template,omitempty"`      // "Defines a [template](/docs/configuration/templating/#processing-incoming-data) to extract the value. Available variables: `entity_id`. The `entity_id` can be used to reference the entity's attributes. If the template throws an error, the current state will be used instead."
-	MQTT                   *MQTTFields   `json:"-"`
+	DeviceClass            *string                         `json:"device_class,omitempty"`             // "The [type/class](/integrations/sensor/#device-class) of the sensor to set the icon in the frontend."
+	EnabledByDefault       *bool                           `json:"enabled_by_default,omitempty"`       // "Flag which defines if the entity should be enabled when first added."
+	Encoding               *string                         `json:"encoding,omitempty"`                 // "The encoding of the payloads received. Set to `\"\"` to disable decoding of incoming payload."
+	EntityCategory         *string                         `json:"entity_category,omitempty"`          // "The [category](https://developers.home-assistant.io/docs/core/entity#generic-properties) of the entity."
+	ExpireAfter            *int                            `json:"expire_after,omitempty"`             // "Defines the number of seconds after the sensor's state expires, if it's not updated. After expiry, the sensor's state becomes `unavailable`."
+	ForceUpdate            *bool                           `json:"force_update,omitempty"`             // "Sends update events even if the value hasn't changed. Useful if you want to have meaningful value graphs in history."
+	Icon                   *string                         `json:"icon,omitempty"`                     // "[Icon](/docs/configuration/customizing-devices/#icon) for the entity."
+	JsonAttributesTemplate *string                         `json:"json_attributes_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#processing-incoming-data) to extract the JSON dictionary from messages received on the `json_attributes_topic`."
+	JsonAttributesTopic    *string                         `json:"json_attributes_topic,omitempty"`    // "The MQTT topic subscribed to receive a JSON dictionary payload and then set as sensor attributes. Implies `force_update` of the current sensor state when a message is received on this topic."
+	JsonAttributesFunc     func(mqtt.Message, mqtt.Client) `json:"-"`
+	LastResetValueTemplate *string                         `json:"last_reset_value_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#processing-incoming-data) to extract the last_reset. Available variables: `entity_id`. The `entity_id` can be used to reference the entity's attributes."
+	Name                   *string                         `json:"name,omitempty"`                      // "The name of the MQTT sensor."
+	ObjectId               *string                         `json:"object_id,omitempty"`                 // "Used instead of `name` for automatic generation of `entity_id`"
+	PayloadAvailable       *string                         `json:"payload_available,omitempty"`         // "The payload that represents the available state."
+	PayloadNotAvailable    *string                         `json:"payload_not_available,omitempty"`     // "The payload that represents the unavailable state."
+	Qos                    *int                            `json:"qos,omitempty"`                       // "The maximum QoS level of the state topic."
+	StateClass             *string                         `json:"state_class,omitempty"`               // "The [state_class](https://developers.home-assistant.io/docs/core/entity/sensor#available-state-classes) of the sensor."
+	StateTopic             *string                         `json:"state_topic,omitempty"`               // "The MQTT topic subscribed to receive sensor values."
+	StateFunc              func() string                   `json:"-"`
+	UniqueId               *string                         `json:"unique_id,omitempty"`           // "An ID that uniquely identifies this sensor. If two sensors have the same unique ID, Home Assistant will raise an exception."
+	UnitOfMeasurement      *string                         `json:"unit_of_measurement,omitempty"` // "Defines the units of measurement of the sensor, if any."
+	ValueTemplate          *string                         `json:"value_template,omitempty"`      // "Defines a [template](/docs/configuration/templating/#processing-incoming-data) to extract the value. Available variables: `entity_id`. The `entity_id` can be used to reference the entity's attributes. If the template throws an error, the current state will be used instead."
+	MQTT                   *MQTTFields                     `json:"-"`
 }
 
 func (d *Sensor) UpdateState() {
@@ -90,6 +95,13 @@ func (d *Sensor) Subscribe() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	if d.JsonAttributesTopic != nil {
+		t := c.Subscribe(*d.JsonAttributesTopic, 0, d.MQTT.MessageHandler)
+		t.Wait()
+		if t.Error() != nil {
+			log.Fatal(t.Error())
+		}
+	}
 	token := c.Publish(GetDiscoveryTopic(d), 0, true, message)
 	token.Wait()
 	time.Sleep(common.HADiscoveryDelay)
@@ -100,6 +112,13 @@ func (d *Sensor) UnSubscribe() {
 	c := *d.MQTT.Client
 	token := c.Publish(*d.AvailabilityTopic, common.QoS, common.Retain, "offline")
 	token.Wait()
+	if d.JsonAttributesTopic != nil {
+		t := c.Unsubscribe(*d.JsonAttributesTopic)
+		t.Wait()
+		if t.Error() != nil {
+			log.Fatal(t.Error())
+		}
+	}
 }
 func (d *Sensor) AnnounceAvailable() {
 	c := *d.MQTT.Client
@@ -123,6 +142,11 @@ func (d *Sensor) PopulateTopics() {
 	if d.AvailabilityFunc != nil {
 		d.AvailabilityTopic = new(string)
 		*d.AvailabilityTopic = GetTopic(d, "availability_topic")
+	}
+	if d.JsonAttributesFunc != nil {
+		d.JsonAttributesTopic = new(string)
+		*d.JsonAttributesTopic = GetTopic(d, "json_attributes_topic")
+		store.TopicStore[*d.JsonAttributesTopic] = &d.JsonAttributesFunc
 	}
 	if d.StateFunc != nil {
 		d.StateTopic = new(string)

@@ -3,6 +3,8 @@ package ExternalDevice
 import (
 	"encoding/json"
 	common "github.com/W-Floyd/ha-mqtt-iot/common"
+	store "github.com/W-Floyd/ha-mqtt-iot/store"
+	mqtt "github.com/eclipse/paho.mqtt.golang"
 	strcase "github.com/iancoleman/strcase"
 	"log"
 	"time"
@@ -44,16 +46,19 @@ type Camera struct {
 		SwVersion        *string `json:"sw_version,omitempty"`        // "The firmware version of the device."
 		Viadevice        *string `json:"viadevice,omitempty"`         // null
 	} `json:"device,omitempty"`
-	EnabledByDefault *bool         `json:"enabled_by_default,omitempty"` // "Flag which defines if the entity should be enabled when first added."
-	Encoding         *string       `json:"encoding,omitempty"`           // "The encoding of the image payloads received. Set to `\"b64\"` to enable base64 decoding of image payload. If not set, or if set to `null`, the image payload must be raw binary data."
-	EntityCategory   *string       `json:"entity_category,omitempty"`    // "The [category](https://developers.home-assistant.io/docs/core/entity#generic-properties) of the entity."
-	Icon             *string       `json:"icon,omitempty"`               // "[Icon](/docs/configuration/customizing-devices/#icon) for the entity."
-	Name             *string       `json:"name,omitempty"`               // "The name of the camera."
-	ObjectId         *string       `json:"object_id,omitempty"`          // "Used instead of `name` for automatic generation of `entity_id`"
-	StateTopic       *string       `json:"topic,omitempty"`              // "The MQTT topic to subscribe to."
-	StateFunc        func() string `json:"-"`
-	UniqueId         *string       `json:"unique_id,omitempty"` // "An ID that uniquely identifies this camera. If two cameras have the same unique ID Home Assistant will raise an exception."
-	MQTT             *MQTTFields   `json:"-"`
+	EnabledByDefault       *bool                           `json:"enabled_by_default,omitempty"`       // "Flag which defines if the entity should be enabled when first added."
+	Encoding               *string                         `json:"encoding,omitempty"`                 // "The encoding of the image payloads received. Set to `\"b64\"` to enable base64 decoding of image payload. If not set, or if set to `null`, the image payload must be raw binary data."
+	EntityCategory         *string                         `json:"entity_category,omitempty"`          // "The [category](https://developers.home-assistant.io/docs/core/entity#generic-properties) of the entity."
+	Icon                   *string                         `json:"icon,omitempty"`                     // "[Icon](/docs/configuration/customizing-devices/#icon) for the entity."
+	JsonAttributesTemplate *string                         `json:"json_attributes_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#processing-incoming-data) to extract the JSON dictionary from messages received on the `json_attributes_topic`."
+	JsonAttributesTopic    *string                         `json:"json_attributes_topic,omitempty"`    // "The MQTT topic subscribed to receive a JSON dictionary payload and then set as sensor attributes. Implies `force_update` of the current sensor state when a message is received on this topic."
+	JsonAttributesFunc     func(mqtt.Message, mqtt.Client) `json:"-"`
+	Name                   *string                         `json:"name,omitempty"`      // "The name of the camera."
+	ObjectId               *string                         `json:"object_id,omitempty"` // "Used instead of `name` for automatic generation of `entity_id`"
+	StateTopic             *string                         `json:"topic,omitempty"`     // "The MQTT topic to subscribe to."
+	StateFunc              func() string                   `json:"-"`
+	UniqueId               *string                         `json:"unique_id,omitempty"` // "An ID that uniquely identifies this camera. If two cameras have the same unique ID Home Assistant will raise an exception."
+	MQTT                   *MQTTFields                     `json:"-"`
 }
 
 func (d *Camera) UpdateState() {
@@ -80,6 +85,13 @@ func (d *Camera) Subscribe() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	if d.JsonAttributesTopic != nil {
+		t := c.Subscribe(*d.JsonAttributesTopic, 0, d.MQTT.MessageHandler)
+		t.Wait()
+		if t.Error() != nil {
+			log.Fatal(t.Error())
+		}
+	}
 	token := c.Publish(GetDiscoveryTopic(d), 0, true, message)
 	token.Wait()
 	time.Sleep(common.HADiscoveryDelay)
@@ -90,6 +102,13 @@ func (d *Camera) UnSubscribe() {
 	c := *d.MQTT.Client
 	token := c.Publish(*d.AvailabilityTopic, common.QoS, common.Retain, "offline")
 	token.Wait()
+	if d.JsonAttributesTopic != nil {
+		t := c.Unsubscribe(*d.JsonAttributesTopic)
+		t.Wait()
+		if t.Error() != nil {
+			log.Fatal(t.Error())
+		}
+	}
 }
 func (d *Camera) AnnounceAvailable() {
 	c := *d.MQTT.Client
@@ -109,6 +128,11 @@ func (d *Camera) PopulateTopics() {
 	if d.AvailabilityFunc != nil {
 		d.AvailabilityTopic = new(string)
 		*d.AvailabilityTopic = GetTopic(d, "availability_topic")
+	}
+	if d.JsonAttributesFunc != nil {
+		d.JsonAttributesTopic = new(string)
+		*d.JsonAttributesTopic = GetTopic(d, "json_attributes_topic")
+		store.TopicStore[*d.JsonAttributesTopic] = &d.JsonAttributesFunc
 	}
 	if d.StateFunc != nil {
 		d.StateTopic = new(string)

@@ -27,9 +27,11 @@ type Climate struct {
 	FanModeCommand                 *([]string) `json:"fan_mode_command,omitempty"`
 	FanModeStateTemplate           *string     `json:"fan_mode_state_template,omitempty"` // "A template to render the value received on the `fan_mode_state_topic` with."
 	FanModeState                   *([]string) `json:"fan_mode_state,omitempty"`
-	FanModes                       *([]string) `json:"fan_modes,omitempty"`             // "A list of supported fan modes."
-	Icon                           *string     `json:"icon,omitempty"`                  // "[Icon](/docs/configuration/customizing-devices/#icon) for the entity."
-	Initial                        *int        `json:"initial,omitempty"`               // "Set the initial target temperature."
+	FanModes                       *([]string) `json:"fan_modes,omitempty"`                // "A list of supported fan modes."
+	Icon                           *string     `json:"icon,omitempty"`                     // "[Icon](/docs/configuration/customizing-devices/#icon) for the entity."
+	Initial                        *int        `json:"initial,omitempty"`                  // "Set the initial target temperature."
+	JsonAttributesTemplate         *string     `json:"json_attributes_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#processing-incoming-data) to extract the JSON dictionary from messages received on the `json_attributes_topic`. Usage example can be found in [MQTT sensor](/integrations/sensor.mqtt/#json-attributes-template-configuration) documentation."
+	JsonAttributes                 *([]string) `json:"json_attributes,omitempty"`
 	MaxTemp                        *float64    `json:"max_temp,omitempty"`              // "Maximum set point available."
 	MinTemp                        *float64    `json:"min_temp,omitempty"`              // "Minimum set point available."
 	ModeCommandTemplate            *string     `json:"mode_command_template,omitempty"` // "A template to render the value sent to the `mode_command_topic` with."
@@ -147,6 +149,12 @@ func (iDevice Climate) Translate() externaldevice.Climate {
 	}
 	if iDevice.Initial != nil {
 		eDevice.Initial = iDevice.Initial
+	}
+	if iDevice.JsonAttributesTemplate != nil {
+		eDevice.JsonAttributesTemplate = iDevice.JsonAttributesTemplate
+	}
+	if iDevice.JsonAttributes != nil {
+		eDevice.JsonAttributesFunc = common.ConstructCommandFunc(*iDevice.JsonAttributes)
 	}
 	if iDevice.MaxTemp != nil {
 		eDevice.MaxTemp = iDevice.MaxTemp

@@ -48,30 +48,33 @@ type Vacuum struct {
 		SwVersion        *string `json:"sw_version,omitempty"`        // "The firmware version of the device."
 		Viadevice        *string `json:"viadevice,omitempty"`         // null
 	} `json:"device,omitempty"`
-	Encoding            *string                         `json:"encoding,omitempty"`               // "The encoding of the payloads received and published messages. Set to `\"\"` to disable decoding of incoming payload."
-	FanSpeedList        *([]string)                     `json:"fan_speed_list,omitempty"`         // "List of possible fan speeds for the vacuum."
-	Name                *string                         `json:"name,omitempty"`                   // "The name of the vacuum."
-	ObjectId            *string                         `json:"object_id,omitempty"`              // "Used instead of `name` for automatic generation of `entity_id`"
-	PayloadAvailable    *string                         `json:"payload_available,omitempty"`      // "The payload that represents the available state."
-	PayloadCleanSpot    *string                         `json:"payload_clean_spot,omitempty"`     // "The payload to send to the `command_topic` to begin a spot cleaning cycle."
-	PayloadLocate       *string                         `json:"payload_locate,omitempty"`         // "The payload to send to the `command_topic` to locate the vacuum (typically plays a song)."
-	PayloadNotAvailable *string                         `json:"payload_not_available,omitempty"`  // "The payload that represents the unavailable state."
-	PayloadPause        *string                         `json:"payload_pause,omitempty"`          // "The payload to send to the `command_topic` to pause the vacuum."
-	PayloadReturnToBase *string                         `json:"payload_return_to_base,omitempty"` // "The payload to send to the `command_topic` to tell the vacuum to return to base."
-	PayloadStart        *string                         `json:"payload_start,omitempty"`          // "The payload to send to the `command_topic` to begin the cleaning cycle."
-	PayloadStop         *string                         `json:"payload_stop,omitempty"`           // "The payload to send to the `command_topic` to stop cleaning."
-	Qos                 *int                            `json:"qos,omitempty"`                    // "The maximum QoS level of the state topic."
-	Retain              *bool                           `json:"retain,omitempty"`                 // "If the published message should have the retain flag on or not."
-	Schema              *string                         `json:"schema,omitempty"`                 // "The schema to use. Must be `state` to select the state schema."
-	SendCommandTopic    *string                         `json:"send_command_topic,omitempty"`     // "The MQTT topic to publish custom commands to the vacuum."
-	SendCommandFunc     func(mqtt.Message, mqtt.Client) `json:"-"`
-	SetFanSpeedTopic    *string                         `json:"set_fan_speed_topic,omitempty"` // "The MQTT topic to publish commands to control the vacuum's fan speed."
-	SetFanSpeedFunc     func(mqtt.Message, mqtt.Client) `json:"-"`
-	StateTopic          *string                         `json:"state_topic,omitempty"` // "The MQTT topic subscribed to receive state messages from the vacuum. Messages received on the `state_topic` must be a valid JSON dictionary, with a mandatory `state` key and optionally `battery_level` and `fan_speed` keys as shown in the [example](#state-mqtt-protocol)."
-	StateFunc           func() string                   `json:"-"`
-	SupportedFeatures   *([]string)                     `json:"supported_features,omitempty"` // "List of features that the vacuum supports (possible values are `start`, `stop`, `pause`, `return_home`, `battery`, `status`, `locate`, `clean_spot`, `fan_speed`, `send_command`)."
-	UniqueId            *string                         `json:"unique_id,omitempty"`          // "An ID that uniquely identifies this vacuum. If two vacuums have the same unique ID, Home Assistant will raise an exception."
-	MQTT                *MQTTFields                     `json:"-"`
+	Encoding               *string                         `json:"encoding,omitempty"`                 // "The encoding of the payloads received and published messages. Set to `\"\"` to disable decoding of incoming payload."
+	FanSpeedList           *([]string)                     `json:"fan_speed_list,omitempty"`           // "List of possible fan speeds for the vacuum."
+	JsonAttributesTemplate *string                         `json:"json_attributes_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#processing-incoming-data) to extract the JSON dictionary from messages received on the `json_attributes_topic`. Usage example can be found in [MQTT sensor](/integrations/sensor.mqtt/#json-attributes-template-configuration) documentation."
+	JsonAttributesTopic    *string                         `json:"json_attributes_topic,omitempty"`    // "The MQTT topic subscribed to receive a JSON dictionary payload and then set as sensor attributes. Usage example can be found in [MQTT sensor](/integrations/sensor.mqtt/#json-attributes-topic-configuration) documentation."
+	JsonAttributesFunc     func(mqtt.Message, mqtt.Client) `json:"-"`
+	Name                   *string                         `json:"name,omitempty"`                   // "The name of the vacuum."
+	ObjectId               *string                         `json:"object_id,omitempty"`              // "Used instead of `name` for automatic generation of `entity_id`"
+	PayloadAvailable       *string                         `json:"payload_available,omitempty"`      // "The payload that represents the available state."
+	PayloadCleanSpot       *string                         `json:"payload_clean_spot,omitempty"`     // "The payload to send to the `command_topic` to begin a spot cleaning cycle."
+	PayloadLocate          *string                         `json:"payload_locate,omitempty"`         // "The payload to send to the `command_topic` to locate the vacuum (typically plays a song)."
+	PayloadNotAvailable    *string                         `json:"payload_not_available,omitempty"`  // "The payload that represents the unavailable state."
+	PayloadPause           *string                         `json:"payload_pause,omitempty"`          // "The payload to send to the `command_topic` to pause the vacuum."
+	PayloadReturnToBase    *string                         `json:"payload_return_to_base,omitempty"` // "The payload to send to the `command_topic` to tell the vacuum to return to base."
+	PayloadStart           *string                         `json:"payload_start,omitempty"`          // "The payload to send to the `command_topic` to begin the cleaning cycle."
+	PayloadStop            *string                         `json:"payload_stop,omitempty"`           // "The payload to send to the `command_topic` to stop cleaning."
+	Qos                    *int                            `json:"qos,omitempty"`                    // "The maximum QoS level of the state topic."
+	Retain                 *bool                           `json:"retain,omitempty"`                 // "If the published message should have the retain flag on or not."
+	Schema                 *string                         `json:"schema,omitempty"`                 // "The schema to use. Must be `state` to select the state schema."
+	SendCommandTopic       *string                         `json:"send_command_topic,omitempty"`     // "The MQTT topic to publish custom commands to the vacuum."
+	SendCommandFunc        func(mqtt.Message, mqtt.Client) `json:"-"`
+	SetFanSpeedTopic       *string                         `json:"set_fan_speed_topic,omitempty"` // "The MQTT topic to publish commands to control the vacuum's fan speed."
+	SetFanSpeedFunc        func(mqtt.Message, mqtt.Client) `json:"-"`
+	StateTopic             *string                         `json:"state_topic,omitempty"` // "The MQTT topic subscribed to receive state messages from the vacuum. Messages received on the `state_topic` must be a valid JSON dictionary, with a mandatory `state` key and optionally `battery_level` and `fan_speed` keys as shown in the [example](#state-mqtt-protocol)."
+	StateFunc              func() string                   `json:"-"`
+	SupportedFeatures      *([]string)                     `json:"supported_features,omitempty"` // "List of features that the vacuum supports (possible values are `start`, `stop`, `pause`, `return_home`, `battery`, `status`, `locate`, `clean_spot`, `fan_speed`, `send_command`)."
+	UniqueId               *string                         `json:"unique_id,omitempty"`          // "An ID that uniquely identifies this vacuum. If two vacuums have the same unique ID, Home Assistant will raise an exception."
+	MQTT                   *MQTTFields                     `json:"-"`
 }
 
 func (d *Vacuum) UpdateState() {
@@ -105,6 +108,13 @@ func (d *Vacuum) Subscribe() {
 			log.Fatal(t.Error())
 		}
 	}
+	if d.JsonAttributesTopic != nil {
+		t := c.Subscribe(*d.JsonAttributesTopic, 0, d.MQTT.MessageHandler)
+		t.Wait()
+		if t.Error() != nil {
+			log.Fatal(t.Error())
+		}
+	}
 	if d.SendCommandTopic != nil {
 		t := c.Subscribe(*d.SendCommandTopic, 0, d.MQTT.MessageHandler)
 		t.Wait()
@@ -131,6 +141,13 @@ func (d *Vacuum) UnSubscribe() {
 	token.Wait()
 	if d.CommandTopic != nil {
 		t := c.Unsubscribe(*d.CommandTopic)
+		t.Wait()
+		if t.Error() != nil {
+			log.Fatal(t.Error())
+		}
+	}
+	if d.JsonAttributesTopic != nil {
+		t := c.Unsubscribe(*d.JsonAttributesTopic)
 		t.Wait()
 		if t.Error() != nil {
 			log.Fatal(t.Error())
@@ -182,6 +199,11 @@ func (d *Vacuum) PopulateTopics() {
 		d.CommandTopic = new(string)
 		*d.CommandTopic = GetTopic(d, "command_topic")
 		store.TopicStore[*d.CommandTopic] = &d.CommandFunc
+	}
+	if d.JsonAttributesFunc != nil {
+		d.JsonAttributesTopic = new(string)
+		*d.JsonAttributesTopic = GetTopic(d, "json_attributes_topic")
+		store.TopicStore[*d.JsonAttributesTopic] = &d.JsonAttributesFunc
 	}
 	if d.SendCommandFunc != nil {
 		d.SendCommandTopic = new(string)
