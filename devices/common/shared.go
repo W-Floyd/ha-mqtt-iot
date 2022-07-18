@@ -12,7 +12,9 @@ func ConstructCommandFunc(command []string) (f func(message mqtt.Message, connec
 	var err error
 	return func(message mqtt.Message, connection mqtt.Client) {
 		localcom := command
-		localcom = append(localcom, string(message.Payload()))
+		if string(message.Payload()) != "" {
+			localcom = append(localcom, string(message.Payload()))
+		}
 		if len(command) > 0 {
 			var out []byte
 			if len(command) > 1 {
