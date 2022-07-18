@@ -6,6 +6,19 @@
         "warn": true,
         "mqtt": false
     },
+    "button": [
+        {
+            "name": "XPS Arch Lock",
+            "command": [
+                "dbus-send",
+                "--type=method_call",
+                "--dest=org.gnome.ScreenSaver",
+                "/org/gnome/ScreenSaver",
+                "org.gnome.ScreenSaver.Lock"
+            ],
+            "payload_press": ""
+        }
+    ],
     "camera": [
         {
             "name": "XPS Arch Camera",
@@ -39,11 +52,11 @@
                 "./scripts/laptop-backlight.sh",
                 "get-state"
             ],
-            "color_temp_command":[
+            "color_temp_command": [
                 "./scripts/monitor.sh",
                 "color-temp"
             ],
-            "color_temp_state":[
+            "color_temp_state": [
                 "./scripts/monitor.sh",
                 "color-temp-state"
             ],
