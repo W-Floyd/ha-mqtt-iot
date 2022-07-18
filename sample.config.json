@@ -23,8 +23,6 @@
     "light": [
         {
             "name": "XPS Arch Display",
-            "object_id": "xps-arch-display",
-            "unique_id": "xps-arch-display",
             "brightness_command": [
                 "./scripts/laptop-backlight.sh",
                 "set-brightness"
@@ -40,6 +38,14 @@
             "state": [
                 "./scripts/laptop-backlight.sh",
                 "get-state"
+            ],
+            "color_temp_command":[
+                "./scripts/monitor.sh",
+                "color-temp"
+            ],
+            "color_temp_state":[
+                "./scripts/monitor.sh",
+                "color-temp-state"
             ],
             "payload_off": "OFF",
             "payload_on": "ON",

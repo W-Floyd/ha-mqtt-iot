@@ -60,12 +60,12 @@ case "${com}" in
         __mired=0
     fi
     __kelvin="$(f2i "$(bc -l <<<"1000000/${__mired}")")"
-    ./scripts/run-in-user-session.sh gsettings set org.gnome.settings-daemon.plugins.color night-light-temperature "${__kelvin}"
+    gsettings set org.gnome.settings-daemon.plugins.color night-light-temperature "${__kelvin}"
     ;;
 "color-temp-state")
-    __kelvin="$(./scripts/run-in-user-session.sh gsettings get org.gnome.settings-daemon.plugins.color night-light-temperature)"
+    __kelvin="$(gsettings get org.gnome.settings-daemon.plugins.color night-light-temperature)"
     __mired="$(bc -l <<<"(1000000/${__kelvin/* /})/${__mired_scaler}-(${__mired_offset})")"
-    echo -n "$(f2i "$(bc -l <<<"1000000/${__mired}")")"
+    echo "${__mired}"
     ;;
 "brightness")
     ddccontrol -r "${__monitor_brightness}" "${__monitor_i2c}" -w "${arg}"
