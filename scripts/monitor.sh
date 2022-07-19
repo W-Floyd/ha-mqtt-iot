@@ -64,7 +64,7 @@ case "${com}" in
     ;;
 "color-temp-state")
     __kelvin="$(gsettings get org.gnome.settings-daemon.plugins.color night-light-temperature)"
-    __mired="$(bc -l <<<"(1000000/${__kelvin/* /})/${__mired_scaler}-(${__mired_offset})")"
+    __mired="$(bc <<<"(1000000/${__kelvin/* /})/${__mired_scaler}-(${__mired_offset})")"
     echo "${__mired}"
     ;;
 "brightness")
