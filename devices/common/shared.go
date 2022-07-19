@@ -1,10 +1,10 @@
 package CommonDevices
 
 import (
-	"log"
 	"os/exec"
 	"strings"
 
+	"github.com/W-Floyd/ha-mqtt-iot/common"
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 )
 
@@ -23,12 +23,12 @@ func ConstructCommandFunc(command []string) (f func(message mqtt.Message, connec
 				out, err = exec.Command(localcom[0]).Output()
 			}
 			if err != nil {
-				log.Println("Error running command", localcom)
-				log.Println(string(out))
-				log.Printf("%s", err)
+				common.LogWarning("Error running command", localcom)
+				common.LogWarning(string(out))
+				common.LogWarning(err)
 			} else {
-				log.Println("Ran", localcom)
-				log.Println(string(out))
+				common.LogDebug("Ran", localcom)
+				common.LogDebug(string(out))
 			}
 
 		}
@@ -45,12 +45,12 @@ func ConstructStateFunc(command []string) (f func() string) {
 			out, err = exec.Command(command[0]).Output()
 		}
 		if err != nil {
-			log.Println("Error running state command", command)
-			log.Println(string(out))
-			log.Printf("%s", err)
+			common.LogWarning("Error running state command", command)
+			common.LogWarning(string(out))
+			common.LogWarning(err)
 		} else {
-			log.Println("Ran", command)
-			log.Println(string(out))
+			common.LogDebug("Ran", command)
+			common.LogDebug(string(out))
 		}
 
 		return string(strings.TrimRight(string(out), "\n"))

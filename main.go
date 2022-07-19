@@ -81,6 +81,11 @@ func main() {
 		mqtt.CRITICAL = common.CriticalLog
 	}
 
+	common.LogState.Debug = sconfig.Logging.Debug
+	common.LogState.Warn = sconfig.Logging.Warn
+	common.LogState.Error = sconfig.Logging.Error
+	common.LogState.Critical = sconfig.Logging.Critical
+
 	opts.SetOnConnectHandler(
 		func(c mqtt.Client) {
 			for _, d := range devices {
