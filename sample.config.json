@@ -64,6 +64,26 @@
             }
         }
     ],
+    "lock": [
+        {
+            "name": "XPS Arch Screen Lock",
+            "state": [
+                "./scripts/screenlock.sh",
+                "state"
+            ],
+            "command": [
+                "./scripts/screenlock.sh",
+                "command"
+            ],
+            "payload_lock": "lock",
+            "payload_unlock": "unlock",
+            "state_unlocked": "false",
+            "state_locked": "true",
+            "mqtt": {
+                "update_interval": 1
+            }
+        }
+    ],
     "select": [
         {
             "name": "Power Mode",
