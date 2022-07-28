@@ -41,7 +41,7 @@ case "${com}" in
     ;;
 
 "state")
-    dbus-send --print-reply --session --type=method_call --dest=org.gnome.ScreenSaver /org/gnome/ScreenSaver org.gnome.ScreenSaver.GetActive | tail -n 1 | grep -Eo '[^ ]*$'
+    dbus-send --print-reply --session --type=method_call --dest=org.freedesktop.ScreenSaver /ScreenSaver org.freedesktop.ScreenSaver.GetActive | tail -n 1 | grep -Eo '[^ ]*$'
     ;;
 
 *)
