@@ -12,7 +12,12 @@ if [ "$(wc -l <<<"${__current_session}")" -gt 1 ]; then
 fi
 
 __error() {
-    echo "Error parsing ${__args}"
+    if [ -z "${1}" ]; then
+        echo "Error parsing ${__args}"
+    else
+        echo "${1}"
+    fi
+    exit 1
 }
 
 com="${1}"
@@ -41,12 +46,15 @@ case "${com}" in
     ;;
 
 "state")
-    case "$XDG_CURRENT_DESKTOP" in
+    case "${XDG_CURRENT_DESKTOP}" in
     "GNOME")
         dbus-send --print-reply --session --type=method_call --dest=org.gnome.ScreenSaver /org/gnome/ScreenSaver org.gnome.ScreenSaver.GetActive | tail -n 1 | grep -Eo '[^ ]*$'
         ;;
     "KDE")
         dbus-send --print-reply --session --type=method_call --dest=org.kde.screensaver /ScreenSaver org.freedesktop.ScreenSaver.GetActive | tail -n 1 | grep -Eo '[^ ]*$'
+        ;;
+    *)
+        __error "Unknown desktop environment ${XDG_CURRENT_DESKTOP}"
         ;;
     esac
     ;;
