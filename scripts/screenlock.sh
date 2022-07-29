@@ -41,9 +41,15 @@ case "${com}" in
     ;;
 
 "state")
-    dbus-send --print-reply --session --type=method_call --dest=org.freedesktop.ScreenSaver /ScreenSaver org.freedesktop.ScreenSaver.GetActive | tail -n 1 | grep -Eo '[^ ]*$'
+    case "$XDG_CURRENT_DESKTOP" in
+    "GNOME")
+        dbus-send --print-reply --session --type=method_call --dest=org.gnome.ScreenSaver /org/gnome/ScreenSaver org.gnome.ScreenSaver.GetActive | tail -n 1 | grep -Eo '[^ ]*$'
+        ;;
+    "KDE")
+        dbus-send --print-reply --session --type=method_call --dest=org.kde.screensaver /ScreenSaver org.freedesktop.ScreenSaver.GetActive | tail -n 1 | grep -Eo '[^ ]*$'
+        ;;
+    esac
     ;;
-
 *)
     __error
     ;;
