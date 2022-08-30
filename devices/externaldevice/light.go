@@ -10,12 +10,12 @@ import (
 	"time"
 )
 
-////////////////////////////////////////////////////////////////////////////////
+// //////////////////////////////////////////////////////////////////////////////
 // Do not modify this file, it is automatically generated
-////////////////////////////////////////////////////////////////////////////////
+// //////////////////////////////////////////////////////////////////////////////
 type Light struct {
 	AvailabilityMode          *string                         `json:"availability_mode,omitempty"`     // "When `availability` is configured, this controls the conditions needed to set the entity to `available`. Valid entries are `all`, `any`, and `latest`. If set to `all`, `payload_available` must be received on all configured availability topics before the entity is marked as online. If set to `any`, `payload_available` must be received on at least one configured availability topic before the entity is marked as online. If set to `latest`, the last `payload_available` or `payload_not_available` received on any configured availability topic controls the availability."
-	AvailabilityTemplate      *string                         `json:"availability_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#processing-incoming-data) to extract device's availability from the `availability_topic`. To determine the devices's availability result of this template will be compared to `payload_available` and `payload_not_available`."
+	AvailabilityTemplate      *string                         `json:"availability_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract device's availability from the `availability_topic`. To determine the devices's availability result of this template will be compared to `payload_available` and `payload_not_available`."
 	AvailabilityTopic         *string                         `json:"availability_topic,omitempty"`    // "The MQTT topic subscribed to receive availability (online/offline) updates. Must not be used together with `availability`."
 	AvailabilityFunc          func() string                   `json:"-"`
 	BrightnessCommandTemplate *string                         `json:"brightness_command_template,omitempty"` // "Defines a [template](/docs/configuration/templating/) to compose message which will be sent to `brightness_command_topic`. Available variables: `value`."
@@ -24,16 +24,16 @@ type Light struct {
 	BrightnessScale           *int                            `json:"brightness_scale,omitempty"`       // "Defines the maximum brightness value (i.e., 100%) of the MQTT device."
 	BrightnessStateTopic      *string                         `json:"brightness_state_topic,omitempty"` // "The MQTT topic subscribed to receive brightness state updates."
 	BrightnessStateFunc       func() string                   `json:"-"`
-	BrightnessValueTemplate   *string                         `json:"brightness_value_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#processing-incoming-data) to extract the brightness value."
+	BrightnessValueTemplate   *string                         `json:"brightness_value_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract the brightness value."
 	ColorModeStateTopic       *string                         `json:"color_mode_state_topic,omitempty"`    // "The MQTT topic subscribed to receive color mode updates. If this is not configured, `color_mode` will be automatically set according to the last received valid color or color temperature"
 	ColorModeStateFunc        func() string                   `json:"-"`
-	ColorModeValueTemplate    *string                         `json:"color_mode_value_template,omitempty"`   // "Defines a [template](/docs/configuration/templating/#processing-incoming-data) to extract the color mode."
+	ColorModeValueTemplate    *string                         `json:"color_mode_value_template,omitempty"`   // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract the color mode."
 	ColorTempCommandTemplate  *string                         `json:"color_temp_command_template,omitempty"` // "Defines a [template](/docs/configuration/templating/) to compose message which will be sent to `color_temp_command_topic`. Available variables: `value`."
 	ColorTempCommandTopic     *string                         `json:"color_temp_command_topic,omitempty"`    // "The MQTT topic to publish commands to change the light’s color temperature state. The color temperature command slider has a range of 153 to 500 mireds (micro reciprocal degrees)."
 	ColorTempCommandFunc      func(mqtt.Message, mqtt.Client) `json:"-"`
 	ColorTempStateTopic       *string                         `json:"color_temp_state_topic,omitempty"` // "The MQTT topic subscribed to receive color temperature state updates."
 	ColorTempStateFunc        func() string                   `json:"-"`
-	ColorTempValueTemplate    *string                         `json:"color_temp_value_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#processing-incoming-data) to extract the color temperature value."
+	ColorTempValueTemplate    *string                         `json:"color_temp_value_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract the color temperature value."
 	CommandTopic              *string                         `json:"command_topic,omitempty"`             // "The MQTT topic to publish commands to change the switch state."
 	CommandFunc               func(mqtt.Message, mqtt.Client) `json:"-"`
 	Device                    struct {
@@ -53,7 +53,7 @@ type Light struct {
 	EffectList             *([]string)                     `json:"effect_list,omitempty"`        // "The list of effects the light supports."
 	EffectStateTopic       *string                         `json:"effect_state_topic,omitempty"` // "The MQTT topic subscribed to receive effect state updates."
 	EffectStateFunc        func() string                   `json:"-"`
-	EffectValueTemplate    *string                         `json:"effect_value_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#processing-incoming-data) to extract the effect value."
+	EffectValueTemplate    *string                         `json:"effect_value_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract the effect value."
 	EnabledByDefault       *bool                           `json:"enabled_by_default,omitempty"`    // "Flag which defines if the entity should be enabled when first added."
 	Encoding               *string                         `json:"encoding,omitempty"`              // "The encoding of the payloads received and published messages. Set to `\"\"` to disable decoding of incoming payload."
 	EntityCategory         *string                         `json:"entity_category,omitempty"`       // "The [category](https://developers.home-assistant.io/docs/core/entity#generic-properties) of the entity."
@@ -61,9 +61,9 @@ type Light struct {
 	HsCommandFunc          func(mqtt.Message, mqtt.Client) `json:"-"`
 	HsStateTopic           *string                         `json:"hs_state_topic,omitempty"` // "The MQTT topic subscribed to receive color state updates in HS format. Note: Brightness is received separately in the `brightness_state_topic`."
 	HsStateFunc            func() string                   `json:"-"`
-	HsValueTemplate        *string                         `json:"hs_value_template,omitempty"`        // "Defines a [template](/docs/configuration/templating/#processing-incoming-data) to extract the HS value."
+	HsValueTemplate        *string                         `json:"hs_value_template,omitempty"`        // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract the HS value."
 	Icon                   *string                         `json:"icon,omitempty"`                     // "[Icon](/docs/configuration/customizing-devices/#icon) for the entity."
-	JsonAttributesTemplate *string                         `json:"json_attributes_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#processing-incoming-data) to extract the JSON dictionary from messages received on the `json_attributes_topic`. Usage example can be found in [MQTT sensor](/integrations/sensor.mqtt/#json-attributes-template-configuration) documentation."
+	JsonAttributesTemplate *string                         `json:"json_attributes_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract the JSON dictionary from messages received on the `json_attributes_topic`. Usage example can be found in [MQTT sensor](/integrations/sensor.mqtt/#json-attributes-template-configuration) documentation."
 	JsonAttributesTopic    *string                         `json:"json_attributes_topic,omitempty"`    // "The MQTT topic subscribed to receive a JSON dictionary payload and then set as sensor attributes. Usage example can be found in [MQTT sensor](/integrations/sensor.mqtt/#json-attributes-topic-configuration) documentation."
 	JsonAttributesFunc     func(mqtt.Message, mqtt.Client) `json:"-"`
 	MaxMireds              *int                            `json:"max_mireds,omitempty"`            // "The maximum color temperature in mireds."
@@ -83,23 +83,23 @@ type Light struct {
 	RgbCommandFunc         func(mqtt.Message, mqtt.Client) `json:"-"`
 	RgbStateTopic          *string                         `json:"rgb_state_topic,omitempty"` // "The MQTT topic subscribed to receive RGB state updates. The expected payload is the RGB values separated by commas, for example, `255,0,127`."
 	RgbStateFunc           func() string                   `json:"-"`
-	RgbValueTemplate       *string                         `json:"rgb_value_template,omitempty"`    // "Defines a [template](/docs/configuration/templating/#processing-incoming-data) to extract the RGB value."
+	RgbValueTemplate       *string                         `json:"rgb_value_template,omitempty"`    // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract the RGB value."
 	RgbwCommandTemplate    *string                         `json:"rgbw_command_template,omitempty"` // "Defines a [template](/docs/configuration/templating/) to compose message which will be sent to `rgbw_command_topic`. Available variables: `red`, `green`, `blue` and `white`."
 	RgbwCommandTopic       *string                         `json:"rgbw_command_topic,omitempty"`    // "The MQTT topic to publish commands to change the light's RGBW state."
 	RgbwCommandFunc        func(mqtt.Message, mqtt.Client) `json:"-"`
 	RgbwStateTopic         *string                         `json:"rgbw_state_topic,omitempty"` // "The MQTT topic subscribed to receive RGBW state updates. The expected payload is the RGBW values separated by commas, for example, `255,0,127,64`."
 	RgbwStateFunc          func() string                   `json:"-"`
-	RgbwValueTemplate      *string                         `json:"rgbw_value_template,omitempty"`    // "Defines a [template](/docs/configuration/templating/#processing-incoming-data) to extract the RGBW value."
+	RgbwValueTemplate      *string                         `json:"rgbw_value_template,omitempty"`    // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract the RGBW value."
 	RgbwwCommandTemplate   *string                         `json:"rgbww_command_template,omitempty"` // "Defines a [template](/docs/configuration/templating/) to compose message which will be sent to `rgbww_command_topic`. Available variables: `red`, `green`, `blue`, `cold_white` and `warm_white`."
 	RgbwwCommandTopic      *string                         `json:"rgbww_command_topic,omitempty"`    // "The MQTT topic to publish commands to change the light's RGBWW state."
 	RgbwwCommandFunc       func(mqtt.Message, mqtt.Client) `json:"-"`
 	RgbwwStateTopic        *string                         `json:"rgbww_state_topic,omitempty"` // "The MQTT topic subscribed to receive RGBWW state updates. The expected payload is the RGBWW values separated by commas, for example, `255,0,127,64,32`."
 	RgbwwStateFunc         func() string                   `json:"-"`
-	RgbwwValueTemplate     *string                         `json:"rgbww_value_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#processing-incoming-data) to extract the RGBWW value."
+	RgbwwValueTemplate     *string                         `json:"rgbww_value_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract the RGBWW value."
 	Schema                 *string                         `json:"schema,omitempty"`               // "The schema to use. Must be `default` or omitted to select the default schema."
 	StateTopic             *string                         `json:"state_topic,omitempty"`          // "The MQTT topic subscribed to receive state updates."
 	StateFunc              func() string                   `json:"-"`
-	StateValueTemplate     *string                         `json:"state_value_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#processing-incoming-data) to extract the state value. The template should match the payload `on` and `off` values, so if your light uses `power on` to turn on, your `state_value_template` string should return `power on` when the switch is on. For example if the message is just `on`, your `state_value_template` should be `power {{ value }}`."
+	StateValueTemplate     *string                         `json:"state_value_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract the state value. The template should match the payload `on` and `off` values, so if your light uses `power on` to turn on, your `state_value_template` string should return `power on` when the switch is on. For example if the message is just `on`, your `state_value_template` should be `power {{ value }}`."
 	UniqueId               *string                         `json:"unique_id,omitempty"`            // "An ID that uniquely identifies this light. If two lights have the same unique ID, Home Assistant will raise an exception."
 	WhiteCommandTopic      *string                         `json:"white_command_topic,omitempty"`  // "The MQTT topic to publish commands to change the light to white mode with a given brightness."
 	WhiteCommandFunc       func(mqtt.Message, mqtt.Client) `json:"-"`
@@ -108,7 +108,7 @@ type Light struct {
 	XyCommandFunc          func(mqtt.Message, mqtt.Client) `json:"-"`
 	XyStateTopic           *string                         `json:"xy_state_topic,omitempty"` // "The MQTT topic subscribed to receive XY state updates."
 	XyStateFunc            func() string                   `json:"-"`
-	XyValueTemplate        *string                         `json:"xy_value_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#processing-incoming-data) to extract the XY value."
+	XyValueTemplate        *string                         `json:"xy_value_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract the XY value."
 	MQTT                   *MQTTFields                     `json:"-"`
 }
 

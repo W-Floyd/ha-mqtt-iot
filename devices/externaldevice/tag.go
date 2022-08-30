@@ -7,9 +7,9 @@ import (
 	"time"
 )
 
-////////////////////////////////////////////////////////////////////////////////
+// //////////////////////////////////////////////////////////////////////////////
 // Do not modify this file, it is automatically generated
-////////////////////////////////////////////////////////////////////////////////
+// //////////////////////////////////////////////////////////////////////////////
 type Tag struct {
 	Device struct {
 		ConfigurationUrl *string `json:"configuration_url,omitempty"` // "A link to the webpage that can manage the configuration of this device. Can be either an HTTP or HTTPS link."
@@ -24,7 +24,7 @@ type Tag struct {
 	} `json:"device,omitempty"`
 	StateTopic    *string       `json:"topic,omitempty"` // "The MQTT topic subscribed to receive tag scanned events."
 	StateFunc     func() string `json:"-"`
-	ValueTemplate *string       `json:"value_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#processing-incoming-data) that returns a tag ID."
+	ValueTemplate *string       `json:"value_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) that returns a tag ID."
 	MQTT          *MQTTFields   `json:"-"`
 }
 

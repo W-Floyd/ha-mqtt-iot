@@ -10,9 +10,9 @@ import (
 	"time"
 )
 
-////////////////////////////////////////////////////////////////////////////////
+// //////////////////////////////////////////////////////////////////////////////
 // Do not modify this file, it is automatically generated
-////////////////////////////////////////////////////////////////////////////////
+// //////////////////////////////////////////////////////////////////////////////
 type Climate struct {
 	ActionTemplate             *string                         `json:"action_template,omitempty"` // "A template to render the value received on the `action_topic` with."
 	ActionTopic                *string                         `json:"action_topic,omitempty"`    // "The MQTT topic to subscribe for changes of the current action. If this is set, the climate graph uses the value received as data source. Valid values: `off`, `heating`, `cooling`, `drying`, `idle`, `fan`."
@@ -23,7 +23,7 @@ type Climate struct {
 	AuxStateTopic              *string                         `json:"aux_state_topic,omitempty"`    // "The MQTT topic to subscribe for changes of the auxiliary heat mode. If this is not set, the auxiliary heat mode works in optimistic mode (see below)."
 	AuxStateFunc               func() string                   `json:"-"`
 	AvailabilityMode           *string                         `json:"availability_mode,omitempty"`     // "When `availability` is configured, this controls the conditions needed to set the entity to `available`. Valid entries are `all`, `any`, and `latest`. If set to `all`, `payload_available` must be received on all configured availability topics before the entity is marked as online. If set to `any`, `payload_available` must be received on at least one configured availability topic before the entity is marked as online. If set to `latest`, the last `payload_available` or `payload_not_available` received on any configured availability topic controls the availability."
-	AvailabilityTemplate       *string                         `json:"availability_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#processing-incoming-data) to extract device's availability from the `availability_topic`. To determine the devices's availability result of this template will be compared to `payload_available` and `payload_not_available`."
+	AvailabilityTemplate       *string                         `json:"availability_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract device's availability from the `availability_topic`. To determine the devices's availability result of this template will be compared to `payload_available` and `payload_not_available`."
 	AvailabilityTopic          *string                         `json:"availability_topic,omitempty"`    // "The MQTT topic subscribed to receive availability (online/offline) updates. Must not be used together with `availability`."
 	AvailabilityFunc           func() string                   `json:"-"`
 	CurrentTemperatureTemplate *string                         `json:"current_temperature_template,omitempty"` // "A template with which the value received on `current_temperature_topic` will be rendered."
@@ -52,7 +52,7 @@ type Climate struct {
 	FanModes                       *([]string)                     `json:"fan_modes,omitempty"`                // "A list of supported fan modes."
 	Icon                           *string                         `json:"icon,omitempty"`                     // "[Icon](/docs/configuration/customizing-devices/#icon) for the entity."
 	Initial                        *int                            `json:"initial,omitempty"`                  // "Set the initial target temperature."
-	JsonAttributesTemplate         *string                         `json:"json_attributes_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#processing-incoming-data) to extract the JSON dictionary from messages received on the `json_attributes_topic`. Usage example can be found in [MQTT sensor](/integrations/sensor.mqtt/#json-attributes-template-configuration) documentation."
+	JsonAttributesTemplate         *string                         `json:"json_attributes_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract the JSON dictionary from messages received on the `json_attributes_topic`. Usage example can be found in [MQTT sensor](/integrations/sensor.mqtt/#json-attributes-template-configuration) documentation."
 	JsonAttributesTopic            *string                         `json:"json_attributes_topic,omitempty"`    // "The MQTT topic subscribed to receive a JSON dictionary payload and then set as sensor attributes. Usage example can be found in [MQTT sensor](/integrations/sensor.mqtt/#json-attributes-topic-configuration) documentation."
 	JsonAttributesFunc             func(mqtt.Message, mqtt.Client) `json:"-"`
 	MaxTemp                        *float64                        `json:"max_temp,omitempty"`              // "Maximum set point available."
@@ -73,12 +73,12 @@ type Climate struct {
 	PowerCommandTopic              *string                         `json:"power_command_topic,omitempty"`   // "The MQTT topic to publish commands to change the power state. This is useful if your device has a separate power toggle in addition to mode."
 	PowerCommandFunc               func(mqtt.Message, mqtt.Client) `json:"-"`
 	Precision                      *float64                        `json:"precision,omitempty"`                    // "The desired precision for this device. Can be used to match your actual thermostat's precision. Supported values are `0.1`, `0.5` and `1.0`."
-	PresetModeCommandTemplate      *string                         `json:"preset_mode_command_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#processing-incoming-data) to generate the payload to send to `preset_mode_command_topic`."
+	PresetModeCommandTemplate      *string                         `json:"preset_mode_command_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to generate the payload to send to `preset_mode_command_topic`."
 	PresetModeCommandTopic         *string                         `json:"preset_mode_command_topic,omitempty"`    // "The MQTT topic to publish commands to change the preset mode."
 	PresetModeCommandFunc          func(mqtt.Message, mqtt.Client) `json:"-"`
 	PresetModeStateTopic           *string                         `json:"preset_mode_state_topic,omitempty"` // "The MQTT topic subscribed to receive climate speed based on presets. When preset 'none' is received or `None` the `preset_mode` will be reset."
 	PresetModeStateFunc            func() string                   `json:"-"`
-	PresetModeValueTemplate        *string                         `json:"preset_mode_value_template,omitempty"`  // "Defines a [template](/docs/configuration/templating/#processing-incoming-data) to extract the `preset_mode` value from the payload received on `preset_mode_state_topic`."
+	PresetModeValueTemplate        *string                         `json:"preset_mode_value_template,omitempty"`  // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract the `preset_mode` value from the payload received on `preset_mode_state_topic`."
 	PresetModes                    *([]string)                     `json:"preset_modes,omitempty"`                // "List of preset modes this climate is supporting. Common examples include `eco`, `away`, `boost`, `comfort`, `home`, `sleep` and `activity`."
 	Qos                            *int                            `json:"qos,omitempty"`                         // "The maximum QoS level to be used when receiving and publishing messages."
 	Retain                         *bool                           `json:"retain,omitempty"`                      // "Defines if published messages should have the retain flag set."

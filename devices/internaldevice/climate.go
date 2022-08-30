@@ -5,10 +5,9 @@ import (
 	externaldevice "github.com/W-Floyd/ha-mqtt-iot/devices/externaldevice"
 )
 
-////////////////////////////////////////////////////////////////////////////////
+// //////////////////////////////////////////////////////////////////////////////
 // Do not modify this file, it is automatically generated
-////////////////////////////////////////////////////////////////////////////////
-//
+// //////////////////////////////////////////////////////////////////////////////
 type Climate struct {
 	ActionTemplate                 *string     `json:"action_template,omitempty"` // "A template to render the value received on the `action_topic` with."
 	Action                         *([]string) `json:"action,omitempty"`
@@ -16,7 +15,7 @@ type Climate struct {
 	AuxStateTemplate               *string     `json:"aux_state_template,omitempty"` // "A template to render the value received on the `aux_state_topic` with."
 	AuxState                       *([]string) `json:"aux_state,omitempty"`
 	AvailabilityMode               *string     `json:"availability_mode,omitempty"`     // "When `availability` is configured, this controls the conditions needed to set the entity to `available`. Valid entries are `all`, `any`, and `latest`. If set to `all`, `payload_available` must be received on all configured availability topics before the entity is marked as online. If set to `any`, `payload_available` must be received on at least one configured availability topic before the entity is marked as online. If set to `latest`, the last `payload_available` or `payload_not_available` received on any configured availability topic controls the availability."
-	AvailabilityTemplate           *string     `json:"availability_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#processing-incoming-data) to extract device's availability from the `availability_topic`. To determine the devices's availability result of this template will be compared to `payload_available` and `payload_not_available`."
+	AvailabilityTemplate           *string     `json:"availability_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract device's availability from the `availability_topic`. To determine the devices's availability result of this template will be compared to `payload_available` and `payload_not_available`."
 	Availability                   *([]string) `json:"availability,omitempty"`
 	CurrentTemperatureTemplate     *string     `json:"current_temperature_template,omitempty"` // "A template with which the value received on `current_temperature_topic` will be rendered."
 	CurrentTemperature             *([]string) `json:"current_temperature,omitempty"`
@@ -30,7 +29,7 @@ type Climate struct {
 	FanModes                       *([]string) `json:"fan_modes,omitempty"`                // "A list of supported fan modes."
 	Icon                           *string     `json:"icon,omitempty"`                     // "[Icon](/docs/configuration/customizing-devices/#icon) for the entity."
 	Initial                        *int        `json:"initial,omitempty"`                  // "Set the initial target temperature."
-	JsonAttributesTemplate         *string     `json:"json_attributes_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#processing-incoming-data) to extract the JSON dictionary from messages received on the `json_attributes_topic`. Usage example can be found in [MQTT sensor](/integrations/sensor.mqtt/#json-attributes-template-configuration) documentation."
+	JsonAttributesTemplate         *string     `json:"json_attributes_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract the JSON dictionary from messages received on the `json_attributes_topic`. Usage example can be found in [MQTT sensor](/integrations/sensor.mqtt/#json-attributes-template-configuration) documentation."
 	JsonAttributes                 *([]string) `json:"json_attributes,omitempty"`
 	MaxTemp                        *float64    `json:"max_temp,omitempty"`              // "Maximum set point available."
 	MinTemp                        *float64    `json:"min_temp,omitempty"`              // "Minimum set point available."
@@ -47,10 +46,10 @@ type Climate struct {
 	PayloadOn                      *string     `json:"payload_on,omitempty"`            // "The payload that represents enabled state."
 	PowerCommand                   *([]string) `json:"power_command,omitempty"`
 	Precision                      *float64    `json:"precision,omitempty"`                    // "The desired precision for this device. Can be used to match your actual thermostat's precision. Supported values are `0.1`, `0.5` and `1.0`."
-	PresetModeCommandTemplate      *string     `json:"preset_mode_command_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#processing-incoming-data) to generate the payload to send to `preset_mode_command_topic`."
+	PresetModeCommandTemplate      *string     `json:"preset_mode_command_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to generate the payload to send to `preset_mode_command_topic`."
 	PresetModeCommand              *([]string) `json:"preset_mode_command,omitempty"`
 	PresetModeState                *([]string) `json:"preset_mode_state,omitempty"`
-	PresetModeValueTemplate        *string     `json:"preset_mode_value_template,omitempty"`  // "Defines a [template](/docs/configuration/templating/#processing-incoming-data) to extract the `preset_mode` value from the payload received on `preset_mode_state_topic`."
+	PresetModeValueTemplate        *string     `json:"preset_mode_value_template,omitempty"`  // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract the `preset_mode` value from the payload received on `preset_mode_state_topic`."
 	PresetModes                    *([]string) `json:"preset_modes,omitempty"`                // "List of preset modes this climate is supporting. Common examples include `eco`, `away`, `boost`, `comfort`, `home`, `sleep` and `activity`."
 	Qos                            *int        `json:"qos,omitempty"`                         // "The maximum QoS level to be used when receiving and publishing messages."
 	Retain                         *bool       `json:"retain,omitempty"`                      // "Defines if published messages should have the retain flag set."

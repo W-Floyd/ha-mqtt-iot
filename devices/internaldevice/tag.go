@@ -5,13 +5,12 @@ import (
 	externaldevice "github.com/W-Floyd/ha-mqtt-iot/devices/externaldevice"
 )
 
-////////////////////////////////////////////////////////////////////////////////
+// //////////////////////////////////////////////////////////////////////////////
 // Do not modify this file, it is automatically generated
-////////////////////////////////////////////////////////////////////////////////
-//
+// //////////////////////////////////////////////////////////////////////////////
 type Tag struct {
 	State         *([]string) `json:"state,omitempty"`
-	ValueTemplate *string     `json:"value_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#processing-incoming-data) that returns a tag ID."
+	ValueTemplate *string     `json:"value_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) that returns a tag ID."
 	MQTT          struct {
 		UpdateInterval *float64 `json:"update_interval,omitempty"`
 		ForceUpdate    *bool    `json:"force_update,omitempty"`
