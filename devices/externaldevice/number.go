@@ -41,6 +41,7 @@ type Number struct {
 	JsonAttributesFunc     func(mqtt.Message, mqtt.Client) `json:"-"`
 	Max                    *float64                        `json:"max,omitempty"`           // "Maximum value."
 	Min                    *float64                        `json:"min,omitempty"`           // "Minimum value."
+	Mode                   *string                         `json:"mode,omitempty"`          // "Control how the number should be displayed in the UI. Can be set to `box` or `slider` to force a display mode."
 	Name                   *string                         `json:"name,omitempty"`          // "The name of the Number."
 	ObjectId               *string                         `json:"object_id,omitempty"`     // "Used instead of `name` for automatic generation of `entity_id`"
 	Optimistic             *bool                           `json:"optimistic,omitempty"`    // "Flag that defines if number works in optimistic mode."
