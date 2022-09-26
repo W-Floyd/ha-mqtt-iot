@@ -132,22 +132,12 @@ func main() {
 		}
 	}
 
-	// availableTicker := time.NewTicker(60 * time.Second)
-	// go func() {
-	// 	for range availableTicker.C {
-	// 		for _, d := range devices {
-	// 			go d.Subscribe()
-	// 		}
-	// 	}
-	// }()
-
 	done := make(chan os.Signal, 1)
 	signal.Notify(done, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
 
 	common.LogDebug("Everything is set up")
-
 	<-done
-	// availableTicker.Stop()
+
 	for _, t := range tickers {
 		t.Stop()
 	}
