@@ -10,22 +10,22 @@ import (
 // //////////////////////////////////////////////////////////////////////////////
 type Humidifier struct {
 	AvailabilityMode              *string     `json:"availability_mode,omitempty"`     // "When `availability` is configured, this controls the conditions needed to set the entity to `available`. Valid entries are `all`, `any`, and `latest`. If set to `all`, `payload_available` must be received on all configured availability topics before the entity is marked as online. If set to `any`, `payload_available` must be received on at least one configured availability topic before the entity is marked as online. If set to `latest`, the last `payload_available` or `payload_not_available` received on any configured availability topic controls the availability."
-	AvailabilityTemplate          *string     `json:"availability_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#processing-incoming-data) to extract device's availability from the `availability_topic`. To determine the devices's availability result of this template will be compared to `payload_available` and `payload_not_available`."
+	AvailabilityTemplate          *string     `json:"availability_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract device's availability from the `availability_topic`. To determine the devices's availability result of this template will be compared to `payload_available` and `payload_not_available`."
 	Availability                  *([]string) `json:"availability,omitempty"`
-	CommandTemplate               *string     `json:"command_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#processing-incoming-data) to generate the payload to send to `command_topic`."
+	CommandTemplate               *string     `json:"command_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to generate the payload to send to `command_topic`."
 	Command                       *([]string) `json:"command,omitempty"`
 	DeviceClass                   *string     `json:"device_class,omitempty"`             // "The device class of the MQTT device. Must be either `humidifier` or `dehumidifier`."
 	EnabledByDefault              *bool       `json:"enabled_by_default,omitempty"`       // "Flag which defines if the entity should be enabled when first added."
 	Encoding                      *string     `json:"encoding,omitempty"`                 // "The encoding of the payloads received and published messages. Set to `\"\"` to disable decoding of incoming payload."
 	EntityCategory                *string     `json:"entity_category,omitempty"`          // "The [category](https://developers.home-assistant.io/docs/core/entity#generic-properties) of the entity."
 	Icon                          *string     `json:"icon,omitempty"`                     // "[Icon](/docs/configuration/customizing-devices/#icon) for the entity."
-	JsonAttributesTemplate        *string     `json:"json_attributes_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#processing-incoming-data) to extract the JSON dictionary from messages received on the `json_attributes_topic`. Usage example can be found in [MQTT sensor](/integrations/sensor.mqtt/#json-attributes-template-configuration) documentation."
+	JsonAttributesTemplate        *string     `json:"json_attributes_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract the JSON dictionary from messages received on the `json_attributes_topic`. Usage example can be found in [MQTT sensor](/integrations/sensor.mqtt/#json-attributes-template-configuration) documentation."
 	JsonAttributes                *([]string) `json:"json_attributes,omitempty"`
 	MaxHumidity                   *int        `json:"max_humidity,omitempty"`          // "The minimum target humidity percentage that can be set."
 	MinHumidity                   *int        `json:"min_humidity,omitempty"`          // "The maximum target humidity percentage that can be set."
-	ModeCommandTemplate           *string     `json:"mode_command_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#processing-incoming-data) to generate the payload to send to `mode_command_topic`."
+	ModeCommandTemplate           *string     `json:"mode_command_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to generate the payload to send to `mode_command_topic`."
 	ModeCommand                   *([]string) `json:"mode_command,omitempty"`
-	ModeStateTemplate             *string     `json:"mode_state_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#processing-incoming-data) to extract a value for the humidifier `mode` state."
+	ModeStateTemplate             *string     `json:"mode_state_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract a value for the humidifier `mode` state."
 	ModeState                     *([]string) `json:"mode_state,omitempty"`
 	Modes                         *([]string) `json:"modes,omitempty"`                  // "List of available modes this humidifier is capable of running at. Common examples include `normal`, `eco`, `away`, `boost`, `comfort`, `home`, `sleep`, `auto` and `baby`. These examples offer built-in translations but other custom modes are allowed as well.  This attribute ust be configured together with the `mode_command_topic` attribute."
 	Name                          *string     `json:"name,omitempty"`                   // "The name of the humidifier."
@@ -40,10 +40,10 @@ type Humidifier struct {
 	Qos                           *int        `json:"qos,omitempty"`                    // "The maximum QoS level of the state topic."
 	Retain                        *bool       `json:"retain,omitempty"`                 // "If the published message should have the retain flag on or not."
 	State                         *([]string) `json:"state,omitempty"`
-	StateValueTemplate            *string     `json:"state_value_template,omitempty"`             // "Defines a [template](/docs/configuration/templating/#processing-incoming-data) to extract a value from the state."
-	TargetHumidityCommandTemplate *string     `json:"target_humidity_command_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#processing-incoming-data) to generate the payload to send to `target_humidity_command_topic`."
+	StateValueTemplate            *string     `json:"state_value_template,omitempty"`             // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract a value from the state."
+	TargetHumidityCommandTemplate *string     `json:"target_humidity_command_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to generate the payload to send to `target_humidity_command_topic`."
 	TargetHumidityCommand         *([]string) `json:"target_humidity_command,omitempty"`
-	TargetHumidityStateTemplate   *string     `json:"target_humidity_state_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#processing-incoming-data) to extract a value for the humidifier `target_humidity` state."
+	TargetHumidityStateTemplate   *string     `json:"target_humidity_state_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract a value for the humidifier `target_humidity` state."
 	TargetHumidityState           *([]string) `json:"target_humidity_state,omitempty"`
 	UniqueId                      *string     `json:"unique_id,omitempty"` // "An ID that uniquely identifies this humidifier. If two humidifiers have the same unique ID, Home Assistant will raise an exception."
 	MQTT                          struct {
