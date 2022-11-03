@@ -2,11 +2,10 @@
 
 com="${1}"
 
-
 case "${com}" in
-  "get")
+"get")
     WEBCAM_USE=$(for i in $(ls /dev/video*); do fuser $i 2>&1; done)
-    if [[ -z $WEBCAM_USE ]]; then 
+    if [[ -z $WEBCAM_USE ]]; then
         echo 0
     else
         echo 1
