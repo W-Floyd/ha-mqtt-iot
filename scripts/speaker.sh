@@ -1,6 +1,6 @@
 #!/bin/bash
 
-function __set-speaker-state {
+function __set_speaker_state {
   case "${1}" in
   "ON")
     pactl set-sink-mute @DEFAULT_SINK@ 0
@@ -9,13 +9,13 @@ function __set-speaker-state {
     pactl set-sink-mute @DEFAULT_SINK@ 1
     ;;
   *)
-    __unknown "${arg}"
+    __unknown "${__argument}"
     ;;
   esac
 }
 
-function __get-speaker-state {
-  yesno=$(LANG= LC_ALL= pactl get-sink-mute @DEFAULT_SINK@ | awk '{print $2}')
+function __get_speaker_state {
+  yesno=$(LANG='' LC_ALL='' pactl get-sink-mute @DEFAULT_SINK@ | awk '{print $2}')
   if [ "${yesno}" == 'yes' ]; then
     echo "OFF"
   else
@@ -24,36 +24,33 @@ function __get-speaker-state {
 
 }
 
-function __set-speaker-volume {
+function __set_speaker_volume {
   pactl set-sink-volume @DEFAULT_SINK@ "${1}%"
 }
 
-function __get-speaker-volume {
-  percent=$(LANG= LC_ALL= pactl get-sink-volume @DEFAULT_SINK@ | awk '{print $5}')
-  val=${percent%?}
-  echo $val
+function __get_speaker_volume {
+  percent=$(LANG='' LC_ALL='' pactl get-sink-volume @DEFAULT_SINK@ | awk '{print $5}')
+  echo "${percent%?}"
 }
 
-com="${1}"
-arg="${2}"
+__command="${1}"
+__argument="${2}"
 
-case "${com}" in
+case "${__command}" in
 "set-state")
-  __set-speaker-state ${arg}
+  __set_speaker_state "${__argument}"
   ;;
 
 "get-state")
-  mystate=$(__get-speaker-state)
-  echo $mystate
+  __get_speaker_state
   ;;
 
 "set-volume")
-  __set-speaker-volume ${arg}
+  __set_speaker_volume "${__argument}"
   ;;
 
 "get-volume")
-  myloudness=$(__get-speaker-volume)
-  echo $myloudness
+  __get_speaker_volume
   ;;
 
 esac
