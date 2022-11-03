@@ -9,7 +9,7 @@ arg="${2}"
 
 case "${com}" in
   "get-cpu")
-    mpstat | tail -n 1 | sed 's#,#.#g' | awk '{print $3+$4+$5+$6+$7+$8}'
+    mpstat 1 1 | tail -n 1 | sed 's#,#.#g' | awk '{print $3+$4+$5+$6+$7+$8}'
     ;;
 
   "get-ram")
