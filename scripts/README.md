@@ -177,6 +177,7 @@ system.sh get-board <pi>      # returns the mainboard identifier (only pi at the
 Dependency: 
 ```
 awk
+mpstat
 ```
 
 ## systemd-service.sh
