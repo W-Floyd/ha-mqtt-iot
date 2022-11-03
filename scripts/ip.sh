@@ -1,10 +1,10 @@
 #!/bin/bash
 
-INTERFACE=${1}
+__interface="${1}"
+__state=$(cat "/sys/class/net/${__interface}/operstate")
 
-STATE=$(cat /sys/class/net/$INTERFACE/operstate)
-if [ "${STATE}" = 'down' ]; then
-    echo ${STATE}
+if [ "${__state}" = 'down' ]; then
+    echo "${__state}"
 else
-    echo $(ip -j address show $INTERFACE | jq -r '.[0].addr_info[0].local')
+    ip -j address show "${__interface}" | jq -r '.[0].addr_info[0].local'
 fi
