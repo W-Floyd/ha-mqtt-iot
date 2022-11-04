@@ -29,7 +29,7 @@ type Vacuum struct {
 		Name             *string `json:"name,omitempty"`              // "The name of the device."
 		SuggestedArea    *string `json:"suggested_area,omitempty"`    // "Suggest an area if the device isn’t in one yet."
 		SwVersion        *string `json:"sw_version,omitempty"`        // "The firmware version of the device."
-		Viadevice        *string `json:"viadevice,omitempty"`         // null
+		ViaDevice        *string `json:"via_device,omitempty"`        // "Identifier of a device that routes messages between this device and Home Assistant. Examples of such devices are hubs, or parent devices of a sub-device. This is used to show device topology in Home Assistant."
 	} `json:"device,omitempty"`
 	Encoding               *string                         `json:"encoding,omitempty"`                 // "The encoding of the payloads received and published messages. Set to `\"\"` to disable decoding of incoming payload."
 	FanSpeedList           *([]string)                     `json:"fan_speed_list,omitempty"`           // "List of possible fan speeds for the vacuum."

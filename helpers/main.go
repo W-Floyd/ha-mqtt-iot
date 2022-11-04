@@ -160,7 +160,7 @@ func main() {
 						"name",
 						"suggested_area",
 						"sw_version",
-						"viadevice",
+						"via_device",
 					} {
 						g.Add(
 							jen.Id(strcase.ToCamel(v)).Op("*").String().Tag(map[string]string{"json": v + ",omitempty"}).Comment(d.JSONContainer.Path("device.keys." + v + ".description").String()),

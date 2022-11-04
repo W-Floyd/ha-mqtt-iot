@@ -13,16 +13,16 @@ import (
 // //////////////////////////////////////////////////////////////////////////////
 // Do not modify this file, it is automatically generated
 // //////////////////////////////////////////////////////////////////////////////
-type Switch struct {
+type Update struct {
 	AvailabilityMode     *string                         `json:"availability_mode,omitempty"`     // "When `availability` is configured, this controls the conditions needed to set the entity to `available`. Valid entries are `all`, `any`, and `latest`. If set to `all`, `payload_available` must be received on all configured availability topics before the entity is marked as online. If set to `any`, `payload_available` must be received on at least one configured availability topic before the entity is marked as online. If set to `latest`, the last `payload_available` or `payload_not_available` received on any configured availability topic controls the availability."
 	AvailabilityTemplate *string                         `json:"availability_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract device's availability from the `availability_topic`. To determine the devices's availability result of this template will be compared to `payload_available` and `payload_not_available`."
 	AvailabilityTopic    *string                         `json:"availability_topic,omitempty"`    // "The MQTT topic subscribed to receive availability (online/offline) updates. Must not be used together with `availability`."
 	AvailabilityFunc     func() string                   `json:"-"`
-	CommandTopic         *string                         `json:"command_topic,omitempty"` // "The MQTT topic to publish commands to change the switch state."
+	CommandTopic         *string                         `json:"command_topic,omitempty"` // "The MQTT topic to publish `payload_install` to start installing process."
 	CommandFunc          func(mqtt.Message, mqtt.Client) `json:"-"`
 	Device               struct {
 		ConfigurationUrl *string `json:"configuration_url,omitempty"` // "A link to the webpage that can manage the configuration of this device. Can be either an HTTP or HTTPS link."
-		Connections      *string `json:"connections,omitempty"`       // "A list of connections of the device to the outside world as a list of tuples `[connection_type, connection_identifier]`. For example the MAC address of a network interface: `\"connections\": [[\"mac\", \"02:5b:26:a8:dc:12\"]]`."
+		Connections      *string `json:"connections,omitempty"`       // "A list of connections of the device to the outside world as a list of tuples `[connection_type, connection_identifier]`. For example the MAC address of a network interface: `\"connections\": [\"mac\", \"02:5b:26:a8:dc:12\"]`."
 		Identifiers      *string `json:"identifiers,omitempty"`       // "A list of IDs that uniquely identify the device. For example a serial number."
 		Manufacturer     *string `json:"manufacturer,omitempty"`      // "The manufacturer of the device."
 		Model            *string `json:"model,omitempty"`             // "The model of the device."
@@ -31,67 +31,68 @@ type Switch struct {
 		SwVersion        *string `json:"sw_version,omitempty"`        // "The firmware version of the device."
 		ViaDevice        *string `json:"via_device,omitempty"`        // "Identifier of a device that routes messages between this device and Home Assistant. Examples of such devices are hubs, or parent devices of a sub-device. This is used to show device topology in Home Assistant."
 	} `json:"device,omitempty"`
-	DeviceClass            *string                         `json:"device_class,omitempty"`             // "The [type/class](/integrations/switch/#device-class) of the switch to set the icon in the frontend."
+	DeviceClass            *string                         `json:"device_class,omitempty"`             // "The [type/class](/integrations/update/#device-classes) of the update to set the icon in the frontend."
 	EnabledByDefault       *bool                           `json:"enabled_by_default,omitempty"`       // "Flag which defines if the entity should be enabled when first added."
 	Encoding               *string                         `json:"encoding,omitempty"`                 // "The encoding of the payloads received and published messages. Set to `\"\"` to disable decoding of incoming payload."
 	EntityCategory         *string                         `json:"entity_category,omitempty"`          // "The [category](https://developers.home-assistant.io/docs/core/entity#generic-properties) of the entity."
+	EntityPicture          *string                         `json:"entity_picture,omitempty"`           // "Picture URL for the entity."
 	Icon                   *string                         `json:"icon,omitempty"`                     // "[Icon](/docs/configuration/customizing-devices/#icon) for the entity."
-	JsonAttributesTemplate *string                         `json:"json_attributes_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract the JSON dictionary from messages received on the `json_attributes_topic`. Usage example can be found in [MQTT sensor](/integrations/sensor.mqtt/#json-attributes-template-configuration) documentation."
-	JsonAttributesTopic    *string                         `json:"json_attributes_topic,omitempty"`    // "The MQTT topic subscribed to receive a JSON dictionary payload and then set as sensor attributes. Usage example can be found in [MQTT sensor](/integrations/sensor.mqtt/#json-attributes-topic-configuration) documentation."
+	JsonAttributesTemplate *string                         `json:"json_attributes_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract the JSON dictionary from messages received on the `json_attributes_topic`."
+	JsonAttributesTopic    *string                         `json:"json_attributes_topic,omitempty"`    // "The MQTT topic subscribed to receive a JSON dictionary payload and then set as entity attributes. Implies `force_update` of the current select state when a message is received on this topic."
 	JsonAttributesFunc     func(mqtt.Message, mqtt.Client) `json:"-"`
-	Name                   *string                         `json:"name,omitempty"`                  // "The name to use when displaying this switch."
-	ObjectId               *string                         `json:"object_id,omitempty"`             // "Used instead of `name` for automatic generation of `entity_id`"
-	Optimistic             *bool                           `json:"optimistic,omitempty"`            // "Flag that defines if switch works in optimistic mode."
-	PayloadAvailable       *string                         `json:"payload_available,omitempty"`     // "The payload that represents the available state."
-	PayloadNotAvailable    *string                         `json:"payload_not_available,omitempty"` // "The payload that represents the unavailable state."
-	PayloadOff             *string                         `json:"payload_off,omitempty"`           // "The payload that represents `off` state. If specified, will be used for both comparing to the value in the `state_topic` (see `value_template` and `state_off` for details) and sending as `off` command to the `command_topic`."
-	PayloadOn              *string                         `json:"payload_on,omitempty"`            // "The payload that represents `on` state. If specified, will be used for both comparing to the value in the `state_topic` (see `value_template` and `state_on`  for details) and sending as `on` command to the `command_topic`."
-	Qos                    *int                            `json:"qos,omitempty"`                   // "The maximum QoS level of the state topic. Default is 0 and will also be used to publishing messages."
-	Retain                 *bool                           `json:"retain,omitempty"`                // "If the published message should have the retain flag on or not."
-	StateOff               *string                         `json:"state_off,omitempty"`             // "The payload that represents the `off` state. Used when value that represents `off` state in the `state_topic` is different from value that should be sent to the `command_topic` to turn the device `off`."
-	StateOn                *string                         `json:"state_on,omitempty"`              // "The payload that represents the `on` state. Used when value that represents `on` state in the `state_topic` is different from value that should be sent to the `command_topic` to turn the device `on`."
-	StateTopic             *string                         `json:"state_topic,omitempty"`           // "The MQTT topic subscribed to receive state updates."
+	LatestVersionTemplate  *string                         `json:"latest_version_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract the latest version value."
+	LatestVersionTopic     *string                         `json:"latest_version_topic,omitempty"`    // "The MQTT topic subscribed to receive an update of the latest version."
+	LatestVersionFunc      func(mqtt.Message, mqtt.Client) `json:"-"`
+	Name                   *string                         `json:"name,omitempty"`            // "The name of the Select."
+	ObjectId               *string                         `json:"object_id,omitempty"`       // "Used instead of `name` for automatic generation of `entity_id`"
+	PayloadInstall         *string                         `json:"payload_install,omitempty"` // "The MQTT payload to start installing process."
+	Qos                    *int                            `json:"qos,omitempty"`             // "The maximum QoS level of the state topic. Default is 0 and will also be used to publishing messages."
+	ReleaseSummary         *string                         `json:"release_summary,omitempty"` // "Summary of the release notes or changelog. This is suitable a brief update description of max 255 characters."
+	ReleaseUrl             *string                         `json:"release_url,omitempty"`     // "URL to the full release notes of the latest version available."
+	Retain                 *bool                           `json:"retain,omitempty"`          // "If the published message should have the retain flag on or not."
+	StateTopic             *string                         `json:"state_topic,omitempty"`     // "The MQTT topic subscribed to receive state updates. The state update may be either JSON or a simple string with `installed_version` value. When a JSON payload is detected, the state value of the JSON payload should supply the `installed_version` and can optional supply: `latest_version`, `title`, `release_summary`, `release_url` or an `entity_picture` URL."
 	StateFunc              func() string                   `json:"-"`
-	UniqueId               *string                         `json:"unique_id,omitempty"`      // "An ID that uniquely identifies this switch device. If two switches have the same unique ID, Home Assistant will raise an exception."
-	ValueTemplate          *string                         `json:"value_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract device's state from the `state_topic`. To determine the switches's state result of this template will be compared to `state_on` and `state_off`."
+	Title                  *string                         `json:"title,omitempty"`          // "Title of the software, or firmware update. This helps to differentiate between the device or entity name versus the title of the software installed."
+	UniqueId               *string                         `json:"unique_id,omitempty"`      // "An ID that uniquely identifies this Select. If two Selects have the same unique ID Home Assistant will raise an exception."
+	ValueTemplate          *string                         `json:"value_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract the `installed_version` state value or to render to a valid JSON payload on from the payload received on `state_topic`."
 	MQTT                   *MQTTFields                     `json:"-"`
 }
 
-func (d *Switch) GetRawId() string {
-	return "switch"
+func (d *Update) GetRawId() string {
+	return "update"
 }
-func (d *Switch) AddMessageHandler() {
+func (d *Update) AddMessageHandler() {
 	d.MQTT.MessageHandler = MakeMessageHandler(d)
 }
-func (d *Switch) GetUniqueId() string {
+func (d *Update) GetUniqueId() string {
 	return *d.UniqueId
 }
-func (d *Switch) PopulateDevice() {
+func (d *Update) PopulateDevice() {
 	d.Device.Manufacturer = &Manufacturer
 	d.Device.Model = &SoftwareName
 	d.Device.Name = &InstanceName
 	d.Device.SwVersion = &SWVersion
 	d.Device.Identifiers = &common.MachineID
 }
-func (d *Switch) UpdateState() {
+func (d *Update) UpdateState() {
 	if d.AvailabilityTopic != nil {
 		state := d.AvailabilityFunc()
-		if state != stateStore.Switch.Availability[d.GetUniqueId()] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
+		if state != stateStore.Update.Availability[d.GetUniqueId()] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
 			token := (*d.MQTT.Client).Publish(*d.AvailabilityTopic, byte(*d.Qos), *d.Retain, state)
-			stateStore.Switch.Availability[d.GetUniqueId()] = state
+			stateStore.Update.Availability[d.GetUniqueId()] = state
 			token.Wait()
 		}
 	}
 	if d.StateTopic != nil {
 		state := d.StateFunc()
-		if state != stateStore.Switch.State[d.GetUniqueId()] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
+		if state != stateStore.Update.State[d.GetUniqueId()] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
 			token := (*d.MQTT.Client).Publish(*d.StateTopic, byte(*d.Qos), *d.Retain, state)
-			stateStore.Switch.State[d.GetUniqueId()] = state
+			stateStore.Update.State[d.GetUniqueId()] = state
 			token.Wait()
 		}
 	}
 }
-func (d *Switch) Subscribe() {
+func (d *Update) Subscribe() {
 	c := *d.MQTT.Client
 	message, err := json.Marshal(d)
 	if err != nil {
@@ -111,13 +112,20 @@ func (d *Switch) Subscribe() {
 			log.Fatal(t.Error())
 		}
 	}
+	if d.LatestVersionTopic != nil {
+		t := c.Subscribe(*d.LatestVersionTopic, 0, d.MQTT.MessageHandler)
+		t.Wait()
+		if t.Error() != nil {
+			log.Fatal(t.Error())
+		}
+	}
 	token := c.Publish(GetDiscoveryTopic(d), 0, true, message)
 	token.Wait()
 	time.Sleep(common.HADiscoveryDelay)
 	d.AvailabilityFunc()
 	d.UpdateState()
 }
-func (d *Switch) UnSubscribe() {
+func (d *Update) UnSubscribe() {
 	c := *d.MQTT.Client
 	token := c.Publish(*d.AvailabilityTopic, common.QoS, common.Retain, "offline")
 	token.Wait()
@@ -135,13 +143,20 @@ func (d *Switch) UnSubscribe() {
 			log.Fatal(t.Error())
 		}
 	}
+	if d.LatestVersionTopic != nil {
+		t := c.Unsubscribe(*d.LatestVersionTopic)
+		t.Wait()
+		if t.Error() != nil {
+			log.Fatal(t.Error())
+		}
+	}
 }
-func (d *Switch) AnnounceAvailable() {
+func (d *Update) AnnounceAvailable() {
 	c := *d.MQTT.Client
 	token := c.Publish(*d.AvailabilityTopic, common.QoS, common.Retain, "online")
 	token.Wait()
 }
-func (d *Switch) Initialize() {
+func (d *Update) Initialize() {
 	if d.Qos == nil {
 		d.Qos = new(int)
 		*d.Qos = int(common.QoS)
@@ -158,7 +173,7 @@ func (d *Switch) Initialize() {
 	d.AddMessageHandler()
 	d.PopulateTopics()
 }
-func (d *Switch) PopulateTopics() {
+func (d *Update) PopulateTopics() {
 	if d.AvailabilityFunc != nil {
 		d.AvailabilityTopic = new(string)
 		*d.AvailabilityTopic = GetTopic(d, "availability_topic")
@@ -173,14 +188,19 @@ func (d *Switch) PopulateTopics() {
 		*d.JsonAttributesTopic = GetTopic(d, "json_attributes_topic")
 		store.TopicStore[*d.JsonAttributesTopic] = &d.JsonAttributesFunc
 	}
+	if d.LatestVersionFunc != nil {
+		d.LatestVersionTopic = new(string)
+		*d.LatestVersionTopic = GetTopic(d, "latest_version_topic")
+		store.TopicStore[*d.LatestVersionTopic] = &d.LatestVersionFunc
+	}
 	if d.StateFunc != nil {
 		d.StateTopic = new(string)
 		*d.StateTopic = GetTopic(d, "state_topic")
 	}
 }
-func (d *Switch) SetMQTTFields(fields MQTTFields) {
+func (d *Update) SetMQTTFields(fields MQTTFields) {
 	*d.MQTT = fields
 }
-func (d *Switch) GetMQTTFields() (fields MQTTFields) {
+func (d *Update) GetMQTTFields() (fields MQTTFields) {
 	return *d.MQTT
 }

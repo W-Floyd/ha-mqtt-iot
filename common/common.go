@@ -20,7 +20,7 @@ var (
 	MachineID        string
 	LogState         = LogLevels{
 		Debug:    false,
-		Error:    false,
+		Error:    true,
 		Warn:     false,
 		Critical: false,
 	}
