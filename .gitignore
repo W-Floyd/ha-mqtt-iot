@@ -6,3 +6,5 @@
 /helpers/cache/*
 /nohup.out
 /secrets.json
+/build
+*~
