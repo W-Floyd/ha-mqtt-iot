@@ -1,0 +1,37 @@
+{
+  "light": [
+    {
+      "name": "___HOSTNAME___ Display",
+      "brightness_command": [
+        "___SCRIPTS_DIR___laptop-backlight.sh",
+        "set-brightness"
+      ],
+      "brightness_state": [
+        "___SCRIPTS_DIR___laptop-backlight.sh",
+        "get-brightness"
+      ],
+      "command": [
+        "___SCRIPTS_DIR___laptop-backlight.sh",
+        "set-state"
+      ],
+      "state": [
+        "___SCRIPTS_DIR___laptop-backlight.sh",
+        "get-state"
+      ],
+      "color_temp_command": [
+        "___SCRIPTS_DIR___laptop-backlight.sh",
+        "color-temp"
+      ],
+      "color_temp_state": [
+        "___SCRIPTS_DIR___laptop-backlight.sh",
+        "color-temp-state"
+      ],
+      "payload_off": "OFF",
+      "payload_on": "ON",
+      "brightness_scale": 120000,
+      "mqtt": {
+        "update_interval": 1
+      }
+    }
+  ]
+}

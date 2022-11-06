@@ -1,0 +1,22 @@
+{
+  "lock": [
+    {
+      "name": "___HOSTNAME___ Screen Lock",
+      "state": [
+        "___SCRIPTS_DIR___screenlock.sh",
+        "state"
+      ],
+      "command": [
+        "___SCRIPTS_DIR___screenlock.sh",
+        "command"
+      ],
+      "payload_lock": "lock",
+      "payload_unlock": "unlock",
+      "state_unlocked": "false",
+      "state_locked": "true",
+      "mqtt": {
+        "update_interval": 1
+      }
+    }
+  ]
+}

@@ -1,5 +1,43 @@
 #!/bin/bash
 
+### DEPENDENCIES_BEGIN
+# pactl
+### DEPENDENCIES_END
+
+### CONFIG_TEMPLATE_BEGIN
+# {
+#     "light": 
+#     [
+#        {
+#            "name": "___HOSTNAME___ Microphone",
+#            "icon": "mdi:microphone",
+#            "brightness_command": [
+#                "___SCRIPTS_DIR______SCRIPT_NAME___",
+#                "set-sensitivity"
+#            ],
+#            "brightness_state": [
+#                "___SCRIPTS_DIR______SCRIPT_NAME___",
+#                "get-sensitivity"
+#            ],
+#            "command": [
+#                "___SCRIPTS_DIR______SCRIPT_NAME___",
+#                "set-state"
+#            ],
+#            "state": [
+#                "___SCRIPTS_DIR______SCRIPT_NAME___",
+#                "get-state"
+#            ],
+#            "payload_off": "OFF",
+#            "payload_on": "ON",
+#            "brightness_scale": 100,
+#            "mqtt": {
+#                "update_interval": 1
+#            }
+#        }
+#     ]
+# }
+### CONFIG_TEMPLATE_END
+
 function __set-microphone-state {
   case "${1}" in
   "ON")

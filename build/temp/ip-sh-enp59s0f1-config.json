@@ -1,0 +1,17 @@
+{
+  "sensor": [
+    {
+      "name": "___HOSTNAME___ enp59s0f1 IP Address",
+      "object_id": "___HOSTNAME___-enp59s0f1-ip-address",
+      "unique_id": "___HOSTNAME___-enp59s0f1-ip-address",
+      "icon": "mdi:ip-network",
+      "state": [
+        "___SCRIPTS_DIR___ip.sh",
+        "enp59s0f1"
+      ],
+      "mqtt": {
+        "update_interval": 10
+      }
+    }
+  ]
+}

@@ -1,5 +1,15 @@
 #!/bin/bash
 
+### DEPENDENCIES_BEGIN
+# dconf 
+### DEPENDENCIES_END
+
+### CONFIG_TEMPLATE_BEGIN
+# {
+#
+# }
+# ### CONFIG_TEMPLATE_END
+
 __unknown() {
     echo "Unknown ${1}"
 }

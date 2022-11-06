@@ -1,0 +1,19 @@
+{
+  "binary_sensor": [
+    {
+      "name": "___HOSTNAME___ Camera Used",
+      "object_id": "___HOSTNAME___-camera-used",
+      "unique_id": "___HOSTNAME___-camera-used",
+      "icon": "mdi:webcam",
+      "payload_on": "1",
+      "payload_off": "0",
+      "state": [
+        "___SCRIPTS_DIR___camera-sensor.sh",
+        "get"
+      ],
+      "mqtt": {
+        "update_interval": 5
+      }
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "light": [
+    {
+      "name": "___HOSTNAME___ Microphone",
+      "icon": "mdi:microphone",
+      "brightness_command": [
+        "___SCRIPTS_DIR___micro.sh",
+        "set-sensitivity"
+      ],
+      "brightness_state": [
+        "___SCRIPTS_DIR___micro.sh",
+        "get-sensitivity"
+      ],
+      "command": [
+        "___SCRIPTS_DIR___micro.sh",
+        "set-state"
+      ],
+      "state": [
+        "___SCRIPTS_DIR___micro.sh",
+        "get-state"
+      ],
+      "payload_off": "OFF",
+      "payload_on": "ON",
+      "brightness_scale": 100,
+      "mqtt": {
+        "update_interval": 1
+      }
+    }
+  ]
+}

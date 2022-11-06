@@ -1,0 +1,30 @@
+{
+  "light": [
+    {
+      "name": "___HOSTNAME___ Volume",
+      "icon": "mdi:volume-high",
+      "brightness_command": [
+        "___SCRIPTS_DIR___speaker.sh",
+        "set-volume"
+      ],
+      "brightness_state": [
+        "___SCRIPTS_DIR___speaker.sh",
+        "get-volume"
+      ],
+      "command": [
+        "___SCRIPTS_DIR___speaker.sh",
+        "set-state"
+      ],
+      "state": [
+        "___SCRIPTS_DIR___speaker.sh",
+        "get-state"
+      ],
+      "payload_off": "OFF",
+      "payload_on": "ON",
+      "brightness_scale": 100,
+      "mqtt": {
+        "update_interval": 1
+      }
+    }
+  ]
+}

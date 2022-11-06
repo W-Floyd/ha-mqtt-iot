@@ -1,5 +1,10 @@
 #!/bin/bash
 
+
+
+
+
+
 __monitor_i2c='dev:/dev/i2c-3'
 __monitor_dpms='0xd6'
 __monitor_brightness='0x10'
