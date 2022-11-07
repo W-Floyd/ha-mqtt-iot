@@ -1,0 +1,40 @@
+#!/bin/bash
+dependencies="python3"
+
+for arg in "$@"; do
+    case "$arg" in
+    --help)
+        echo 'usage: ./configure'
+        echo 'all invalid options are silently ignored'
+        exit 0
+        ;;
+    esac
+done
+
+### Dependency Check ###
+echo "checking dependencies ..."
+for dep in $dependencies; do
+    echo -n "checking $dep ... "
+    if [ "$(which $dep)" = "" ]; then
+        echo "not installed"
+        exit 1
+    else
+        echo "installed"
+    fi
+done   
+
+
+
+echo 'generating makefile ...'
+
+
+echo "MY_HOME ?= $HOME" > Makefile
+echo "MY_HOSTNAME ?= $(hostname)" >> Makefile
+echo "MY_USER ?= $USERNAME" >> Makefile
+
+cat Makefile.in >> Makefile
+
+echo ""
+echo "configuration complete, type make to build."
+echo ""
+

@@ -15,5 +15,5 @@
 #            "payload_press": "reboot"
 #        }
 #    ]
-#}
+# }
 ### CONFIG_TEMPLATE_END

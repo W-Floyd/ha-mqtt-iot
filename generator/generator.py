@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 #!/usr/bin/env python3
 
 from genericpath import exists
@@ -15,8 +16,7 @@ END_DEP = "### DEPENDENCIES_END"
 START_HELPER = "### HELPER_BEGIN"
 END_HELPER = "### HELPER_END"
 
-SCRIPT_DEV_DIR = "scripts"
-TARGET_CONF_TEMP_DIR = "build/temp"
+
 
 def find_between( s, first, last ):
     try:
@@ -56,13 +56,32 @@ def check_dependencies( dependencies_list ):
 
 
 
+# Dealing with path-es - i hat path-es
+abs_path = os.path.dirname(os.path.realpath(__file__))
+rel_scripts_dir = "../scripts"
+rel_target_conf_temp_dir = "../build/temp"
+
+SCRIPT_DEV_DIR = os.path.join(abs_path, rel_scripts_dir)
+TARGET_CONF_TEMP_DIR = os.path.join(abs_path, rel_target_conf_temp_dir)
+
+if not os.path.exists(TARGET_CONF_TEMP_DIR):
+    os.makedirs(TARGET_CONF_TEMP_DIR)
+
+if not os.path.exists(SCRIPT_DEV_DIR):
+    print("[ ERROR ] "+rel_scripts_dir+" does not exists")
+    exit(0)
+
+# print(SCRIPT_DEV_DIR)
+# print(TARGET_CONF_TEMP_DIR)
+
+# exit(0)
 
 scripts = glob.glob(SCRIPT_DEV_DIR+"/*.sh")
 for script in scripts:
     scriptname = script.split("/")[-1]
     print("[ INFO ] "+scriptname+" parsing ...")
 
-    f = open(script)
+    f = open(script, encoding='utf-8')
     data = f.read()
     f.close()
     
@@ -116,14 +135,14 @@ for script in scripts:
                 c1 = config_template.replace(key,v)
                 c1 = c1.replace("___SCRIPT_NAME___",scriptname)
                 json_obj = json.loads(c1)
-                conf = open(TARGET_CONF_TEMP_DIR+"/"+scriptname.replace(".","-")+"-"+v+"-config.json","w+")
-                conf.write(json.dumps(json_obj, indent=2))
+                conf = open(TARGET_CONF_TEMP_DIR+"/"+scriptname.replace(".","-")+"-"+v+"-config.json","w", encoding='utf-8')
+                conf.write(json.dumps(json_obj, indent=4))
                 conf.close()
     else:
         c1 = config_template.replace("___SCRIPT_NAME___",scriptname)            
         json_obj = json.loads(c1)
-        conf = open(TARGET_CONF_TEMP_DIR+"/"+scriptname.replace(".","-")+"-config.json","w+")
-        conf.write(json.dumps(json_obj, indent=2))
+        conf = open(TARGET_CONF_TEMP_DIR+"/"+scriptname.replace(".","-")+"-config.json","w", encoding='utf-8')
+        conf.write(json.dumps(json_obj, indent=4))
         conf.close()    
 
     print("OK")
