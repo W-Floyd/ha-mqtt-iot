@@ -95,6 +95,11 @@ func main() {
 		},
 	)
 
+        opts.SetPingTimeout(10 * time.Second)
+        opts.SetKeepAlive(10 * time.Second)
+        opts.SetMaxReconnectInterval(10 * time.Second)
+        opts.SetAutoReconnect(true)
+
 	client := mqtt.NewClient(opts)
 
 	for _, d := range devices {
