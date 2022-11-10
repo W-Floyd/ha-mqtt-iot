@@ -54,6 +54,23 @@ def check_dependencies( dependencies_list ):
             print("[ INFO ] "+scriptname+": "+dep+" .... installed")
     return ret
 
+def validateJSON( json_string ):
+    try:
+        json.loads(json_string)
+    except ValueError as err:
+        return False
+    return True
+
+def writeconfig( config_template, orig_scriptname, dest_filename):
+    c1 = config_template.replace("___SCRIPT_NAME___",orig_scriptname)
+    if validateJSON(c1) == False:
+        print("[ ERROR ] "+orig_scriptname+": Substitution produces invalid configuration")
+        return False
+    json_obj = json.loads(c1)
+    conf = open(dest_filename,"w", encoding='utf-8')
+    conf.write(json.dumps(json_obj, indent=4))
+    conf.close()
+    return True
 
 
 # Dealing with path-es - i hat path-es
@@ -101,6 +118,10 @@ for script in scripts:
         continue
     else:
         print("[ INFO ] "+scriptname+": parsing configuration template")
+    
+    if validateJSON(config_template) == False:
+        print("[ ERROR ] "+scriptname+": Substitution produces invalid configuration")
+        continue
 
     # tricky part 
     # the helper 
@@ -126,6 +147,9 @@ for script in scripts:
     ### multiple helpers ???
     helper = find_between(data, START_HELPER, END_HELPER).replace("# ","").replace("\n","")
     if helper != "":
+        if validateJSON(helper) == False:
+            print("[ ERROR ] "+scriptname+": Helper is not valid JSON")
+            continue
         helper_dict = json.loads(helper)
         for key in helper_dict.keys():
             print(key)
@@ -133,17 +157,17 @@ for script in scripts:
             print(valuelist)
             for v in valuelist:
                 c1 = config_template.replace(key,v)
-                c1 = c1.replace("___SCRIPT_NAME___",scriptname)
-                json_obj = json.loads(c1)
-                conf = open(TARGET_CONF_TEMP_DIR+"/"+scriptname.replace(".","-")+"-"+v+"-config.json","w", encoding='utf-8')
-                conf.write(json.dumps(json_obj, indent=4))
-                conf.close()
-    else:
-        c1 = config_template.replace("___SCRIPT_NAME___",scriptname)            
-        json_obj = json.loads(c1)
-        conf = open(TARGET_CONF_TEMP_DIR+"/"+scriptname.replace(".","-")+"-config.json","w", encoding='utf-8')
-        conf.write(json.dumps(json_obj, indent=4))
-        conf.close()    
+                if validateJSON(c1) == False:
+                    print("[ ERROR ] "+scriptname+": Substitution in helper ("+key+" -> "+v+") produces invalid configuration")
+                    continue
+                filename = TARGET_CONF_TEMP_DIR+"/"+scriptname.replace(".","-")+"-"+v+"-config.json"
+                if not writeconfig(c1, scriptname, filename):
+                    continue
 
-    print("OK")
+    else:
+        filename = TARGET_CONF_TEMP_DIR+"/"+scriptname.replace(".","-")+"-config.json"
+        if not writeconfig(config_template, scriptname, filename):
+            continue
+        
+    print("[ OK ] "+scriptname+": config successfully")
 
