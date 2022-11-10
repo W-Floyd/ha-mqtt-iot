@@ -1,10 +1,9 @@
 #!/bin/bash
 
 # sysstat required for cpu
-# acpi required for battery
 
 ### DEPENDENCIES_BEGIN
-# mpstat acpi
+# mpstat
 ### DEPENDENCIES_END
 
 ### CONFIG_TEMPLATE_BEGIN
@@ -39,48 +38,21 @@
 #             }
 #         },
 #         {
-#             "name": "___HOSTNAME___ Battery Load",
-#             "object_id": "___HOSTNAME___-battery-load",
-#             "unique_id": "___HOSTNAME___-battery-load",
-#             "device_class" : "battery",
-#             "unit_of_measurement": "%",
-#             "icon": "mdi:chip",
+#             "name": "___HOSTNAME___ Mainboard",
+#             "object_id": "___HOSTNAME___-mainboard-usage",
+#             "unique_id": "___HOSTNAME___-mainboard-usage",
+#             "icon": "mdi:expansion-card-variant",
 #             "state": [
 #                 "___SCRIPTS_DIR______SCRIPT_NAME___",
-#                 "get-battery-status"
+#                 "get-board"
 #             ],
 #             "mqtt": {
-#                 "update_interval": 10
+#                 "update_interval": 60
 #             }
-#         }
-#     ],
-#     "binary_sensor": [
-#         {
-#             "name": "___HOSTNAME___ Battery Charging",
-#             "object_id": "___HOSTNAME___-battery-charging",
-#             "unique_id": "___HOSTNAME___-battery-charging",
-#             "icon": "mdi:battery-charging-80",
-#             "device_class": "battery_charging",
-#             "payload_on": "ON",
-#             "payload_off": "OFF",
-#             "state": [
-#                "___SCRIPTS_DIR______SCRIPT_NAME___",
-#                "get-charging-status" 
-#             ],
-#             "mqtt": {
-#                 "update_interval": 5
-#             }            
 #         }
 #     ]
 # }
 # ### CONFIG_TEMPLATE_END
-
-
-
-
-
-
-
 
 com="${1}"
 arg="${2}"
@@ -93,24 +65,15 @@ case "${com}" in
 "get-ram")
   LANG= LC_ALL= free | grep Mem | awk '{$x=sprintf("%.2f",100-($7/$2*100))} {print $x}'
   ;;
-
-"get-battery-status")
-  cat /sys/class/power_supply/BAT0/capacity
-  ;;
-
-"get-charging-status")
-  charging=$(acpi -a | awk '{print $3}')
-  if [ "${charging}" == 'on-line' ]; then
-    echo "ON"
-  else
-    echo "OFF"
-  fi
-  ;;
 "get-board")
-  if [ "${arg}" == 'pi' ]; then
+  if [ -f /sys/firmware/devicetree/base/model ]; then
     cat /sys/firmware/devicetree/base/model
   else
-    echo "ToDo"
+    VENDOR="unknown"
+    BOARD="unknown"
+    [ -f /sys/class/dmi/id/sys_vendor ] && VENDOR=$(cat /sys/class/dmi/id/sys_vendor)
+    [ -f /sys/class/dmi/id/board_name ] && BOARD=$(cat /sys/class/dmi/id/board_name)
+    echo "$VENDOR $BOARD"
   fi
   ;;
 

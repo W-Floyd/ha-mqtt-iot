@@ -30,11 +30,11 @@
 ### HELPER_END
 
 
-systemctl status ${1} >/dev/null
+systemctl status ${1} &>/dev/null
 RET=$(echo $?)
+case "${RET}" in
+    "0") echo ON ;;
+    "3") echo OFF ;;
+    *) echo unavailable ;;
+esac
 
-if [ "${RET}" == '0' ]; then
-    echo ON
-else
-    echo OFF
-fi

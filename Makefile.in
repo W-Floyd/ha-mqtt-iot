@@ -130,7 +130,7 @@ stop_service:
 uninstall: uninstall_sw remove_secrets
 	rmdir $(MY_HOME)/$(CONFIG_DIR)
 
-reinstall: uninstall_sw clean_build build config prepare release install_sw start_service
+reinstall: uninstall_sw install_sw start_service
 
 clean: clean_build
 	rm Makefile

@@ -7,4 +7,5 @@
 /nohup.out
 /secrets.json
 /build
+Makefile
 *~
