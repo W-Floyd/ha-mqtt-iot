@@ -1,5 +1,5 @@
 #!/bin/bash
-dependencies="python3"
+dependencies="python3 go"
 
 for arg in "$@"; do
     case "$arg" in
