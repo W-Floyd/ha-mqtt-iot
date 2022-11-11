@@ -7,7 +7,7 @@ PROJECT_NAME=$(EXECTUABLE)
 SYSTEMD_DIR=.config/systemd/user
 CURRENT_PATH = $(shell pwd)
 
-all: build config prepare release
+default: build config prepare
 
 .PHONY: build
 build:
@@ -46,7 +46,7 @@ prepare:
 	cp $(EXECTUABLE) $(BUILD_DIR)/
 	cp -r scripts $(BUILD_DIR)/
 
-debug: build config prepare
+debug: 
 	### define pathes to build dir 
 	$(eval CONFIG_FILE = $(CURRENT_PATH)/$(BUILD_DIR)/config.json)
 	$(eval SECRET_FILE = $(CURRENT_PATH)/$(BUILD_DIR)/secrets.json)
@@ -86,7 +86,7 @@ install_sw:
 	cp $(BUILD_DIR)/ha-mqtt-iot.service $(MY_HOME)/$(SYSTEMD_DIR)/
 	systemctl --user daemon-reload
 
-install: install_sw install_secrets
+install: release install_sw install_secrets
 	@echo ""
 	@echo ""
 	@echo " Your installation is done - please go to the folder $(MY_HOME)/$(CONFIG_DIR)/ and ajust your"

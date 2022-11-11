@@ -29,6 +29,8 @@
 # { "___SERVICE___": [ "sshd", "firewalld", "bluetooth" ]}
 ### HELPER_END
 
+# changed: https://www.freedesktop.org/software/systemd/man/systemctl.html#Exit%20status
+# added exit codes of systemd 
 
 systemctl status ${1} &>/dev/null
 RET=$(echo $?)
