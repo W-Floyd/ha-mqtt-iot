@@ -9,7 +9,7 @@
 #     "sensor": 
 #     [
 #         {
-#             "name": "___HOSTNAME___ ___INTERFACE___Wifi Signal",
+#             "name": "___HOSTNAME___ ___INTERFACE___ Wifi Signal",
 #             "object_id": "___HOSTNAME___-___INTERFACE___-wifi-signal",
 #             "unique_id": "___HOSTNAME___-___INTERFACE___-wifi-signal",
 #             "icon": "mdi:wifi-strength-2",
@@ -25,7 +25,7 @@
 #             }
 #         },
 #         {
-#             "name": "___HOSTNAME___ ___INTERFACE___Wifi Quality",
+#             "name": "___HOSTNAME___ ___INTERFACE___ Wifi Quality",
 #             "object_id": "___HOSTNAME___-___INTERFACE___-wifi-quality",
 #             "unique_id": "___HOSTNAME___-___INTERFACE___-wifi-quality",
 #             "icon": "mdi:quality-medium",

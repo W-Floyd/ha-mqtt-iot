@@ -1,4 +1,4 @@
- #!/bin/bash
+#!/bin/bash
 
 # The command vcgencmd is may be unique to raspberry pis
 
