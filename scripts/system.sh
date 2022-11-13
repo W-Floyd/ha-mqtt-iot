@@ -63,7 +63,7 @@ case "${com}" in
   ;;
 
 "get-ram")
-  LANG= LC_ALL= free | grep Mem | awk '{$x=sprintf("%.2f",100-($7/$2*100))} {print $x}'
+  LANG= LC_ALL= free | grep Mem | awk '{printf "%.1f\n", 100-($7/$2*100)}'
   ;;
 "get-board")
   if [ -f /sys/firmware/devicetree/base/model ]; then
