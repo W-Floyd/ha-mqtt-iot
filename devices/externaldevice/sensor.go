@@ -50,7 +50,7 @@ type Sensor struct {
 	StateFunc              func() string                   `json:"-"`
 	UniqueId               *string                         `json:"unique_id,omitempty"`           // "An ID that uniquely identifies this sensor. If two sensors have the same unique ID, Home Assistant will raise an exception."
 	UnitOfMeasurement      *string                         `json:"unit_of_measurement,omitempty"` // "Defines the units of measurement of the sensor, if any."
-	ValueTemplate          *string                         `json:"value_template,omitempty"`      // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract the value. Available variables: `entity_id`. The `entity_id` can be used to reference the entity's attributes. If the template throws an error, the current state will be used instead."
+	ValueTemplate          *string                         `json:"value_template,omitempty"`      // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract the value. If the template throws an error, the current state will be used instead."
 	MQTT                   *MQTTFields                     `json:"-"`
 }
 

@@ -50,7 +50,7 @@ type BinarySensor struct {
 	StateTopic             *string                         `json:"state_topic,omitempty"`           // "The MQTT topic subscribed to receive sensor's state."
 	StateFunc              func() string                   `json:"-"`
 	UniqueId               *string                         `json:"unique_id,omitempty"`      // "An ID that uniquely identifies this sensor. If two sensors have the same unique ID, Home Assistant will raise an exception."
-	ValueTemplate          *string                         `json:"value_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) that returns a string to be compared to `payload_on`/`payload_off` or an empty string, in which case the MQTT message will be removed. Available variables: `entity_id`. Remove this option when 'payload_on' and 'payload_off' are sufficient to match your payloads (i.e no pre-processing of original message is required)."
+	ValueTemplate          *string                         `json:"value_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) that returns a string to be compared to `payload_on`/`payload_off` or an empty string, in which case the MQTT message will be removed. Remove this option when `payload_on` and `payload_off` are sufficient to match your payloads (i.e no pre-processing of original message is required)."
 	MQTT                   *MQTTFields                     `json:"-"`
 }
 

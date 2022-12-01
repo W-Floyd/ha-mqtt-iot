@@ -31,7 +31,7 @@ type BinarySensor struct {
 	Qos                    *int        `json:"qos,omitempty"`                   // "The maximum QoS level to be used when receiving messages."
 	State                  *([]string) `json:"state,omitempty"`
 	UniqueId               *string     `json:"unique_id,omitempty"`      // "An ID that uniquely identifies this sensor. If two sensors have the same unique ID, Home Assistant will raise an exception."
-	ValueTemplate          *string     `json:"value_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) that returns a string to be compared to `payload_on`/`payload_off` or an empty string, in which case the MQTT message will be removed. Available variables: `entity_id`. Remove this option when 'payload_on' and 'payload_off' are sufficient to match your payloads (i.e no pre-processing of original message is required)."
+	ValueTemplate          *string     `json:"value_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) that returns a string to be compared to `payload_on`/`payload_off` or an empty string, in which case the MQTT message will be removed. Remove this option when `payload_on` and `payload_off` are sufficient to match your payloads (i.e no pre-processing of original message is required)."
 	MQTT                   struct {
 		UpdateInterval *float64 `json:"update_interval,omitempty"`
 		ForceUpdate    *bool    `json:"force_update,omitempty"`
