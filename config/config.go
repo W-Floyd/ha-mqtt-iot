@@ -42,6 +42,7 @@ type Config struct {
 	Siren             []internaldevice.Siren             `json:"siren,omitempty"`
 	Switch            []internaldevice.Switch            `json:"switch,omitempty"`
 	Tag               []internaldevice.Tag               `json:"tag,omitempty"`
+	Text              []internaldevice.Text              `json:"text,omitempty"`
 	Update            []internaldevice.Update            `json:"update,omitempty"`
 	Vacuum            []internaldevice.Vacuum            `json:"vacuum,omitempty"`
 }
@@ -140,6 +141,11 @@ func (c Config) Translate() (output []ExternalDevice.Device) {
 	for _, d := range c.Tag {
 		newTag := d.Translate()
 		newDevice := ExternalDevice.Device(&newTag)
+		output = append(output, newDevice)
+	}
+	for _, d := range c.Text {
+		newText := d.Translate()
+		newDevice := ExternalDevice.Device(&newText)
 		output = append(output, newDevice)
 	}
 	for _, d := range c.Update {

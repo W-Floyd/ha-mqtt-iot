@@ -100,6 +100,10 @@ type StateStore struct {
 	Tag struct {
 		State map[string]string
 	}
+	Text struct {
+		Availability map[string]string
+		State        map[string]string
+	}
 	Update struct {
 		Availability map[string]string
 		State        map[string]string
@@ -170,6 +174,8 @@ func initStore() StateStore {
 	s.Switch.Availability = make(map[string]string)
 	s.Switch.State = make(map[string]string)
 	s.Tag.State = make(map[string]string)
+	s.Text.Availability = make(map[string]string)
+	s.Text.State = make(map[string]string)
 	s.Update.Availability = make(map[string]string)
 	s.Update.State = make(map[string]string)
 	s.Vacuum.Availability = make(map[string]string)

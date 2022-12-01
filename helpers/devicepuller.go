@@ -35,6 +35,7 @@ var DeviceNames = []string{
 	"siren",
 	"switch",
 	"tag",
+	"text",
 	"update",
 	"vacuum",
 }
