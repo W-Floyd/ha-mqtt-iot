@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	"github.com/W-Floyd/ha-mqtt-iot/common"
-	mqtt "github.com/eclipse/paho.mqtt.golang"
+	mqtt "tinygo.org/x/drivers/net/mqtt"
 )
 
 func ConstructCommandFunc(command []string) (f func(message mqtt.Message, connection mqtt.Client)) {

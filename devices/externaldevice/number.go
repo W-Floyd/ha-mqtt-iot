@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	common "github.com/W-Floyd/ha-mqtt-iot/common"
 	store "github.com/W-Floyd/ha-mqtt-iot/store"
-	mqtt "github.com/eclipse/paho.mqtt.golang"
+	mqtt "tinygo.org/x/drivers/net/mqtt"
 	strcase "github.com/iancoleman/strcase"
 	"log"
 	"time"

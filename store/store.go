@@ -1,5 +1,5 @@
 package store
 
-import mqtt "github.com/eclipse/paho.mqtt.golang"
+import mqtt "tinygo.org/x/drivers/net/mqtt"
 
 var TopicStore = make(map[string]*func(mqtt.Message, mqtt.Client))

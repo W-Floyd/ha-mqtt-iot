@@ -1,11 +1,11 @@
 package config
 
 import (
-	"log"
+	//	"log"
 	"time"
 
 	ExternalDevice "github.com/W-Floyd/ha-mqtt-iot/devices/externaldevice"
-	mqtt "github.com/eclipse/paho.mqtt.golang"
+	mqtt "tinygo.org/x/drivers/net/mqtt"
 )
 
 func (c Config) Convert() ([]ExternalDevice.Device, *mqtt.ClientOptions) {
@@ -15,17 +15,12 @@ func (c Config) Convert() ([]ExternalDevice.Device, *mqtt.ClientOptions) {
 	opts.SetUsername(c.MQTT.Username)
 	opts.SetPassword(c.MQTT.Password)
 	opts.SetKeepAlive(30 * time.Second)
-	opts.SetDefaultPublishHandler(func(client mqtt.Client, msg mqtt.Message) {
-		log.Printf("TOPIC: %s\n", msg.Topic())
-		log.Printf("MSG: %s\n", msg.Payload())
-	})
+	//	opts.SetDefaultPublishHandler(func(client mqtt.Client, msg mqtt.Message) {
+	//		log.Printf("TOPIC: %s\n", msg.Topic())
+	//		log.Printf("MSG: %s\n", msg.Payload())
+	//	})
 	opts.SetPingTimeout(1 * time.Second)
-	opts.SetAutoReconnect(true)
-	opts.SetMaxReconnectInterval(10 * time.Second)
-	opts.SetConnectRetry(true)
-	opts.SetConnectRetryInterval(10 * time.Second)
-	opts.SetWriteTimeout(60 * time.Second)
-
+	//	opts.SetAutoReconnect(true)
 	if c.MQTT.NodeId != "" {
 		ExternalDevice.NodeID = c.MQTT.NodeId
 	}
