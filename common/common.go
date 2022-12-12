@@ -14,8 +14,8 @@ type LogLevels struct {
 }
 
 var (
-	Retain           bool          = false
-	QoS              byte          = 0
+	Retain           bool          = true
+	QoS              byte          = 2
 	HADiscoveryDelay time.Duration = 500 * time.Millisecond
 	MachineID        string
 	LogState         = LogLevels{
