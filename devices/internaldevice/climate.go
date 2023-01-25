@@ -17,6 +17,8 @@ type Climate struct {
 	AvailabilityMode               *string     `json:"availability_mode,omitempty"`     // "When `availability` is configured, this controls the conditions needed to set the entity to `available`. Valid entries are `all`, `any`, and `latest`. If set to `all`, `payload_available` must be received on all configured availability topics before the entity is marked as online. If set to `any`, `payload_available` must be received on at least one configured availability topic before the entity is marked as online. If set to `latest`, the last `payload_available` or `payload_not_available` received on any configured availability topic controls the availability."
 	AvailabilityTemplate           *string     `json:"availability_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract device's availability from the `availability_topic`. To determine the devices's availability result of this template will be compared to `payload_available` and `payload_not_available`."
 	Availability                   *([]string) `json:"availability,omitempty"`
+	CurrentHumidityTemplate        *string     `json:"current_humidity_template,omitempty"` // "A template with which the value received on `current_humidity_topic` will be rendered."
+	CurrentHumidity                *([]string) `json:"current_humidity,omitempty"`
 	CurrentTemperatureTemplate     *string     `json:"current_temperature_template,omitempty"` // "A template with which the value received on `current_temperature_topic` will be rendered."
 	CurrentTemperature             *([]string) `json:"current_temperature,omitempty"`
 	EnabledByDefault               *bool       `json:"enabled_by_default,omitempty"`        // "Flag which defines if the entity should be enabled when first added."
@@ -31,20 +33,22 @@ type Climate struct {
 	Initial                        *int        `json:"initial,omitempty"`                  // "Set the initial target temperature."
 	JsonAttributesTemplate         *string     `json:"json_attributes_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract the JSON dictionary from messages received on the `json_attributes_topic`. Usage example can be found in [MQTT sensor](/integrations/sensor.mqtt/#json-attributes-template-configuration) documentation."
 	JsonAttributes                 *([]string) `json:"json_attributes,omitempty"`
+	MaxHumidity                    *int        `json:"max_humidity,omitempty"`          // "The minimum target humidity percentage that can be set."
 	MaxTemp                        *float64    `json:"max_temp,omitempty"`              // "Maximum set point available."
+	MinHumidity                    *int        `json:"min_humidity,omitempty"`          // "The maximum target humidity percentage that can be set."
 	MinTemp                        *float64    `json:"min_temp,omitempty"`              // "Minimum set point available."
 	ModeCommandTemplate            *string     `json:"mode_command_template,omitempty"` // "A template to render the value sent to the `mode_command_topic` with."
 	ModeCommand                    *([]string) `json:"mode_command,omitempty"`
 	ModeStateTemplate              *string     `json:"mode_state_template,omitempty"` // "A template to render the value received on the `mode_state_topic` with."
 	ModeState                      *([]string) `json:"mode_state,omitempty"`
-	Modes                          *([]string) `json:"modes,omitempty"`                 // "A list of supported modes. Needs to be a subset of the default values."
-	Name                           *string     `json:"name,omitempty"`                  // "The name of the HVAC."
-	ObjectId                       *string     `json:"object_id,omitempty"`             // "Used instead of `name` for automatic generation of `entity_id`"
-	PayloadAvailable               *string     `json:"payload_available,omitempty"`     // "The payload that represents the available state."
-	PayloadNotAvailable            *string     `json:"payload_not_available,omitempty"` // "The payload that represents the unavailable state."
-	PayloadOff                     *string     `json:"payload_off,omitempty"`           // "The payload that represents disabled state."
-	PayloadOn                      *string     `json:"payload_on,omitempty"`            // "The payload that represents enabled state."
-	PowerCommand                   *([]string) `json:"power_command,omitempty"`
+	Modes                          *([]string) `json:"modes,omitempty"`                        // "A list of supported modes. Needs to be a subset of the default values."
+	Name                           *string     `json:"name,omitempty"`                         // "The name of the HVAC."
+	ObjectId                       *string     `json:"object_id,omitempty"`                    // "Used instead of `name` for automatic generation of `entity_id`"
+	Optimistic                     *bool       `json:"optimistic,omitempty"`                   // "Flag that defines if the climate works in optimistic mode"
+	PayloadAvailable               *string     `json:"payload_available,omitempty"`            // "The payload that represents the available state."
+	PayloadNotAvailable            *string     `json:"payload_not_available,omitempty"`        // "The payload that represents the unavailable state."
+	PayloadOff                     *string     `json:"payload_off,omitempty"`                  // "The payload that represents disabled state."
+	PayloadOn                      *string     `json:"payload_on,omitempty"`                   // "The payload that represents enabled state."
 	Precision                      *float64    `json:"precision,omitempty"`                    // "The desired precision for this device. Can be used to match your actual thermostat's precision. Supported values are `0.1`, `0.5` and `1.0`."
 	PresetModeCommandTemplate      *string     `json:"preset_mode_command_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to generate the payload to send to `preset_mode_command_topic`."
 	PresetModeCommand              *([]string) `json:"preset_mode_command,omitempty"`
@@ -57,7 +61,11 @@ type Climate struct {
 	SwingModeCommand               *([]string) `json:"swing_mode_command,omitempty"`
 	SwingModeStateTemplate         *string     `json:"swing_mode_state_template,omitempty"` // "A template to render the value received on the `swing_mode_state_topic` with."
 	SwingModeState                 *([]string) `json:"swing_mode_state,omitempty"`
-	SwingModes                     *([]string) `json:"swing_modes,omitempty"`                  // "A list of supported swing modes."
+	SwingModes                     *([]string) `json:"swing_modes,omitempty"`                      // "A list of supported swing modes."
+	TargetHumidityCommandTemplate  *string     `json:"target_humidity_command_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to generate the payload to send to `target_humidity_command_topic`."
+	TargetHumidityCommand          *([]string) `json:"target_humidity_command,omitempty"`
+	TargetHumidityStateTemplate    *string     `json:"target_humidity_state_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract a value for the climate `target_humidity` state."
+	TargetHumidityState            *([]string) `json:"target_humidity_state,omitempty"`
 	TempStep                       *float64    `json:"temp_step,omitempty"`                    // "Step size for temperature set point."
 	TemperatureCommandTemplate     *string     `json:"temperature_command_template,omitempty"` // "A template to render the value sent to the `temperature_command_topic` with."
 	TemperatureCommand             *([]string) `json:"temperature_command,omitempty"`
@@ -113,6 +121,12 @@ func (iDevice Climate) Translate() externaldevice.Climate {
 	if iDevice.Availability != nil {
 		eDevice.AvailabilityFunc = common.ConstructStateFunc(*iDevice.Availability)
 	}
+	if iDevice.CurrentHumidityTemplate != nil {
+		eDevice.CurrentHumidityTemplate = iDevice.CurrentHumidityTemplate
+	}
+	if iDevice.CurrentHumidity != nil {
+		eDevice.CurrentHumidityFunc = common.ConstructStateFunc(*iDevice.CurrentHumidity)
+	}
 	if iDevice.CurrentTemperatureTemplate != nil {
 		eDevice.CurrentTemperatureTemplate = iDevice.CurrentTemperatureTemplate
 	}
@@ -155,8 +169,14 @@ func (iDevice Climate) Translate() externaldevice.Climate {
 	if iDevice.JsonAttributes != nil {
 		eDevice.JsonAttributesFunc = common.ConstructCommandFunc(*iDevice.JsonAttributes)
 	}
+	if iDevice.MaxHumidity != nil {
+		eDevice.MaxHumidity = iDevice.MaxHumidity
+	}
 	if iDevice.MaxTemp != nil {
 		eDevice.MaxTemp = iDevice.MaxTemp
+	}
+	if iDevice.MinHumidity != nil {
+		eDevice.MinHumidity = iDevice.MinHumidity
 	}
 	if iDevice.MinTemp != nil {
 		eDevice.MinTemp = iDevice.MinTemp
@@ -182,6 +202,9 @@ func (iDevice Climate) Translate() externaldevice.Climate {
 	if iDevice.ObjectId != nil {
 		eDevice.ObjectId = iDevice.ObjectId
 	}
+	if iDevice.Optimistic != nil {
+		eDevice.Optimistic = iDevice.Optimistic
+	}
 	if iDevice.PayloadAvailable != nil {
 		eDevice.PayloadAvailable = iDevice.PayloadAvailable
 	}
@@ -193,9 +216,6 @@ func (iDevice Climate) Translate() externaldevice.Climate {
 	}
 	if iDevice.PayloadOn != nil {
 		eDevice.PayloadOn = iDevice.PayloadOn
-	}
-	if iDevice.PowerCommand != nil {
-		eDevice.PowerCommandFunc = common.ConstructCommandFunc(*iDevice.PowerCommand)
 	}
 	if iDevice.Precision != nil {
 		eDevice.Precision = iDevice.Precision
@@ -235,6 +255,18 @@ func (iDevice Climate) Translate() externaldevice.Climate {
 	}
 	if iDevice.SwingModes != nil {
 		eDevice.SwingModes = iDevice.SwingModes
+	}
+	if iDevice.TargetHumidityCommandTemplate != nil {
+		eDevice.TargetHumidityCommandTemplate = iDevice.TargetHumidityCommandTemplate
+	}
+	if iDevice.TargetHumidityCommand != nil {
+		eDevice.TargetHumidityCommandFunc = common.ConstructCommandFunc(*iDevice.TargetHumidityCommand)
+	}
+	if iDevice.TargetHumidityStateTemplate != nil {
+		eDevice.TargetHumidityStateTemplate = iDevice.TargetHumidityStateTemplate
+	}
+	if iDevice.TargetHumidityState != nil {
+		eDevice.TargetHumidityStateFunc = common.ConstructStateFunc(*iDevice.TargetHumidityState)
 	}
 	if iDevice.TempStep != nil {
 		eDevice.TempStep = iDevice.TempStep

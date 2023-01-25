@@ -57,9 +57,10 @@ type Light struct {
 	EnabledByDefault       *bool                           `json:"enabled_by_default,omitempty"`    // "Flag which defines if the entity should be enabled when first added."
 	Encoding               *string                         `json:"encoding,omitempty"`              // "The encoding of the payloads received and published messages. Set to `\"\"` to disable decoding of incoming payload."
 	EntityCategory         *string                         `json:"entity_category,omitempty"`       // "The [category](https://developers.home-assistant.io/docs/core/entity#generic-properties) of the entity."
+	HsCommandTemplate      *string                         `json:"hs_command_template,omitempty"`   // "Defines a [template](/docs/configuration/templating/) to compose message which will be sent to `hs_command_topic`. Available variables: `hue` and `sat`."
 	HsCommandTopic         *string                         `json:"hs_command_topic,omitempty"`      // "The MQTT topic to publish commands to change the light's color state in HS format (Hue Saturation). Range for Hue: 0° .. 360°, Range of Saturation: 0..100. Note: Brightness is sent separately in the `brightness_command_topic`."
 	HsCommandFunc          func(mqtt.Message, mqtt.Client) `json:"-"`
-	HsStateTopic           *string                         `json:"hs_state_topic,omitempty"` // "The MQTT topic subscribed to receive color state updates in HS format. Note: Brightness is received separately in the `brightness_state_topic`."
+	HsStateTopic           *string                         `json:"hs_state_topic,omitempty"` // "The MQTT topic subscribed to receive color state updates in HS format. The expected payload is the hue and saturation values separated by commas, for example, `359.5,100.0`. Note: Brightness is received separately in the `brightness_state_topic`."
 	HsStateFunc            func() string                   `json:"-"`
 	HsValueTemplate        *string                         `json:"hs_value_template,omitempty"`        // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract the HS value."
 	Icon                   *string                         `json:"icon,omitempty"`                     // "[Icon](/docs/configuration/customizing-devices/#icon) for the entity."
@@ -103,10 +104,11 @@ type Light struct {
 	UniqueId               *string                         `json:"unique_id,omitempty"`            // "An ID that uniquely identifies this light. If two lights have the same unique ID, Home Assistant will raise an exception."
 	WhiteCommandTopic      *string                         `json:"white_command_topic,omitempty"`  // "The MQTT topic to publish commands to change the light to white mode with a given brightness."
 	WhiteCommandFunc       func(mqtt.Message, mqtt.Client) `json:"-"`
-	WhiteScale             *int                            `json:"white_scale,omitempty"`      // "Defines the maximum white level (i.e., 100%) of the MQTT device."
-	XyCommandTopic         *string                         `json:"xy_command_topic,omitempty"` // "The MQTT topic to publish commands to change the light's XY state."
+	WhiteScale             *int                            `json:"white_scale,omitempty"`         // "Defines the maximum white level (i.e., 100%) of the MQTT device."
+	XyCommandTemplate      *string                         `json:"xy_command_template,omitempty"` // "Defines a [template](/docs/configuration/templating/) to compose message which will be sent to `xy_command_topic`. Available variables: `x` and `y`."
+	XyCommandTopic         *string                         `json:"xy_command_topic,omitempty"`    // "The MQTT topic to publish commands to change the light's XY state."
 	XyCommandFunc          func(mqtt.Message, mqtt.Client) `json:"-"`
-	XyStateTopic           *string                         `json:"xy_state_topic,omitempty"` // "The MQTT topic subscribed to receive XY state updates."
+	XyStateTopic           *string                         `json:"xy_state_topic,omitempty"` // "The MQTT topic subscribed to receive XY state updates. The expected payload is the X and Y color values separated by commas, for example, `0.675,0.322`."
 	XyStateFunc            func() string                   `json:"-"`
 	XyValueTemplate        *string                         `json:"xy_value_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract the XY value."
 	MQTT                   *MQTTFields                     `json:"-"`

@@ -32,6 +32,7 @@ type Light struct {
 	EnabledByDefault          *bool       `json:"enabled_by_default,omitempty"`    // "Flag which defines if the entity should be enabled when first added."
 	Encoding                  *string     `json:"encoding,omitempty"`              // "The encoding of the payloads received and published messages. Set to `\"\"` to disable decoding of incoming payload."
 	EntityCategory            *string     `json:"entity_category,omitempty"`       // "The [category](https://developers.home-assistant.io/docs/core/entity#generic-properties) of the entity."
+	HsCommandTemplate         *string     `json:"hs_command_template,omitempty"`   // "Defines a [template](/docs/configuration/templating/) to compose message which will be sent to `hs_command_topic`. Available variables: `hue` and `sat`."
 	HsCommand                 *([]string) `json:"hs_command,omitempty"`
 	HsState                   *([]string) `json:"hs_state,omitempty"`
 	HsValueTemplate           *string     `json:"hs_value_template,omitempty"`        // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract the HS value."
@@ -67,7 +68,8 @@ type Light struct {
 	StateValueTemplate        *string     `json:"state_value_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract the state value. The template should match the payload `on` and `off` values, so if your light uses `power on` to turn on, your `state_value_template` string should return `power on` when the switch is on. For example if the message is just `on`, your `state_value_template` should be `power {{ value }}`."
 	UniqueId                  *string     `json:"unique_id,omitempty"`            // "An ID that uniquely identifies this light. If two lights have the same unique ID, Home Assistant will raise an exception."
 	WhiteCommand              *([]string) `json:"white_command,omitempty"`
-	WhiteScale                *int        `json:"white_scale,omitempty"` // "Defines the maximum white level (i.e., 100%) of the MQTT device."
+	WhiteScale                *int        `json:"white_scale,omitempty"`         // "Defines the maximum white level (i.e., 100%) of the MQTT device."
+	XyCommandTemplate         *string     `json:"xy_command_template,omitempty"` // "Defines a [template](/docs/configuration/templating/) to compose message which will be sent to `xy_command_topic`. Available variables: `x` and `y`."
 	XyCommand                 *([]string) `json:"xy_command,omitempty"`
 	XyState                   *([]string) `json:"xy_state,omitempty"`
 	XyValueTemplate           *string     `json:"xy_value_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract the XY value."
@@ -154,6 +156,9 @@ func (iDevice Light) Translate() externaldevice.Light {
 	}
 	if iDevice.EntityCategory != nil {
 		eDevice.EntityCategory = iDevice.EntityCategory
+	}
+	if iDevice.HsCommandTemplate != nil {
+		eDevice.HsCommandTemplate = iDevice.HsCommandTemplate
 	}
 	if iDevice.HsCommand != nil {
 		eDevice.HsCommandFunc = common.ConstructCommandFunc(*iDevice.HsCommand)
@@ -262,6 +267,9 @@ func (iDevice Light) Translate() externaldevice.Light {
 	}
 	if iDevice.WhiteScale != nil {
 		eDevice.WhiteScale = iDevice.WhiteScale
+	}
+	if iDevice.XyCommandTemplate != nil {
+		eDevice.XyCommandTemplate = iDevice.XyCommandTemplate
 	}
 	if iDevice.XyCommand != nil {
 		eDevice.XyCommandFunc = common.ConstructCommandFunc(*iDevice.XyCommand)

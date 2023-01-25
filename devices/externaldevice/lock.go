@@ -18,7 +18,9 @@ type Lock struct {
 	AvailabilityTemplate *string                         `json:"availability_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract device's availability from the `availability_topic`. To determine the devices's availability result of this template will be compared to `payload_available` and `payload_not_available`."
 	AvailabilityTopic    *string                         `json:"availability_topic,omitempty"`    // "The MQTT topic subscribed to receive availability (online/offline) updates. Must not be used together with `availability`."
 	AvailabilityFunc     func() string                   `json:"-"`
-	CommandTopic         *string                         `json:"command_topic,omitempty"` // "The MQTT topic to publish commands to change the lock state."
+	CodeFormat           *string                         `json:"code_format,omitempty"`      // "A regular expression to validate a supplied code when it is set during the service call to `open`, `lock` or `unlock` the MQTT lock."
+	CommandTemplate      *string                         `json:"command_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to generate the payload to send to `command_topic`. The lock command template accepts the parameters `value` and `code`. The `value` parameter will contain the configured value for either `payload_open`, `payload_lock` or `payload_unlock`. The `code` parameter is set during the service call to `open`, `lock` or `unlock` the MQTT lock and will be set `None` if no code was passed."
+	CommandTopic         *string                         `json:"command_topic,omitempty"`    // "The MQTT topic to publish commands to change the lock state."
 	CommandFunc          func(mqtt.Message, mqtt.Client) `json:"-"`
 	Device               struct {
 		ConfigurationUrl *string `json:"configuration_url,omitempty"` // "A link to the webpage that can manage the configuration of this device. Can be either an HTTP or HTTPS link."
@@ -48,12 +50,15 @@ type Lock struct {
 	PayloadUnlock          *string                         `json:"payload_unlock,omitempty"`        // "The payload sent to the lock to unlock it."
 	Qos                    *int                            `json:"qos,omitempty"`                   // "The maximum QoS level of the state topic."
 	Retain                 *bool                           `json:"retain,omitempty"`                // "If the published message should have the retain flag on or not."
-	StateLocked            *string                         `json:"state_locked,omitempty"`          // "The payload sent to by the lock when it's locked."
-	StateTopic             *string                         `json:"state_topic,omitempty"`           // "The MQTT topic subscribed to receive state updates."
+	StateJammed            *string                         `json:"state_jammed,omitempty"`          // "The payload sent to `state_topic` by the lock when it's jammed."
+	StateLocked            *string                         `json:"state_locked,omitempty"`          // "The payload sent to `state_topic` by the lock when it's locked."
+	StateLocking           *string                         `json:"state_locking,omitempty"`         // "The payload sent to `state_topic` by the lock when it's locking."
+	StateTopic             *string                         `json:"state_topic,omitempty"`           // "The MQTT topic subscribed to receive state updates. It accepts states configured with `state_jammed`, `state_locked`, `state_unlocked`, `state_locking` or `state_unlocking`."
 	StateFunc              func() string                   `json:"-"`
-	StateUnlocked          *string                         `json:"state_unlocked,omitempty"` // "The payload sent to by the lock when it's unlocked."
-	UniqueId               *string                         `json:"unique_id,omitempty"`      // "An ID that uniquely identifies this lock. If two locks have the same unique ID, Home Assistant will raise an exception."
-	ValueTemplate          *string                         `json:"value_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract a value from the payload."
+	StateUnlocked          *string                         `json:"state_unlocked,omitempty"`  // "The payload sent to `state_topic` by the lock when it's unlocked."
+	StateUnlocking         *string                         `json:"state_unlocking,omitempty"` // "The payload sent to `state_topic` by the lock when it's unlocking."
+	UniqueId               *string                         `json:"unique_id,omitempty"`       // "An ID that uniquely identifies this lock. If two locks have the same unique ID, Home Assistant will raise an exception."
+	ValueTemplate          *string                         `json:"value_template,omitempty"`  // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract a state value from the payload."
 	MQTT                   *MQTTFields                     `json:"-"`
 }
 

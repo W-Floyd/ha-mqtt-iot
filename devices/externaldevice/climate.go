@@ -26,6 +26,9 @@ type Climate struct {
 	AvailabilityTemplate       *string                         `json:"availability_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract device's availability from the `availability_topic`. To determine the devices's availability result of this template will be compared to `payload_available` and `payload_not_available`."
 	AvailabilityTopic          *string                         `json:"availability_topic,omitempty"`    // "The MQTT topic subscribed to receive availability (online/offline) updates. Must not be used together with `availability`."
 	AvailabilityFunc           func() string                   `json:"-"`
+	CurrentHumidityTemplate    *string                         `json:"current_humidity_template,omitempty"` // "A template with which the value received on `current_humidity_topic` will be rendered."
+	CurrentHumidityTopic       *string                         `json:"current_humidity_topic,omitempty"`    // "The MQTT topic on which to listen for the current humidity."
+	CurrentHumidityFunc        func() string                   `json:"-"`
 	CurrentTemperatureTemplate *string                         `json:"current_temperature_template,omitempty"` // "A template with which the value received on `current_temperature_topic` will be rendered."
 	CurrentTemperatureTopic    *string                         `json:"current_temperature_topic,omitempty"`    // "The MQTT topic on which to listen for the current temperature."
 	CurrentTemperatureFunc     func() string                   `json:"-"`
@@ -55,23 +58,24 @@ type Climate struct {
 	JsonAttributesTemplate         *string                         `json:"json_attributes_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract the JSON dictionary from messages received on the `json_attributes_topic`. Usage example can be found in [MQTT sensor](/integrations/sensor.mqtt/#json-attributes-template-configuration) documentation."
 	JsonAttributesTopic            *string                         `json:"json_attributes_topic,omitempty"`    // "The MQTT topic subscribed to receive a JSON dictionary payload and then set as sensor attributes. Usage example can be found in [MQTT sensor](/integrations/sensor.mqtt/#json-attributes-topic-configuration) documentation."
 	JsonAttributesFunc             func(mqtt.Message, mqtt.Client) `json:"-"`
+	MaxHumidity                    *int                            `json:"max_humidity,omitempty"`          // "The minimum target humidity percentage that can be set."
 	MaxTemp                        *float64                        `json:"max_temp,omitempty"`              // "Maximum set point available."
+	MinHumidity                    *int                            `json:"min_humidity,omitempty"`          // "The maximum target humidity percentage that can be set."
 	MinTemp                        *float64                        `json:"min_temp,omitempty"`              // "Minimum set point available."
 	ModeCommandTemplate            *string                         `json:"mode_command_template,omitempty"` // "A template to render the value sent to the `mode_command_topic` with."
-	ModeCommandTopic               *string                         `json:"mode_command_topic,omitempty"`    // "The MQTT topic to publish commands to change the HVAC operation mode."
+	ModeCommandTopic               *string                         `json:"mode_command_topic,omitempty"`    // "The MQTT topic to publish commands to change the HVAC operation mode. Use with `mode_command_template` if you only want to publish the power state."
 	ModeCommandFunc                func(mqtt.Message, mqtt.Client) `json:"-"`
 	ModeStateTemplate              *string                         `json:"mode_state_template,omitempty"` // "A template to render the value received on the `mode_state_topic` with."
 	ModeStateTopic                 *string                         `json:"mode_state_topic,omitempty"`    // "The MQTT topic to subscribe for changes of the HVAC operation mode. If this is not set, the operation mode works in optimistic mode (see below)."
 	ModeStateFunc                  func() string                   `json:"-"`
-	Modes                          *([]string)                     `json:"modes,omitempty"`                 // "A list of supported modes. Needs to be a subset of the default values."
-	Name                           *string                         `json:"name,omitempty"`                  // "The name of the HVAC."
-	ObjectId                       *string                         `json:"object_id,omitempty"`             // "Used instead of `name` for automatic generation of `entity_id`"
-	PayloadAvailable               *string                         `json:"payload_available,omitempty"`     // "The payload that represents the available state."
-	PayloadNotAvailable            *string                         `json:"payload_not_available,omitempty"` // "The payload that represents the unavailable state."
-	PayloadOff                     *string                         `json:"payload_off,omitempty"`           // "The payload that represents disabled state."
-	PayloadOn                      *string                         `json:"payload_on,omitempty"`            // "The payload that represents enabled state."
-	PowerCommandTopic              *string                         `json:"power_command_topic,omitempty"`   // "The MQTT topic to publish commands to change the power state. This is useful if your device has a separate power toggle in addition to mode."
-	PowerCommandFunc               func(mqtt.Message, mqtt.Client) `json:"-"`
+	Modes                          *([]string)                     `json:"modes,omitempty"`                        // "A list of supported modes. Needs to be a subset of the default values."
+	Name                           *string                         `json:"name,omitempty"`                         // "The name of the HVAC."
+	ObjectId                       *string                         `json:"object_id,omitempty"`                    // "Used instead of `name` for automatic generation of `entity_id`"
+	Optimistic                     *bool                           `json:"optimistic,omitempty"`                   // "Flag that defines if the climate works in optimistic mode"
+	PayloadAvailable               *string                         `json:"payload_available,omitempty"`            // "The payload that represents the available state."
+	PayloadNotAvailable            *string                         `json:"payload_not_available,omitempty"`        // "The payload that represents the unavailable state."
+	PayloadOff                     *string                         `json:"payload_off,omitempty"`                  // "The payload that represents disabled state."
+	PayloadOn                      *string                         `json:"payload_on,omitempty"`                   // "The payload that represents enabled state."
 	Precision                      *float64                        `json:"precision,omitempty"`                    // "The desired precision for this device. Can be used to match your actual thermostat's precision. Supported values are `0.1`, `0.5` and `1.0`."
 	PresetModeCommandTemplate      *string                         `json:"preset_mode_command_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to generate the payload to send to `preset_mode_command_topic`."
 	PresetModeCommandTopic         *string                         `json:"preset_mode_command_topic,omitempty"`    // "The MQTT topic to publish commands to change the preset mode."
@@ -88,7 +92,13 @@ type Climate struct {
 	SwingModeStateTemplate         *string                         `json:"swing_mode_state_template,omitempty"` // "A template to render the value received on the `swing_mode_state_topic` with."
 	SwingModeStateTopic            *string                         `json:"swing_mode_state_topic,omitempty"`    // "The MQTT topic to subscribe for changes of the HVAC swing mode. If this is not set, the swing mode works in optimistic mode (see below)."
 	SwingModeStateFunc             func() string                   `json:"-"`
-	SwingModes                     *([]string)                     `json:"swing_modes,omitempty"`                  // "A list of supported swing modes."
+	SwingModes                     *([]string)                     `json:"swing_modes,omitempty"`                      // "A list of supported swing modes."
+	TargetHumidityCommandTemplate  *string                         `json:"target_humidity_command_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to generate the payload to send to `target_humidity_command_topic`."
+	TargetHumidityCommandTopic     *string                         `json:"target_humidity_command_topic,omitempty"`    // "The MQTT topic to publish commands to change the target humidity."
+	TargetHumidityCommandFunc      func(mqtt.Message, mqtt.Client) `json:"-"`
+	TargetHumidityStateTemplate    *string                         `json:"target_humidity_state_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract a value for the climate `target_humidity` state."
+	TargetHumidityStateTopic       *string                         `json:"target_humidity_state_topic,omitempty"`    // "The MQTT topic subscribed to receive the target humidity. If this is not set, the target humidity works in optimistic mode (see below)."
+	TargetHumidityStateFunc        func() string                   `json:"-"`
 	TempStep                       *float64                        `json:"temp_step,omitempty"`                    // "Step size for temperature set point."
 	TemperatureCommandTemplate     *string                         `json:"temperature_command_template,omitempty"` // "A template to render the value sent to the `temperature_command_topic` with."
 	TemperatureCommandTopic        *string                         `json:"temperature_command_topic,omitempty"`    // "The MQTT topic to publish commands to change the target temperature."
@@ -147,6 +157,14 @@ func (d *Climate) UpdateState() {
 			token.Wait()
 		}
 	}
+	if d.CurrentHumidityTopic != nil {
+		state := d.CurrentHumidityFunc()
+		if state != stateStore.Climate.CurrentHumidity[d.GetUniqueId()] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
+			token := (*d.MQTT.Client).Publish(*d.CurrentHumidityTopic, byte(*d.Qos), *d.Retain, state)
+			stateStore.Climate.CurrentHumidity[d.GetUniqueId()] = state
+			token.Wait()
+		}
+	}
 	if d.CurrentTemperatureTopic != nil {
 		state := d.CurrentTemperatureFunc()
 		if state != stateStore.Climate.CurrentTemperature[d.GetUniqueId()] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
@@ -184,6 +202,14 @@ func (d *Climate) UpdateState() {
 		if state != stateStore.Climate.SwingModeState[d.GetUniqueId()] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
 			token := (*d.MQTT.Client).Publish(*d.SwingModeStateTopic, byte(*d.Qos), *d.Retain, state)
 			stateStore.Climate.SwingModeState[d.GetUniqueId()] = state
+			token.Wait()
+		}
+	}
+	if d.TargetHumidityStateTopic != nil {
+		state := d.TargetHumidityStateFunc()
+		if state != stateStore.Climate.TargetHumidityState[d.GetUniqueId()] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
+			token := (*d.MQTT.Client).Publish(*d.TargetHumidityStateTopic, byte(*d.Qos), *d.Retain, state)
+			stateStore.Climate.TargetHumidityState[d.GetUniqueId()] = state
 			token.Wait()
 		}
 	}
@@ -253,13 +279,6 @@ func (d *Climate) Subscribe() {
 			log.Fatal(t.Error())
 		}
 	}
-	if d.PowerCommandTopic != nil {
-		t := c.Subscribe(*d.PowerCommandTopic, 0, d.MQTT.MessageHandler)
-		t.Wait()
-		if t.Error() != nil {
-			log.Fatal(t.Error())
-		}
-	}
 	if d.PresetModeCommandTopic != nil {
 		t := c.Subscribe(*d.PresetModeCommandTopic, 0, d.MQTT.MessageHandler)
 		t.Wait()
@@ -269,6 +288,13 @@ func (d *Climate) Subscribe() {
 	}
 	if d.SwingModeCommandTopic != nil {
 		t := c.Subscribe(*d.SwingModeCommandTopic, 0, d.MQTT.MessageHandler)
+		t.Wait()
+		if t.Error() != nil {
+			log.Fatal(t.Error())
+		}
+	}
+	if d.TargetHumidityCommandTopic != nil {
+		t := c.Subscribe(*d.TargetHumidityCommandTopic, 0, d.MQTT.MessageHandler)
 		t.Wait()
 		if t.Error() != nil {
 			log.Fatal(t.Error())
@@ -340,13 +366,6 @@ func (d *Climate) UnSubscribe() {
 			log.Fatal(t.Error())
 		}
 	}
-	if d.PowerCommandTopic != nil {
-		t := c.Unsubscribe(*d.PowerCommandTopic)
-		t.Wait()
-		if t.Error() != nil {
-			log.Fatal(t.Error())
-		}
-	}
 	if d.PresetModeCommandTopic != nil {
 		t := c.Unsubscribe(*d.PresetModeCommandTopic)
 		t.Wait()
@@ -356,6 +375,13 @@ func (d *Climate) UnSubscribe() {
 	}
 	if d.SwingModeCommandTopic != nil {
 		t := c.Unsubscribe(*d.SwingModeCommandTopic)
+		t.Wait()
+		if t.Error() != nil {
+			log.Fatal(t.Error())
+		}
+	}
+	if d.TargetHumidityCommandTopic != nil {
+		t := c.Unsubscribe(*d.TargetHumidityCommandTopic)
 		t.Wait()
 		if t.Error() != nil {
 			log.Fatal(t.Error())
@@ -424,6 +450,10 @@ func (d *Climate) PopulateTopics() {
 		d.AvailabilityTopic = new(string)
 		*d.AvailabilityTopic = GetTopic(d, "availability_topic")
 	}
+	if d.CurrentHumidityFunc != nil {
+		d.CurrentHumidityTopic = new(string)
+		*d.CurrentHumidityTopic = GetTopic(d, "current_humidity_topic")
+	}
 	if d.CurrentTemperatureFunc != nil {
 		d.CurrentTemperatureTopic = new(string)
 		*d.CurrentTemperatureTopic = GetTopic(d, "current_temperature_topic")
@@ -451,11 +481,6 @@ func (d *Climate) PopulateTopics() {
 		d.ModeStateTopic = new(string)
 		*d.ModeStateTopic = GetTopic(d, "mode_state_topic")
 	}
-	if d.PowerCommandFunc != nil {
-		d.PowerCommandTopic = new(string)
-		*d.PowerCommandTopic = GetTopic(d, "power_command_topic")
-		store.TopicStore[*d.PowerCommandTopic] = &d.PowerCommandFunc
-	}
 	if d.PresetModeCommandFunc != nil {
 		d.PresetModeCommandTopic = new(string)
 		*d.PresetModeCommandTopic = GetTopic(d, "preset_mode_command_topic")
@@ -473,6 +498,15 @@ func (d *Climate) PopulateTopics() {
 	if d.SwingModeStateFunc != nil {
 		d.SwingModeStateTopic = new(string)
 		*d.SwingModeStateTopic = GetTopic(d, "swing_mode_state_topic")
+	}
+	if d.TargetHumidityCommandFunc != nil {
+		d.TargetHumidityCommandTopic = new(string)
+		*d.TargetHumidityCommandTopic = GetTopic(d, "target_humidity_command_topic")
+		store.TopicStore[*d.TargetHumidityCommandTopic] = &d.TargetHumidityCommandFunc
+	}
+	if d.TargetHumidityStateFunc != nil {
+		d.TargetHumidityStateTopic = new(string)
+		*d.TargetHumidityStateTopic = GetTopic(d, "target_humidity_state_topic")
 	}
 	if d.TemperatureCommandFunc != nil {
 		d.TemperatureCommandTopic = new(string)

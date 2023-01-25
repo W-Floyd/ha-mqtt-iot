@@ -12,6 +12,8 @@ type Lock struct {
 	AvailabilityMode       *string     `json:"availability_mode,omitempty"`     // "When `availability` is configured, this controls the conditions needed to set the entity to `available`. Valid entries are `all`, `any`, and `latest`. If set to `all`, `payload_available` must be received on all configured availability topics before the entity is marked as online. If set to `any`, `payload_available` must be received on at least one configured availability topic before the entity is marked as online. If set to `latest`, the last `payload_available` or `payload_not_available` received on any configured availability topic controls the availability."
 	AvailabilityTemplate   *string     `json:"availability_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract device's availability from the `availability_topic`. To determine the devices's availability result of this template will be compared to `payload_available` and `payload_not_available`."
 	Availability           *([]string) `json:"availability,omitempty"`
+	CodeFormat             *string     `json:"code_format,omitempty"`      // "A regular expression to validate a supplied code when it is set during the service call to `open`, `lock` or `unlock` the MQTT lock."
+	CommandTemplate        *string     `json:"command_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to generate the payload to send to `command_topic`. The lock command template accepts the parameters `value` and `code`. The `value` parameter will contain the configured value for either `payload_open`, `payload_lock` or `payload_unlock`. The `code` parameter is set during the service call to `open`, `lock` or `unlock` the MQTT lock and will be set `None` if no code was passed."
 	Command                *([]string) `json:"command,omitempty"`
 	EnabledByDefault       *bool       `json:"enabled_by_default,omitempty"`       // "Flag which defines if the entity should be enabled when first added."
 	Encoding               *string     `json:"encoding,omitempty"`                 // "The encoding of the payloads received and published messages. Set to `\"\"` to disable decoding of incoming payload."
@@ -29,11 +31,14 @@ type Lock struct {
 	PayloadUnlock          *string     `json:"payload_unlock,omitempty"`        // "The payload sent to the lock to unlock it."
 	Qos                    *int        `json:"qos,omitempty"`                   // "The maximum QoS level of the state topic."
 	Retain                 *bool       `json:"retain,omitempty"`                // "If the published message should have the retain flag on or not."
-	StateLocked            *string     `json:"state_locked,omitempty"`          // "The payload sent to by the lock when it's locked."
+	StateJammed            *string     `json:"state_jammed,omitempty"`          // "The payload sent to `state_topic` by the lock when it's jammed."
+	StateLocked            *string     `json:"state_locked,omitempty"`          // "The payload sent to `state_topic` by the lock when it's locked."
+	StateLocking           *string     `json:"state_locking,omitempty"`         // "The payload sent to `state_topic` by the lock when it's locking."
 	State                  *([]string) `json:"state,omitempty"`
-	StateUnlocked          *string     `json:"state_unlocked,omitempty"` // "The payload sent to by the lock when it's unlocked."
-	UniqueId               *string     `json:"unique_id,omitempty"`      // "An ID that uniquely identifies this lock. If two locks have the same unique ID, Home Assistant will raise an exception."
-	ValueTemplate          *string     `json:"value_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract a value from the payload."
+	StateUnlocked          *string     `json:"state_unlocked,omitempty"`  // "The payload sent to `state_topic` by the lock when it's unlocked."
+	StateUnlocking         *string     `json:"state_unlocking,omitempty"` // "The payload sent to `state_topic` by the lock when it's unlocking."
+	UniqueId               *string     `json:"unique_id,omitempty"`       // "An ID that uniquely identifies this lock. If two locks have the same unique ID, Home Assistant will raise an exception."
+	ValueTemplate          *string     `json:"value_template,omitempty"`  // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract a state value from the payload."
 	MQTT                   struct {
 		UpdateInterval *float64 `json:"update_interval,omitempty"`
 		ForceUpdate    *bool    `json:"force_update,omitempty"`
@@ -57,6 +62,12 @@ func (iDevice Lock) Translate() externaldevice.Lock {
 	}
 	if iDevice.Availability != nil {
 		eDevice.AvailabilityFunc = common.ConstructStateFunc(*iDevice.Availability)
+	}
+	if iDevice.CodeFormat != nil {
+		eDevice.CodeFormat = iDevice.CodeFormat
+	}
+	if iDevice.CommandTemplate != nil {
+		eDevice.CommandTemplate = iDevice.CommandTemplate
 	}
 	if iDevice.Command != nil {
 		eDevice.CommandFunc = common.ConstructCommandFunc(*iDevice.Command)
@@ -109,14 +120,23 @@ func (iDevice Lock) Translate() externaldevice.Lock {
 	if iDevice.Retain != nil {
 		eDevice.Retain = iDevice.Retain
 	}
+	if iDevice.StateJammed != nil {
+		eDevice.StateJammed = iDevice.StateJammed
+	}
 	if iDevice.StateLocked != nil {
 		eDevice.StateLocked = iDevice.StateLocked
+	}
+	if iDevice.StateLocking != nil {
+		eDevice.StateLocking = iDevice.StateLocking
 	}
 	if iDevice.State != nil {
 		eDevice.StateFunc = common.ConstructStateFunc(*iDevice.State)
 	}
 	if iDevice.StateUnlocked != nil {
 		eDevice.StateUnlocked = iDevice.StateUnlocked
+	}
+	if iDevice.StateUnlocking != nil {
+		eDevice.StateUnlocking = iDevice.StateUnlocking
 	}
 	if iDevice.UniqueId != nil {
 		eDevice.UniqueId = iDevice.UniqueId
