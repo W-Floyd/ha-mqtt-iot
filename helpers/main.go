@@ -167,7 +167,7 @@ func main() {
 						)
 					}
 				},
-			).Tag(map[string]string{"json": "device,omitempty"}))
+			).Tag(map[string]string{"json": "device,omitempty"}).Comment("Device configuration parameters"))
 		}
 
 		sortedKeys := []string{}
@@ -185,7 +185,7 @@ func main() {
 						g.Add(val)
 					}
 				}
-				g.Id("MQTT").Op("*").Id("MQTTFields").Tag(map[string]string{"json": "-"})
+				g.Id("MQTT").Op("*").Id("MQTTFields").Tag(map[string]string{"json": "-"}).Comment("MQTT configuration parameters")
 			},
 		)
 
@@ -570,7 +570,7 @@ func main() {
 							lName := strcase.ToCamel(strings.TrimSuffix(strings.TrimSuffix(key, "topic"), "_"))
 							g.Add(
 								jen.Id(lName).Op("*").Params(jen.Index().String()).Tag(map[string]string{"json": strings.TrimSuffix(strings.TrimSuffix(key, "topic"), "_") + ",omitempty"}),
-							)
+							).Comment(lName + " for the " + strcase.ToCamel(d.Name))
 						} else {
 							g.Add(
 								d.FieldAdder(key),

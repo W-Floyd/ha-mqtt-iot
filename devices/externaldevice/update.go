@@ -30,7 +30,7 @@ type Update struct {
 		SuggestedArea    *string `json:"suggested_area,omitempty"`    // "Suggest an area if the device isn’t in one yet."
 		SwVersion        *string `json:"sw_version,omitempty"`        // "The firmware version of the device."
 		ViaDevice        *string `json:"via_device,omitempty"`        // "Identifier of a device that routes messages between this device and Home Assistant. Examples of such devices are hubs, or parent devices of a sub-device. This is used to show device topology in Home Assistant."
-	} `json:"device,omitempty"`
+	} `json:"device,omitempty"` // Device configuration parameters
 	DeviceClass            *string                         `json:"device_class,omitempty"`             // "The [type/class](/integrations/update/#device-classes) of the update to set the icon in the frontend."
 	EnabledByDefault       *bool                           `json:"enabled_by_default,omitempty"`       // "Flag which defines if the entity should be enabled when first added."
 	Encoding               *string                         `json:"encoding,omitempty"`                 // "The encoding of the payloads received and published messages. Set to `\"\"` to disable decoding of incoming payload."
@@ -55,7 +55,7 @@ type Update struct {
 	Title                  *string                         `json:"title,omitempty"`          // "Title of the software, or firmware update. This helps to differentiate between the device or entity name versus the title of the software installed."
 	UniqueId               *string                         `json:"unique_id,omitempty"`      // "An ID that uniquely identifies this Select. If two Selects have the same unique ID Home Assistant will raise an exception."
 	ValueTemplate          *string                         `json:"value_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract the `installed_version` state value or to render to a valid JSON payload on from the payload received on `state_topic`."
-	MQTT                   *MQTTFields                     `json:"-"`
+	MQTT                   *MQTTFields                     `json:"-"`                        // MQTT configuration parameters
 }
 
 func (d *Update) GetRawId() string {

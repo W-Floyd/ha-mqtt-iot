@@ -31,7 +31,7 @@ type Humidifier struct {
 		SuggestedArea    *string `json:"suggested_area,omitempty"`    // "Suggest an area if the device isn’t in one yet."
 		SwVersion        *string `json:"sw_version,omitempty"`        // "The firmware version of the device."
 		ViaDevice        *string `json:"via_device,omitempty"`        // "Identifier of a device that routes messages between this device and Home Assistant. Examples of such devices are hubs, or parent devices of a sub-device. This is used to show device topology in Home Assistant."
-	} `json:"device,omitempty"`
+	} `json:"device,omitempty"` // Device configuration parameters
 	DeviceClass                   *string                         `json:"device_class,omitempty"`             // "The device class of the MQTT device. Must be either `humidifier` or `dehumidifier`."
 	EnabledByDefault              *bool                           `json:"enabled_by_default,omitempty"`       // "Flag which defines if the entity should be enabled when first added."
 	Encoding                      *string                         `json:"encoding,omitempty"`                 // "The encoding of the payloads received and published messages. Set to `\"\"` to disable decoding of incoming payload."
@@ -70,7 +70,7 @@ type Humidifier struct {
 	TargetHumidityStateTopic      *string                         `json:"target_humidity_state_topic,omitempty"`    // "The MQTT topic subscribed to receive humidifier target humidity."
 	TargetHumidityStateFunc       func() string                   `json:"-"`
 	UniqueId                      *string                         `json:"unique_id,omitempty"` // "An ID that uniquely identifies this humidifier. If two humidifiers have the same unique ID, Home Assistant will raise an exception."
-	MQTT                          *MQTTFields                     `json:"-"`
+	MQTT                          *MQTTFields                     `json:"-"`                   // MQTT configuration parameters
 }
 
 func (d *Humidifier) GetRawId() string {

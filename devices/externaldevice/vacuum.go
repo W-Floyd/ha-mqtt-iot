@@ -30,7 +30,7 @@ type Vacuum struct {
 		SuggestedArea    *string `json:"suggested_area,omitempty"`    // "Suggest an area if the device isn’t in one yet."
 		SwVersion        *string `json:"sw_version,omitempty"`        // "The firmware version of the device."
 		ViaDevice        *string `json:"via_device,omitempty"`        // "Identifier of a device that routes messages between this device and Home Assistant. Examples of such devices are hubs, or parent devices of a sub-device. This is used to show device topology in Home Assistant."
-	} `json:"device,omitempty"`
+	} `json:"device,omitempty"` // Device configuration parameters
 	Encoding               *string                         `json:"encoding,omitempty"`                 // "The encoding of the payloads received and published messages. Set to `\"\"` to disable decoding of incoming payload."
 	FanSpeedList           *([]string)                     `json:"fan_speed_list,omitempty"`           // "List of possible fan speeds for the vacuum."
 	JsonAttributesTemplate *string                         `json:"json_attributes_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract the JSON dictionary from messages received on the `json_attributes_topic`. Usage example can be found in [MQTT sensor](/integrations/sensor.mqtt/#json-attributes-template-configuration) documentation."
@@ -57,7 +57,7 @@ type Vacuum struct {
 	StateFunc              func() string                   `json:"-"`
 	SupportedFeatures      *([]string)                     `json:"supported_features,omitempty"` // "List of features that the vacuum supports (possible values are `start`, `stop`, `pause`, `return_home`, `battery`, `status`, `locate`, `clean_spot`, `fan_speed`, `send_command`)."
 	UniqueId               *string                         `json:"unique_id,omitempty"`          // "An ID that uniquely identifies this vacuum. If two vacuums have the same unique ID, Home Assistant will raise an exception."
-	MQTT                   *MQTTFields                     `json:"-"`
+	MQTT                   *MQTTFields                     `json:"-"`                            // MQTT configuration parameters
 }
 
 func (d *Vacuum) GetRawId() string {

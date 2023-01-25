@@ -9,7 +9,7 @@ import (
 // Do not modify this file, it is automatically generated
 // //////////////////////////////////////////////////////////////////////////////
 type Tag struct {
-	State         *([]string) `json:"state,omitempty"`
+	State         *([]string) `json:"state,omitempty"`          // State for the Tag
 	ValueTemplate *string     `json:"value_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) that returns a tag ID."
 	MQTT          struct {
 		UpdateInterval *float64 `json:"update_interval,omitempty"`

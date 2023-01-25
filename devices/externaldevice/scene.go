@@ -31,7 +31,7 @@ type Scene struct {
 	Qos                  *int                            `json:"qos,omitempty"`                   // "The maximum QoS level of the state topic. Default is 0 and will also be used to publishing messages."
 	Retain               *bool                           `json:"retain,omitempty"`                // "If the published message should have the retain flag on or not."
 	UniqueId             *string                         `json:"unique_id,omitempty"`             // "An ID that uniquely identifies this scene entity. If two scenes have the same unique ID, Home Assistant will raise an exception."
-	MQTT                 *MQTTFields                     `json:"-"`
+	MQTT                 *MQTTFields                     `json:"-"`                               // MQTT configuration parameters
 }
 
 func (d *Scene) GetRawId() string {

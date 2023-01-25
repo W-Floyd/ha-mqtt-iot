@@ -31,7 +31,7 @@ type Button struct {
 		SuggestedArea    *string `json:"suggested_area,omitempty"`    // "Suggest an area if the device isn’t in one yet."
 		SwVersion        *string `json:"sw_version,omitempty"`        // "The firmware version of the device."
 		ViaDevice        *string `json:"via_device,omitempty"`        // "Identifier of a device that routes messages between this device and Home Assistant. Examples of such devices are hubs, or parent devices of a sub-device. This is used to show device topology in Home Assistant."
-	} `json:"device,omitempty"`
+	} `json:"device,omitempty"` // Device configuration parameters
 	DeviceClass            *string                         `json:"device_class,omitempty"`             // "The [type/class](/integrations/button/#device-class) of the button to set the icon in the frontend."
 	EnabledByDefault       *bool                           `json:"enabled_by_default,omitempty"`       // "Flag which defines if the entity should be enabled when first added."
 	Encoding               *string                         `json:"encoding,omitempty"`                 // "The encoding of the published messages."
@@ -48,7 +48,7 @@ type Button struct {
 	Qos                    *int                            `json:"qos,omitempty"`                   // "The maximum QoS level of the state topic. Default is 0 and will also be used to publishing messages."
 	Retain                 *bool                           `json:"retain,omitempty"`                // "If the published message should have the retain flag on or not."
 	UniqueId               *string                         `json:"unique_id,omitempty"`             // "An ID that uniquely identifies this button entity. If two buttons have the same unique ID, Home Assistant will raise an exception."
-	MQTT                   *MQTTFields                     `json:"-"`
+	MQTT                   *MQTTFields                     `json:"-"`                               // MQTT configuration parameters
 }
 
 func (d *Button) GetRawId() string {

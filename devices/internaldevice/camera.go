@@ -9,20 +9,20 @@ import (
 // Do not modify this file, it is automatically generated
 // //////////////////////////////////////////////////////////////////////////////
 type Camera struct {
-	AvailabilityMode       *string     `json:"availability_mode,omitempty"`     // "When `availability` is configured, this controls the conditions needed to set the entity to `available`. Valid entries are `all`, `any`, and `latest`. If set to `all`, `payload_available` must be received on all configured availability topics before the entity is marked as online. If set to `any`, `payload_available` must be received on at least one configured availability topic before the entity is marked as online. If set to `latest`, the last `payload_available` or `payload_not_available` received on any configured availability topic controls the availability."
-	AvailabilityTemplate   *string     `json:"availability_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract device's availability from the `availability_topic`. To determine the devices's availability result of this template will be compared to `payload_available` and `payload_not_available`."
-	Availability           *([]string) `json:"availability,omitempty"`
+	AvailabilityMode       *string     `json:"availability_mode,omitempty"`        // "When `availability` is configured, this controls the conditions needed to set the entity to `available`. Valid entries are `all`, `any`, and `latest`. If set to `all`, `payload_available` must be received on all configured availability topics before the entity is marked as online. If set to `any`, `payload_available` must be received on at least one configured availability topic before the entity is marked as online. If set to `latest`, the last `payload_available` or `payload_not_available` received on any configured availability topic controls the availability."
+	AvailabilityTemplate   *string     `json:"availability_template,omitempty"`    // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract device's availability from the `availability_topic`. To determine the devices's availability result of this template will be compared to `payload_available` and `payload_not_available`."
+	Availability           *([]string) `json:"availability,omitempty"`             // Availability for the Camera
 	EnabledByDefault       *bool       `json:"enabled_by_default,omitempty"`       // "Flag which defines if the entity should be enabled when first added."
 	Encoding               *string     `json:"encoding,omitempty"`                 // "The encoding of the payloads received. Set to `\"\"` to disable decoding of incoming payload. Use `image_encoding` to enable `Base64` decoding on `topic`."
 	EntityCategory         *string     `json:"entity_category,omitempty"`          // "The [category](https://developers.home-assistant.io/docs/core/entity#generic-properties) of the entity."
 	Icon                   *string     `json:"icon,omitempty"`                     // "[Icon](/docs/configuration/customizing-devices/#icon) for the entity."
 	ImageEncoding          *string     `json:"image_encoding,omitempty"`           // "The encoding of the image payloads received. Set to `\"b64\"` to enable base64 decoding of image payload. If not set, the image payload must be raw binary data."
 	JsonAttributesTemplate *string     `json:"json_attributes_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract the JSON dictionary from messages received on the `json_attributes_topic`."
-	JsonAttributes         *([]string) `json:"json_attributes,omitempty"`
-	Name                   *string     `json:"name,omitempty"`      // "The name of the camera."
-	ObjectId               *string     `json:"object_id,omitempty"` // "Used instead of `name` for automatic generation of `entity_id`"
-	State                  *([]string) `json:"state,omitempty"`
-	UniqueId               *string     `json:"unique_id,omitempty"` // "An ID that uniquely identifies this camera. If two cameras have the same unique ID Home Assistant will raise an exception."
+	JsonAttributes         *([]string) `json:"json_attributes,omitempty"`          // JsonAttributes for the Camera
+	Name                   *string     `json:"name,omitempty"`                     // "The name of the camera."
+	ObjectId               *string     `json:"object_id,omitempty"`                // "Used instead of `name` for automatic generation of `entity_id`"
+	State                  *([]string) `json:"state,omitempty"`                    // State for the Camera
+	UniqueId               *string     `json:"unique_id,omitempty"`                // "An ID that uniquely identifies this camera. If two cameras have the same unique ID Home Assistant will raise an exception."
 	MQTT                   struct {
 		UpdateInterval *float64 `json:"update_interval,omitempty"`
 		ForceUpdate    *bool    `json:"force_update,omitempty"`

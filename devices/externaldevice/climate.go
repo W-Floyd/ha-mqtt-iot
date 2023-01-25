@@ -42,7 +42,7 @@ type Climate struct {
 		SuggestedArea    *string `json:"suggested_area,omitempty"`    // "Suggest an area if the device isn’t in one yet."
 		SwVersion        *string `json:"sw_version,omitempty"`        // "The firmware version of the device."
 		ViaDevice        *string `json:"via_device,omitempty"`        // "Identifier of a device that routes messages between this device and Home Assistant. Examples of such devices are hubs, or parent devices of a sub-device. This is used to show device topology in Home Assistant."
-	} `json:"device,omitempty"`
+	} `json:"device,omitempty"` // Device configuration parameters
 	EnabledByDefault               *bool                           `json:"enabled_by_default,omitempty"`        // "Flag which defines if the entity should be enabled when first added."
 	Encoding                       *string                         `json:"encoding,omitempty"`                  // "The encoding of the payloads received and published messages. Set to `\"\"` to disable decoding of incoming payload."
 	EntityCategory                 *string                         `json:"entity_category,omitempty"`           // "The [category](https://developers.home-assistant.io/docs/core/entity#generic-properties) of the entity."
@@ -121,7 +121,7 @@ type Climate struct {
 	TemperatureUnit                *string                         `json:"temperature_unit,omitempty"` // "Defines the temperature unit of the device, `C` or `F`. If this is not set, the temperature unit is set to the system temperature unit."
 	UniqueId                       *string                         `json:"unique_id,omitempty"`        // "An ID that uniquely identifies this HVAC device. If two HVAC devices have the same unique ID, Home Assistant will raise an exception."
 	ValueTemplate                  *string                         `json:"value_template,omitempty"`   // "Default template to render the payloads on *all* `*_state_topic`s with."
-	MQTT                           *MQTTFields                     `json:"-"`
+	MQTT                           *MQTTFields                     `json:"-"`                          // MQTT configuration parameters
 }
 
 func (d *Climate) GetRawId() string {

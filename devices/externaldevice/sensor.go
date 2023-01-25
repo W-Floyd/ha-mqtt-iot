@@ -28,7 +28,7 @@ type Sensor struct {
 		SuggestedArea    *string `json:"suggested_area,omitempty"`    // "Suggest an area if the device isn’t in one yet."
 		SwVersion        *string `json:"sw_version,omitempty"`        // "The firmware version of the device."
 		ViaDevice        *string `json:"via_device,omitempty"`        // "Identifier of a device that routes messages between this device and Home Assistant. Examples of such devices are hubs, or parent devices of a sub-device. This is used to show device topology in Home Assistant."
-	} `json:"device,omitempty"`
+	} `json:"device,omitempty"` // Device configuration parameters
 	DeviceClass            *string                         `json:"device_class,omitempty"`             // "The [type/class](/integrations/sensor/#device-class) of the sensor to set the icon in the frontend."
 	EnabledByDefault       *bool                           `json:"enabled_by_default,omitempty"`       // "Flag which defines if the entity should be enabled when first added."
 	Encoding               *string                         `json:"encoding,omitempty"`                 // "The encoding of the payloads received. Set to `\"\"` to disable decoding of incoming payload."
@@ -51,7 +51,7 @@ type Sensor struct {
 	UniqueId               *string                         `json:"unique_id,omitempty"`           // "An ID that uniquely identifies this sensor. If two sensors have the same unique ID, Home Assistant will raise an exception."
 	UnitOfMeasurement      *string                         `json:"unit_of_measurement,omitempty"` // "Defines the units of measurement of the sensor, if any."
 	ValueTemplate          *string                         `json:"value_template,omitempty"`      // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract the value. If the template throws an error, the current state will be used instead."
-	MQTT                   *MQTTFields                     `json:"-"`
+	MQTT                   *MQTTFields                     `json:"-"`                             // MQTT configuration parameters
 }
 
 func (d *Sensor) GetRawId() string {
