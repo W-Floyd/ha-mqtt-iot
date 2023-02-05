@@ -1,8 +1,7 @@
 /.vscode/
 /config.json
 /ha-mqtt-iot
-/ha-mqtt-iot-linux-amd64
-/ha-mqtt-iot.exe
+/ha-mqtt-iot-*
 /helpers/cache/*
 /nohup.out
 /secrets.json
