@@ -403,7 +403,7 @@ func (d *Light) Initialize() {
 	}
 	if d.Retain == nil {
 		d.Retain = new(bool)
-		*d.Retain = common.Retain
+		*d.Retain = common.RetainClient
 	}
 	if d.UniqueId == nil {
 		d.UniqueId = new(string)

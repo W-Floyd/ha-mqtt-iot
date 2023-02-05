@@ -27,12 +27,12 @@ type Config struct {
 	BinarySensor      []internaldevice.BinarySensor      `json:"binary_sensor,omitempty"`
 	Button            []internaldevice.Button            `json:"button,omitempty"`
 	Camera            []internaldevice.Camera            `json:"camera,omitempty"`
+	Climate           []internaldevice.Climate           `json:"climate,omitempty"`
 	Cover             []internaldevice.Cover             `json:"cover,omitempty"`
 	DeviceTracker     []internaldevice.DeviceTracker     `json:"device_tracker,omitempty"`
 	DeviceTrigger     []internaldevice.DeviceTrigger     `json:"device_trigger,omitempty"`
 	Fan               []internaldevice.Fan               `json:"fan,omitempty"`
 	Humidifier        []internaldevice.Humidifier        `json:"humidifier,omitempty"`
-	Climate           []internaldevice.Climate           `json:"climate,omitempty"`
 	Light             []internaldevice.Light             `json:"light,omitempty"`
 	Lock              []internaldevice.Lock              `json:"lock,omitempty"`
 	Number            []internaldevice.Number            `json:"number,omitempty"`
@@ -68,6 +68,11 @@ func (c Config) Translate() (output []ExternalDevice.Device) {
 		newDevice := ExternalDevice.Device(&newCamera)
 		output = append(output, newDevice)
 	}
+	for _, d := range c.Climate {
+		newClimate := d.Translate()
+		newDevice := ExternalDevice.Device(&newClimate)
+		output = append(output, newDevice)
+	}
 	for _, d := range c.Cover {
 		newCover := d.Translate()
 		newDevice := ExternalDevice.Device(&newCover)
@@ -91,11 +96,6 @@ func (c Config) Translate() (output []ExternalDevice.Device) {
 	for _, d := range c.Humidifier {
 		newHumidifier := d.Translate()
 		newDevice := ExternalDevice.Device(&newHumidifier)
-		output = append(output, newDevice)
-	}
-	for _, d := range c.Climate {
-		newClimate := d.Translate()
-		newDevice := ExternalDevice.Device(&newClimate)
 		output = append(output, newDevice)
 	}
 	for _, d := range c.Light {

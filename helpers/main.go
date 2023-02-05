@@ -462,7 +462,7 @@ func main() {
 						jen.Id("d").Dot("Retain").Op("==").Nil(),
 					).Block(
 						jen.Id("d").Dot("Retain").Op("=").New(jen.Bool()),
-						jen.Op("*").Id("d").Dot("Retain").Op("=").Qual("github.com/W-Floyd/ha-mqtt-iot/common", "Retain"),
+						jen.Op("*").Id("d").Dot("Retain").Op("=").Qual("github.com/W-Floyd/ha-mqtt-iot/common", "RetainClient"),
 					),
 				)
 			}
