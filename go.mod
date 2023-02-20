@@ -9,11 +9,11 @@ require (
 	github.com/ghodss/yaml v1.0.0
 	github.com/iancoleman/strcase v0.2.0
 	github.com/imdario/mergo v0.3.13
-	tinygo.org/x/drivers v0.23.0
+	tinygo.org/x/drivers v0.24.0
 )
 
 require (
 	github.com/eclipse/paho.mqtt.golang v1.4.2 // indirect
-	golang.org/x/sys v0.2.0 // indirect
+	golang.org/x/sys v0.5.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 )
