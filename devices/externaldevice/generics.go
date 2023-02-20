@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	store "github.com/W-Floyd/ha-mqtt-iot/store"
-	mqtt "github.com/eclipse/paho.mqtt.golang"
+	mqtt "tinygo.org/x/drivers/net/mqtt"
 )
 
 func GetTopicPrefix(d Device) string {

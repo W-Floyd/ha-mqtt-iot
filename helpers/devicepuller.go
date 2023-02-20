@@ -240,8 +240,8 @@ func (dev *Device) FunctionAdder(key string) *jen.Statement {
 
 		if IsCommand(key, *dev) {
 			retval.Params(
-				jen.Qual("github.com/eclipse/paho.mqtt.golang", "Message"),
-				jen.Qual("github.com/eclipse/paho.mqtt.golang", "Client"),
+				jen.Qual("tinygo.org/x/drivers/net/mqtt", "Message"),
+				jen.Qual("tinygo.org/x/drivers/net/mqtt", "Client"),
 			)
 		} else {
 			retval.Params().String()
