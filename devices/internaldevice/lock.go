@@ -29,7 +29,7 @@ type Lock struct {
 	PayloadNotAvailable    *string     `json:"payload_not_available,omitempty"`    // "The payload that represents the unavailable state."
 	PayloadOpen            *string     `json:"payload_open,omitempty"`             // "The payload sent to the lock to open it."
 	PayloadUnlock          *string     `json:"payload_unlock,omitempty"`           // "The payload sent to the lock to unlock it."
-	Qos                    *int        `json:"qos,omitempty"`                      // "The maximum QoS level of the state topic."
+	Qos                    *int        `json:"qos,omitempty"`                      // "The maximum QoS level of the state topic. It will also be used for messages published to command topic."
 	Retain                 *bool       `json:"retain,omitempty"`                   // "If the published message should have the retain flag on or not."
 	StateJammed            *string     `json:"state_jammed,omitempty"`             // "The payload sent to `state_topic` by the lock when it's jammed."
 	StateLocked            *string     `json:"state_locked,omitempty"`             // "The payload sent to `state_topic` by the lock when it's locked."

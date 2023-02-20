@@ -71,11 +71,11 @@ type Climate struct {
 	TemperatureCommand             *([]string) `json:"temperature_command,omitempty"`               // TemperatureCommand for the Climate
 	TemperatureHighCommandTemplate *string     `json:"temperature_high_command_template,omitempty"` // "A template to render the value sent to the `temperature_high_command_topic` with."
 	TemperatureHighCommand         *([]string) `json:"temperature_high_command,omitempty"`          // TemperatureHighCommand for the Climate
-	TemperatureHighStateTemplate   *string     `json:"temperature_high_state_template,omitempty"`   // "A template to render the value received on the `temperature_high_state_topic` with."
+	TemperatureHighStateTemplate   *string     `json:"temperature_high_state_template,omitempty"`   // "A template to render the value received on the `temperature_high_state_topic` with. A `\"None\"` value received will reset the temperature high set point. Empty values (`'''`) will be ignored."
 	TemperatureHighState           *([]string) `json:"temperature_high_state,omitempty"`            // TemperatureHighState for the Climate
 	TemperatureLowCommandTemplate  *string     `json:"temperature_low_command_template,omitempty"`  // "A template to render the value sent to the `temperature_low_command_topic` with."
 	TemperatureLowCommand          *([]string) `json:"temperature_low_command,omitempty"`           // TemperatureLowCommand for the Climate
-	TemperatureLowStateTemplate    *string     `json:"temperature_low_state_template,omitempty"`    // "A template to render the value received on the `temperature_low_state_topic` with."
+	TemperatureLowStateTemplate    *string     `json:"temperature_low_state_template,omitempty"`    // "A template to render the value received on the `temperature_low_state_topic` with. A `\"None\"` value received will reset the temperature low set point. Empty values (`'''`) will be ignored."
 	TemperatureLowState            *([]string) `json:"temperature_low_state,omitempty"`             // TemperatureLowState for the Climate
 	TemperatureStateTemplate       *string     `json:"temperature_state_template,omitempty"`        // "A template to render the value received on the `temperature_state_topic` with."
 	TemperatureState               *([]string) `json:"temperature_state,omitempty"`                 // TemperatureState for the Climate

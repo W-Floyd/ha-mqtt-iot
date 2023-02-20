@@ -27,10 +27,10 @@ type Climate struct {
 	AvailabilityTopic          *string                         `json:"availability_topic,omitempty"`    // "The MQTT topic subscribed to receive availability (online/offline) updates. Must not be used together with `availability`."
 	AvailabilityFunc           func() string                   `json:"-"`
 	CurrentHumidityTemplate    *string                         `json:"current_humidity_template,omitempty"` // "A template with which the value received on `current_humidity_topic` will be rendered."
-	CurrentHumidityTopic       *string                         `json:"current_humidity_topic,omitempty"`    // "The MQTT topic on which to listen for the current humidity."
+	CurrentHumidityTopic       *string                         `json:"current_humidity_topic,omitempty"`    // "The MQTT topic on which to listen for the current humidity. A `\"None\"` value received will reset the current temperature. Empty values (`'''`) will be ignored."
 	CurrentHumidityFunc        func() string                   `json:"-"`
 	CurrentTemperatureTemplate *string                         `json:"current_temperature_template,omitempty"` // "A template with which the value received on `current_temperature_topic` will be rendered."
-	CurrentTemperatureTopic    *string                         `json:"current_temperature_topic,omitempty"`    // "The MQTT topic on which to listen for the current temperature."
+	CurrentTemperatureTopic    *string                         `json:"current_temperature_topic,omitempty"`    // "The MQTT topic on which to listen for the current temperature. A `\"None\"` value received will reset the current humidity. Empty values (`'''`) will be ignored."
 	CurrentTemperatureFunc     func() string                   `json:"-"`
 	Device                     struct {
 		ConfigurationUrl *string `json:"configuration_url,omitempty"` // "A link to the webpage that can manage the configuration of this device. Can be either an HTTP or HTTPS link."
@@ -97,7 +97,7 @@ type Climate struct {
 	TargetHumidityCommandTopic     *string                         `json:"target_humidity_command_topic,omitempty"`    // "The MQTT topic to publish commands to change the target humidity."
 	TargetHumidityCommandFunc      func(mqtt.Message, mqtt.Client) `json:"-"`
 	TargetHumidityStateTemplate    *string                         `json:"target_humidity_state_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract a value for the climate `target_humidity` state."
-	TargetHumidityStateTopic       *string                         `json:"target_humidity_state_topic,omitempty"`    // "The MQTT topic subscribed to receive the target humidity. If this is not set, the target humidity works in optimistic mode (see below)."
+	TargetHumidityStateTopic       *string                         `json:"target_humidity_state_topic,omitempty"`    // "The MQTT topic subscribed to receive the target humidity. If this is not set, the target humidity works in optimistic mode (see below). A `\"None\"` value received will reset the target humidity. Empty values (`'''`) will be ignored."
 	TargetHumidityStateFunc        func() string                   `json:"-"`
 	TempStep                       *float64                        `json:"temp_step,omitempty"`                    // "Step size for temperature set point."
 	TemperatureCommandTemplate     *string                         `json:"temperature_command_template,omitempty"` // "A template to render the value sent to the `temperature_command_topic` with."
@@ -106,17 +106,17 @@ type Climate struct {
 	TemperatureHighCommandTemplate *string                         `json:"temperature_high_command_template,omitempty"` // "A template to render the value sent to the `temperature_high_command_topic` with."
 	TemperatureHighCommandTopic    *string                         `json:"temperature_high_command_topic,omitempty"`    // "The MQTT topic to publish commands to change the high target temperature."
 	TemperatureHighCommandFunc     func(mqtt.Message, mqtt.Client) `json:"-"`
-	TemperatureHighStateTemplate   *string                         `json:"temperature_high_state_template,omitempty"` // "A template to render the value received on the `temperature_high_state_topic` with."
+	TemperatureHighStateTemplate   *string                         `json:"temperature_high_state_template,omitempty"` // "A template to render the value received on the `temperature_high_state_topic` with. A `\"None\"` value received will reset the temperature high set point. Empty values (`'''`) will be ignored."
 	TemperatureHighStateTopic      *string                         `json:"temperature_high_state_topic,omitempty"`    // "The MQTT topic to subscribe for changes in the target high temperature. If this is not set, the target high temperature works in optimistic mode (see below)."
 	TemperatureHighStateFunc       func() string                   `json:"-"`
 	TemperatureLowCommandTemplate  *string                         `json:"temperature_low_command_template,omitempty"` // "A template to render the value sent to the `temperature_low_command_topic` with."
 	TemperatureLowCommandTopic     *string                         `json:"temperature_low_command_topic,omitempty"`    // "The MQTT topic to publish commands to change the target low temperature."
 	TemperatureLowCommandFunc      func(mqtt.Message, mqtt.Client) `json:"-"`
-	TemperatureLowStateTemplate    *string                         `json:"temperature_low_state_template,omitempty"` // "A template to render the value received on the `temperature_low_state_topic` with."
+	TemperatureLowStateTemplate    *string                         `json:"temperature_low_state_template,omitempty"` // "A template to render the value received on the `temperature_low_state_topic` with. A `\"None\"` value received will reset the temperature low set point. Empty values (`'''`) will be ignored."
 	TemperatureLowStateTopic       *string                         `json:"temperature_low_state_topic,omitempty"`    // "The MQTT topic to subscribe for changes in the target low temperature. If this is not set, the target low temperature works in optimistic mode (see below)."
 	TemperatureLowStateFunc        func() string                   `json:"-"`
 	TemperatureStateTemplate       *string                         `json:"temperature_state_template,omitempty"` // "A template to render the value received on the `temperature_state_topic` with."
-	TemperatureStateTopic          *string                         `json:"temperature_state_topic,omitempty"`    // "The MQTT topic to subscribe for changes in the target temperature. If this is not set, the target temperature works in optimistic mode (see below)."
+	TemperatureStateTopic          *string                         `json:"temperature_state_topic,omitempty"`    // "The MQTT topic to subscribe for changes in the target temperature. If this is not set, the target temperature works in optimistic mode (see below). A `\"None\"` value received will reset the temperature set point. Empty values (`'''`) will be ignored."
 	TemperatureStateFunc           func() string                   `json:"-"`
 	TemperatureUnit                *string                         `json:"temperature_unit,omitempty"` // "Defines the temperature unit of the device, `C` or `F`. If this is not set, the temperature unit is set to the system temperature unit."
 	UniqueId                       *string                         `json:"unique_id,omitempty"`        // "An ID that uniquely identifies this HVAC device. If two HVAC devices have the same unique ID, Home Assistant will raise an exception."
