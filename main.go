@@ -16,8 +16,8 @@ import (
 	"github.com/W-Floyd/ha-mqtt-iot/config"
 	ExternalDevice "github.com/W-Floyd/ha-mqtt-iot/devices/externaldevice"
 	"github.com/denisbrodbeck/machineid"
-	mqtt "tinygo.org/x/drivers/net/mqtt"
 	"github.com/imdario/mergo"
+	mqtt "tinygo.org/x/drivers/net/mqtt"
 )
 
 //go:generate go run ./helpers/
@@ -68,32 +68,32 @@ func main() {
 
 	devices, opts := sconfig.Convert()
 
-//	if sconfig.Logging.Debug && sconfig.Logging.Mqtt {
-//		mqtt.DEBUG = common.DebugLog
-//	}
-//	if sconfig.Logging.Warn {
-//		mqtt.WARN = common.WarnLog
-//	}
-//	if sconfig.Logging.Error {
-//		mqtt.ERROR = common.ErrorLog
-//	}
-//	if sconfig.Logging.Critical {
-//		mqtt.CRITICAL = common.CriticalLog
-//	}
+	//	if sconfig.Logging.Debug && sconfig.Logging.Mqtt {
+	//		mqtt.DEBUG = common.DebugLog
+	//	}
+	//	if sconfig.Logging.Warn {
+	//		mqtt.WARN = common.WarnLog
+	//	}
+	//	if sconfig.Logging.Error {
+	//		mqtt.ERROR = common.ErrorLog
+	//	}
+	//	if sconfig.Logging.Critical {
+	//		mqtt.CRITICAL = common.CriticalLog
+	//	}
 
 	common.LogState.Debug = sconfig.Logging.Debug
 	common.LogState.Warn = sconfig.Logging.Warn
 	common.LogState.Error = sconfig.Logging.Error
 	common.LogState.Critical = sconfig.Logging.Critical
 
-//	opts.SetOnConnectHandler(
-//		func(c mqtt.Client) {
-//			for _, d := range devices {
-//				common.LogDebug("Connecting " + d.GetRawId() + "." + d.GetUniqueId())
-//				go d.Subscribe()
-//			}
-//		},
-//	)
+	//	opts.SetOnConnectHandler(
+	//		func(c mqtt.Client) {
+	//			for _, d := range devices {
+	//				common.LogDebug("Connecting " + d.GetRawId() + "." + d.GetUniqueId())
+	//				go d.Subscribe()
+	//			}
+	//		},
+	//	)
 
 	client := mqtt.NewClient(opts)
 
