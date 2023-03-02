@@ -17,10 +17,10 @@ type Text struct {
 	AvailabilityMode     *string                         `json:"availability_mode,omitempty"`     // "When `availability` is configured, this controls the conditions needed to set the entity to `available`. Valid entries are `all`, `any`, and `latest`. If set to `all`, `payload_available` must be received on all configured availability topics before the entity is marked as online. If set to `any`, `payload_available` must be received on at least one configured availability topic before the entity is marked as online. If set to `latest`, the last `payload_available` or `payload_not_available` received on any configured availability topic controls the availability."
 	AvailabilityTemplate *string                         `json:"availability_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract device's availability from the `availability_topic`. To determine the devices's availability result of this template will be compared to `payload_available` and `payload_not_available`."
 	AvailabilityTopic    *string                         `json:"availability_topic,omitempty"`    // "The MQTT topic subscribed to receive availability (online/offline) updates. Must not be used together with `availability`."
-	AvailabilityFunc     func() string                   `json:"-"`
-	CommandTemplate      *string                         `json:"command_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to generate the payload to send to `command_topic`."
-	CommandTopic         *string                         `json:"command_topic,omitempty"`    // "The MQTT topic to publish the text value that is set."
-	CommandFunc          func(mqtt.Message, mqtt.Client) `json:"-"`
+	AvailabilityFunc     func() string                   `json:"-"`                               // Function for availability
+	CommandTemplate      *string                         `json:"command_template,omitempty"`      // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to generate the payload to send to `command_topic`."
+	CommandTopic         *string                         `json:"command_topic,omitempty"`         // "The MQTT topic to publish the text value that is set."
+	CommandFunc          func(mqtt.Message, mqtt.Client) `json:"-"`                               // Function for command
 	Device               struct {
 		ConfigurationUrl *string `json:"configuration_url,omitempty"` // "A link to the webpage that can manage the configuration of this device. Can be either an HTTP or HTTPS link."
 		Connections      *string `json:"connections,omitempty"`       // "A list of connections of the device to the outside world as a list of tuples `[connection_type, connection_identifier]`. For example the MAC address of a network interface: `\"connections\": [\"mac\", \"02:5b:26:a8:dc:12\"]`."
@@ -37,20 +37,20 @@ type Text struct {
 	EntityCategory         *string                         `json:"entity_category,omitempty"`          // "The [category](https://developers.home-assistant.io/docs/core/entity#generic-properties) of the entity."
 	JsonAttributesTemplate *string                         `json:"json_attributes_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract the JSON dictionary from messages received on the `json_attributes_topic`."
 	JsonAttributesTopic    *string                         `json:"json_attributes_topic,omitempty"`    // "The MQTT topic subscribed to receive a JSON dictionary payload and then set as entity attributes. Implies `force_update` of the current select state when a message is received on this topic."
-	JsonAttributesFunc     func(mqtt.Message, mqtt.Client) `json:"-"`
-	Max                    *int                            `json:"max,omitempty"`         // "The maximum size of a text being set or received (maximum is 255)."
-	Min                    *int                            `json:"min,omitempty"`         // "The minimum size of a text being set or received."
-	Mode                   *string                         `json:"mode,omitempty"`        // "The mode off the text entity. Must be either `text` or `password`."
-	Name                   *string                         `json:"name,omitempty"`        // "The name of the text entity."
-	ObjectId               *string                         `json:"object_id,omitempty"`   // "Used instead of `name` for automatic generation of `entity_id`"
-	Pattern                *string                         `json:"pattern,omitempty"`     // "A valid regular expression the text being set or received must match with."
-	Qos                    *int                            `json:"qos,omitempty"`         // "The maximum QoS level of the state topic. Default is 0 and will also be used to publishing messages."
-	Retain                 *bool                           `json:"retain,omitempty"`      // "If the published message should have the retain flag on or not."
-	StateTopic             *string                         `json:"state_topic,omitempty"` // "The MQTT topic subscribed to receive text state updates. Text state updates should match the `pattern` (if set) and meet the size constraints `min` and `max`. Can be used with `value_template` to render the incoming payload to a text update."
-	StateFunc              func() string                   `json:"-"`
-	UniqueId               *string                         `json:"unique_id,omitempty"`      // "An ID that uniquely identifies this Select. If two Selects have the same unique ID Home Assistant will raise an exception."
-	ValueTemplate          *string                         `json:"value_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract the text state value from the payload received on `state_topic`."
-	MQTT                   *MQTTFields                     `json:"-"`                        // MQTT configuration parameters
+	JsonAttributesFunc     func(mqtt.Message, mqtt.Client) `json:"-"`                                  // Function for json attributes
+	Max                    *int                            `json:"max,omitempty"`                      // "The maximum size of a text being set or received (maximum is 255)."
+	Min                    *int                            `json:"min,omitempty"`                      // "The minimum size of a text being set or received."
+	Mode                   *string                         `json:"mode,omitempty"`                     // "The mode off the text entity. Must be either `text` or `password`."
+	Name                   *string                         `json:"name,omitempty"`                     // "The name of the text entity."
+	ObjectId               *string                         `json:"object_id,omitempty"`                // "Used instead of `name` for automatic generation of `entity_id`"
+	Pattern                *string                         `json:"pattern,omitempty"`                  // "A valid regular expression the text being set or received must match with."
+	Qos                    *int                            `json:"qos,omitempty"`                      // "The maximum QoS level of the state topic. Default is 0 and will also be used to publishing messages."
+	Retain                 *bool                           `json:"retain,omitempty"`                   // "If the published message should have the retain flag on or not."
+	StateTopic             *string                         `json:"state_topic,omitempty"`              // "The MQTT topic subscribed to receive text state updates. Text state updates should match the `pattern` (if set) and meet the size constraints `min` and `max`. Can be used with `value_template` to render the incoming payload to a text update."
+	StateFunc              func() string                   `json:"-"`                                  // Function for state
+	UniqueId               *string                         `json:"unique_id,omitempty"`                // "An ID that uniquely identifies this Select. If two Selects have the same unique ID Home Assistant will raise an exception."
+	ValueTemplate          *string                         `json:"value_template,omitempty"`           // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract the text state value from the payload received on `state_topic`."
+	MQTT                   *MQTTFields                     `json:"-"`                                  // MQTT configuration parameters
 }
 
 func (d *Text) GetRawId() string {

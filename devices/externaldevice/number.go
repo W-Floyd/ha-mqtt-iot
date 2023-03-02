@@ -16,10 +16,10 @@ import (
 type Number struct {
 	AvailabilityMode  *string                         `json:"availability_mode,omitempty"`  // "When `availability` is configured, this controls the conditions needed to set the entity to `available`. Valid entries are `all`, `any`, and `latest`. If set to `all`, `payload_available` must be received on all configured availability topics before the entity is marked as online. If set to `any`, `payload_available` must be received on at least one configured availability topic before the entity is marked as online. If set to `latest`, the last `payload_available` or `payload_not_available` received on any configured availability topic controls the availability."
 	AvailabilityTopic *string                         `json:"availability_topic,omitempty"` // "The MQTT topic subscribed to receive availability (online/offline) updates. Must not be used together with `availability`."
-	AvailabilityFunc  func() string                   `json:"-"`
-	CommandTemplate   *string                         `json:"command_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to generate the payload to send to `command_topic`."
-	CommandTopic      *string                         `json:"command_topic,omitempty"`    // "The MQTT topic to publish commands to change the number."
-	CommandFunc       func(mqtt.Message, mqtt.Client) `json:"-"`
+	AvailabilityFunc  func() string                   `json:"-"`                            // Function for availability
+	CommandTemplate   *string                         `json:"command_template,omitempty"`   // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to generate the payload to send to `command_topic`."
+	CommandTopic      *string                         `json:"command_topic,omitempty"`      // "The MQTT topic to publish commands to change the number."
+	CommandFunc       func(mqtt.Message, mqtt.Client) `json:"-"`                            // Function for command
 	Device            struct {
 		ConfigurationUrl *string `json:"configuration_url,omitempty"` // "A link to the webpage that can manage the configuration of this device. Can be either an HTTP or HTTPS link."
 		Connections      *string `json:"connections,omitempty"`       // "A list of connections of the device to the outside world as a list of tuples `[connection_type, connection_identifier]`. For example the MAC address of a network interface: `\"connections\": [\"mac\", \"02:5b:26:a8:dc:12\"]`."
@@ -38,23 +38,23 @@ type Number struct {
 	Icon                   *string                         `json:"icon,omitempty"`                     // "[Icon](/docs/configuration/customizing-devices/#icon) for the entity."
 	JsonAttributesTemplate *string                         `json:"json_attributes_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract the JSON dictionary from messages received on the `json_attributes_topic`."
 	JsonAttributesTopic    *string                         `json:"json_attributes_topic,omitempty"`    // "The MQTT topic subscribed to receive a JSON dictionary payload and then set as number attributes. Implies `force_update` of the current number state when a message is received on this topic."
-	JsonAttributesFunc     func(mqtt.Message, mqtt.Client) `json:"-"`
-	Max                    *float64                        `json:"max,omitempty"`           // "Maximum value."
-	Min                    *float64                        `json:"min,omitempty"`           // "Minimum value."
-	Mode                   *string                         `json:"mode,omitempty"`          // "Control how the number should be displayed in the UI. Can be set to `box` or `slider` to force a display mode."
-	Name                   *string                         `json:"name,omitempty"`          // "The name of the Number."
-	ObjectId               *string                         `json:"object_id,omitempty"`     // "Used instead of `name` for automatic generation of `entity_id`"
-	Optimistic             *bool                           `json:"optimistic,omitempty"`    // "Flag that defines if number works in optimistic mode."
-	PayloadReset           *string                         `json:"payload_reset,omitempty"` // "A special payload that resets the state to `None` when received on the `state_topic`."
-	Qos                    *int                            `json:"qos,omitempty"`           // "The maximum QoS level of the state topic. Default is 0 and will also be used to publishing messages."
-	Retain                 *bool                           `json:"retain,omitempty"`        // "If the published message should have the retain flag on or not."
-	StateTopic             *string                         `json:"state_topic,omitempty"`   // "The MQTT topic subscribed to receive number values."
-	StateFunc              func() string                   `json:"-"`
-	Step                   *float64                        `json:"step,omitempty"`                // "Step value. Smallest value `0.001`."
-	UniqueId               *string                         `json:"unique_id,omitempty"`           // "An ID that uniquely identifies this Number. If two Numbers have the same unique ID Home Assistant will raise an exception."
-	UnitOfMeasurement      *string                         `json:"unit_of_measurement,omitempty"` // "Defines the unit of measurement of the sensor, if any."
-	ValueTemplate          *string                         `json:"value_template,omitempty"`      // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract the value."
-	MQTT                   *MQTTFields                     `json:"-"`                             // MQTT configuration parameters
+	JsonAttributesFunc     func(mqtt.Message, mqtt.Client) `json:"-"`                                  // Function for json attributes
+	Max                    *float64                        `json:"max,omitempty"`                      // "Maximum value."
+	Min                    *float64                        `json:"min,omitempty"`                      // "Minimum value."
+	Mode                   *string                         `json:"mode,omitempty"`                     // "Control how the number should be displayed in the UI. Can be set to `box` or `slider` to force a display mode."
+	Name                   *string                         `json:"name,omitempty"`                     // "The name of the Number."
+	ObjectId               *string                         `json:"object_id,omitempty"`                // "Used instead of `name` for automatic generation of `entity_id`"
+	Optimistic             *bool                           `json:"optimistic,omitempty"`               // "Flag that defines if number works in optimistic mode."
+	PayloadReset           *string                         `json:"payload_reset,omitempty"`            // "A special payload that resets the state to `None` when received on the `state_topic`."
+	Qos                    *int                            `json:"qos,omitempty"`                      // "The maximum QoS level of the state topic. Default is 0 and will also be used to publishing messages."
+	Retain                 *bool                           `json:"retain,omitempty"`                   // "If the published message should have the retain flag on or not."
+	StateTopic             *string                         `json:"state_topic,omitempty"`              // "The MQTT topic subscribed to receive number values."
+	StateFunc              func() string                   `json:"-"`                                  // Function for state
+	Step                   *float64                        `json:"step,omitempty"`                     // "Step value. Smallest value `0.001`."
+	UniqueId               *string                         `json:"unique_id,omitempty"`                // "An ID that uniquely identifies this Number. If two Numbers have the same unique ID Home Assistant will raise an exception."
+	UnitOfMeasurement      *string                         `json:"unit_of_measurement,omitempty"`      // "Defines the unit of measurement of the sensor, if any."
+	ValueTemplate          *string                         `json:"value_template,omitempty"`           // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract the value."
+	MQTT                   *MQTTFields                     `json:"-"`                                  // MQTT configuration parameters
 }
 
 func (d *Number) GetRawId() string {

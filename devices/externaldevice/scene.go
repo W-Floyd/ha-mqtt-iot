@@ -17,9 +17,9 @@ type Scene struct {
 	AvailabilityMode     *string                         `json:"availability_mode,omitempty"`     // "When `availability` is configured, this controls the conditions needed to set the entity to `available`. Valid entries are `all`, `any`, and `latest`. If set to `all`, `payload_available` must be received on all configured availability topics before the entity is marked as online. If set to `any`, `payload_available` must be received on at least one configured availability topic before the entity is marked as online. If set to `latest`, the last `payload_available` or `payload_not_available` received on any configured availability topic controls the availability."
 	AvailabilityTemplate *string                         `json:"availability_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract device's availability from the `availability_topic`. To determine the devices's availability result of this template will be compared to `payload_available` and `payload_not_available`."
 	AvailabilityTopic    *string                         `json:"availability_topic,omitempty"`    // "The MQTT topic subscribed to receive availability (online/offline) updates. Must not be used together with `availability`."
-	AvailabilityFunc     func() string                   `json:"-"`
-	CommandTopic         *string                         `json:"command_topic,omitempty"` // "The MQTT topic to publish `payload_on` to activate the scene."
-	CommandFunc          func(mqtt.Message, mqtt.Client) `json:"-"`
+	AvailabilityFunc     func() string                   `json:"-"`                               // Function for availability
+	CommandTopic         *string                         `json:"command_topic,omitempty"`         // "The MQTT topic to publish `payload_on` to activate the scene."
+	CommandFunc          func(mqtt.Message, mqtt.Client) `json:"-"`                               // Function for command
 	EnabledByDefault     *bool                           `json:"enabled_by_default,omitempty"`    // "Flag which defines if the entity should be enabled when first added."
 	EntityCategory       *string                         `json:"entity_category,omitempty"`       // "The [category](https://developers.home-assistant.io/docs/core/entity#generic-properties) of the entity."
 	Icon                 *string                         `json:"icon,omitempty"`                  // "Icon for the scene."

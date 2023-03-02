@@ -17,7 +17,7 @@ type BinarySensor struct {
 	AvailabilityMode     *string       `json:"availability_mode,omitempty"`     // "When `availability` is configured, this controls the conditions needed to set the entity to `available`. Valid entries are `all`, `any`, and `latest`. If set to `all`, `payload_available` must be received on all configured availability topics before the entity is marked as online. If set to `any`, `payload_available` must be received on at least one configured availability topic before the entity is marked as online. If set to `latest`, the last `payload_available` or `payload_not_available` received on any configured availability topic controls the availability."
 	AvailabilityTemplate *string       `json:"availability_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract device's availability from the `availability_topic`. To determine the devices's availability result of this template will be compared to `payload_available` and `payload_not_available`."
 	AvailabilityTopic    *string       `json:"availability_topic,omitempty"`    // "The MQTT topic subscribed to receive birth and LWT messages from the MQTT device. If `availability` is not defined, the binary sensor will always be considered `available` and its state will be `on`, `off` or `unknown`. If `availability` is defined, the binary sensor will be considered as `unavailable` by default and the sensor's initial state will be `unavailable`. Must not be used together with `availability`."
-	AvailabilityFunc     func() string `json:"-"`
+	AvailabilityFunc     func() string `json:"-"`                               // Function for availability
 	Device               struct {
 		ConfigurationUrl *string `json:"configuration_url,omitempty"` // "A link to the webpage that can manage the configuration of this device. Can be either an HTTP or HTTPS link."
 		Connections      *string `json:"connections,omitempty"`       // "A list of connections of the device to the outside world as a list of tuples `[connection_type, connection_identifier]`. For example the MAC address of a network interface: `'connections': ['mac', '02:5b:26:a8:dc:12']`."
@@ -38,20 +38,20 @@ type BinarySensor struct {
 	Icon                   *string                         `json:"icon,omitempty"`                     // "[Icon](/docs/configuration/customizing-devices/#icon) for the entity."
 	JsonAttributesTemplate *string                         `json:"json_attributes_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract the JSON dictionary from messages received on the `json_attributes_topic`. Usage example can be found in [MQTT sensor](/integrations/sensor.mqtt/#json-attributes-template-configuration) documentation."
 	JsonAttributesTopic    *string                         `json:"json_attributes_topic,omitempty"`    // "The MQTT topic subscribed to receive a JSON dictionary payload and then set as sensor attributes. Usage example can be found in [MQTT sensor](/integrations/sensor.mqtt/#json-attributes-topic-configuration) documentation."
-	JsonAttributesFunc     func(mqtt.Message, mqtt.Client) `json:"-"`
-	Name                   *string                         `json:"name,omitempty"`                  // "The name of the binary sensor."
-	ObjectId               *string                         `json:"object_id,omitempty"`             // "Used instead of `name` for automatic generation of `entity_id`"
-	OffDelay               *int                            `json:"off_delay,omitempty"`             // "For sensors that only send `on` state updates (like PIRs), this variable sets a delay in seconds after which the sensor's state will be updated back to `off`."
-	PayloadAvailable       *string                         `json:"payload_available,omitempty"`     // "The string that represents the `online` state."
-	PayloadNotAvailable    *string                         `json:"payload_not_available,omitempty"` // "The string that represents the `offline` state."
-	PayloadOff             *string                         `json:"payload_off,omitempty"`           // "The string that represents the `off` state. It will be compared to the message in the `state_topic` (see `value_template` for details)"
-	PayloadOn              *string                         `json:"payload_on,omitempty"`            // "The string that represents the `on` state. It will be compared to the message in the `state_topic` (see `value_template` for details)"
-	Qos                    *int                            `json:"qos,omitempty"`                   // "The maximum QoS level to be used when receiving messages."
-	StateTopic             *string                         `json:"state_topic,omitempty"`           // "The MQTT topic subscribed to receive sensor's state."
-	StateFunc              func() string                   `json:"-"`
-	UniqueId               *string                         `json:"unique_id,omitempty"`      // "An ID that uniquely identifies this sensor. If two sensors have the same unique ID, Home Assistant will raise an exception."
-	ValueTemplate          *string                         `json:"value_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) that returns a string to be compared to `payload_on`/`payload_off` or an empty string, in which case the MQTT message will be removed. Remove this option when `payload_on` and `payload_off` are sufficient to match your payloads (i.e no pre-processing of original message is required)."
-	MQTT                   *MQTTFields                     `json:"-"`                        // MQTT configuration parameters
+	JsonAttributesFunc     func(mqtt.Message, mqtt.Client) `json:"-"`                                  // Function for json attributes
+	Name                   *string                         `json:"name,omitempty"`                     // "The name of the binary sensor."
+	ObjectId               *string                         `json:"object_id,omitempty"`                // "Used instead of `name` for automatic generation of `entity_id`"
+	OffDelay               *int                            `json:"off_delay,omitempty"`                // "For sensors that only send `on` state updates (like PIRs), this variable sets a delay in seconds after which the sensor's state will be updated back to `off`."
+	PayloadAvailable       *string                         `json:"payload_available,omitempty"`        // "The string that represents the `online` state."
+	PayloadNotAvailable    *string                         `json:"payload_not_available,omitempty"`    // "The string that represents the `offline` state."
+	PayloadOff             *string                         `json:"payload_off,omitempty"`              // "The string that represents the `off` state. It will be compared to the message in the `state_topic` (see `value_template` for details)"
+	PayloadOn              *string                         `json:"payload_on,omitempty"`               // "The string that represents the `on` state. It will be compared to the message in the `state_topic` (see `value_template` for details)"
+	Qos                    *int                            `json:"qos,omitempty"`                      // "The maximum QoS level to be used when receiving messages."
+	StateTopic             *string                         `json:"state_topic,omitempty"`              // "The MQTT topic subscribed to receive sensor's state."
+	StateFunc              func() string                   `json:"-"`                                  // Function for state
+	UniqueId               *string                         `json:"unique_id,omitempty"`                // "An ID that uniquely identifies this sensor. If two sensors have the same unique ID, Home Assistant will raise an exception."
+	ValueTemplate          *string                         `json:"value_template,omitempty"`           // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) that returns a string to be compared to `payload_on`/`payload_off` or an empty string, in which case the MQTT message will be removed. Remove this option when `payload_on` and `payload_off` are sufficient to match your payloads (i.e no pre-processing of original message is required)."
+	MQTT                   *MQTTFields                     `json:"-"`                                  // MQTT configuration parameters
 }
 
 func (d *BinarySensor) GetRawId() string {
