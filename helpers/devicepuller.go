@@ -247,7 +247,7 @@ func (dev *Device) FunctionAdder(key string) *jen.Statement {
 			retval.Params().String()
 		}
 
-		retval.Tag(map[string]string{"json": "-"})
+		retval.Tag(map[string]string{"json": "-"}).Comment("Function for " + strcase.ToDelimited(nk, ' '))
 
 	}
 
