@@ -11,23 +11,23 @@ import (
 func ConstructCommandFunc(command []string) (f func(message mqtt.Message, connection mqtt.Client)) {
 	var err error
 	return func(message mqtt.Message, connection mqtt.Client) {
-		localcom := command
+		localCommand := command
 		if string(message.Payload()) != "" {
-			localcom = append(localcom, string(message.Payload()))
+			localCommand = append(localCommand, string(message.Payload()))
 		}
-		if len(localcom) > 0 {
+		if len(localCommand) > 0 {
 			var out []byte
-			if len(localcom) > 1 {
-				out, err = exec.Command(localcom[0], localcom[1:]...).Output()
+			if len(localCommand) > 1 {
+				out, err = exec.Command(localCommand[0], localCommand[1:]...).Output()
 			} else {
-				out, err = exec.Command(localcom[0]).Output()
+				out, err = exec.Command(localCommand[0]).Output()
 			}
 			if err != nil {
-				common.LogWarning("Error running command", localcom)
+				common.LogWarning("Error running command", localCommand)
 				common.LogWarning(string(out))
 				common.LogWarning(err)
 			} else {
-				common.LogDebug("Ran", localcom)
+				common.LogDebug("Ran", localCommand)
 				common.LogDebug(string(out))
 			}
 
