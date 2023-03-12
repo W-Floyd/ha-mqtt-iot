@@ -1,13 +1,13 @@
 #!/bin/bash
 
 case "${1}" in
-    "go-get")
+    "go")
         go get -u
         go mod tidy
         git add go.mod go.sum
         git commit -m "chore: Go update."
         ;;
-    "generate")
+    "gen")
         go run ./helpers --pull
         git add devices/ config/
         git commit -m "chore: Regenerate from upstream documentation."
