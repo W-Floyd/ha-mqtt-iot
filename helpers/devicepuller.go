@@ -45,8 +45,6 @@ type Device struct {
 	JSONContainer *gabs.Container
 }
 
-var PullNew = false
-
 func DevicesInit() (retval []Device) {
 	for _, name := range DeviceNames {
 		d := Device{
@@ -140,7 +138,14 @@ func fetchDocument(devicename string) ([]byte, error) {
 
 	targetFile := "./helpers/cache/" + devicename + ".md"
 
-	if exists(targetFile) && PullNew == false {
+	if *pullNew {
+		err := os.Remove(targetFile)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	if exists(targetFile) {
 
 		data, err := ioutil.ReadFile(targetFile)
 		if err == nil {

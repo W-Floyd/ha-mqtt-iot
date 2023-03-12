@@ -1,6 +1,9 @@
 package main
 
 import (
+	"flag"
+	"fmt"
+	"os"
 	"sort"
 	"strings"
 
@@ -8,17 +11,38 @@ import (
 	"github.com/iancoleman/strcase"
 )
 
+var shouldDelete *bool
+var pullNew *bool
+
 func main() {
 
-	devices := DevicesInit()
-	loadKeyNames()
-
-	external := make(map[string]*jen.File)
+	shouldDelete = flag.Bool("delete", false, "If the generated files should be deleted")
+	pullNew = flag.Bool("pull", false, "If we should re-download the file")
+	flag.Parse()
 
 	fileList := []string{
 		"types",
 		"store",
 	}
+
+	if *shouldDelete {
+		for _, v := range append(DeviceNames, fileList...) {
+			fmt.Println("Removing: " + v)
+			os.Remove("./devices/externaldevice/" + v + ".go")
+			os.Remove("./devices/internaldevice/" + v + ".go")
+		}
+		fmt.Println("Removing: config")
+		os.Remove("./config/config.go")
+		// if *shouldDelete {
+		return
+		// }
+	}
+
+	devices := DevicesInit()
+	*pullNew = false
+	loadKeyNames()
+
+	external := make(map[string]*jen.File)
 
 	for _, v := range append(DeviceNames, fileList...) {
 		external[v] = jen.NewFilePathName("./devices/externaldevice/"+v+".go", "ExternalDevice")
