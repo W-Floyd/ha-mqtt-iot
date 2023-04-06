@@ -43,7 +43,7 @@ type Update struct {
 	LatestVersionTemplate  *string                         `json:"latest_version_template,omitempty"`  // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract the latest version value."
 	LatestVersionTopic     *string                         `json:"latest_version_topic,omitempty"`     // "The MQTT topic subscribed to receive an update of the latest version."
 	LatestVersionFunc      func(mqtt.Message, mqtt.Client) `json:"-"`                                  // Function for latest version
-	Name                   *string                         `json:"name,omitempty"`                     // "The name of the Select."
+	Name                   *string                         `json:"name,omitempty"`                     // "The name of the Update."
 	ObjectId               *string                         `json:"object_id,omitempty"`                // "Used instead of `name` for automatic generation of `entity_id`"
 	PayloadInstall         *string                         `json:"payload_install,omitempty"`          // "The MQTT payload to start installing process."
 	Qos                    *int                            `json:"qos,omitempty"`                      // "The maximum QoS level of the state topic. Default is 0 and will also be used to publishing messages."
@@ -53,7 +53,7 @@ type Update struct {
 	StateTopic             *string                         `json:"state_topic,omitempty"`              // "The MQTT topic subscribed to receive state updates. The state update may be either JSON or a simple string with `installed_version` value. When a JSON payload is detected, the state value of the JSON payload should supply the `installed_version` and can optional supply: `latest_version`, `title`, `release_summary`, `release_url` or an `entity_picture` URL."
 	StateFunc              func() string                   `json:"-"`                                  // Function for state
 	Title                  *string                         `json:"title,omitempty"`                    // "Title of the software, or firmware update. This helps to differentiate between the device or entity name versus the title of the software installed."
-	UniqueId               *string                         `json:"unique_id,omitempty"`                // "An ID that uniquely identifies this Select. If two Selects have the same unique ID Home Assistant will raise an exception."
+	UniqueId               *string                         `json:"unique_id,omitempty"`                // "An ID that uniquely identifies this Update. If two Updates have the same unique ID Home Assistant will raise an exception."
 	ValueTemplate          *string                         `json:"value_template,omitempty"`           // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract the `installed_version` state value or to render to a valid JSON payload on from the payload received on `state_topic`."
 	MQTT                   *MQTTFields                     `json:"-"`                                  // MQTT configuration parameters
 }

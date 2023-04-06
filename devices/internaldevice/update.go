@@ -23,7 +23,7 @@ type Update struct {
 	JsonAttributes         *([]string) `json:"json_attributes,omitempty"`          // JsonAttributes for the Update
 	LatestVersionTemplate  *string     `json:"latest_version_template,omitempty"`  // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract the latest version value."
 	LatestVersion          *([]string) `json:"latest_version,omitempty"`           // LatestVersion for the Update
-	Name                   *string     `json:"name,omitempty"`                     // "The name of the Select."
+	Name                   *string     `json:"name,omitempty"`                     // "The name of the Update."
 	ObjectId               *string     `json:"object_id,omitempty"`                // "Used instead of `name` for automatic generation of `entity_id`"
 	PayloadInstall         *string     `json:"payload_install,omitempty"`          // "The MQTT payload to start installing process."
 	Qos                    *int        `json:"qos,omitempty"`                      // "The maximum QoS level of the state topic. Default is 0 and will also be used to publishing messages."
@@ -32,7 +32,7 @@ type Update struct {
 	Retain                 *bool       `json:"retain,omitempty"`                   // "If the published message should have the retain flag on or not."
 	State                  *([]string) `json:"state,omitempty"`                    // State for the Update
 	Title                  *string     `json:"title,omitempty"`                    // "Title of the software, or firmware update. This helps to differentiate between the device or entity name versus the title of the software installed."
-	UniqueId               *string     `json:"unique_id,omitempty"`                // "An ID that uniquely identifies this Select. If two Selects have the same unique ID Home Assistant will raise an exception."
+	UniqueId               *string     `json:"unique_id,omitempty"`                // "An ID that uniquely identifies this Update. If two Updates have the same unique ID Home Assistant will raise an exception."
 	ValueTemplate          *string     `json:"value_template,omitempty"`           // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract the `installed_version` state value or to render to a valid JSON payload on from the payload received on `state_topic`."
 	MQTT                   struct {
 		UpdateInterval *float64 `json:"update_interval,omitempty"`
