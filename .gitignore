@@ -2,6 +2,6 @@
 /config.json
 /ha-mqtt-iot
 /ha-mqtt-iot-*
-/helpers/cache/*
+/helpers/generate/cache/*
 /nohup.out
 /secrets.json
