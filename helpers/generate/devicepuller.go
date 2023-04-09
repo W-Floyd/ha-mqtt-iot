@@ -2,8 +2,8 @@ package main
 
 import (
 	"errors"
+	"io"
 	"io/fs"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -118,7 +118,7 @@ func splitDocument(devicename string) (string, error) {
 
 	targetFile := "./helpers/generate/cache/" + devicename + "_split.yaml"
 
-	err = ioutil.WriteFile(targetFile, []byte(match), fs.FileMode(0644))
+	err = os.WriteFile(targetFile, []byte(match), fs.FileMode(0644))
 	if err != nil {
 		return "nil", err
 	}
@@ -151,7 +151,7 @@ func fetchDocument(devicename string) ([]byte, error) {
 
 		log.Println("Loading " + devicename)
 
-		data, err := ioutil.ReadFile(targetFile)
+		data, err := os.ReadFile(targetFile)
 		if err == nil {
 			return data, nil
 		}
@@ -168,7 +168,7 @@ func fetchDocument(devicename string) ([]byte, error) {
 		return nil, err
 	}
 	defer resp.Body.Close()
-	bodyBytes, err := ioutil.ReadAll(resp.Body)
+	bodyBytes, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
 	}
@@ -178,7 +178,7 @@ func fetchDocument(devicename string) ([]byte, error) {
 		os.Mkdir("./helpers/generate/cache/", 0755)
 	}
 
-	err = ioutil.WriteFile(targetFile, bodyBytes, fs.FileMode(0644))
+	err = os.WriteFile(targetFile, bodyBytes, fs.FileMode(0644))
 	if err != nil {
 		return nil, err
 	}
