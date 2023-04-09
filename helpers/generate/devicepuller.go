@@ -139,6 +139,7 @@ func fetchDocument(devicename string) ([]byte, error) {
 	targetFile := "./helpers/generate/cache/" + devicename + ".md"
 
 	if *pullNew {
+		log.Println("Deleting " + devicename)
 		err := os.Remove(targetFile)
 		if err != nil && !os.IsNotExist(err) {
 			return nil, err
@@ -147,6 +148,8 @@ func fetchDocument(devicename string) ([]byte, error) {
 	}
 
 	if exists(targetFile) {
+
+		log.Println("Loading " + devicename)
 
 		data, err := ioutil.ReadFile(targetFile)
 		if err == nil {
