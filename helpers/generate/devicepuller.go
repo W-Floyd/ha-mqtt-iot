@@ -140,9 +140,10 @@ func fetchDocument(devicename string) ([]byte, error) {
 
 	if *pullNew {
 		err := os.Remove(targetFile)
-		if err != nil {
+		if err != nil && !os.IsNotExist(err) {
 			return nil, err
 		}
+		err = nil
 	}
 
 	if exists(targetFile) {
@@ -167,6 +168,11 @@ func fetchDocument(devicename string) ([]byte, error) {
 	bodyBytes, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
+	}
+
+	_, err = os.Stat("./helpers/generate/cache/")
+	if os.IsNotExist(err) {
+		os.Mkdir("./helpers/generate/cache/", 0755)
 	}
 
 	err = ioutil.WriteFile(targetFile, bodyBytes, fs.FileMode(0644))
