@@ -126,12 +126,16 @@
                         "via_device": {
                             "type": "string"
                         }
-                    }
+                    },
+                    "required": [
+                        "name"
+                    ]
                 }
             }
         }
     },
     "required": [
-        "mqtt"
+        "mqtt",
+        "defaults"
     ]
 }
