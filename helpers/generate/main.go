@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"log"
 	"os"
 	"sort"
 	"strings"
@@ -28,8 +29,14 @@ func main() {
 	if *shouldDelete {
 		for _, v := range append(DeviceNames, fileList...) {
 			fmt.Println("Removing: " + v)
-			os.Remove("./devices/externaldevice/" + v + ".go")
-			os.Remove("./devices/internaldevice/" + v + ".go")
+			err := os.Remove("./devices/externaldevice/" + v + ".go")
+			if err != nil && !os.IsNotExist(err) {
+				log.Fatalln(err)
+			}
+			err = os.Remove("./devices/internaldevice/" + v + ".go")
+			if err != nil && !os.IsNotExist(err) {
+				log.Fatalln(err)
+			}
 		}
 		fmt.Println("Removing: config")
 		os.Remove("./config/config.go")
