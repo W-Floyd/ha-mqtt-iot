@@ -1,0 +1,137 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://github.com/W-Floyd/ha-mqtt-iot/config.schema.json",
+    "title": "Config",
+    "type": "object",
+    "widget": "Accordions",
+    "properties": {
+        "mqtt": {
+            "title": "MQTT Brokers",
+            "type": "array",
+            "widget": "GenericList",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "title": "ID",
+                        "description": "Identifier to select broker from",
+                        "type": "string"
+                    },
+                    "broker": {
+                        "description": "MQTT broker URL, including protocol, address, and port",
+                        "type": "string",
+                        "pattern": "^(tcp|ws)://.*:[0-9]{1,5}$"
+                    },
+                    "username": {
+                        "description": "MQTT username",
+                        "type": "string"
+                    },
+                    "password": {
+                        "description": "MQTT password",
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id",
+                    "broker"
+                ]
+            },
+            "minItems": 1,
+            "uniqueItems": true
+        },
+        "generators": {
+            "title": "Data generators",
+            "type": "array",
+            "widget": "GenericList",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "title": "ID",
+                        "type": "string"
+                    },
+                    "command": {
+                        "type": "array",
+                        "widget": "SimpleList",
+                        "items": {
+                            "type": "string"
+                        },
+                        "minItems": 1
+                    },
+                    "is-continuous": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "id",
+                    "command"
+                ]
+            },
+            "minItems": 1,
+            "uniqueItems": true
+        },
+        "entities": {},
+        "defaults": {
+            "type": "object",
+            "title": "Defaults",
+            "widget": "Accordions",
+            "properties": {
+                "node_id": {
+                    "type": "string"
+                },
+                "device": {
+                    "type": "object",
+                    "title": "Device",
+                    "properties": {
+                        "configuration_url": {
+                            "type": "string"
+                        },
+                        "connections": {
+                            "type": "array",
+                            "widget": "GenericList",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "connection_type": {
+                                        "type": "string"
+                                    },
+                                    "connection_identifier": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        },
+                        "identifiers": {
+                            "type": "array",
+                            "widget": "GenericList",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "manufacturer": {
+                            "type": "string"
+                        },
+                        "model": {
+                            "type": "string"
+                        },
+                        "name": {
+                            "type": "string"
+                        },
+                        "suggested_area": {
+                            "type": "string"
+                        },
+                        "sw_version": {
+                            "type": "string"
+                        },
+                        "via_device": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "required": [
+        "mqtt"
+    ]
+}
