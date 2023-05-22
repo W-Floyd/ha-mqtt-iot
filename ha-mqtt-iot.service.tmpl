@@ -1,0 +1,12 @@
+[Unit]
+Description=___PROJECT_NAME___
+After=network-online.target
+
+[Service]
+Type=simple
+Restart=on-failure
+ExecStart=___EXECUTABLE____
+WorkingDirectory=___WORKING_DIR___
+
+[Install]
+WantedBy=multi-user.target

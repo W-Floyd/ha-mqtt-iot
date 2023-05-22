@@ -1,0 +1,144 @@
+
+BUILD_DIR=build
+BIN_DIR=.local/bin
+CONFIG_DIR=.config/ha-mqtt-iot
+EXECTUABLE=ha-mqtt-iot
+PROJECT_NAME=$(EXECTUABLE)
+SYSTEMD_DIR=.config/systemd/user
+CURRENT_PATH = $(shell pwd)
+
+default: build config prepare
+
+.PHONY: build
+build:
+	### create build dir 
+	[ ! -d "$(BUILD_DIR)" ] && mkdir $(BUILD_DIR) 
+
+	### compile go
+	go build
+
+	cp $(EXECTUABLE) $(BUILD_DIR)/
+	
+.PHONY: config
+config:
+	### create build dir 
+	[ ! -d "$(BUILD_DIR)" ] && mkdir $(BUILD_DIR) || true
+	
+	[ ! -d "$(BUILD_DIR)/temp"] && mkdir $(BUILD_DIR)/temp || true 
+
+	python3 generator/generator.py 
+	
+	### configuration is pushed to build/config.json.tmpl
+	python3 generator/merge.py
+
+	### fix the degree symbol in the configuration 
+	### bug in python maybe - have no better idea
+	sed -i "s#\\\u00b0C#°C#" $(BUILD_DIR)/config.json.tmpl 
+	
+prepare:
+	### remove build/temp
+	rm -rf build/temp
+
+	### copy files which needed to be patched to build dir
+		
+	cp secrets.json.tmpl $(BUILD_DIR)/secrets.json.tmpl
+	cp ha-mqtt-iot.service.tmpl $(BUILD_DIR)/ha-mqtt-iot.service
+	cp $(EXECTUABLE) $(BUILD_DIR)/
+	cp -r scripts $(BUILD_DIR)/
+
+debug: 
+	### define pathes to build dir 
+	$(eval CONFIG_FILE = $(CURRENT_PATH)/$(BUILD_DIR)/config.json)
+	$(eval SECRET_FILE = $(CURRENT_PATH)/$(BUILD_DIR)/secrets.json)
+	
+	mv $(BUILD_DIR)/secrets.json.tmpl $(BUILD_DIR)/secrets.json
+	mv $(BUILD_DIR)/config.json.tmpl $(BUILD_DIR)/config.json
+
+	### patch files with debug pathes 
+	find build/ -maxdepth 1 -type f -exec sed -i "s#___SCRIPTS_DIR___#$(CURRENT_PATH)/$(BUILD_DIR)/scripts/#" {} \;
+	find build/ -maxdepth 1 -type f -exec sed -i "s#___HOSTNAME___#$(MY_HOSTNAME)#" {} \;
+	find build/ -maxdepth 1 -type f -exec sed -i "s#___PROJECT_NAME___#$(PROJECT_NAME)#" {} \;
+	find build/ -maxdepth 1 -type f -exec sed -i "s#___EXECUTABLE____#$(CURRENT_PATH)/$(BUILD_DIR)/$(EXECTUABLE) -config $(CONFIG_FILE) -secrets $(SECRET_FILE)#" {} \;
+	find build/ -maxdepth 1 -type f -exec sed -i "s#___WORKING_DIR___#$(CURRENT_PATH)/$(BUILD_DIR)/#" {} \;
+	
+release: 
+	### define pathes for install
+	$(eval CONFIG_FILE = $(MY_HOME)/$(CONFIG_DIR)/config.json)
+	$(eval SECRET_FILE = $(MY_HOME)/$(CONFIG_DIR)/secrets.json)
+
+	mv $(BUILD_DIR)/secrets.json.tmpl $(BUILD_DIR)/secrets.json
+	mv $(BUILD_DIR)/config.json.tmpl $(BUILD_DIR)/config.json
+
+	### patch files with debug pathes 
+	find build/ -maxdepth 1 -type f -exec sed -i "s#___SCRIPTS_DIR___#$(MY_HOME)/$(CONFIG_DIR)/scripts/#" {} \;
+	find build/ -maxdepth 1 -type f -exec sed -i "s#___HOSTNAME___#$(MY_HOSTNAME)#" {} \;
+	find build/ -maxdepth 1 -type f -exec sed -i "s#___PROJECT_NAME___#$(PROJECT_NAME)#" {} \;
+	find build/ -maxdepth 1 -type f -exec sed -i "s#___EXECUTABLE____#$(MY_HOME)/$(BIN_DIR)/$(EXECTUABLE) -config $(CONFIG_FILE) -secrets $(SECRET_FILE)#" {} \;
+	find build/ -maxdepth 1 -type f -exec sed -i "s#___WORKING_DIR___#$(MY_HOME)/$(BIN_DIR)/#" {} \;
+
+install_sw:
+	mkdir -p $(MY_HOME)/$(BIN_DIR) || true
+	cp $(BUILD_DIR)/ha-mqtt-iot $(MY_HOME)/$(BIN_DIR)/
+	mkdir -p $(MY_HOME)/$(CONFIG_DIR) || true
+	mkdir -p $(MY_HOME)/$(SYSTEMD_DIR) || true
+	cp $(BUILD_DIR)/config.json $(MY_HOME)/$(CONFIG_DIR)/
+	cp -r $(BUILD_DIR)/scripts $(MY_HOME)/$(CONFIG_DIR)/
+	cp $(BUILD_DIR)/ha-mqtt-iot.service $(MY_HOME)/$(SYSTEMD_DIR)/
+	systemctl --user daemon-reload
+
+install: release install_sw install_secrets
+	@echo ""
+	@echo ""
+	@echo " Your installation is done - please go to the folder $(MY_HOME)/$(CONFIG_DIR)/ and ajust your"
+	@echo " configuration accordingly"
+	@echo ""
+	@echo "     cd $(MY_HOME)/$(CONFIG_DIR)/"
+	@echo "     nano secrets.json"
+	@echo ""
+	@echo " afterwards enter \"systemctl --user start ha-mqtt-iot.service\" to start the service"
+	@echo ""
+	@echo "     systemctl --user start ha-mqtt-iot.service"
+	@echo ""
+	@echo " if you prefer autostart enter \"systemctl --user enable ha-mqtt-iot.service" 
+	@echo ""
+	@echo "     systemctl --user enable ha-mqtt-iot.service" 
+	@echo ""
+	@echo ""
+	@echo ""
+	
+uninstall_sw: stop_service
+	rm -r $(MY_HOME)/$(CONFIG_DIR)/scripts
+	rm $(MY_HOME)/$(CONFIG_DIR)/config.json
+	rm $(MY_HOME)/$(SYSTEMD_DIR)/ha-mqtt-iot.service
+	rm $(MY_HOME)/$(BIN_DIR)/ha-mqtt-iot
+	systemctl --user daemon-reload
+
+install_secrets:
+	[ -f $(MY_HOME)/$(CONFIG_DIR)/secrets.json ] || cp $(BUILD_DIR)/secrets.json $(MY_HOME)/$(CONFIG_DIR)/
+
+remove_secrets:
+	rm $(MY_HOME)/$(CONFIG_DIR)/secrets.json
+
+start_service:
+	systemctl --user start ha-mqtt-iot.service
+	systemctl --user enable ha-mqtt-iot.service
+
+stop_service:
+	systemctl --user stop ha-mqtt-iot.service
+	systemctl --user disable ha-mqtt-iot.service
+	
+uninstall: uninstall_sw remove_secrets
+	rmdir $(MY_HOME)/$(CONFIG_DIR)
+
+reinstall: uninstall_sw install_sw start_service
+
+clean: clean_build
+	rm Makefile
+	rm ha-mqtt-iot
+
+clean_build:
+	rm -rf $(BUILD_DIR)
+
+
+
+

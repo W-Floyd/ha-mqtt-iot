@@ -1,7 +1,58 @@
 #!/bin/bash
 
 # sysstat required for cpu
-# acpi required for battery
+
+### DEPENDENCIES_BEGIN
+# mpstat
+### DEPENDENCIES_END
+
+### CONFIG_TEMPLATE_BEGIN
+# {
+#       "sensor": [
+#         {
+#             "name": "___HOSTNAME___ CPU Usage",
+#             "object_id": "___HOSTNAME___-cpu-usage",
+#             "unique_id": "___HOSTNAME___-cpu-usage",
+#             "icon": "mdi:memory",
+#             "unit_of_measurement": "%",
+#             "state": [
+#                 "___SCRIPTS_DIR______SCRIPT_NAME___",
+#                 "get-cpu"
+#             ],
+#             "mqtt": {
+#                 "update_interval": 10
+#             }
+#         },
+#         {
+#             "name": "___HOSTNAME___ RAM Usage",
+#             "object_id": "___HOSTNAME___-ram-usage",
+#             "unique_id": "___HOSTNAME___-ram-usage",
+#             "unit_of_measurement": "%",
+#             "icon": "mdi:chip",
+#             "state": [
+#                 "___SCRIPTS_DIR______SCRIPT_NAME___",
+#                 "get-ram"
+#             ],
+#             "mqtt": {
+#                 "update_interval": 10
+#             }
+#         },
+#         {
+#             "name": "___HOSTNAME___ Mainboard",
+#             "object_id": "___HOSTNAME___-mainboard-usage",
+#             "unique_id": "___HOSTNAME___-mainboard-usage",
+#             "icon": "mdi:expansion-card-variant",
+#             "state": [
+#                 "___SCRIPTS_DIR______SCRIPT_NAME___",
+#                 "get-board"
+#             ],
+#             "mqtt": {
+#                 "update_interval": 60
+#             }
+#         }
+#     ]
+# }
+# ### CONFIG_TEMPLATE_END
 
 com="${1}"
 arg="${2}"
@@ -12,26 +63,17 @@ case "${com}" in
   ;;
 
 "get-ram")
-  LANG= LC_ALL= free | grep Mem | awk '{$x=sprintf("%.2f",100-($7/$2*100))} {print $x}'
-  ;;
-
-"get-battery-status")
-  cat /sys/class/power_supply/BAT0/capacity
-  ;;
-
-"get-charging-status")
-  charging=$(acpi -a | awk '{print $3}')
-  if [ "${charging}" == 'on-line' ]; then
-    echo "ON"
-  else
-    echo "OFF"
-  fi
+  LANG= LC_ALL= free | grep Mem | awk '{printf "%.1f\n", 100-($7/$2*100)}'
   ;;
 "get-board")
-  if [ "${arg}" == 'pi' ]; then
+  if [ -f /sys/firmware/devicetree/base/model ]; then
     cat /sys/firmware/devicetree/base/model
   else
-    echo "ToDo"
+    VENDOR="unknown"
+    BOARD="unknown"
+    [ -f /sys/class/dmi/id/sys_vendor ] && VENDOR=$(cat /sys/class/dmi/id/sys_vendor)
+    [ -f /sys/class/dmi/id/board_name ] && BOARD=$(cat /sys/class/dmi/id/board_name)
+    echo "$VENDOR $BOARD"
   fi
   ;;
 

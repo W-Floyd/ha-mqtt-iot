@@ -1,5 +1,15 @@
 #!/bin/bash
 
+### DEPENDENCIES_BEGIN
+# gstettings dconf gdbus 
+### DEPENDENCIES_END
+
+### CONFIG_TEMPLATE_BEGIN
+# {
+#
+# }
+# ### CONFIG_TEMPLATE_END
+
 if [ "${#}" -lt 1 ]; then
   echo 'Must pass one or more arguments.'
   exit

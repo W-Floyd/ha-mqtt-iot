@@ -1,5 +1,15 @@
 #!/bin/bash
 
+### DEPENDENCIES_BEGIN
+# convert gnome-screenshot 
+### DEPENDENCIES_END
+
+### CONFIG_TEMPLATE_BEGIN
+# {
+#
+# }
+# ### CONFIG_TEMPLATE_END
+
 __tmp_file="$(mktemp --suffix='.jpg')"
 __tmp_file2="$(mktemp --suffix='.jpg')"
 gnome-screenshot -f "${__tmp_file}"

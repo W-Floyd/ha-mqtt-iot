@@ -1,267 +1,187 @@
-# Script documentation 
+# Documentation 
 
-Summery about the used scripts ha-mqtt-iot can adress
+## Basic script
 
-
-## bedtime.sh
-
-Switches the bedtime gnome extension on or off. 
-
-Call: 
-```
-bedtime.sh command ON
-bedtime.sh command OFF
-bedtime.sh command-state 
-```
-
-Dependency: 
-```
-gnome extension "bedtime-mode"
-```
-
-## camera-sensor.sh
-Checks if any webcam (/dev/video*) is currently in use on the endpoint by using fuser;
-
-Call: 
-```
-camera-sensor.sh get
-```
-
-Dependency: 
-```
-fuser
-```
-
-## camera.sh
-
-Creates a shot with the webcam. The screenshot is returned as base64 encoded picture.
-
-Call: 
-```
-camera.sh
-```
-
-Dependency: 
-```
-mplayer
-```
-## ip.sh
-Returns the IP address of given interface
-
-Call:
-```
-ip.sh wlp64s0$
-```
-
-Dependency: 
-```
-jq
-```
-
-## laptop-backlight.sh
-
-
-Call: 
-```
-laptop-backlight.sh
-```
-
-Dependency: 
 ```
+$ cat time.sh
 
-```
-
-## micro.sh;
-Gets and sets the DEFAULT microphone volume and toggle on and off by using pactl (pulseaudio)
-
-Call: 
-```
-micro.sh set-state <1 or 0> #
-micro.sh get-state #
-micro.sh set-sensitivity <volume 0-100> #
-micro.sh get-sensitivity $
-```
-Dependency:
-```
-pulsaudio / pactl;
-```
+#!/bin/bash
 
-## monitor.sh
+### DEPENDENCIES_BEGIN
+# date
+### DEPENDENCIES_END
 
+### CONFIG_TEMPLATE_BEGIN
+# {
+#     "sensor": 
+#     [
+#         {
+#             "name": "___HOSTNAME___ Time",
+#             "object_id": "___HOSTNAME___-time-sensor",
+#             "unique_id": "___HOSTNAME___-time-sensor",
+#             "icon": "mdi:clock-time-five-outline",
+#             "state": [
+#                 "___SCRIPTS_DIR______SCRIPT_NAME___"                 
+#             ],
+#             "mqtt": {
+#                 "update_interval": 10
+#             }
+#         }
+#     ]
+# }
+### CONFIG_TEMPLATE_END
 
-Call: 
-```
-monitor.sh
-```
+date +'%Y-%m-%d %H:%M:%S'
 
-Dependency: 
 ```
+This script shows a simple time sensor. It shows the time of the system, where ha-mqtt-iot is installed on in Home Assistant.
 
-```
-## run-in-user-session.sh
+### Basic Structure: Dependencies
 
+Follow the script above. 
 
-Call: 
-```
-run-in-user-session.sh
-```
+In the following predefined section the dependencies for this script are defiend. So the dependency of the script above is the "date" command (Please take care about the # and the whitespaces). 
 
-Dependency: 
 ```
-
+### DEPENDENCIES_BEGIN
+# date
+### DEPENDENCIES_END
 ```
 
+Add more dependencies seperated by white spaces. During the configuration generation the dependcies listed here are where checked by the command "which". If one dependency is not met, the configuration for this script is ignored. 
 
-## screenlock.sh
+### Basic Structure: Configuration Template 
 
-Locks the screen of the system by using loginctl. State is reported by dbus request. At the moment this is limited to GNOME and KDE
+This is the heart of the script and ties ha-mqtt-iot to this script. Between the following predfiend section you define your Home Assistant entity which is populated by ha-mqtt-iot. 
 
-Call: 
 ```
-screenlock.sh command lock
-screenlock.sh command unlock
-screenlock.sh state
+### CONFIG_TEMPLATE_BEGIN
+# {
+#     "sensor": 
+#     [
+#         {
+#             "name": "___HOSTNAME___ Time",
+#             "object_id": "___HOSTNAME___-time-sensor",
+#             "unique_id": "___HOSTNAME___-time-sensor",
+#             "icon": "mdi:clock-time-five-outline",
+#             "state": [
+#                 "___SCRIPTS_DIR______SCRIPT_NAME___"                 
+#             ],
+#             "mqtt": {
+#                 "update_interval": 10
+#             }
+#         }
+#     ]
+# }
+### CONFIG_TEMPLATE_END
 ```
 
-Dependency: 
-```
-loginctl
-gnome desktop
-and/or
-kde desktop
-```
+This config template does nothing else than calling the script. Here are some predfiend variables you have <b>NOT</b> to care about. 
 
-## screen.sh
+* ```___HOSTNAME___```-> is substitudet during the configuration build with you hostname
+* ```___SCRIPT_DIR___``` -> is substituted during the configuration build with the target directory e.g. if you install ha-mqtt-iot on your system (```make install```) this variable is substituted with /home/\<your-username>/.config/ha-mqtt-iot/scripts/ automatically. If you make a debug build (```make debug```) it is replaced by \<your-current-directory>/build/ automatically 
+* ```___SCRIPT_NAME___``` -> is substituted with the name of the script dynamically and automatically. So if you name the script ```date.sh``` it will be replaced with with ```date.sh```. 
 
-Creates a screenshot of the current screen. This is returned as base64 encoded string.
+### Basic Structure: The Rest 
 
-Call: 
-```
-screen.sh
-```
+Following the example above this is the rest. 
 
-Dependency: 
 ```
-gnome-screenshot
+date +'%Y-%m-%d %H:%M:%S'
 ```
 
-## speaker.sh
+This is your script. This command line is executed when mqtt sends the sensor value to mqtt. 
 
-Gets and sets the DEFAULT microphone volume and toggle on and off by using pactl (pulseaudio)
-
-Call: 
-```
-speaker.sh set-state <1 or 0> #
-speaker.sh get-state #
-speaker.sh set-volume <volume 0-100> #
-speaker.sh get-volume $
-```
-Dependency:
-```
-pulsaudio / pactl;
-```
+## Advanced Scripting 
 
-## system.sh
+### A Varible
 
-Get different systemstats 
+Ok - you like to go crazy with scripting. We heard you. Lets introduce an other simple script:
 
-Call: 
 ```
-system.sh get-cpu             # returns cpu usage in %
-system.sh get-ram             # returns ram usage in %
-system.sh get-battery-status  # returns battery status in %
-system.sh get-charging-status # returns if battery is charging (ON) or not (OFF)
-system.sh get-board <pi>      # returns the mainboard identifier (only pi at the moment)
-```
+#!/bin/bash
 
-Dependency: 
-```
-awk
-mpstat
-```
+### DEPENDENCIES_BEGIN
+# ip jq
+### DEPENDENCIES_END
 
-## systemd-service.sh
+### CONFIG_TEMPLATE_BEGIN
+# {
+#     "sensor": 
+#     [
+#         {
+#             "name": "___HOSTNAME___ ___INTERFACE___ IP Address",
+#             "object_id": "___HOSTNAME___-___INTERFACE___-ip-address",
+#             "unique_id": "___HOSTNAME___-___INTERFACE___-ip-address",
+#             "icon": "mdi:ip-network",
+#             "state": [
+#                 "___SCRIPTS_DIR______SCRIPT_NAME___",
+#                 "___INTERFACE___"
+#             ],
+#             "mqtt": {
+#                 "update_interval": 10
+#             }
+#         }
+#     ]
+# }
+### CONFIG_TEMPLATE_END
 
-Checks the status of a systemd-service (freely definable)
+### HELPER_BEGIN
+# { "___INTERFACE___": "eth0" }
+### HELPER_END
 
-Call: 
-```
-systemd-service.sh <your-systemd-service>
+__interface="${1}"
+__state=$(cat "/sys/class/net/${__interface}/operstate")
 
-e.g.: systemd-service.sh sshd  # returns if sshd is running
-      systemd-service.sh nginx # returns if nginx is running
-```
+if [ "${__state}" = 'down' ]; then
+    echo "${__state}"
+else
+    ip a show "${__interface}" | grep inet | grep -v inet6 | awk '{print $2}' | awk -F "/" '{print $1}'
+fi
 
-Dependency: 
 ```
-systemd
-```
-
-## temperature.sh
-
-Returns cpu temprature (thermal_zone0) in Celsius
 
-Call: 
-```
-temperature.sh get-cpu-temp
-```
+In the above configuration template you see the freely defined variable ```___INTERFACE___```. This variable is defiend in the helper section below the configuration template section 
 
-Dependency: 
 ```
-python3
+### HELPER_BEGIN
+# { "___INTERFACE___": "eth0" }
+### HELPER_END
 ```
 
-## theme-nightthemeswitcher.sh
+During the generation of the final configuration for ha-mqtt-iot the variable ```___INTERFACE___``` is replaced by ```eth0```. 
 
-
-Call: 
-```
-theme-nightthemeswitcher.sh
-```
+So fine.
 
-Dependency: 
-```
+### Varible in a loop
 
-```
-## theme.sh
+Writing a script for every network interface in your system is <i>boring</i>....
 
+Lets introduce a loop: 
 
-Call: 
 ```
-theme.sh
+### HELPER_BEGIN
+# { "___INTERFACE___": [ "eth0", "wlan0", "dmz0" ] }
+### HELPER_END
 ```
 
-Dependency: 
-```
-
-```
-## wifi.sh
+Now during the make process the automatic config generator creates 3 configurations. The first by replacing ```___INTERFACE___``` with ```eth0```, the scond with ```wlan0```, and the final one with ```dmz0```. 
 
-Returns signal quality and signal strength (in dbm) of an active wifi interface. If the interface is not active it returns down
+### Variable replaced in a dynamic loop (scripting !!! :-))
 
-Call: 
-```
-wifi.sh get-signal
-wifi.sh get-quality
-```
+Ok - sometimes you simply do not know how many interfaces (and what are their names) are available on the target system. Lets make it more dynamic. 
 
-Dependency: 
 ```
-iwconfig
-iw
+### HELPER_BEGIN
+# { "___INTERFACE___“ : {"shell": "ls /sys/class/net/ | grep -v docker0 | grep -v lo" } }
+### HELPER_END
 ```
-## window.sh
 
-Returns the active window 
+The shell command ```ls /sys/class/net/``` returns a list of every available interface on the target host. So the above script returns <i>every</i> interface <i>except</i> "docker0" and "lo". 
 
-Call: 
-```
-window.sh
-```
+## Thinks to improve 
 
-Dependency: 
-```
-xdotool 
-```
+- [ ] More Variables - at the moment every script is tied to one variable only 
+- [ ] Set Hardware (/dev/...) as a dependency - i don't need a battery sensor when the system has no battery 
+- 
 
-**WARNING**: xdotool depends on X11 - encounter problems with wayland

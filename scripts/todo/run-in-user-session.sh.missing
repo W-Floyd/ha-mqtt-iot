@@ -1,5 +1,14 @@
 #!/bin/bash
 
+### DEPENDENCIES_BEGIN
+# mplayer base64 convert
+### DEPENDENCIES_END
+
+### CONFIG_TEMPLATE_BEGIN
+# {
+# }
+# ### CONFIG_TEMPLATE_END
+
 set -x
 
 function run-in-user-session() {
