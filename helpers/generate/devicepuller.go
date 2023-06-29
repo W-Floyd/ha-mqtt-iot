@@ -26,6 +26,7 @@ var DeviceNames = []string{
 	"device_trigger",
 	"fan",
 	"humidifier",
+	"image",
 	"light",
 	"lock",
 	"number",
@@ -38,6 +39,7 @@ var DeviceNames = []string{
 	"text",
 	"update",
 	"vacuum",
+	"water_heater",
 }
 
 type Device struct {

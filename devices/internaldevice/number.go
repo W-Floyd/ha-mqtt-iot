@@ -13,7 +13,7 @@ type Number struct {
 	Availability           *([]string) `json:"availability,omitempty"`             // Availability for the Number
 	CommandTemplate        *string     `json:"command_template,omitempty"`         // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to generate the payload to send to `command_topic`."
 	Command                *([]string) `json:"command,omitempty"`                  // Command for the Number
-	DeviceClass            *string     `json:"device_class,omitempty"`             // "The [type/class](/integrations/number/#device-class) of the number."
+	DeviceClass            *string     `json:"device_class,omitempty"`             // "The [type/class](/integrations/number/#device-class) of the number. The `device_class` can be `null`."
 	EnabledByDefault       *bool       `json:"enabled_by_default,omitempty"`       // "Flag which defines if the entity should be enabled when first added."
 	Encoding               *string     `json:"encoding,omitempty"`                 // "The encoding of the payloads received and published messages. Set to `\"\"` to disable decoding of incoming payload."
 	EntityCategory         *string     `json:"entity_category,omitempty"`          // "The [category](https://developers.home-assistant.io/docs/core/entity#generic-properties) of the entity."
@@ -32,7 +32,7 @@ type Number struct {
 	State                  *([]string) `json:"state,omitempty"`                    // State for the Number
 	Step                   *float64    `json:"step,omitempty"`                     // "Step value. Smallest value `0.001`."
 	UniqueId               *string     `json:"unique_id,omitempty"`                // "An ID that uniquely identifies this Number. If two Numbers have the same unique ID Home Assistant will raise an exception."
-	UnitOfMeasurement      *string     `json:"unit_of_measurement,omitempty"`      // "Defines the unit of measurement of the sensor, if any."
+	UnitOfMeasurement      *string     `json:"unit_of_measurement,omitempty"`      // "Defines the unit of measurement of the sensor, if any. The `unit_of_measurement` can be `null`."
 	ValueTemplate          *string     `json:"value_template,omitempty"`           // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract the value."
 	MQTT                   struct {
 		UpdateInterval *float64 `json:"update_interval,omitempty"`

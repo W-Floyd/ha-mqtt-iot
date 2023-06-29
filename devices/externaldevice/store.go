@@ -48,6 +48,7 @@ type StateStore struct {
 	}
 	Fan struct {
 		Availability     map[string]string
+		DirectionState   map[string]string
 		OscillationState map[string]string
 		PercentageState  map[string]string
 		PresetModeState  map[string]string
@@ -55,9 +56,13 @@ type StateStore struct {
 	}
 	Humidifier struct {
 		Availability        map[string]string
+		CurrentHumidity     map[string]string
 		ModeState           map[string]string
 		State               map[string]string
 		TargetHumidityState map[string]string
+	}
+	Image struct {
+		Availability map[string]string
 	}
 	Light struct {
 		Availability    map[string]string
@@ -114,6 +119,12 @@ type StateStore struct {
 		Availability map[string]string
 		State        map[string]string
 	}
+	WaterHeater struct {
+		Availability       map[string]string
+		CurrentTemperature map[string]string
+		ModeState          map[string]string
+		TemperatureState   map[string]string
+	}
 }
 
 func initStore() StateStore {
@@ -145,14 +156,17 @@ func initStore() StateStore {
 	s.DeviceTracker.State = make(map[string]string)
 	s.DeviceTrigger.State = make(map[string]string)
 	s.Fan.Availability = make(map[string]string)
+	s.Fan.DirectionState = make(map[string]string)
 	s.Fan.OscillationState = make(map[string]string)
 	s.Fan.PercentageState = make(map[string]string)
 	s.Fan.PresetModeState = make(map[string]string)
 	s.Fan.State = make(map[string]string)
 	s.Humidifier.Availability = make(map[string]string)
+	s.Humidifier.CurrentHumidity = make(map[string]string)
 	s.Humidifier.ModeState = make(map[string]string)
 	s.Humidifier.State = make(map[string]string)
 	s.Humidifier.TargetHumidityState = make(map[string]string)
+	s.Image.Availability = make(map[string]string)
 	s.Light.Availability = make(map[string]string)
 	s.Light.BrightnessState = make(map[string]string)
 	s.Light.ColorModeState = make(map[string]string)
@@ -184,5 +198,9 @@ func initStore() StateStore {
 	s.Update.State = make(map[string]string)
 	s.Vacuum.Availability = make(map[string]string)
 	s.Vacuum.State = make(map[string]string)
+	s.WaterHeater.Availability = make(map[string]string)
+	s.WaterHeater.CurrentTemperature = make(map[string]string)
+	s.WaterHeater.ModeState = make(map[string]string)
+	s.WaterHeater.TemperatureState = make(map[string]string)
 	return s
 }

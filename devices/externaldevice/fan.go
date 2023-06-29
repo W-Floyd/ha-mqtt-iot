@@ -32,6 +32,12 @@ type Fan struct {
 		SwVersion        *string `json:"sw_version,omitempty"`        // "The firmware version of the device."
 		ViaDevice        *string `json:"via_device,omitempty"`        // "Identifier of a device that routes messages between this device and Home Assistant. Examples of such devices are hubs, or parent devices of a sub-device. This is used to show device topology in Home Assistant."
 	} `json:"device,omitempty"` // Device configuration parameters
+	DirectionCommandTemplate   *string                         `json:"direction_command_template,omitempty"`   // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to generate the payload to send to `direction_command_topic`."
+	DirectionCommandTopic      *string                         `json:"direction_command_topic,omitempty"`      // "The MQTT topic to publish commands to change the direction state."
+	DirectionCommandFunc       func(mqtt.Message, mqtt.Client) `json:"-"`                                      // Function for direction command
+	DirectionStateTopic        *string                         `json:"direction_state_topic,omitempty"`        // "The MQTT topic subscribed to receive direction state updates."
+	DirectionStateFunc         func() string                   `json:"-"`                                      // Function for direction state
+	DirectionValueTemplate     *string                         `json:"direction_value_template,omitempty"`     // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract a value from the direction."
 	EnabledByDefault           *bool                           `json:"enabled_by_default,omitempty"`           // "Flag which defines if the entity should be enabled when first added."
 	Encoding                   *string                         `json:"encoding,omitempty"`                     // "The encoding of the payloads received and published messages. Set to `\"\"` to disable decoding of incoming payload."
 	EntityCategory             *string                         `json:"entity_category,omitempty"`              // "The [category](https://developers.home-assistant.io/docs/core/entity#generic-properties) of the entity."
@@ -105,6 +111,14 @@ func (d *Fan) UpdateState() {
 			token.Wait()
 		}
 	}
+	if d.DirectionStateTopic != nil {
+		state := d.DirectionStateFunc()
+		if state != stateStore.Fan.DirectionState[d.GetUniqueId()] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
+			token := (*d.MQTT.Client).Publish(*d.DirectionStateTopic, byte(*d.Qos), *d.Retain, state)
+			stateStore.Fan.DirectionState[d.GetUniqueId()] = state
+			token.Wait()
+		}
+	}
 	if d.OscillationStateTopic != nil {
 		state := d.OscillationStateFunc()
 		if state != stateStore.Fan.OscillationState[d.GetUniqueId()] || (d.MQTT.ForceUpdate != nil && *d.MQTT.ForceUpdate) {
@@ -151,6 +165,13 @@ func (d *Fan) Subscribe() {
 			log.Fatal(t.Error())
 		}
 	}
+	if d.DirectionCommandTopic != nil {
+		t := c.Subscribe(*d.DirectionCommandTopic, 0, d.MQTT.MessageHandler)
+		t.Wait()
+		if t.Error() != nil {
+			log.Fatal(t.Error())
+		}
+	}
 	if d.JsonAttributesTopic != nil {
 		t := c.Subscribe(*d.JsonAttributesTopic, 0, d.MQTT.MessageHandler)
 		t.Wait()
@@ -191,6 +212,13 @@ func (d *Fan) UnSubscribe() {
 	token.Wait()
 	if d.CommandTopic != nil {
 		t := c.Unsubscribe(*d.CommandTopic)
+		t.Wait()
+		if t.Error() != nil {
+			log.Fatal(t.Error())
+		}
+	}
+	if d.DirectionCommandTopic != nil {
+		t := c.Unsubscribe(*d.DirectionCommandTopic)
 		t.Wait()
 		if t.Error() != nil {
 			log.Fatal(t.Error())
@@ -256,6 +284,15 @@ func (d *Fan) PopulateTopics() {
 		d.CommandTopic = new(string)
 		*d.CommandTopic = GetTopic(d, "command_topic")
 		store.TopicStore[*d.CommandTopic] = &d.CommandFunc
+	}
+	if d.DirectionCommandFunc != nil {
+		d.DirectionCommandTopic = new(string)
+		*d.DirectionCommandTopic = GetTopic(d, "direction_command_topic")
+		store.TopicStore[*d.DirectionCommandTopic] = &d.DirectionCommandFunc
+	}
+	if d.DirectionStateFunc != nil {
+		d.DirectionStateTopic = new(string)
+		*d.DirectionStateTopic = GetTopic(d, "direction_state_topic")
 	}
 	if d.JsonAttributesFunc != nil {
 		d.JsonAttributesTopic = new(string)

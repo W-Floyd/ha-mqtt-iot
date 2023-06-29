@@ -14,6 +14,10 @@ type Fan struct {
 	Availability               *([]string) `json:"availability,omitempty"`                 // Availability for the Fan
 	CommandTemplate            *string     `json:"command_template,omitempty"`             // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to generate the payload to send to `command_topic`."
 	Command                    *([]string) `json:"command,omitempty"`                      // Command for the Fan
+	DirectionCommandTemplate   *string     `json:"direction_command_template,omitempty"`   // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to generate the payload to send to `direction_command_topic`."
+	DirectionCommand           *([]string) `json:"direction_command,omitempty"`            // DirectionCommand for the Fan
+	DirectionState             *([]string) `json:"direction_state,omitempty"`              // DirectionState for the Fan
+	DirectionValueTemplate     *string     `json:"direction_value_template,omitempty"`     // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract a value from the direction."
 	EnabledByDefault           *bool       `json:"enabled_by_default,omitempty"`           // "Flag which defines if the entity should be enabled when first added."
 	Encoding                   *string     `json:"encoding,omitempty"`                     // "The encoding of the payloads received and published messages. Set to `\"\"` to disable decoding of incoming payload."
 	EntityCategory             *string     `json:"entity_category,omitempty"`              // "The [category](https://developers.home-assistant.io/docs/core/entity#generic-properties) of the entity."
@@ -80,6 +84,18 @@ func (iDevice Fan) Translate() externaldevice.Fan {
 	}
 	if iDevice.Command != nil {
 		eDevice.CommandFunc = common.ConstructCommandFunc(*iDevice.Command)
+	}
+	if iDevice.DirectionCommandTemplate != nil {
+		eDevice.DirectionCommandTemplate = iDevice.DirectionCommandTemplate
+	}
+	if iDevice.DirectionCommand != nil {
+		eDevice.DirectionCommandFunc = common.ConstructCommandFunc(*iDevice.DirectionCommand)
+	}
+	if iDevice.DirectionState != nil {
+		eDevice.DirectionStateFunc = common.ConstructStateFunc(*iDevice.DirectionState)
+	}
+	if iDevice.DirectionValueTemplate != nil {
+		eDevice.DirectionValueTemplate = iDevice.DirectionValueTemplate
 	}
 	if iDevice.EnabledByDefault != nil {
 		eDevice.EnabledByDefault = iDevice.EnabledByDefault

@@ -33,6 +33,7 @@ type Config struct {
 	DeviceTrigger     []internaldevice.DeviceTrigger     `json:"device_trigger,omitempty"`
 	Fan               []internaldevice.Fan               `json:"fan,omitempty"`
 	Humidifier        []internaldevice.Humidifier        `json:"humidifier,omitempty"`
+	Image             []internaldevice.Image             `json:"image,omitempty"`
 	Light             []internaldevice.Light             `json:"light,omitempty"`
 	Lock              []internaldevice.Lock              `json:"lock,omitempty"`
 	Number            []internaldevice.Number            `json:"number,omitempty"`
@@ -45,6 +46,7 @@ type Config struct {
 	Text              []internaldevice.Text              `json:"text,omitempty"`
 	Update            []internaldevice.Update            `json:"update,omitempty"`
 	Vacuum            []internaldevice.Vacuum            `json:"vacuum,omitempty"`
+	WaterHeater       []internaldevice.WaterHeater       `json:"water_heater,omitempty"`
 }
 
 func (c Config) Translate() (output []ExternalDevice.Device) {
@@ -96,6 +98,11 @@ func (c Config) Translate() (output []ExternalDevice.Device) {
 	for _, d := range c.Humidifier {
 		newHumidifier := d.Translate()
 		newDevice := ExternalDevice.Device(&newHumidifier)
+		output = append(output, newDevice)
+	}
+	for _, d := range c.Image {
+		newImage := d.Translate()
+		newDevice := ExternalDevice.Device(&newImage)
 		output = append(output, newDevice)
 	}
 	for _, d := range c.Light {
@@ -156,6 +163,11 @@ func (c Config) Translate() (output []ExternalDevice.Device) {
 	for _, d := range c.Vacuum {
 		newVacuum := d.Translate()
 		newDevice := ExternalDevice.Device(&newVacuum)
+		output = append(output, newDevice)
+	}
+	for _, d := range c.WaterHeater {
+		newWaterHeater := d.Translate()
+		newDevice := ExternalDevice.Device(&newWaterHeater)
 		output = append(output, newDevice)
 	}
 	return

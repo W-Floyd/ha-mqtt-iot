@@ -13,7 +13,7 @@ type Switch struct {
 	AvailabilityTemplate   *string     `json:"availability_template,omitempty"`    // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract device's availability from the `availability_topic`. To determine the devices's availability result of this template will be compared to `payload_available` and `payload_not_available`."
 	Availability           *([]string) `json:"availability,omitempty"`             // Availability for the Switch
 	Command                *([]string) `json:"command,omitempty"`                  // Command for the Switch
-	DeviceClass            *string     `json:"device_class,omitempty"`             // "The [type/class](/integrations/switch/#device-class) of the switch to set the icon in the frontend."
+	DeviceClass            *string     `json:"device_class,omitempty"`             // "The [type/class](/integrations/switch/#device-class) of the switch to set the icon in the frontend. The `device_class` can be `null`."
 	EnabledByDefault       *bool       `json:"enabled_by_default,omitempty"`       // "Flag which defines if the entity should be enabled when first added."
 	Encoding               *string     `json:"encoding,omitempty"`                 // "The encoding of the payloads received and published messages. Set to `\"\"` to disable decoding of incoming payload."
 	EntityCategory         *string     `json:"entity_category,omitempty"`          // "The [category](https://developers.home-assistant.io/docs/core/entity#generic-properties) of the entity."

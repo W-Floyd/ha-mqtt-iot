@@ -9,12 +9,16 @@ import (
 // Do not modify this file, it is automatically generated
 // //////////////////////////////////////////////////////////////////////////////
 type Humidifier struct {
+	ActionTemplate                *string     `json:"action_template,omitempty"`                  // "A template to render the value received on the `action_topic` with."
+	Action                        *([]string) `json:"action,omitempty"`                           // Action for the Humidifier
 	AvailabilityMode              *string     `json:"availability_mode,omitempty"`                // "When `availability` is configured, this controls the conditions needed to set the entity to `available`. Valid entries are `all`, `any`, and `latest`. If set to `all`, `payload_available` must be received on all configured availability topics before the entity is marked as online. If set to `any`, `payload_available` must be received on at least one configured availability topic before the entity is marked as online. If set to `latest`, the last `payload_available` or `payload_not_available` received on any configured availability topic controls the availability."
 	AvailabilityTemplate          *string     `json:"availability_template,omitempty"`            // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract device's availability from the `availability_topic`. To determine the devices's availability result of this template will be compared to `payload_available` and `payload_not_available`."
 	Availability                  *([]string) `json:"availability,omitempty"`                     // Availability for the Humidifier
 	CommandTemplate               *string     `json:"command_template,omitempty"`                 // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to generate the payload to send to `command_topic`."
 	Command                       *([]string) `json:"command,omitempty"`                          // Command for the Humidifier
-	DeviceClass                   *string     `json:"device_class,omitempty"`                     // "The device class of the MQTT device. Must be either `humidifier` or `dehumidifier`."
+	CurrentHumidityTemplate       *string     `json:"current_humidity_template,omitempty"`        // "A template with which the value received on `current_humidity_topic` will be rendered."
+	CurrentHumidity               *([]string) `json:"current_humidity,omitempty"`                 // CurrentHumidity for the Humidifier
+	DeviceClass                   *string     `json:"device_class,omitempty"`                     // "The device class of the MQTT device. Must be either `humidifier`, `dehumidifier` or `null`."
 	EnabledByDefault              *bool       `json:"enabled_by_default,omitempty"`               // "Flag which defines if the entity should be enabled when first added."
 	Encoding                      *string     `json:"encoding,omitempty"`                         // "The encoding of the payloads received and published messages. Set to `\"\"` to disable decoding of incoming payload."
 	EntityCategory                *string     `json:"entity_category,omitempty"`                  // "The [category](https://developers.home-assistant.io/docs/core/entity#generic-properties) of the entity."
@@ -36,7 +40,7 @@ type Humidifier struct {
 	PayloadOff                    *string     `json:"payload_off,omitempty"`                      // "The payload that represents the stop state."
 	PayloadOn                     *string     `json:"payload_on,omitempty"`                       // "The payload that represents the running state."
 	PayloadResetHumidity          *string     `json:"payload_reset_humidity,omitempty"`           // "A special payload that resets the `target_humidity` state attribute to `None` when received at the `target_humidity_state_topic`."
-	PayloadResetMode              *string     `json:"payload_reset_mode,omitempty"`               // "A special payload that resets the `mode` state attribute to `None` when received at the `mode_state_topic`."
+	PayloadResetMode              *string     `json:"payload_reset_mode,omitempty"`               // "A special payload that resets the `mode` state attribute to `None` when received at the `mode_state_topic`. When received at `current_humidity_topic` it will reset the current humidity state."
 	Qos                           *int        `json:"qos,omitempty"`                              // "The maximum QoS level of the state topic."
 	Retain                        *bool       `json:"retain,omitempty"`                           // "If the published message should have the retain flag on or not."
 	State                         *([]string) `json:"state,omitempty"`                            // State for the Humidifier
@@ -61,6 +65,12 @@ func (iDevice Humidifier) Translate() externaldevice.Humidifier {
 	if iDevice.MQTT.UpdateInterval != nil {
 		eDevice.MQTT.UpdateInterval = iDevice.MQTT.UpdateInterval
 	}
+	if iDevice.ActionTemplate != nil {
+		eDevice.ActionTemplate = iDevice.ActionTemplate
+	}
+	if iDevice.Action != nil {
+		eDevice.ActionFunc = common.ConstructCommandFunc(*iDevice.Action)
+	}
 	if iDevice.AvailabilityMode != nil {
 		eDevice.AvailabilityMode = iDevice.AvailabilityMode
 	}
@@ -75,6 +85,12 @@ func (iDevice Humidifier) Translate() externaldevice.Humidifier {
 	}
 	if iDevice.Command != nil {
 		eDevice.CommandFunc = common.ConstructCommandFunc(*iDevice.Command)
+	}
+	if iDevice.CurrentHumidityTemplate != nil {
+		eDevice.CurrentHumidityTemplate = iDevice.CurrentHumidityTemplate
+	}
+	if iDevice.CurrentHumidity != nil {
+		eDevice.CurrentHumidityFunc = common.ConstructStateFunc(*iDevice.CurrentHumidity)
 	}
 	if iDevice.DeviceClass != nil {
 		eDevice.DeviceClass = iDevice.DeviceClass

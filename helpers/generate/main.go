@@ -15,6 +15,8 @@ import (
 var shouldDelete *bool
 var pullNew *bool
 
+var commentBar = "////////////////////////////////////////////////////////////////////////////////"
+
 func main() {
 
 	shouldDelete = flag.Bool("delete", false, "If the generated files should be deleted")
@@ -54,9 +56,9 @@ func main() {
 	for _, v := range append(DeviceNames, fileList...) {
 		external[v] = jen.NewFilePathName("./devices/externaldevice/"+v+".go", "ExternalDevice")
 		external[v].ImportAlias("github.com/eclipse/paho.mqtt.golang", "mqtt")
-		external[v].Comment("////////////////////////////////////////////////////////////////////////////////")
+		external[v].Comment(commentBar)
 		external[v].Comment("Do not modify this file, it is automatically generated")
-		external[v].Comment("////////////////////////////////////////////////////////////////////////////////")
+		external[v].Comment(commentBar)
 	}
 
 	internal := make(map[string]*jen.File)
@@ -66,9 +68,9 @@ func main() {
 	for _, v := range append(DeviceNames, fileList...) {
 		internal[v] = jen.NewFilePathName("./devices/internaldevice/"+v+".go", "InternalDevice")
 		internal[v].ImportAlias("github.com/eclipse/paho.mqtt.golang", "mqtt")
-		internal[v].Comment("////////////////////////////////////////////////////////////////////////////////")
+		internal[v].Comment(commentBar)
 		internal[v].Comment("Do not modify this file, it is automatically generated")
-		internal[v].Comment("////////////////////////////////////////////////////////////////////////////////")
+		internal[v].Comment(commentBar)
 		internal[v].Comment("")
 	}
 
@@ -713,9 +715,9 @@ func main() {
 	config := jen.NewFilePathName("./config/config.go", "config")
 	config.ImportAlias("github.com/eclipse/paho.mqtt.golang", "mqtt")
 	config.ImportAlias("github.com/W-Floyd/ha-mqtt-iot/devices/externaldevice", "ExternalDevice")
-	config.Comment("////////////////////////////////////////////////////////////////////////////////")
+	config.Comment(commentBar)
 	config.Comment("Do not modify this file, it is automatically generated")
-	config.Comment("////////////////////////////////////////////////////////////////////////////////")
+	config.Comment(commentBar)
 
 	config.Type().Id("Config").StructFunc(
 		func(g *jen.Group) {

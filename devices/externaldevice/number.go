@@ -31,7 +31,7 @@ type Number struct {
 		SwVersion        *string `json:"sw_version,omitempty"`        // "The firmware version of the device."
 		ViaDevice        *string `json:"via_device,omitempty"`        // "Identifier of a device that routes messages between this device and Home Assistant. Examples of such devices are hubs, or parent devices of a sub-device. This is used to show device topology in Home Assistant."
 	} `json:"device,omitempty"` // Device configuration parameters
-	DeviceClass            *string                         `json:"device_class,omitempty"`             // "The [type/class](/integrations/number/#device-class) of the number."
+	DeviceClass            *string                         `json:"device_class,omitempty"`             // "The [type/class](/integrations/number/#device-class) of the number. The `device_class` can be `null`."
 	EnabledByDefault       *bool                           `json:"enabled_by_default,omitempty"`       // "Flag which defines if the entity should be enabled when first added."
 	Encoding               *string                         `json:"encoding,omitempty"`                 // "The encoding of the payloads received and published messages. Set to `\"\"` to disable decoding of incoming payload."
 	EntityCategory         *string                         `json:"entity_category,omitempty"`          // "The [category](https://developers.home-assistant.io/docs/core/entity#generic-properties) of the entity."
@@ -52,7 +52,7 @@ type Number struct {
 	StateFunc              func() string                   `json:"-"`                                  // Function for state
 	Step                   *float64                        `json:"step,omitempty"`                     // "Step value. Smallest value `0.001`."
 	UniqueId               *string                         `json:"unique_id,omitempty"`                // "An ID that uniquely identifies this Number. If two Numbers have the same unique ID Home Assistant will raise an exception."
-	UnitOfMeasurement      *string                         `json:"unit_of_measurement,omitempty"`      // "Defines the unit of measurement of the sensor, if any."
+	UnitOfMeasurement      *string                         `json:"unit_of_measurement,omitempty"`      // "Defines the unit of measurement of the sensor, if any. The `unit_of_measurement` can be `null`."
 	ValueTemplate          *string                         `json:"value_template,omitempty"`           // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract the value."
 	MQTT                   *MQTTFields                     `json:"-"`                                  // MQTT configuration parameters
 }
