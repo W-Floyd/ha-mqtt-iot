@@ -13,7 +13,7 @@ type Update struct {
 	AvailabilityTemplate   *string     `json:"availability_template,omitempty"`    // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract device's availability from the `availability_topic`. To determine the devices's availability result of this template will be compared to `payload_available` and `payload_not_available`."
 	Availability           *([]string) `json:"availability,omitempty"`             // Availability for the Update
 	Command                *([]string) `json:"command,omitempty"`                  // Command for the Update
-	DeviceClass            *string     `json:"device_class,omitempty"`             // "The [type/class](/integrations/update/#device-classes) of the update to set the icon in the frontend."
+	DeviceClass            *string     `json:"device_class,omitempty"`             // "The [type/class](/integrations/update/#device-classes) of the update to set the icon in the frontend. The `device_class` can be `null`."
 	EnabledByDefault       *bool       `json:"enabled_by_default,omitempty"`       // "Flag which defines if the entity should be enabled when first added."
 	Encoding               *string     `json:"encoding,omitempty"`                 // "The encoding of the payloads received and published messages. Set to `\"\"` to disable decoding of incoming payload."
 	EntityCategory         *string     `json:"entity_category,omitempty"`          // "The [category](https://developers.home-assistant.io/docs/core/entity#generic-properties) of the entity."
@@ -23,10 +23,10 @@ type Update struct {
 	JsonAttributes         *([]string) `json:"json_attributes,omitempty"`          // JsonAttributes for the Update
 	LatestVersionTemplate  *string     `json:"latest_version_template,omitempty"`  // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract the latest version value."
 	LatestVersion          *([]string) `json:"latest_version,omitempty"`           // LatestVersion for the Update
-	Name                   *string     `json:"name,omitempty"`                     // "The name of the Update."
+	Name                   *string     `json:"name,omitempty"`                     // "The name of the Update. Can be set to `null` if only the device name is relevant."
 	ObjectId               *string     `json:"object_id,omitempty"`                // "Used instead of `name` for automatic generation of `entity_id`"
 	PayloadInstall         *string     `json:"payload_install,omitempty"`          // "The MQTT payload to start installing process."
-	Qos                    *int        `json:"qos,omitempty"`                      // "The maximum QoS level of the state topic. Default is 0 and will also be used to publishing messages."
+	Qos                    *int        `json:"qos,omitempty"`                      // "The maximum QoS level to be used when receiving and publishing messages."
 	ReleaseSummary         *string     `json:"release_summary,omitempty"`          // "Summary of the release notes or changelog. This is suitable a brief update description of max 255 characters."
 	ReleaseUrl             *string     `json:"release_url,omitempty"`              // "URL to the full release notes of the latest version available."
 	Retain                 *bool       `json:"retain,omitempty"`                   // "If the published message should have the retain flag on or not."

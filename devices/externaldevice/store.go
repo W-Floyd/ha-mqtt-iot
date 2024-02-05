@@ -20,7 +20,6 @@ type StateStore struct {
 		State        map[string]string
 	}
 	Climate struct {
-		AuxState             map[string]string
 		Availability         map[string]string
 		CurrentHumidity      map[string]string
 		CurrentTemperature   map[string]string
@@ -46,8 +45,13 @@ type StateStore struct {
 	DeviceTrigger struct {
 		State map[string]string
 	}
+	Event struct {
+		Availability map[string]string
+		State        map[string]string
+	}
 	Fan struct {
 		Availability     map[string]string
+		DirectionState   map[string]string
 		OscillationState map[string]string
 		PercentageState  map[string]string
 		PresetModeState  map[string]string
@@ -55,9 +59,17 @@ type StateStore struct {
 	}
 	Humidifier struct {
 		Availability        map[string]string
+		CurrentHumidity     map[string]string
 		ModeState           map[string]string
 		State               map[string]string
 		TargetHumidityState map[string]string
+	}
+	Image struct {
+		Availability map[string]string
+	}
+	LawnMower struct {
+		ActivityState map[string]string
+		Availability  map[string]string
 	}
 	Light struct {
 		Availability    map[string]string
@@ -114,6 +126,16 @@ type StateStore struct {
 		Availability map[string]string
 		State        map[string]string
 	}
+	Valve struct {
+		Availability map[string]string
+		State        map[string]string
+	}
+	WaterHeater struct {
+		Availability       map[string]string
+		CurrentTemperature map[string]string
+		ModeState          map[string]string
+		TemperatureState   map[string]string
+	}
 }
 
 func initStore() StateStore {
@@ -125,7 +147,6 @@ func initStore() StateStore {
 	s.Button.Availability = make(map[string]string)
 	s.Camera.Availability = make(map[string]string)
 	s.Camera.State = make(map[string]string)
-	s.Climate.AuxState = make(map[string]string)
 	s.Climate.Availability = make(map[string]string)
 	s.Climate.CurrentHumidity = make(map[string]string)
 	s.Climate.CurrentTemperature = make(map[string]string)
@@ -144,15 +165,22 @@ func initStore() StateStore {
 	s.DeviceTracker.Availability = make(map[string]string)
 	s.DeviceTracker.State = make(map[string]string)
 	s.DeviceTrigger.State = make(map[string]string)
+	s.Event.Availability = make(map[string]string)
+	s.Event.State = make(map[string]string)
 	s.Fan.Availability = make(map[string]string)
+	s.Fan.DirectionState = make(map[string]string)
 	s.Fan.OscillationState = make(map[string]string)
 	s.Fan.PercentageState = make(map[string]string)
 	s.Fan.PresetModeState = make(map[string]string)
 	s.Fan.State = make(map[string]string)
 	s.Humidifier.Availability = make(map[string]string)
+	s.Humidifier.CurrentHumidity = make(map[string]string)
 	s.Humidifier.ModeState = make(map[string]string)
 	s.Humidifier.State = make(map[string]string)
 	s.Humidifier.TargetHumidityState = make(map[string]string)
+	s.Image.Availability = make(map[string]string)
+	s.LawnMower.ActivityState = make(map[string]string)
+	s.LawnMower.Availability = make(map[string]string)
 	s.Light.Availability = make(map[string]string)
 	s.Light.BrightnessState = make(map[string]string)
 	s.Light.ColorModeState = make(map[string]string)
@@ -184,5 +212,11 @@ func initStore() StateStore {
 	s.Update.State = make(map[string]string)
 	s.Vacuum.Availability = make(map[string]string)
 	s.Vacuum.State = make(map[string]string)
+	s.Valve.Availability = make(map[string]string)
+	s.Valve.State = make(map[string]string)
+	s.WaterHeater.Availability = make(map[string]string)
+	s.WaterHeater.CurrentTemperature = make(map[string]string)
+	s.WaterHeater.ModeState = make(map[string]string)
+	s.WaterHeater.TemperatureState = make(map[string]string)
 	return s
 }

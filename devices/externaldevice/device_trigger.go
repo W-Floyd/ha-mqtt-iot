@@ -13,8 +13,8 @@ import (
 type DeviceTrigger struct {
 	AutomationType *string `json:"automation_type,omitempty"` // "The type of automation, must be 'trigger'."
 	Device         struct {
-		ConfigurationUrl *string `json:"configuration_url,omitempty"` // "A link to the webpage that can manage the configuration of this device. Can be either an HTTP or HTTPS link."
-		Connections      *string `json:"connections,omitempty"`       // "A list of connections of the device to the outside world as a list of tuples `[connection_type, connection_identifier]`. For example the MAC address of a network interface: `'connections': ['mac', '02:5b:26:a8:dc:12']`."
+		ConfigurationUrl *string `json:"configuration_url,omitempty"` // "A link to the webpage that can manage the configuration of this device. Can be either an `http://`, `https://` or an internal `homeassistant://` URL."
+		Connections      *string `json:"connections,omitempty"`       // "A list of connections of the device to the outside world as a list of tuples `[connection_type, connection_identifier]`. For example the MAC address of a network interface: `\"connections\": [[\"mac\", \"02:5b:26:a8:dc:12\"]]`."
 		Identifiers      *string `json:"identifiers,omitempty"`       // "A list of IDs that uniquely identify the device. For example a serial number."
 		Manufacturer     *string `json:"manufacturer,omitempty"`      // "The manufacturer of the device."
 		Model            *string `json:"model,omitempty"`             // "The model of the device."
@@ -24,7 +24,7 @@ type DeviceTrigger struct {
 		ViaDevice        *string `json:"via_device,omitempty"`        // "Identifier of a device that routes messages between this device and Home Assistant. Examples of such devices are hubs, or parent devices of a sub-device. This is used to show device topology in Home Assistant."
 	} `json:"device,omitempty"` // Device configuration parameters
 	Payload       *string       `json:"payload,omitempty"`        // "Optional payload to match the payload being sent over the topic."
-	Qos           *int          `json:"qos,omitempty"`            // "The maximum QoS level to be used when receiving messages."
+	Qos           *int          `json:"qos,omitempty"`            // "The maximum QoS level to be used when receiving and publishing messages."
 	Subtype       *string       `json:"subtype,omitempty"`        // "The subtype of the trigger, e.g. `button_1`. Entries supported by the frontend: `turn_on`, `turn_off`, `button_1`, `button_2`, `button_3`, `button_4`, `button_5`, `button_6`. If set to an unsupported value, will render as `subtype type`, e.g. `left_button pressed` with `type` set to `button_short_press` and `subtype` set to `left_button`"
 	StateTopic    *string       `json:"topic,omitempty"`          // "The MQTT topic subscribed to receive trigger events."
 	StateFunc     func() string `json:"-"`                        // Function for state

@@ -22,7 +22,7 @@ type Button struct {
 	CommandTopic         *string                         `json:"command_topic,omitempty"`         // "The MQTT topic to publish commands to trigger the button."
 	CommandFunc          func(mqtt.Message, mqtt.Client) `json:"-"`                               // Function for command
 	Device               struct {
-		ConfigurationUrl *string `json:"configuration_url,omitempty"` // "A link to the webpage that can manage the configuration of this device. Can be either an HTTP or HTTPS link."
+		ConfigurationUrl *string `json:"configuration_url,omitempty"` // "A link to the webpage that can manage the configuration of this device. Can be either an `http://`, `https://` or an internal `homeassistant://` URL."
 		Connections      *string `json:"connections,omitempty"`       // "A list of connections of the device to the outside world as a list of tuples `[connection_type, connection_identifier]`. For example the MAC address of a network interface: `\"connections\": [[\"mac\", \"02:5b:26:a8:dc:12\"]]`."
 		Identifiers      *string `json:"identifiers,omitempty"`       // "A list of IDs that uniquely identify the device. For example a serial number."
 		Manufacturer     *string `json:"manufacturer,omitempty"`      // "The manufacturer of the device."
@@ -32,7 +32,7 @@ type Button struct {
 		SwVersion        *string `json:"sw_version,omitempty"`        // "The firmware version of the device."
 		ViaDevice        *string `json:"via_device,omitempty"`        // "Identifier of a device that routes messages between this device and Home Assistant. Examples of such devices are hubs, or parent devices of a sub-device. This is used to show device topology in Home Assistant."
 	} `json:"device,omitempty"` // Device configuration parameters
-	DeviceClass            *string                         `json:"device_class,omitempty"`             // "The [type/class](/integrations/button/#device-class) of the button to set the icon in the frontend."
+	DeviceClass            *string                         `json:"device_class,omitempty"`             // "The [type/class](/integrations/button/#device-class) of the button to set the icon in the frontend. The `device_class` can be `null`."
 	EnabledByDefault       *bool                           `json:"enabled_by_default,omitempty"`       // "Flag which defines if the entity should be enabled when first added."
 	Encoding               *string                         `json:"encoding,omitempty"`                 // "The encoding of the published messages."
 	EntityCategory         *string                         `json:"entity_category,omitempty"`          // "The [category](https://developers.home-assistant.io/docs/core/entity#generic-properties) of the entity."
@@ -40,12 +40,12 @@ type Button struct {
 	JsonAttributesTemplate *string                         `json:"json_attributes_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract the JSON dictionary from messages received on the `json_attributes_topic`. Usage example can be found in [MQTT sensor](/integrations/sensor.mqtt/#json-attributes-template-configuration) documentation."
 	JsonAttributesTopic    *string                         `json:"json_attributes_topic,omitempty"`    // "The MQTT topic subscribed to receive a JSON dictionary payload and then set as sensor attributes. Usage example can be found in [MQTT sensor](/integrations/sensor.mqtt/#json-attributes-topic-configuration) documentation."
 	JsonAttributesFunc     func(mqtt.Message, mqtt.Client) `json:"-"`                                  // Function for json attributes
-	Name                   *string                         `json:"name,omitempty"`                     // "The name to use when displaying this button."
+	Name                   *string                         `json:"name,omitempty"`                     // "The name to use when displaying this button. Can be set to `null` if only the device name is relevant."
 	ObjectId               *string                         `json:"object_id,omitempty"`                // "Used instead of `name` for automatic generation of `entity_id`"
 	PayloadAvailable       *string                         `json:"payload_available,omitempty"`        // "The payload that represents the available state."
 	PayloadNotAvailable    *string                         `json:"payload_not_available,omitempty"`    // "The payload that represents the unavailable state."
 	PayloadPress           *string                         `json:"payload_press,omitempty"`            // "The payload To send to trigger the button."
-	Qos                    *int                            `json:"qos,omitempty"`                      // "The maximum QoS level of the state topic. Default is 0 and will also be used to publishing messages."
+	Qos                    *int                            `json:"qos,omitempty"`                      // "The maximum QoS level to be used when receiving and publishing messages."
 	Retain                 *bool                           `json:"retain,omitempty"`                   // "If the published message should have the retain flag on or not."
 	UniqueId               *string                         `json:"unique_id,omitempty"`                // "An ID that uniquely identifies this button entity. If two buttons have the same unique ID, Home Assistant will raise an exception."
 	MQTT                   *MQTTFields                     `json:"-"`                                  // MQTT configuration parameters

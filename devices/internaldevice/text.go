@@ -22,10 +22,10 @@ type Text struct {
 	Max                    *int        `json:"max,omitempty"`                      // "The maximum size of a text being set or received (maximum is 255)."
 	Min                    *int        `json:"min,omitempty"`                      // "The minimum size of a text being set or received."
 	Mode                   *string     `json:"mode,omitempty"`                     // "The mode off the text entity. Must be either `text` or `password`."
-	Name                   *string     `json:"name,omitempty"`                     // "The name of the text entity."
+	Name                   *string     `json:"name,omitempty"`                     // "The name of the text entity. Can be set to `null` if only the device name is relevant."
 	ObjectId               *string     `json:"object_id,omitempty"`                // "Used instead of `name` for automatic generation of `entity_id`"
 	Pattern                *string     `json:"pattern,omitempty"`                  // "A valid regular expression the text being set or received must match with."
-	Qos                    *int        `json:"qos,omitempty"`                      // "The maximum QoS level of the state topic. Default is 0 and will also be used to publishing messages."
+	Qos                    *int        `json:"qos,omitempty"`                      // "The maximum QoS level to be used when receiving and publishing messages."
 	Retain                 *bool       `json:"retain,omitempty"`                   // "If the published message should have the retain flag on or not."
 	State                  *([]string) `json:"state,omitempty"`                    // State for the Text
 	UniqueId               *string     `json:"unique_id,omitempty"`                // "An ID that uniquely identifies this Select. If two Selects have the same unique ID Home Assistant will raise an exception."

@@ -22,8 +22,8 @@ type Text struct {
 	CommandTopic         *string                         `json:"command_topic,omitempty"`         // "The MQTT topic to publish the text value that is set."
 	CommandFunc          func(mqtt.Message, mqtt.Client) `json:"-"`                               // Function for command
 	Device               struct {
-		ConfigurationUrl *string `json:"configuration_url,omitempty"` // "A link to the webpage that can manage the configuration of this device. Can be either an HTTP or HTTPS link."
-		Connections      *string `json:"connections,omitempty"`       // "A list of connections of the device to the outside world as a list of tuples `[connection_type, connection_identifier]`. For example the MAC address of a network interface: `\"connections\": [\"mac\", \"02:5b:26:a8:dc:12\"]`."
+		ConfigurationUrl *string `json:"configuration_url,omitempty"` // "A link to the webpage that can manage the configuration of this device. Can be either an `http://`, `https://` or an internal `homeassistant://` URL."
+		Connections      *string `json:"connections,omitempty"`       // "A list of connections of the device to the outside world as a list of tuples `[connection_type, connection_identifier]`. For example the MAC address of a network interface: `\"connections\": [[\"mac\", \"02:5b:26:a8:dc:12\"]]`."
 		Identifiers      *string `json:"identifiers,omitempty"`       // "A list of IDs that uniquely identify the device. For example a serial number."
 		Manufacturer     *string `json:"manufacturer,omitempty"`      // "The manufacturer of the device."
 		Model            *string `json:"model,omitempty"`             // "The model of the device."
@@ -41,10 +41,10 @@ type Text struct {
 	Max                    *int                            `json:"max,omitempty"`                      // "The maximum size of a text being set or received (maximum is 255)."
 	Min                    *int                            `json:"min,omitempty"`                      // "The minimum size of a text being set or received."
 	Mode                   *string                         `json:"mode,omitempty"`                     // "The mode off the text entity. Must be either `text` or `password`."
-	Name                   *string                         `json:"name,omitempty"`                     // "The name of the text entity."
+	Name                   *string                         `json:"name,omitempty"`                     // "The name of the text entity. Can be set to `null` if only the device name is relevant."
 	ObjectId               *string                         `json:"object_id,omitempty"`                // "Used instead of `name` for automatic generation of `entity_id`"
 	Pattern                *string                         `json:"pattern,omitempty"`                  // "A valid regular expression the text being set or received must match with."
-	Qos                    *int                            `json:"qos,omitempty"`                      // "The maximum QoS level of the state topic. Default is 0 and will also be used to publishing messages."
+	Qos                    *int                            `json:"qos,omitempty"`                      // "The maximum QoS level to be used when receiving and publishing messages."
 	Retain                 *bool                           `json:"retain,omitempty"`                   // "If the published message should have the retain flag on or not."
 	StateTopic             *string                         `json:"state_topic,omitempty"`              // "The MQTT topic subscribed to receive text state updates. Text state updates should match the `pattern` (if set) and meet the size constraints `min` and `max`. Can be used with `value_template` to render the incoming payload to a text update."
 	StateFunc              func() string                   `json:"-"`                                  // Function for state

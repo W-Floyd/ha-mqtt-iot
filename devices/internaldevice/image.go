@@ -8,35 +8,32 @@ import (
 // //////////////////////////////////////////////////////////////////////////////
 // Do not modify this file, it is automatically generated
 // //////////////////////////////////////////////////////////////////////////////
-type Button struct {
+type Image struct {
 	AvailabilityMode       *string     `json:"availability_mode,omitempty"`        // "When `availability` is configured, this controls the conditions needed to set the entity to `available`. Valid entries are `all`, `any`, and `latest`. If set to `all`, `payload_available` must be received on all configured availability topics before the entity is marked as online. If set to `any`, `payload_available` must be received on at least one configured availability topic before the entity is marked as online. If set to `latest`, the last `payload_available` or `payload_not_available` received on any configured availability topic controls the availability."
 	AvailabilityTemplate   *string     `json:"availability_template,omitempty"`    // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract device's availability from the `availability_topic`. To determine the devices's availability result of this template will be compared to `payload_available` and `payload_not_available`."
-	Availability           *([]string) `json:"availability,omitempty"`             // Availability for the Button
-	CommandTemplate        *string     `json:"command_template,omitempty"`         // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to generate the payload to send to `command_topic`."
-	Command                *([]string) `json:"command,omitempty"`                  // Command for the Button
-	DeviceClass            *string     `json:"device_class,omitempty"`             // "The [type/class](/integrations/button/#device-class) of the button to set the icon in the frontend. The `device_class` can be `null`."
+	Availability           *([]string) `json:"availability,omitempty"`             // Availability for the Image
+	ContentType            *string     `json:"content_type,omitempty"`             // "The content type of and image data message received on `image_topic`. This option cannot be used with the `url_topic` because the content type is derived when downloading the image."
 	EnabledByDefault       *bool       `json:"enabled_by_default,omitempty"`       // "Flag which defines if the entity should be enabled when first added."
-	Encoding               *string     `json:"encoding,omitempty"`                 // "The encoding of the published messages."
+	Encoding               *string     `json:"encoding,omitempty"`                 // "The encoding of the payloads received. Set to `\"\"` to disable decoding of incoming payload. Use `image_encoding` to enable `Base64` decoding on `image_topic`."
 	EntityCategory         *string     `json:"entity_category,omitempty"`          // "The [category](https://developers.home-assistant.io/docs/core/entity#generic-properties) of the entity."
 	Icon                   *string     `json:"icon,omitempty"`                     // "[Icon](/docs/configuration/customizing-devices/#icon) for the entity."
-	JsonAttributesTemplate *string     `json:"json_attributes_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract the JSON dictionary from messages received on the `json_attributes_topic`. Usage example can be found in [MQTT sensor](/integrations/sensor.mqtt/#json-attributes-template-configuration) documentation."
-	JsonAttributes         *([]string) `json:"json_attributes,omitempty"`          // JsonAttributes for the Button
-	Name                   *string     `json:"name,omitempty"`                     // "The name to use when displaying this button. Can be set to `null` if only the device name is relevant."
+	ImageEncoding          *string     `json:"image_encoding,omitempty"`           // "The encoding of the image payloads received. Set to `\"b64\"` to enable base64 decoding of image payload. If not set, the image payload must be raw binary data."
+	Image                  *([]string) `json:"image,omitempty"`                    // Image for the Image
+	JsonAttributesTemplate *string     `json:"json_attributes_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract the JSON dictionary from messages received on the `json_attributes_topic`."
+	JsonAttributes         *([]string) `json:"json_attributes,omitempty"`          // JsonAttributes for the Image
+	Name                   *string     `json:"name,omitempty"`                     // "The name of the image. Can be set to `null` if only the device name is relevant."
 	ObjectId               *string     `json:"object_id,omitempty"`                // "Used instead of `name` for automatic generation of `entity_id`"
-	PayloadAvailable       *string     `json:"payload_available,omitempty"`        // "The payload that represents the available state."
-	PayloadNotAvailable    *string     `json:"payload_not_available,omitempty"`    // "The payload that represents the unavailable state."
-	PayloadPress           *string     `json:"payload_press,omitempty"`            // "The payload To send to trigger the button."
-	Qos                    *int        `json:"qos,omitempty"`                      // "The maximum QoS level to be used when receiving and publishing messages."
-	Retain                 *bool       `json:"retain,omitempty"`                   // "If the published message should have the retain flag on or not."
-	UniqueId               *string     `json:"unique_id,omitempty"`                // "An ID that uniquely identifies this button entity. If two buttons have the same unique ID, Home Assistant will raise an exception."
+	UniqueId               *string     `json:"unique_id,omitempty"`                // "An ID that uniquely identifies this image. If two images have the same unique ID Home Assistant will raise an exception."
+	UrlTemplate            *string     `json:"url_template,omitempty"`             // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract the image URL from a message received at `url_topic`."
+	Url                    *([]string) `json:"url,omitempty"`                      // Url for the Image
 	MQTT                   struct {
 		UpdateInterval *float64 `json:"update_interval,omitempty"`
 		ForceUpdate    *bool    `json:"force_update,omitempty"`
 	} `json:"mqtt"`
 }
 
-func (iDevice Button) Translate() externaldevice.Button {
-	eDevice := externaldevice.Button{}
+func (iDevice Image) Translate() externaldevice.Image {
+	eDevice := externaldevice.Image{}
 	eDevice.MQTT = new(externaldevice.MQTTFields)
 	if iDevice.MQTT.ForceUpdate != nil {
 		eDevice.MQTT.ForceUpdate = iDevice.MQTT.ForceUpdate
@@ -53,14 +50,8 @@ func (iDevice Button) Translate() externaldevice.Button {
 	if iDevice.Availability != nil {
 		eDevice.AvailabilityFunc = common.ConstructStateFunc(*iDevice.Availability)
 	}
-	if iDevice.CommandTemplate != nil {
-		eDevice.CommandTemplate = iDevice.CommandTemplate
-	}
-	if iDevice.Command != nil {
-		eDevice.CommandFunc = common.ConstructCommandFunc(*iDevice.Command)
-	}
-	if iDevice.DeviceClass != nil {
-		eDevice.DeviceClass = iDevice.DeviceClass
+	if iDevice.ContentType != nil {
+		eDevice.ContentType = iDevice.ContentType
 	}
 	if iDevice.EnabledByDefault != nil {
 		eDevice.EnabledByDefault = iDevice.EnabledByDefault
@@ -74,6 +65,12 @@ func (iDevice Button) Translate() externaldevice.Button {
 	if iDevice.Icon != nil {
 		eDevice.Icon = iDevice.Icon
 	}
+	if iDevice.ImageEncoding != nil {
+		eDevice.ImageEncoding = iDevice.ImageEncoding
+	}
+	if iDevice.Image != nil {
+		eDevice.ImageFunc = common.ConstructCommandFunc(*iDevice.Image)
+	}
 	if iDevice.JsonAttributesTemplate != nil {
 		eDevice.JsonAttributesTemplate = iDevice.JsonAttributesTemplate
 	}
@@ -86,23 +83,14 @@ func (iDevice Button) Translate() externaldevice.Button {
 	if iDevice.ObjectId != nil {
 		eDevice.ObjectId = iDevice.ObjectId
 	}
-	if iDevice.PayloadAvailable != nil {
-		eDevice.PayloadAvailable = iDevice.PayloadAvailable
-	}
-	if iDevice.PayloadNotAvailable != nil {
-		eDevice.PayloadNotAvailable = iDevice.PayloadNotAvailable
-	}
-	if iDevice.PayloadPress != nil {
-		eDevice.PayloadPress = iDevice.PayloadPress
-	}
-	if iDevice.Qos != nil {
-		eDevice.Qos = iDevice.Qos
-	}
-	if iDevice.Retain != nil {
-		eDevice.Retain = iDevice.Retain
-	}
 	if iDevice.UniqueId != nil {
 		eDevice.UniqueId = iDevice.UniqueId
+	}
+	if iDevice.UrlTemplate != nil {
+		eDevice.UrlTemplate = iDevice.UrlTemplate
+	}
+	if iDevice.Url != nil {
+		eDevice.UrlFunc = common.ConstructCommandFunc(*iDevice.Url)
 	}
 	if iDevice.Availability == nil {
 		eDevice.AvailabilityFunc = common.AvailabilityFunc

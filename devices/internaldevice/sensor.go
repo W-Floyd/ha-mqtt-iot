@@ -12,26 +12,26 @@ type Sensor struct {
 	AvailabilityMode          *string     `json:"availability_mode,omitempty"`           // "When `availability` is configured, this controls the conditions needed to set the entity to `available`. Valid entries are `all`, `any`, and `latest`. If set to `all`, `payload_available` must be received on all configured availability topics before the entity is marked as online. If set to `any`, `payload_available` must be received on at least one configured availability topic before the entity is marked as online. If set to `latest`, the last `payload_available` or `payload_not_available` received on any configured availability topic controls the availability."
 	AvailabilityTemplate      *string     `json:"availability_template,omitempty"`       // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract device's availability from the `availability_topic`. To determine the devices's availability result of this template will be compared to `payload_available` and `payload_not_available`."
 	Availability              *([]string) `json:"availability,omitempty"`                // Availability for the Sensor
-	DeviceClass               *string     `json:"device_class,omitempty"`                // "The [type/class](/integrations/sensor/#device-class) of the sensor to set the icon in the frontend."
+	DeviceClass               *string     `json:"device_class,omitempty"`                // "The [type/class](/integrations/sensor/#device-class) of the sensor to set the icon in the frontend. The `device_class` can be `null`."
 	EnabledByDefault          *bool       `json:"enabled_by_default,omitempty"`          // "Flag which defines if the entity should be enabled when first added."
 	Encoding                  *string     `json:"encoding,omitempty"`                    // "The encoding of the payloads received. Set to `\"\"` to disable decoding of incoming payload."
-	EntityCategory            *string     `json:"entity_category,omitempty"`             // "The [category](https://developers.home-assistant.io/docs/core/entity#generic-properties) of the entity."
+	EntityCategory            *string     `json:"entity_category,omitempty"`             // "The [category](https://developers.home-assistant.io/docs/core/entity#generic-properties) of the entity. When set, the entity category must be `diagnostic` for sensors."
 	ExpireAfter               *int        `json:"expire_after,omitempty"`                // "If set, it defines the number of seconds after the sensor's state expires, if it's not updated. After expiry, the sensor's state becomes `unavailable`. Default the sensors state never expires."
 	ForceUpdate               *bool       `json:"force_update,omitempty"`                // "Sends update events even if the value hasn't changed. Useful if you want to have meaningful value graphs in history."
 	Icon                      *string     `json:"icon,omitempty"`                        // "[Icon](/docs/configuration/customizing-devices/#icon) for the entity."
 	JsonAttributesTemplate    *string     `json:"json_attributes_template,omitempty"`    // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract the JSON dictionary from messages received on the `json_attributes_topic`."
 	JsonAttributes            *([]string) `json:"json_attributes,omitempty"`             // JsonAttributes for the Sensor
 	LastResetValueTemplate    *string     `json:"last_reset_value_template,omitempty"`   // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract the last_reset. Available variables: `entity_id`. The `entity_id` can be used to reference the entity's attributes."
-	Name                      *string     `json:"name,omitempty"`                        // "The name of the MQTT sensor."
+	Name                      *string     `json:"name,omitempty"`                        // "The name of the MQTT sensor. Can be set to `null` if only the device name is relevant."
 	ObjectId                  *string     `json:"object_id,omitempty"`                   // "Used instead of `name` for automatic generation of `entity_id`"
 	PayloadAvailable          *string     `json:"payload_available,omitempty"`           // "The payload that represents the available state."
 	PayloadNotAvailable       *string     `json:"payload_not_available,omitempty"`       // "The payload that represents the unavailable state."
-	Qos                       *int        `json:"qos,omitempty"`                         // "The maximum QoS level of the state topic."
+	Qos                       *int        `json:"qos,omitempty"`                         // "The maximum QoS level to be used when receiving and publishing messages."
 	StateClass                *string     `json:"state_class,omitempty"`                 // "The [state_class](https://developers.home-assistant.io/docs/core/entity/sensor#available-state-classes) of the sensor."
 	State                     *([]string) `json:"state,omitempty"`                       // State for the Sensor
 	SuggestedDisplayPrecision *int        `json:"suggested_display_precision,omitempty"` // "The number of decimals which should be used in the sensor's state after rounding."
 	UniqueId                  *string     `json:"unique_id,omitempty"`                   // "An ID that uniquely identifies this sensor. If two sensors have the same unique ID, Home Assistant will raise an exception."
-	UnitOfMeasurement         *string     `json:"unit_of_measurement,omitempty"`         // "Defines the units of measurement of the sensor, if any."
+	UnitOfMeasurement         *string     `json:"unit_of_measurement,omitempty"`         // "Defines the units of measurement of the sensor, if any. The `unit_of_measurement` can be `null`."
 	ValueTemplate             *string     `json:"value_template,omitempty"`              // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract the value. If the template throws an error, the current state will be used instead."
 	MQTT                      struct {
 		UpdateInterval *float64 `json:"update_interval,omitempty"`

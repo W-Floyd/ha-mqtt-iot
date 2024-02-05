@@ -14,13 +14,17 @@ type Fan struct {
 	Availability               *([]string) `json:"availability,omitempty"`                 // Availability for the Fan
 	CommandTemplate            *string     `json:"command_template,omitempty"`             // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to generate the payload to send to `command_topic`."
 	Command                    *([]string) `json:"command,omitempty"`                      // Command for the Fan
+	DirectionCommandTemplate   *string     `json:"direction_command_template,omitempty"`   // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to generate the payload to send to `direction_command_topic`."
+	DirectionCommand           *([]string) `json:"direction_command,omitempty"`            // DirectionCommand for the Fan
+	DirectionState             *([]string) `json:"direction_state,omitempty"`              // DirectionState for the Fan
+	DirectionValueTemplate     *string     `json:"direction_value_template,omitempty"`     // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract a value from the direction."
 	EnabledByDefault           *bool       `json:"enabled_by_default,omitempty"`           // "Flag which defines if the entity should be enabled when first added."
 	Encoding                   *string     `json:"encoding,omitempty"`                     // "The encoding of the payloads received and published messages. Set to `\"\"` to disable decoding of incoming payload."
 	EntityCategory             *string     `json:"entity_category,omitempty"`              // "The [category](https://developers.home-assistant.io/docs/core/entity#generic-properties) of the entity."
 	Icon                       *string     `json:"icon,omitempty"`                         // "[Icon](/docs/configuration/customizing-devices/#icon) for the entity."
 	JsonAttributesTemplate     *string     `json:"json_attributes_template,omitempty"`     // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract the JSON dictionary from messages received on the `json_attributes_topic`. Usage example can be found in [MQTT sensor](/integrations/sensor.mqtt/#json-attributes-template-configuration) documentation."
 	JsonAttributes             *([]string) `json:"json_attributes,omitempty"`              // JsonAttributes for the Fan
-	Name                       *string     `json:"name,omitempty"`                         // "The name of the fan."
+	Name                       *string     `json:"name,omitempty"`                         // "The name of the fan. Can be set to `null` if only the device name is relevant."
 	ObjectId                   *string     `json:"object_id,omitempty"`                    // "Used instead of `name` for automatic generation of `entity_id`"
 	Optimistic                 *bool       `json:"optimistic,omitempty"`                   // "Flag that defines if fan works in optimistic mode"
 	OscillationCommandTemplate *string     `json:"oscillation_command_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to generate the payload to send to `oscillation_command_topic`."
@@ -33,8 +37,8 @@ type Fan struct {
 	PayloadOn                  *string     `json:"payload_on,omitempty"`                   // "The payload that represents the running state."
 	PayloadOscillationOff      *string     `json:"payload_oscillation_off,omitempty"`      // "The payload that represents the oscillation off state."
 	PayloadOscillationOn       *string     `json:"payload_oscillation_on,omitempty"`       // "The payload that represents the oscillation on state."
-	PayloadResetPercentage     *string     `json:"payload_reset_percentage,omitempty"`     // "A special payload that resets the `percentage` state attribute to `None` when received at the `percentage_state_topic`."
-	PayloadResetPresetMode     *string     `json:"payload_reset_preset_mode,omitempty"`    // "A special payload that resets the `preset_mode` state attribute to `None` when received at the `preset_mode_state_topic`."
+	PayloadResetPercentage     *string     `json:"payload_reset_percentage,omitempty"`     // "A special payload that resets the `percentage` state attribute to `unknown` when received at the `percentage_state_topic`."
+	PayloadResetPresetMode     *string     `json:"payload_reset_preset_mode,omitempty"`    // "A special payload that resets the `preset_mode` state attribute to `unknown` when received at the `preset_mode_state_topic`."
 	PercentageCommandTemplate  *string     `json:"percentage_command_template,omitempty"`  // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to generate the payload to send to `percentage_command_topic`."
 	PercentageCommand          *([]string) `json:"percentage_command,omitempty"`           // PercentageCommand for the Fan
 	PercentageState            *([]string) `json:"percentage_state,omitempty"`             // PercentageState for the Fan
@@ -44,7 +48,7 @@ type Fan struct {
 	PresetModeState            *([]string) `json:"preset_mode_state,omitempty"`            // PresetModeState for the Fan
 	PresetModeValueTemplate    *string     `json:"preset_mode_value_template,omitempty"`   // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract the `preset_mode` value from the payload received on `preset_mode_state_topic`."
 	PresetModes                *([]string) `json:"preset_modes,omitempty"`                 // "List of preset modes this fan is capable of running at. Common examples include `auto`, `smart`, `whoosh`, `eco` and `breeze`."
-	Qos                        *int        `json:"qos,omitempty"`                          // "The maximum QoS level of the state topic."
+	Qos                        *int        `json:"qos,omitempty"`                          // "The maximum QoS level to be used when receiving and publishing messages."
 	Retain                     *bool       `json:"retain,omitempty"`                       // "If the published message should have the retain flag on or not."
 	SpeedRangeMax              *int        `json:"speed_range_max,omitempty"`              // "The maximum of numeric output range (representing 100 %). The number of speeds within the `speed_range` / `100` will determine the `percentage_step`."
 	SpeedRangeMin              *int        `json:"speed_range_min,omitempty"`              // "The minimum of numeric output range (`off` not included, so `speed_range_min` - `1` represents 0 %). The number of speeds within the speed_range / 100 will determine the `percentage_step`."
@@ -80,6 +84,18 @@ func (iDevice Fan) Translate() externaldevice.Fan {
 	}
 	if iDevice.Command != nil {
 		eDevice.CommandFunc = common.ConstructCommandFunc(*iDevice.Command)
+	}
+	if iDevice.DirectionCommandTemplate != nil {
+		eDevice.DirectionCommandTemplate = iDevice.DirectionCommandTemplate
+	}
+	if iDevice.DirectionCommand != nil {
+		eDevice.DirectionCommandFunc = common.ConstructCommandFunc(*iDevice.DirectionCommand)
+	}
+	if iDevice.DirectionState != nil {
+		eDevice.DirectionStateFunc = common.ConstructStateFunc(*iDevice.DirectionState)
+	}
+	if iDevice.DirectionValueTemplate != nil {
+		eDevice.DirectionValueTemplate = iDevice.DirectionValueTemplate
 	}
 	if iDevice.EnabledByDefault != nil {
 		eDevice.EnabledByDefault = iDevice.EnabledByDefault

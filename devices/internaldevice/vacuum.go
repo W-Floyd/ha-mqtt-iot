@@ -17,7 +17,7 @@ type Vacuum struct {
 	FanSpeedList           *([]string) `json:"fan_speed_list,omitempty"`           // "List of possible fan speeds for the vacuum."
 	JsonAttributesTemplate *string     `json:"json_attributes_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract the JSON dictionary from messages received on the `json_attributes_topic`. Usage example can be found in [MQTT sensor](/integrations/sensor.mqtt/#json-attributes-template-configuration) documentation."
 	JsonAttributes         *([]string) `json:"json_attributes,omitempty"`          // JsonAttributes for the Vacuum
-	Name                   *string     `json:"name,omitempty"`                     // "The name of the vacuum."
+	Name                   *string     `json:"name,omitempty"`                     // "The name of the vacuum. Can be set to `null` if only the device name is relevant."
 	ObjectId               *string     `json:"object_id,omitempty"`                // "Used instead of `name` for automatic generation of `entity_id`"
 	PayloadAvailable       *string     `json:"payload_available,omitempty"`        // "The payload that represents the available state."
 	PayloadCleanSpot       *string     `json:"payload_clean_spot,omitempty"`       // "The payload to send to the `command_topic` to begin a spot cleaning cycle."
@@ -27,9 +27,8 @@ type Vacuum struct {
 	PayloadReturnToBase    *string     `json:"payload_return_to_base,omitempty"`   // "The payload to send to the `command_topic` to tell the vacuum to return to base."
 	PayloadStart           *string     `json:"payload_start,omitempty"`            // "The payload to send to the `command_topic` to begin the cleaning cycle."
 	PayloadStop            *string     `json:"payload_stop,omitempty"`             // "The payload to send to the `command_topic` to stop cleaning."
-	Qos                    *int        `json:"qos,omitempty"`                      // "The maximum QoS level of the state topic."
+	Qos                    *int        `json:"qos,omitempty"`                      // "The maximum QoS level to be used when receiving and publishing messages."
 	Retain                 *bool       `json:"retain,omitempty"`                   // "If the published message should have the retain flag on or not."
-	Schema                 *string     `json:"schema,omitempty"`                   // "The schema to use. Must be `state` to select the state schema."
 	SendCommand            *([]string) `json:"send_command,omitempty"`             // SendCommand for the Vacuum
 	SetFanSpeed            *([]string) `json:"set_fan_speed,omitempty"`            // SetFanSpeed for the Vacuum
 	State                  *([]string) `json:"state,omitempty"`                    // State for the Vacuum
@@ -109,9 +108,6 @@ func (iDevice Vacuum) Translate() externaldevice.Vacuum {
 	}
 	if iDevice.Retain != nil {
 		eDevice.Retain = iDevice.Retain
-	}
-	if iDevice.Schema != nil {
-		eDevice.Schema = iDevice.Schema
 	}
 	if iDevice.SendCommand != nil {
 		eDevice.SendCommandFunc = common.ConstructCommandFunc(*iDevice.SendCommand)

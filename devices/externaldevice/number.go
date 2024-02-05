@@ -21,8 +21,8 @@ type Number struct {
 	CommandTopic      *string                         `json:"command_topic,omitempty"`      // "The MQTT topic to publish commands to change the number."
 	CommandFunc       func(mqtt.Message, mqtt.Client) `json:"-"`                            // Function for command
 	Device            struct {
-		ConfigurationUrl *string `json:"configuration_url,omitempty"` // "A link to the webpage that can manage the configuration of this device. Can be either an HTTP or HTTPS link."
-		Connections      *string `json:"connections,omitempty"`       // "A list of connections of the device to the outside world as a list of tuples `[connection_type, connection_identifier]`. For example the MAC address of a network interface: `\"connections\": [\"mac\", \"02:5b:26:a8:dc:12\"]`."
+		ConfigurationUrl *string `json:"configuration_url,omitempty"` // "A link to the webpage that can manage the configuration of this device. Can be either an `http://`, `https://` or an internal `homeassistant://` URL."
+		Connections      *string `json:"connections,omitempty"`       // "A list of connections of the device to the outside world as a list of tuples `[connection_type, connection_identifier]`. For example the MAC address of a network interface: `\"connections\": [[\"mac\", \"02:5b:26:a8:dc:12\"]]`."
 		Identifiers      *string `json:"identifiers,omitempty"`       // "A list of IDs that uniquely identify the device. For example a serial number."
 		Manufacturer     *string `json:"manufacturer,omitempty"`      // "The manufacturer of the device."
 		Model            *string `json:"model,omitempty"`             // "The model of the device."
@@ -31,7 +31,7 @@ type Number struct {
 		SwVersion        *string `json:"sw_version,omitempty"`        // "The firmware version of the device."
 		ViaDevice        *string `json:"via_device,omitempty"`        // "Identifier of a device that routes messages between this device and Home Assistant. Examples of such devices are hubs, or parent devices of a sub-device. This is used to show device topology in Home Assistant."
 	} `json:"device,omitempty"` // Device configuration parameters
-	DeviceClass            *string                         `json:"device_class,omitempty"`             // "The [type/class](/integrations/number/#device-class) of the number."
+	DeviceClass            *string                         `json:"device_class,omitempty"`             // "The [type/class](/integrations/number/#device-class) of the number. The `device_class` can be `null`."
 	EnabledByDefault       *bool                           `json:"enabled_by_default,omitempty"`       // "Flag which defines if the entity should be enabled when first added."
 	Encoding               *string                         `json:"encoding,omitempty"`                 // "The encoding of the payloads received and published messages. Set to `\"\"` to disable decoding of incoming payload."
 	EntityCategory         *string                         `json:"entity_category,omitempty"`          // "The [category](https://developers.home-assistant.io/docs/core/entity#generic-properties) of the entity."
@@ -42,17 +42,17 @@ type Number struct {
 	Max                    *float64                        `json:"max,omitempty"`                      // "Maximum value."
 	Min                    *float64                        `json:"min,omitempty"`                      // "Minimum value."
 	Mode                   *string                         `json:"mode,omitempty"`                     // "Control how the number should be displayed in the UI. Can be set to `box` or `slider` to force a display mode."
-	Name                   *string                         `json:"name,omitempty"`                     // "The name of the Number."
+	Name                   *string                         `json:"name,omitempty"`                     // "The name of the Number. Can be set to `null` if only the device name is relevant."
 	ObjectId               *string                         `json:"object_id,omitempty"`                // "Used instead of `name` for automatic generation of `entity_id`"
 	Optimistic             *bool                           `json:"optimistic,omitempty"`               // "Flag that defines if number works in optimistic mode."
-	PayloadReset           *string                         `json:"payload_reset,omitempty"`            // "A special payload that resets the state to `None` when received on the `state_topic`."
-	Qos                    *int                            `json:"qos,omitempty"`                      // "The maximum QoS level of the state topic. Default is 0 and will also be used to publishing messages."
+	PayloadReset           *string                         `json:"payload_reset,omitempty"`            // "A special payload that resets the state to `unknown` when received on the `state_topic`."
+	Qos                    *int                            `json:"qos,omitempty"`                      // "The maximum QoS level to be used when receiving and publishing messages."
 	Retain                 *bool                           `json:"retain,omitempty"`                   // "If the published message should have the retain flag on or not."
 	StateTopic             *string                         `json:"state_topic,omitempty"`              // "The MQTT topic subscribed to receive number values."
 	StateFunc              func() string                   `json:"-"`                                  // Function for state
 	Step                   *float64                        `json:"step,omitempty"`                     // "Step value. Smallest value `0.001`."
 	UniqueId               *string                         `json:"unique_id,omitempty"`                // "An ID that uniquely identifies this Number. If two Numbers have the same unique ID Home Assistant will raise an exception."
-	UnitOfMeasurement      *string                         `json:"unit_of_measurement,omitempty"`      // "Defines the unit of measurement of the sensor, if any."
+	UnitOfMeasurement      *string                         `json:"unit_of_measurement,omitempty"`      // "Defines the unit of measurement of the sensor, if any. The `unit_of_measurement` can be `null`."
 	ValueTemplate          *string                         `json:"value_template,omitempty"`           // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract the value."
 	MQTT                   *MQTTFields                     `json:"-"`                                  // MQTT configuration parameters
 }
