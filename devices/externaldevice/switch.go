@@ -21,7 +21,7 @@ type Switch struct {
 	CommandTopic         *string                         `json:"command_topic,omitempty"`         // "The MQTT topic to publish commands to change the switch state."
 	CommandFunc          func(mqtt.Message, mqtt.Client) `json:"-"`                               // Function for command
 	Device               struct {
-		ConfigurationUrl *string `json:"configuration_url,omitempty"` // "A link to the webpage that can manage the configuration of this device. Can be either an HTTP or HTTPS link."
+		ConfigurationUrl *string `json:"configuration_url,omitempty"` // "A link to the webpage that can manage the configuration of this device. Can be either an `http://`, `https://` or an internal `homeassistant://` URL."
 		Connections      *string `json:"connections,omitempty"`       // "A list of connections of the device to the outside world as a list of tuples `[connection_type, connection_identifier]`. For example the MAC address of a network interface: `\"connections\": [[\"mac\", \"02:5b:26:a8:dc:12\"]]`."
 		Identifiers      *string `json:"identifiers,omitempty"`       // "A list of IDs that uniquely identify the device. For example a serial number."
 		Manufacturer     *string `json:"manufacturer,omitempty"`      // "The manufacturer of the device."
@@ -39,14 +39,14 @@ type Switch struct {
 	JsonAttributesTemplate *string                         `json:"json_attributes_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract the JSON dictionary from messages received on the `json_attributes_topic`. Usage example can be found in [MQTT sensor](/integrations/sensor.mqtt/#json-attributes-template-configuration) documentation."
 	JsonAttributesTopic    *string                         `json:"json_attributes_topic,omitempty"`    // "The MQTT topic subscribed to receive a JSON dictionary payload and then set as sensor attributes. Usage example can be found in [MQTT sensor](/integrations/sensor.mqtt/#json-attributes-topic-configuration) documentation."
 	JsonAttributesFunc     func(mqtt.Message, mqtt.Client) `json:"-"`                                  // Function for json attributes
-	Name                   *string                         `json:"name,omitempty"`                     // "The name to use when displaying this switch."
+	Name                   *string                         `json:"name,omitempty"`                     // "The name to use when displaying this switch. Can be set to `null` if only the device name is relevant."
 	ObjectId               *string                         `json:"object_id,omitempty"`                // "Used instead of `name` for automatic generation of `entity_id`"
 	Optimistic             *bool                           `json:"optimistic,omitempty"`               // "Flag that defines if switch works in optimistic mode."
 	PayloadAvailable       *string                         `json:"payload_available,omitempty"`        // "The payload that represents the available state."
 	PayloadNotAvailable    *string                         `json:"payload_not_available,omitempty"`    // "The payload that represents the unavailable state."
 	PayloadOff             *string                         `json:"payload_off,omitempty"`              // "The payload that represents `off` state. If specified, will be used for both comparing to the value in the `state_topic` (see `value_template` and `state_off` for details) and sending as `off` command to the `command_topic`."
 	PayloadOn              *string                         `json:"payload_on,omitempty"`               // "The payload that represents `on` state. If specified, will be used for both comparing to the value in the `state_topic` (see `value_template` and `state_on`  for details) and sending as `on` command to the `command_topic`."
-	Qos                    *int                            `json:"qos,omitempty"`                      // "The maximum QoS level of the state topic. Default is 0 and will also be used to publishing messages."
+	Qos                    *int                            `json:"qos,omitempty"`                      // "The maximum QoS level to be used when receiving and publishing messages."
 	Retain                 *bool                           `json:"retain,omitempty"`                   // "If the published message should have the retain flag on or not."
 	StateOff               *string                         `json:"state_off,omitempty"`                // "The payload that represents the `off` state. Used when value that represents `off` state in the `state_topic` is different from value that should be sent to the `command_topic` to turn the device `off`."
 	StateOn                *string                         `json:"state_on,omitempty"`                 // "The payload that represents the `on` state. Used when value that represents `on` state in the `state_topic` is different from value that should be sent to the `command_topic` to turn the device `on`."

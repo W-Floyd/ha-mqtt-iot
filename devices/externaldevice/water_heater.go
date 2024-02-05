@@ -22,7 +22,7 @@ type WaterHeater struct {
 	CurrentTemperatureTopic    *string       `json:"current_temperature_topic,omitempty"`    // "The MQTT topic on which to listen for the current temperature. A `\"None\"` value received will reset the current temperature. Empty values (`'''`) will be ignored."
 	CurrentTemperatureFunc     func() string `json:"-"`                                      // Function for current temperature
 	Device                     struct {
-		ConfigurationUrl *string `json:"configuration_url,omitempty"` // "A link to the webpage that can manage the configuration of this device. Can be either an HTTP or HTTPS link."
+		ConfigurationUrl *string `json:"configuration_url,omitempty"` // "A link to the webpage that can manage the configuration of this device. Can be either an `http://`, `https://` or an internal `homeassistant://` URL."
 		Connections      *string `json:"connections,omitempty"`       // "A list of connections of the device to the outside world as a list of tuples `[connection_type, connection_identifier]`. For example the MAC address of a network interface: `\"connections\": [[\"mac\", \"02:5b:26:a8:dc:12\"]]`."
 		Identifiers      *string `json:"identifiers,omitempty"`       // "A list of IDs that uniquely identify the device. For example a serial number."
 		Manufacturer     *string `json:"manufacturer,omitempty"`      // "The manufacturer of the device."
@@ -43,19 +43,22 @@ type WaterHeater struct {
 	MaxTemp                    *float64                        `json:"max_temp,omitempty"`                     // "Maximum set point available. The default value depends on the temperature unit, and will be 60°C or 140°F."
 	MinTemp                    *float64                        `json:"min_temp,omitempty"`                     // "Minimum set point available. The default value depends on the temperature unit, and will be 43.3°C or 110°F."
 	ModeCommandTemplate        *string                         `json:"mode_command_template,omitempty"`        // "A template to render the value sent to the `mode_command_topic` with."
-	ModeCommandTopic           *string                         `json:"mode_command_topic,omitempty"`           // "The MQTT topic to publish commands to change the Water Heater operation mode. Use with `mode_command_template` if you only want to publish the power state."
+	ModeCommandTopic           *string                         `json:"mode_command_topic,omitempty"`           // "The MQTT topic to publish commands to change the water heater operation mode."
 	ModeCommandFunc            func(mqtt.Message, mqtt.Client) `json:"-"`                                      // Function for mode command
 	ModeStateTemplate          *string                         `json:"mode_state_template,omitempty"`          // "A template to render the value received on the `mode_state_topic` with."
-	ModeStateTopic             *string                         `json:"mode_state_topic,omitempty"`             // "The MQTT topic to subscribe for changes of the Water Heater operation mode. If this is not set, the operation mode works in optimistic mode (see below)."
+	ModeStateTopic             *string                         `json:"mode_state_topic,omitempty"`             // "The MQTT topic to subscribe for changes of the water heater operation mode. If this is not set, the operation mode works in optimistic mode (see below)."
 	ModeStateFunc              func() string                   `json:"-"`                                      // Function for mode state
 	Modes                      *([]string)                     `json:"modes,omitempty"`                        // "A list of supported modes. Needs to be a subset of the default values."
-	Name                       *string                         `json:"name,omitempty"`                         // "The name of the Water Heater."
+	Name                       *string                         `json:"name,omitempty"`                         // "The name of the water heater. Can be set to `null` if only the device name is relevant."
 	ObjectId                   *string                         `json:"object_id,omitempty"`                    // "Used instead of `name` for automatic generation of `entity_id`"
 	Optimistic                 *bool                           `json:"optimistic,omitempty"`                   // "Flag that defines if the water heater works in optimistic mode"
 	PayloadAvailable           *string                         `json:"payload_available,omitempty"`            // "The payload that represents the available state."
 	PayloadNotAvailable        *string                         `json:"payload_not_available,omitempty"`        // "The payload that represents the unavailable state."
 	PayloadOff                 *string                         `json:"payload_off,omitempty"`                  // "The payload that represents disabled state."
 	PayloadOn                  *string                         `json:"payload_on,omitempty"`                   // "The payload that represents enabled state."
+	PowerCommandTemplate       *string                         `json:"power_command_template,omitempty"`       // "A template to render the value sent to the `power_command_topic` with. The `value` parameter is the payload set for `payload_on` or `payload_off`."
+	PowerCommandTopic          *string                         `json:"power_command_topic,omitempty"`          // "The MQTT topic to publish commands to change the water heater power state. Sends the payload configured with `payload_on` if the water heater is turned on via the `water_heater.turn_on`, or the payload configured with `payload_off` if the water heater is turned off via the `water_heater.turn_off` service. Note that `optimistic` mode is not supported through `water_heater.turn_on` and `water_heater.turn_off` services. When called, these services will send a power command to the device but will not optimistically update the state of the water heater. The water heater device should report its state back via `mode_state_topic`."
+	PowerCommandFunc           func(mqtt.Message, mqtt.Client) `json:"-"`                                      // Function for power command
 	Precision                  *float64                        `json:"precision,omitempty"`                    // "The desired precision for this device. Can be used to match your actual water heater's precision. Supported values are `0.1`, `0.5` and `1.0`."
 	Qos                        *int                            `json:"qos,omitempty"`                          // "The maximum QoS level to be used when receiving and publishing messages."
 	Retain                     *bool                           `json:"retain,omitempty"`                       // "Defines if published messages should have the retain flag set."
@@ -66,7 +69,7 @@ type WaterHeater struct {
 	TemperatureStateTopic      *string                         `json:"temperature_state_topic,omitempty"`      // "The MQTT topic to subscribe for changes in the target temperature. If this is not set, the target temperature works in optimistic mode (see below). A `\"None\"` value received will reset the temperature set point. Empty values (`'''`) will be ignored."
 	TemperatureStateFunc       func() string                   `json:"-"`                                      // Function for temperature state
 	TemperatureUnit            *string                         `json:"temperature_unit,omitempty"`             // "Defines the temperature unit of the device, `C` or `F`. If this is not set, the temperature unit is set to the system temperature unit."
-	UniqueId                   *string                         `json:"unique_id,omitempty"`                    // "An ID that uniquely identifies this Water Heater device. If two Water Heater devices have the same unique ID, Home Assistant will raise an exception."
+	UniqueId                   *string                         `json:"unique_id,omitempty"`                    // "An ID that uniquely identifies this water heater device. If two water heater devices have the same unique ID, Home Assistant will raise an exception."
 	ValueTemplate              *string                         `json:"value_template,omitempty"`               // "Default template to render the payloads on *all* `*_state_topic`s with."
 	MQTT                       *MQTTFields                     `json:"-"`                                      // MQTT configuration parameters
 }
@@ -141,6 +144,13 @@ func (d *WaterHeater) Subscribe() {
 			log.Fatal(t.Error())
 		}
 	}
+	if d.PowerCommandTopic != nil {
+		t := c.Subscribe(*d.PowerCommandTopic, 0, d.MQTT.MessageHandler)
+		t.Wait()
+		if t.Error() != nil {
+			log.Fatal(t.Error())
+		}
+	}
 	if d.TemperatureCommandTopic != nil {
 		t := c.Subscribe(*d.TemperatureCommandTopic, 0, d.MQTT.MessageHandler)
 		t.Wait()
@@ -167,6 +177,13 @@ func (d *WaterHeater) UnSubscribe() {
 	}
 	if d.ModeCommandTopic != nil {
 		t := c.Unsubscribe(*d.ModeCommandTopic)
+		t.Wait()
+		if t.Error() != nil {
+			log.Fatal(t.Error())
+		}
+	}
+	if d.PowerCommandTopic != nil {
+		t := c.Unsubscribe(*d.PowerCommandTopic)
 		t.Wait()
 		if t.Error() != nil {
 			log.Fatal(t.Error())
@@ -224,6 +241,11 @@ func (d *WaterHeater) PopulateTopics() {
 	if d.ModeStateFunc != nil {
 		d.ModeStateTopic = new(string)
 		*d.ModeStateTopic = GetTopic(d, "mode_state_topic")
+	}
+	if d.PowerCommandFunc != nil {
+		d.PowerCommandTopic = new(string)
+		*d.PowerCommandTopic = GetTopic(d, "power_command_topic")
+		store.TopicStore[*d.PowerCommandTopic] = &d.PowerCommandFunc
 	}
 	if d.TemperatureCommandFunc != nil {
 		d.TemperatureCommandTopic = new(string)

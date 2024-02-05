@@ -31,9 +31,11 @@ type Config struct {
 	Cover             []internaldevice.Cover             `json:"cover,omitempty"`
 	DeviceTracker     []internaldevice.DeviceTracker     `json:"device_tracker,omitempty"`
 	DeviceTrigger     []internaldevice.DeviceTrigger     `json:"device_trigger,omitempty"`
+	Event             []internaldevice.Event             `json:"event,omitempty"`
 	Fan               []internaldevice.Fan               `json:"fan,omitempty"`
 	Humidifier        []internaldevice.Humidifier        `json:"humidifier,omitempty"`
 	Image             []internaldevice.Image             `json:"image,omitempty"`
+	LawnMower         []internaldevice.LawnMower         `json:"lawn_mower,omitempty"`
 	Light             []internaldevice.Light             `json:"light,omitempty"`
 	Lock              []internaldevice.Lock              `json:"lock,omitempty"`
 	Number            []internaldevice.Number            `json:"number,omitempty"`
@@ -46,6 +48,7 @@ type Config struct {
 	Text              []internaldevice.Text              `json:"text,omitempty"`
 	Update            []internaldevice.Update            `json:"update,omitempty"`
 	Vacuum            []internaldevice.Vacuum            `json:"vacuum,omitempty"`
+	Valve             []internaldevice.Valve             `json:"valve,omitempty"`
 	WaterHeater       []internaldevice.WaterHeater       `json:"water_heater,omitempty"`
 }
 
@@ -90,6 +93,11 @@ func (c Config) Translate() (output []ExternalDevice.Device) {
 		newDevice := ExternalDevice.Device(&newDeviceTrigger)
 		output = append(output, newDevice)
 	}
+	for _, d := range c.Event {
+		newEvent := d.Translate()
+		newDevice := ExternalDevice.Device(&newEvent)
+		output = append(output, newDevice)
+	}
 	for _, d := range c.Fan {
 		newFan := d.Translate()
 		newDevice := ExternalDevice.Device(&newFan)
@@ -103,6 +111,11 @@ func (c Config) Translate() (output []ExternalDevice.Device) {
 	for _, d := range c.Image {
 		newImage := d.Translate()
 		newDevice := ExternalDevice.Device(&newImage)
+		output = append(output, newDevice)
+	}
+	for _, d := range c.LawnMower {
+		newLawnMower := d.Translate()
+		newDevice := ExternalDevice.Device(&newLawnMower)
 		output = append(output, newDevice)
 	}
 	for _, d := range c.Light {
@@ -163,6 +176,11 @@ func (c Config) Translate() (output []ExternalDevice.Device) {
 	for _, d := range c.Vacuum {
 		newVacuum := d.Translate()
 		newDevice := ExternalDevice.Device(&newVacuum)
+		output = append(output, newDevice)
+	}
+	for _, d := range c.Valve {
+		newValve := d.Translate()
+		newDevice := ExternalDevice.Device(&newValve)
 		output = append(output, newDevice)
 	}
 	for _, d := range c.WaterHeater {

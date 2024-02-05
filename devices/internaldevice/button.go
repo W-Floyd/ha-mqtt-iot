@@ -21,12 +21,12 @@ type Button struct {
 	Icon                   *string     `json:"icon,omitempty"`                     // "[Icon](/docs/configuration/customizing-devices/#icon) for the entity."
 	JsonAttributesTemplate *string     `json:"json_attributes_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract the JSON dictionary from messages received on the `json_attributes_topic`. Usage example can be found in [MQTT sensor](/integrations/sensor.mqtt/#json-attributes-template-configuration) documentation."
 	JsonAttributes         *([]string) `json:"json_attributes,omitempty"`          // JsonAttributes for the Button
-	Name                   *string     `json:"name,omitempty"`                     // "The name to use when displaying this button."
+	Name                   *string     `json:"name,omitempty"`                     // "The name to use when displaying this button. Can be set to `null` if only the device name is relevant."
 	ObjectId               *string     `json:"object_id,omitempty"`                // "Used instead of `name` for automatic generation of `entity_id`"
 	PayloadAvailable       *string     `json:"payload_available,omitempty"`        // "The payload that represents the available state."
 	PayloadNotAvailable    *string     `json:"payload_not_available,omitempty"`    // "The payload that represents the unavailable state."
 	PayloadPress           *string     `json:"payload_press,omitempty"`            // "The payload To send to trigger the button."
-	Qos                    *int        `json:"qos,omitempty"`                      // "The maximum QoS level of the state topic. Default is 0 and will also be used to publishing messages."
+	Qos                    *int        `json:"qos,omitempty"`                      // "The maximum QoS level to be used when receiving and publishing messages."
 	Retain                 *bool       `json:"retain,omitempty"`                   // "If the published message should have the retain flag on or not."
 	UniqueId               *string     `json:"unique_id,omitempty"`                // "An ID that uniquely identifies this button entity. If two buttons have the same unique ID, Home Assistant will raise an exception."
 	MQTT                   struct {

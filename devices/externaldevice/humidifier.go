@@ -28,7 +28,7 @@ type Humidifier struct {
 	CurrentHumidityTopic    *string                         `json:"current_humidity_topic,omitempty"`    // "The MQTT topic on which to listen for the current humidity. A `\"None\"` value received will reset the current humidity. Empty values (`'''`) will be ignored."
 	CurrentHumidityFunc     func() string                   `json:"-"`                                   // Function for current humidity
 	Device                  struct {
-		ConfigurationUrl *string `json:"configuration_url,omitempty"` // "A link to the webpage that can manage the configuration of this device. Can be either an HTTP or HTTPS link."
+		ConfigurationUrl *string `json:"configuration_url,omitempty"` // "A link to the webpage that can manage the configuration of this device. Can be either an `http://`, `https://` or an internal `homeassistant://` URL."
 		Connections      *string `json:"connections,omitempty"`       // "A list of connections of the device to the outside world as a list of tuples `[connection_type, connection_identifier]`. For example the MAC address of a network interface: `\"connections\": [[\"mac\", \"02:5b:26:a8:dc:12\"]]`."
 		Identifiers      *string `json:"identifiers,omitempty"`       // "A list of IDs that uniquely identify the device. For example a serial number."
 		Manufacturer     *string `json:"manufacturer,omitempty"`      // "The manufacturer of the device."
@@ -55,16 +55,16 @@ type Humidifier struct {
 	ModeStateTopic                *string                         `json:"mode_state_topic,omitempty"`                 // "The MQTT topic subscribed to receive the humidifier `mode`."
 	ModeStateFunc                 func() string                   `json:"-"`                                          // Function for mode state
 	Modes                         *([]string)                     `json:"modes,omitempty"`                            // "List of available modes this humidifier is capable of running at. Common examples include `normal`, `eco`, `away`, `boost`, `comfort`, `home`, `sleep`, `auto` and `baby`. These examples offer built-in translations but other custom modes are allowed as well.  This attribute ust be configured together with the `mode_command_topic` attribute."
-	Name                          *string                         `json:"name,omitempty"`                             // "The name of the humidifier."
+	Name                          *string                         `json:"name,omitempty"`                             // "The name of the humidifier. Can be set to `null` if only the device name is relevant."
 	ObjectId                      *string                         `json:"object_id,omitempty"`                        // "Used instead of `name` for automatic generation of `entity_id`"
 	Optimistic                    *bool                           `json:"optimistic,omitempty"`                       // "Flag that defines if humidifier works in optimistic mode"
 	PayloadAvailable              *string                         `json:"payload_available,omitempty"`                // "The payload that represents the available state."
 	PayloadNotAvailable           *string                         `json:"payload_not_available,omitempty"`            // "The payload that represents the unavailable state."
 	PayloadOff                    *string                         `json:"payload_off,omitempty"`                      // "The payload that represents the stop state."
 	PayloadOn                     *string                         `json:"payload_on,omitempty"`                       // "The payload that represents the running state."
-	PayloadResetHumidity          *string                         `json:"payload_reset_humidity,omitempty"`           // "A special payload that resets the `target_humidity` state attribute to `None` when received at the `target_humidity_state_topic`."
-	PayloadResetMode              *string                         `json:"payload_reset_mode,omitempty"`               // "A special payload that resets the `mode` state attribute to `None` when received at the `mode_state_topic`. When received at `current_humidity_topic` it will reset the current humidity state."
-	Qos                           *int                            `json:"qos,omitempty"`                              // "The maximum QoS level of the state topic."
+	PayloadResetHumidity          *string                         `json:"payload_reset_humidity,omitempty"`           // "A special payload that resets the `target_humidity` state attribute to an `unknown` state when received at the `target_humidity_state_topic`. When received at `current_humidity_topic` it will reset the current humidity state."
+	PayloadResetMode              *string                         `json:"payload_reset_mode,omitempty"`               // "A special payload that resets the `mode` state attribute to an `unknown` state when received at the `mode_state_topic`."
+	Qos                           *int                            `json:"qos,omitempty"`                              // "The maximum QoS level to be used when receiving and publishing messages."
 	Retain                        *bool                           `json:"retain,omitempty"`                           // "If the published message should have the retain flag on or not."
 	StateTopic                    *string                         `json:"state_topic,omitempty"`                      // "The MQTT topic subscribed to receive state updates."
 	StateFunc                     func() string                   `json:"-"`                                          // Function for state

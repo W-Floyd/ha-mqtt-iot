@@ -21,8 +21,8 @@ type Number struct {
 	CommandTopic      *string                         `json:"command_topic,omitempty"`      // "The MQTT topic to publish commands to change the number."
 	CommandFunc       func(mqtt.Message, mqtt.Client) `json:"-"`                            // Function for command
 	Device            struct {
-		ConfigurationUrl *string `json:"configuration_url,omitempty"` // "A link to the webpage that can manage the configuration of this device. Can be either an HTTP or HTTPS link."
-		Connections      *string `json:"connections,omitempty"`       // "A list of connections of the device to the outside world as a list of tuples `[connection_type, connection_identifier]`. For example the MAC address of a network interface: `\"connections\": [\"mac\", \"02:5b:26:a8:dc:12\"]`."
+		ConfigurationUrl *string `json:"configuration_url,omitempty"` // "A link to the webpage that can manage the configuration of this device. Can be either an `http://`, `https://` or an internal `homeassistant://` URL."
+		Connections      *string `json:"connections,omitempty"`       // "A list of connections of the device to the outside world as a list of tuples `[connection_type, connection_identifier]`. For example the MAC address of a network interface: `\"connections\": [[\"mac\", \"02:5b:26:a8:dc:12\"]]`."
 		Identifiers      *string `json:"identifiers,omitempty"`       // "A list of IDs that uniquely identify the device. For example a serial number."
 		Manufacturer     *string `json:"manufacturer,omitempty"`      // "The manufacturer of the device."
 		Model            *string `json:"model,omitempty"`             // "The model of the device."
@@ -42,11 +42,11 @@ type Number struct {
 	Max                    *float64                        `json:"max,omitempty"`                      // "Maximum value."
 	Min                    *float64                        `json:"min,omitempty"`                      // "Minimum value."
 	Mode                   *string                         `json:"mode,omitempty"`                     // "Control how the number should be displayed in the UI. Can be set to `box` or `slider` to force a display mode."
-	Name                   *string                         `json:"name,omitempty"`                     // "The name of the Number."
+	Name                   *string                         `json:"name,omitempty"`                     // "The name of the Number. Can be set to `null` if only the device name is relevant."
 	ObjectId               *string                         `json:"object_id,omitempty"`                // "Used instead of `name` for automatic generation of `entity_id`"
 	Optimistic             *bool                           `json:"optimistic,omitempty"`               // "Flag that defines if number works in optimistic mode."
-	PayloadReset           *string                         `json:"payload_reset,omitempty"`            // "A special payload that resets the state to `None` when received on the `state_topic`."
-	Qos                    *int                            `json:"qos,omitempty"`                      // "The maximum QoS level of the state topic. Default is 0 and will also be used to publishing messages."
+	PayloadReset           *string                         `json:"payload_reset,omitempty"`            // "A special payload that resets the state to `unknown` when received on the `state_topic`."
+	Qos                    *int                            `json:"qos,omitempty"`                      // "The maximum QoS level to be used when receiving and publishing messages."
 	Retain                 *bool                           `json:"retain,omitempty"`                   // "If the published message should have the retain flag on or not."
 	StateTopic             *string                         `json:"state_topic,omitempty"`              // "The MQTT topic subscribed to receive number values."
 	StateFunc              func() string                   `json:"-"`                                  // Function for state

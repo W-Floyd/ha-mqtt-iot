@@ -28,13 +28,15 @@ type WaterHeater struct {
 	ModeStateTemplate          *string     `json:"mode_state_template,omitempty"`          // "A template to render the value received on the `mode_state_topic` with."
 	ModeState                  *([]string) `json:"mode_state,omitempty"`                   // ModeState for the WaterHeater
 	Modes                      *([]string) `json:"modes,omitempty"`                        // "A list of supported modes. Needs to be a subset of the default values."
-	Name                       *string     `json:"name,omitempty"`                         // "The name of the Water Heater."
+	Name                       *string     `json:"name,omitempty"`                         // "The name of the water heater. Can be set to `null` if only the device name is relevant."
 	ObjectId                   *string     `json:"object_id,omitempty"`                    // "Used instead of `name` for automatic generation of `entity_id`"
 	Optimistic                 *bool       `json:"optimistic,omitempty"`                   // "Flag that defines if the water heater works in optimistic mode"
 	PayloadAvailable           *string     `json:"payload_available,omitempty"`            // "The payload that represents the available state."
 	PayloadNotAvailable        *string     `json:"payload_not_available,omitempty"`        // "The payload that represents the unavailable state."
 	PayloadOff                 *string     `json:"payload_off,omitempty"`                  // "The payload that represents disabled state."
 	PayloadOn                  *string     `json:"payload_on,omitempty"`                   // "The payload that represents enabled state."
+	PowerCommandTemplate       *string     `json:"power_command_template,omitempty"`       // "A template to render the value sent to the `power_command_topic` with. The `value` parameter is the payload set for `payload_on` or `payload_off`."
+	PowerCommand               *([]string) `json:"power_command,omitempty"`                // PowerCommand for the WaterHeater
 	Precision                  *float64    `json:"precision,omitempty"`                    // "The desired precision for this device. Can be used to match your actual water heater's precision. Supported values are `0.1`, `0.5` and `1.0`."
 	Qos                        *int        `json:"qos,omitempty"`                          // "The maximum QoS level to be used when receiving and publishing messages."
 	Retain                     *bool       `json:"retain,omitempty"`                       // "Defines if published messages should have the retain flag set."
@@ -43,7 +45,7 @@ type WaterHeater struct {
 	TemperatureStateTemplate   *string     `json:"temperature_state_template,omitempty"`   // "A template to render the value received on the `temperature_state_topic` with."
 	TemperatureState           *([]string) `json:"temperature_state,omitempty"`            // TemperatureState for the WaterHeater
 	TemperatureUnit            *string     `json:"temperature_unit,omitempty"`             // "Defines the temperature unit of the device, `C` or `F`. If this is not set, the temperature unit is set to the system temperature unit."
-	UniqueId                   *string     `json:"unique_id,omitempty"`                    // "An ID that uniquely identifies this Water Heater device. If two Water Heater devices have the same unique ID, Home Assistant will raise an exception."
+	UniqueId                   *string     `json:"unique_id,omitempty"`                    // "An ID that uniquely identifies this water heater device. If two water heater devices have the same unique ID, Home Assistant will raise an exception."
 	ValueTemplate              *string     `json:"value_template,omitempty"`               // "Default template to render the payloads on *all* `*_state_topic`s with."
 	MQTT                       struct {
 		UpdateInterval *float64 `json:"update_interval,omitempty"`
@@ -137,6 +139,12 @@ func (iDevice WaterHeater) Translate() externaldevice.WaterHeater {
 	}
 	if iDevice.PayloadOn != nil {
 		eDevice.PayloadOn = iDevice.PayloadOn
+	}
+	if iDevice.PowerCommandTemplate != nil {
+		eDevice.PowerCommandTemplate = iDevice.PowerCommandTemplate
+	}
+	if iDevice.PowerCommand != nil {
+		eDevice.PowerCommandFunc = common.ConstructCommandFunc(*iDevice.PowerCommand)
 	}
 	if iDevice.Precision != nil {
 		eDevice.Precision = iDevice.Precision

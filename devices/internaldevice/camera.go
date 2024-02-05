@@ -19,7 +19,7 @@ type Camera struct {
 	ImageEncoding          *string     `json:"image_encoding,omitempty"`           // "The encoding of the image payloads received. Set to `\"b64\"` to enable base64 decoding of image payload. If not set, the image payload must be raw binary data."
 	JsonAttributesTemplate *string     `json:"json_attributes_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract the JSON dictionary from messages received on the `json_attributes_topic`."
 	JsonAttributes         *([]string) `json:"json_attributes,omitempty"`          // JsonAttributes for the Camera
-	Name                   *string     `json:"name,omitempty"`                     // "The name of the camera."
+	Name                   *string     `json:"name,omitempty"`                     // "The name of the camera. Can be set to `null` if only the device name is relevant."
 	ObjectId               *string     `json:"object_id,omitempty"`                // "Used instead of `name` for automatic generation of `entity_id`"
 	State                  *([]string) `json:"state,omitempty"`                    // State for the Camera
 	UniqueId               *string     `json:"unique_id,omitempty"`                // "An ID that uniquely identifies this camera. If two cameras have the same unique ID Home Assistant will raise an exception."

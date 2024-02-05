@@ -23,10 +23,10 @@ type Update struct {
 	JsonAttributes         *([]string) `json:"json_attributes,omitempty"`          // JsonAttributes for the Update
 	LatestVersionTemplate  *string     `json:"latest_version_template,omitempty"`  // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract the latest version value."
 	LatestVersion          *([]string) `json:"latest_version,omitempty"`           // LatestVersion for the Update
-	Name                   *string     `json:"name,omitempty"`                     // "The name of the Update."
+	Name                   *string     `json:"name,omitempty"`                     // "The name of the Update. Can be set to `null` if only the device name is relevant."
 	ObjectId               *string     `json:"object_id,omitempty"`                // "Used instead of `name` for automatic generation of `entity_id`"
 	PayloadInstall         *string     `json:"payload_install,omitempty"`          // "The MQTT payload to start installing process."
-	Qos                    *int        `json:"qos,omitempty"`                      // "The maximum QoS level of the state topic. Default is 0 and will also be used to publishing messages."
+	Qos                    *int        `json:"qos,omitempty"`                      // "The maximum QoS level to be used when receiving and publishing messages."
 	ReleaseSummary         *string     `json:"release_summary,omitempty"`          // "Summary of the release notes or changelog. This is suitable a brief update description of max 255 characters."
 	ReleaseUrl             *string     `json:"release_url,omitempty"`              // "URL to the full release notes of the latest version available."
 	Retain                 *bool       `json:"retain,omitempty"`                   // "If the published message should have the retain flag on or not."

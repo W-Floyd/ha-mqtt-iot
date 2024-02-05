@@ -41,7 +41,7 @@ type Light struct {
 	JsonAttributes            *([]string) `json:"json_attributes,omitempty"`             // JsonAttributes for the Light
 	MaxMireds                 *int        `json:"max_mireds,omitempty"`                  // "The maximum color temperature in mireds."
 	MinMireds                 *int        `json:"min_mireds,omitempty"`                  // "The minimum color temperature in mireds."
-	Name                      *string     `json:"name,omitempty"`                        // "The name of the light."
+	Name                      *string     `json:"name,omitempty"`                        // "The name of the light. Can be set to `null` if only the device name is relevant."
 	ObjectId                  *string     `json:"object_id,omitempty"`                   // "Used instead of `name` for automatic generation of `entity_id`"
 	OnCommandType             *string     `json:"on_command_type,omitempty"`             // "Defines when on the payload_on is sent. Using `last` (the default) will send any style (brightness, color, etc) topics first and then a `payload_on` to the `command_topic`. Using `first` will send the `payload_on` and then any style topics. Using `brightness` will only send brightness commands instead of the `payload_on` to turn the light on."
 	Optimistic                *bool       `json:"optimistic,omitempty"`                  // "Flag that defines if switch works in optimistic mode."
@@ -49,7 +49,7 @@ type Light struct {
 	PayloadNotAvailable       *string     `json:"payload_not_available,omitempty"`       // "The payload that represents the unavailable state."
 	PayloadOff                *string     `json:"payload_off,omitempty"`                 // "The payload that represents disabled state."
 	PayloadOn                 *string     `json:"payload_on,omitempty"`                  // "The payload that represents enabled state."
-	Qos                       *int        `json:"qos,omitempty"`                         // "The maximum QoS level of the state topic."
+	Qos                       *int        `json:"qos,omitempty"`                         // "The maximum QoS level to be used when receiving and publishing messages."
 	Retain                    *bool       `json:"retain,omitempty"`                      // "If the published message should have the retain flag on or not."
 	RgbCommandTemplate        *string     `json:"rgb_command_template,omitempty"`        // "Defines a [template](/docs/configuration/templating/) to compose message which will be sent to `rgb_command_topic`. Available variables: `red`, `green` and `blue`."
 	RgbCommand                *([]string) `json:"rgb_command,omitempty"`                 // RgbCommand for the Light

@@ -20,18 +20,33 @@ type Scene struct {
 	AvailabilityFunc     func() string                   `json:"-"`                               // Function for availability
 	CommandTopic         *string                         `json:"command_topic,omitempty"`         // "The MQTT topic to publish `payload_on` to activate the scene."
 	CommandFunc          func(mqtt.Message, mqtt.Client) `json:"-"`                               // Function for command
-	EnabledByDefault     *bool                           `json:"enabled_by_default,omitempty"`    // "Flag which defines if the entity should be enabled when first added."
-	EntityCategory       *string                         `json:"entity_category,omitempty"`       // "The [category](https://developers.home-assistant.io/docs/core/entity#generic-properties) of the entity."
-	Icon                 *string                         `json:"icon,omitempty"`                  // "Icon for the scene."
-	Name                 *string                         `json:"name,omitempty"`                  // "The name to use when displaying this scene."
-	ObjectId             *string                         `json:"object_id,omitempty"`             // "Used instead of `name` for automatic generation of `entity_id`"
-	PayloadAvailable     *string                         `json:"payload_available,omitempty"`     // "The payload that represents the available state."
-	PayloadNotAvailable  *string                         `json:"payload_not_available,omitempty"` // "The payload that represents the unavailable state."
-	PayloadOn            *string                         `json:"payload_on,omitempty"`            // "The payload that will be sent to `command_topic` when activating the MQTT scene."
-	Qos                  *int                            `json:"qos,omitempty"`                   // "The maximum QoS level of the state topic. Default is 0 and will also be used to publishing messages."
-	Retain               *bool                           `json:"retain,omitempty"`                // "If the published message should have the retain flag on or not."
-	UniqueId             *string                         `json:"unique_id,omitempty"`             // "An ID that uniquely identifies this scene entity. If two scenes have the same unique ID, Home Assistant will raise an exception."
-	MQTT                 *MQTTFields                     `json:"-"`                               // MQTT configuration parameters
+	Device               struct {
+		ConfigurationUrl *string `json:"configuration_url,omitempty"` // "A link to the webpage that can manage the configuration of this device. Can be either an HTTP or HTTPS link."
+		Connections      *string `json:"connections,omitempty"`       // "A list of connections of the device to the outside world as a list of tuples `[connection_type, connection_identifier]`. For example the MAC address of a network interface: `\"connections\": [[\"mac\", \"02:5b:26:a8:dc:12\"]]`."
+		Identifiers      *string `json:"identifiers,omitempty"`       // "A list of IDs that uniquely identify the device. For example a serial number."
+		Manufacturer     *string `json:"manufacturer,omitempty"`      // "The manufacturer of the device."
+		Model            *string `json:"model,omitempty"`             // "The model of the device."
+		Name             *string `json:"name,omitempty"`              // "The name of the device."
+		SuggestedArea    *string `json:"suggested_area,omitempty"`    // "Suggest an area if the device isn’t in one yet."
+		SwVersion        *string `json:"sw_version,omitempty"`        // "The firmware version of the device."
+		ViaDevice        *string `json:"via_device,omitempty"`        // "Identifier of a device that routes messages between this device and Home Assistant. Examples of such devices are hubs, or parent devices of a sub-device. This is used to show device topology in Home Assistant."
+	} `json:"device,omitempty"` // Device configuration parameters
+	EnabledByDefault       *bool                           `json:"enabled_by_default,omitempty"`       // "Flag which defines if the entity should be enabled when first added."
+	Encoding               *string                         `json:"encoding,omitempty"`                 // "The encoding of the published messages."
+	EntityCategory         *string                         `json:"entity_category,omitempty"`          // "The [category](https://developers.home-assistant.io/docs/core/entity#generic-properties) of the entity."
+	Icon                   *string                         `json:"icon,omitempty"`                     // "Icon for the scene."
+	JsonAttributesTemplate *string                         `json:"json_attributes_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract the JSON dictionary from messages received on the `json_attributes_topic`. Usage example can be found in [MQTT sensor](/integrations/sensor.mqtt/#json-attributes-template-configuration) documentation."
+	JsonAttributesTopic    *string                         `json:"json_attributes_topic,omitempty"`    // "The MQTT topic subscribed to receive a JSON dictionary payload and then set as sensor attributes. Usage example can be found in [MQTT sensor](/integrations/sensor.mqtt/#json-attributes-topic-configuration) documentation."
+	JsonAttributesFunc     func(mqtt.Message, mqtt.Client) `json:"-"`                                  // Function for json attributes
+	Name                   *string                         `json:"name,omitempty"`                     // "The name to use when displaying this scene."
+	ObjectId               *string                         `json:"object_id,omitempty"`                // "Used instead of `name` for automatic generation of `entity_id`"
+	PayloadAvailable       *string                         `json:"payload_available,omitempty"`        // "The payload that represents the available state."
+	PayloadNotAvailable    *string                         `json:"payload_not_available,omitempty"`    // "The payload that represents the unavailable state."
+	PayloadOn              *string                         `json:"payload_on,omitempty"`               // "The payload that will be sent to `command_topic` when activating the MQTT scene."
+	Qos                    *int                            `json:"qos,omitempty"`                      // "The maximum QoS level to be used when receiving and publishing messages."
+	Retain                 *bool                           `json:"retain,omitempty"`                   // "If the published message should have the retain flag on or not."
+	UniqueId               *string                         `json:"unique_id,omitempty"`                // "An ID that uniquely identifies this scene entity. If two scenes have the same unique ID, Home Assistant will raise an exception."
+	MQTT                   *MQTTFields                     `json:"-"`                                  // MQTT configuration parameters
 }
 
 func (d *Scene) GetRawId() string {
@@ -43,7 +58,13 @@ func (d *Scene) AddMessageHandler() {
 func (d *Scene) GetUniqueId() string {
 	return *d.UniqueId
 }
-func (d *Scene) PopulateDevice() {}
+func (d *Scene) PopulateDevice() {
+	d.Device.Manufacturer = &Manufacturer
+	d.Device.Model = &SoftwareName
+	d.Device.Name = &InstanceName
+	d.Device.SwVersion = &SWVersion
+	d.Device.Identifiers = &common.MachineID
+}
 func (d *Scene) UpdateState() {
 	if d.AvailabilityTopic != nil {
 		state := d.AvailabilityFunc()
@@ -67,6 +88,13 @@ func (d *Scene) Subscribe() {
 			log.Fatal(t.Error())
 		}
 	}
+	if d.JsonAttributesTopic != nil {
+		t := c.Subscribe(*d.JsonAttributesTopic, 0, d.MQTT.MessageHandler)
+		t.Wait()
+		if t.Error() != nil {
+			log.Fatal(t.Error())
+		}
+	}
 	token := c.Publish(GetDiscoveryTopic(d), 0, true, message)
 	token.Wait()
 	time.Sleep(common.HADiscoveryDelay)
@@ -79,6 +107,13 @@ func (d *Scene) UnSubscribe() {
 	token.Wait()
 	if d.CommandTopic != nil {
 		t := c.Unsubscribe(*d.CommandTopic)
+		t.Wait()
+		if t.Error() != nil {
+			log.Fatal(t.Error())
+		}
+	}
+	if d.JsonAttributesTopic != nil {
+		t := c.Unsubscribe(*d.JsonAttributesTopic)
 		t.Wait()
 		if t.Error() != nil {
 			log.Fatal(t.Error())
@@ -116,6 +151,11 @@ func (d *Scene) PopulateTopics() {
 		d.CommandTopic = new(string)
 		*d.CommandTopic = GetTopic(d, "command_topic")
 		store.TopicStore[*d.CommandTopic] = &d.CommandFunc
+	}
+	if d.JsonAttributesFunc != nil {
+		d.JsonAttributesTopic = new(string)
+		*d.JsonAttributesTopic = GetTopic(d, "json_attributes_topic")
+		store.TopicStore[*d.JsonAttributesTopic] = &d.JsonAttributesFunc
 	}
 }
 func (d *Scene) SetMQTTFields(fields MQTTFields) {

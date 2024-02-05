@@ -21,8 +21,8 @@ type Update struct {
 	CommandTopic         *string                         `json:"command_topic,omitempty"`         // "The MQTT topic to publish `payload_install` to start installing process."
 	CommandFunc          func(mqtt.Message, mqtt.Client) `json:"-"`                               // Function for command
 	Device               struct {
-		ConfigurationUrl *string `json:"configuration_url,omitempty"` // "A link to the webpage that can manage the configuration of this device. Can be either an HTTP or HTTPS link."
-		Connections      *string `json:"connections,omitempty"`       // "A list of connections of the device to the outside world as a list of tuples `[connection_type, connection_identifier]`. For example the MAC address of a network interface: `\"connections\": [\"mac\", \"02:5b:26:a8:dc:12\"]`."
+		ConfigurationUrl *string `json:"configuration_url,omitempty"` // "A link to the webpage that can manage the configuration of this device. Can be either an `http://`, `https://` or an internal `homeassistant://` URL."
+		Connections      *string `json:"connections,omitempty"`       // "A list of connections of the device to the outside world as a list of tuples `[connection_type, connection_identifier]`. For example the MAC address of a network interface: `\"connections\": [[\"mac\", \"02:5b:26:a8:dc:12\"]]`."
 		Identifiers      *string `json:"identifiers,omitempty"`       // "A list of IDs that uniquely identify the device. For example a serial number."
 		Manufacturer     *string `json:"manufacturer,omitempty"`      // "The manufacturer of the device."
 		Model            *string `json:"model,omitempty"`             // "The model of the device."
@@ -43,10 +43,10 @@ type Update struct {
 	LatestVersionTemplate  *string                         `json:"latest_version_template,omitempty"`  // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract the latest version value."
 	LatestVersionTopic     *string                         `json:"latest_version_topic,omitempty"`     // "The MQTT topic subscribed to receive an update of the latest version."
 	LatestVersionFunc      func(mqtt.Message, mqtt.Client) `json:"-"`                                  // Function for latest version
-	Name                   *string                         `json:"name,omitempty"`                     // "The name of the Update."
+	Name                   *string                         `json:"name,omitempty"`                     // "The name of the Update. Can be set to `null` if only the device name is relevant."
 	ObjectId               *string                         `json:"object_id,omitempty"`                // "Used instead of `name` for automatic generation of `entity_id`"
 	PayloadInstall         *string                         `json:"payload_install,omitempty"`          // "The MQTT payload to start installing process."
-	Qos                    *int                            `json:"qos,omitempty"`                      // "The maximum QoS level of the state topic. Default is 0 and will also be used to publishing messages."
+	Qos                    *int                            `json:"qos,omitempty"`                      // "The maximum QoS level to be used when receiving and publishing messages."
 	ReleaseSummary         *string                         `json:"release_summary,omitempty"`          // "Summary of the release notes or changelog. This is suitable a brief update description of max 255 characters."
 	ReleaseUrl             *string                         `json:"release_url,omitempty"`              // "URL to the full release notes of the latest version available."
 	Retain                 *bool                           `json:"retain,omitempty"`                   // "If the published message should have the retain flag on or not."

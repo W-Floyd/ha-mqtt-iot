@@ -20,7 +20,7 @@ type Cover struct {
 	Icon                   *string     `json:"icon,omitempty"`                     // "[Icon](/docs/configuration/customizing-devices/#icon) for the entity."
 	JsonAttributesTemplate *string     `json:"json_attributes_template,omitempty"` // "Defines a [template](/docs/configuration/templating/#using-templates-with-the-mqtt-integration) to extract the JSON dictionary from messages received on the `json_attributes_topic`. Usage example can be found in [MQTT sensor](/integrations/sensor.mqtt/#json-attributes-template-configuration) documentation."
 	JsonAttributes         *([]string) `json:"json_attributes,omitempty"`          // JsonAttributes for the Cover
-	Name                   *string     `json:"name,omitempty"`                     // "The name of the cover."
+	Name                   *string     `json:"name,omitempty"`                     // "The name of the cover. Can be set to `null` if only the device name is relevant."
 	ObjectId               *string     `json:"object_id,omitempty"`                // "Used instead of `name` for automatic generation of `entity_id`"
 	Optimistic             *bool       `json:"optimistic,omitempty"`               // "Flag that defines if switch works in optimistic mode."
 	PayloadAvailable       *string     `json:"payload_available,omitempty"`        // "The payload that represents the online state."

@@ -22,7 +22,7 @@ type DeviceTracker struct {
 	PayloadNotAvailable    *string     `json:"payload_not_available,omitempty"`    // "The payload that represents the unavailable state."
 	PayloadNotHome         *string     `json:"payload_not_home,omitempty"`         // "The payload value that represents the 'not_home' state for the device."
 	PayloadReset           *string     `json:"payload_reset,omitempty"`            // "The payload value that will have the device's location automatically derived from Home Assistant's zones."
-	Qos                    *int        `json:"qos,omitempty"`                      // "The maximum QoS level of the state topic."
+	Qos                    *int        `json:"qos,omitempty"`                      // "The maximum QoS level to be used when receiving and publishing messages."
 	SourceType             *string     `json:"source_type,omitempty"`              // "Attribute of a device tracker that affects state when being used to track a [person](/integrations/person/). Valid options are `gps`, `router`, `bluetooth`, or `bluetooth_le`."
 	State                  *([]string) `json:"state,omitempty"`                    // State for the DeviceTracker
 	UniqueId               *string     `json:"unique_id,omitempty"`                // "An ID that uniquely identifies this device_tracker. If two device_trackers have the same unique ID, Home Assistant will raise an exception."

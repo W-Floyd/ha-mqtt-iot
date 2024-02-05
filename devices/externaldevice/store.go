@@ -20,7 +20,6 @@ type StateStore struct {
 		State        map[string]string
 	}
 	Climate struct {
-		AuxState             map[string]string
 		Availability         map[string]string
 		CurrentHumidity      map[string]string
 		CurrentTemperature   map[string]string
@@ -46,6 +45,10 @@ type StateStore struct {
 	DeviceTrigger struct {
 		State map[string]string
 	}
+	Event struct {
+		Availability map[string]string
+		State        map[string]string
+	}
 	Fan struct {
 		Availability     map[string]string
 		DirectionState   map[string]string
@@ -63,6 +66,10 @@ type StateStore struct {
 	}
 	Image struct {
 		Availability map[string]string
+	}
+	LawnMower struct {
+		ActivityState map[string]string
+		Availability  map[string]string
 	}
 	Light struct {
 		Availability    map[string]string
@@ -115,7 +122,8 @@ type StateStore struct {
 		Availability map[string]string
 		State        map[string]string
 	}
-	Vacuum struct {
+	Vacuum struct{}
+	Valve  struct {
 		Availability map[string]string
 		State        map[string]string
 	}
@@ -136,7 +144,6 @@ func initStore() StateStore {
 	s.Button.Availability = make(map[string]string)
 	s.Camera.Availability = make(map[string]string)
 	s.Camera.State = make(map[string]string)
-	s.Climate.AuxState = make(map[string]string)
 	s.Climate.Availability = make(map[string]string)
 	s.Climate.CurrentHumidity = make(map[string]string)
 	s.Climate.CurrentTemperature = make(map[string]string)
@@ -155,6 +162,8 @@ func initStore() StateStore {
 	s.DeviceTracker.Availability = make(map[string]string)
 	s.DeviceTracker.State = make(map[string]string)
 	s.DeviceTrigger.State = make(map[string]string)
+	s.Event.Availability = make(map[string]string)
+	s.Event.State = make(map[string]string)
 	s.Fan.Availability = make(map[string]string)
 	s.Fan.DirectionState = make(map[string]string)
 	s.Fan.OscillationState = make(map[string]string)
@@ -167,6 +176,8 @@ func initStore() StateStore {
 	s.Humidifier.State = make(map[string]string)
 	s.Humidifier.TargetHumidityState = make(map[string]string)
 	s.Image.Availability = make(map[string]string)
+	s.LawnMower.ActivityState = make(map[string]string)
+	s.LawnMower.Availability = make(map[string]string)
 	s.Light.Availability = make(map[string]string)
 	s.Light.BrightnessState = make(map[string]string)
 	s.Light.ColorModeState = make(map[string]string)
@@ -196,8 +207,8 @@ func initStore() StateStore {
 	s.Text.State = make(map[string]string)
 	s.Update.Availability = make(map[string]string)
 	s.Update.State = make(map[string]string)
-	s.Vacuum.Availability = make(map[string]string)
-	s.Vacuum.State = make(map[string]string)
+	s.Valve.Availability = make(map[string]string)
+	s.Valve.State = make(map[string]string)
 	s.WaterHeater.Availability = make(map[string]string)
 	s.WaterHeater.CurrentTemperature = make(map[string]string)
 	s.WaterHeater.ModeState = make(map[string]string)
