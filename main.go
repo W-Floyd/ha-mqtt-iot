@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"flag"
-	"io/ioutil"
 	"log"
 	"math"
 	"os"
@@ -48,7 +47,7 @@ func main() {
 		var tConfig config.Config
 
 		// read file
-		data, err := ioutil.ReadFile(configFile)
+		data, err := os.ReadFile(configFile)
 		if err != nil {
 			common.LogError("Error reading "+configFile, err)
 		}

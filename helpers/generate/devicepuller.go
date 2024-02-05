@@ -45,38 +45,39 @@ type Device struct {
 	JSONContainer *gabs.Container
 }
 
-func DevicesInit() (retval []Device) {
+func DevicesInit() (err error, retval []Device) {
 	for _, name := range DeviceNames {
 		d := Device{
 			Name: name,
 		}
-		d.init()
+		err = errors.Join(err, d.init())
 		retval = append(retval, d)
 	}
-	return retval
+	return
 }
 
-func (dev *Device) init() {
-	dev.JSONContainer = JsonExtractor(dev.Name)
+func (dev *Device) init() (err error) {
+	dev.JSONContainer, err = JsonExtractor(dev.Name)
+	return err
 }
 
-func JsonExtractor(deviceName string) *gabs.Container {
+func JsonExtractor(deviceName string) (*gabs.Container, error) {
 	yamlString, err := splitDocument(deviceName)
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 
 	jsonDoc, err := yaml.YAMLToJSON([]byte(yamlString))
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 
 	jsonParsed, err := gabs.ParseJSON(jsonDoc)
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 
-	return jsonParsed
+	return jsonParsed, nil
 }
 
 func between(value string, a string, b string) string {
@@ -109,7 +110,11 @@ func splitDocument(devicename string) (string, error) {
 	dat := string(data)
 
 	if devicename == "vacuum" {
-		dat = dat[strings.Index(dat, "## State Configuration"):]
+		i := strings.Index(dat, "## Configuration example")
+		if i < 0 {
+			return "", errors.New("For " + devicename + " could not find ## State Configuration")
+		}
+		dat = dat[i:]
 	} else if devicename == "light" {
 		dat = between(dat, "## Default schema - Configuration", "## Default schema - Examples")
 	}
