@@ -11,12 +11,12 @@ import (
 	"syscall"
 	"time"
 
+	"dario.cat/mergo"
 	"github.com/W-Floyd/ha-mqtt-iot/common"
 	"github.com/W-Floyd/ha-mqtt-iot/config"
 	ExternalDevice "github.com/W-Floyd/ha-mqtt-iot/devices/externaldevice"
 	"github.com/denisbrodbeck/machineid"
 	mqtt "github.com/eclipse/paho.mqtt.golang"
-	"github.com/imdario/mergo"
 )
 
 //go:generate go run ./helpers/
