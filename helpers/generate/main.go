@@ -19,6 +19,8 @@ var commentBar = "//////////////////////////////////////////////////////////////
 
 func main() {
 
+	log.SetFlags(log.Ldate | log.Ltime | log.Lmicroseconds | log.LUTC | log.Lshortfile)
+
 	shouldDelete = flag.Bool("delete", false, "If the generated files should be deleted")
 	pullNew = flag.Bool("pull", false, "If we should re-download the file")
 	flag.Parse()
@@ -47,7 +49,10 @@ func main() {
 		// }
 	}
 
-	devices := DevicesInit()
+	err, devices := DevicesInit()
+	if err != nil && !os.IsNotExist(err) {
+		log.Fatalln(err)
+	}
 	*pullNew = false
 	loadKeyNames()
 

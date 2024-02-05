@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"sort"
 )
 
@@ -13,7 +14,11 @@ var blacklistKeys = []string{
 
 func loadKeyNames() {
 	for _, devicename := range DeviceNames {
-		g := JsonExtractor(devicename)
+		g, err := JsonExtractor(devicename)
+		if err != nil {
+			log.Println(err)
+			continue
+		}
 
 		for k := range g.ChildrenMap() {
 			doAdd := true
