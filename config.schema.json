@@ -79,6 +79,9 @@
                 "node_id": {
                     "type": "string"
                 },
+                "trigger_interval": {
+                    "type": "integer"
+                },
                 "device": {
                     "type": "object",
                     "title": "Device",

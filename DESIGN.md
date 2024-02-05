@@ -38,7 +38,7 @@ Some fields will have default wrappers/values
 
 ## Availability
 
-In all cases, it will be make `off` when disconnecting.
+In all cases, it will be made `off` when disconnecting.
 If no generator is given, it will be made `on` when connecting.
 If a generator is given, we will use that to start, but still ensure it is `off` when shutting down.
 
